@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Terms of Service - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Premium Design Theme */
+        :root {
+            --primary-color: #1A3C34;
+            --primary-dark: #122b24;
+            --secondary-color: #3D5A80;
+            --background-light: #F4EDE4;
+            --background-gray: #F5F5F5;
+            --accent-color: #FF8C42;
+            --accent-dark: #e67e3a;
+            --text-primary: #1A3C34;
+            --text-secondary: #5c6c68;
+            --shadow-sm: 0 2px 4px rgba(26, 60, 52, 0.05);
+            --shadow-md: 0 4px 6px rgba(26, 60, 52, 0.1);
+            --shadow-lg: 0 10px 15px rgba(26, 60, 52, 0.1);
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-ui: 'Montserrat', sans-serif;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-primary);
+            background-color: var(--background-light);
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--shadow-md);
+            padding: 15px 20px;
+        }
+
+        header .logo {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.5rem;
+            font-family: var(--font-heading);
+        }
+
+        header nav ul li a {
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-family: var(--font-ui);
+        }
+
+        header nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Simple Mobile Navigation Styles */
+        .mobile-nav-toggle {
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            z-index: 9999;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 45px;
+            height: 45px;
+            display: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s;
+        }
+
+        .mobile-nav-toggle:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .mobile-nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px auto;
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background-color: white;
+            z-index: 9998;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .mobile-nav.active {
+            left: 0;
+        }
+
+        .mobile-nav-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            font-family: var(--font-heading);
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            border-bottom: 1px solid var(--background-light);
+        }
+
+        .mobile-nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            font-family: var(--font-ui);
+        }
+
+        .mobile-nav-links a i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .mobile-nav-links a:hover {
+            background-color: var(--background-light);
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 9997;
+            display: none;
+        }
+
+        .mobile-nav-overlay.active {
+            display: block;
+        }
+
+        /* Terms specific styles */
+        .terms-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .terms-container h1 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .terms-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .terms-section h2 {
+            color: var(--primary-color);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--background-light);
+        }
+
+        .terms-section h3 {
+            color: var(--primary-color);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            margin: 25px 0 15px;
+            font-size: 1.4rem;
+        }
+
+        .terms-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .terms-section ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .terms-section li {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .terms-section a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--secondary-color);
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+
+        .terms-section a:hover {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        .last-updated {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        footer p {
+            color: white;
+            margin-bottom: 15px;
+            font-family: var(--font-body);
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s;
+            font-family: var(--font-ui);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            header nav {
+                display: none;
+            }
+
+            .terms-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Navigation Toggle Button -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="mobile-nav-overlay"></div>
+
+    <div class="mobile-nav">
+        <div class="mobile-nav-header">
+            <h3>Nutrition Tracker</h3>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="tracker.html"><i class="fas fa-utensils"></i> Tracker</a></li>
+            <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar"></i> Meal Planner</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Database</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li id="login-item"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li id="logout-item" style="display: none;"><a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <header>
+        <div class="logo">Nutrition Tracker</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tracker.html">Tracker</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="meal-planner.html">Meal Planner</a></li>
+                <li><a href="food-search.html">Food Database</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li id="nav-login-item"><a href="login.html">Login</a></li>
+                <li id="nav-logout-item" style="display: none;"><a href="#" onclick="logoutUser()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="terms-container">
+        <h1>Terms of Service</h1>
+        
+        <section class="terms-section">
+            <h2>Agreement to Terms</h2>
+            <p>These Terms of Service govern your access to and use of the Nutrition Tracker website and mobile application. Please read these Terms carefully. By accessing or using our Service, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the Service.</p>
+            
+            <div class="last-updated">Last updated: January 15, 2025</div>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Accounts</h2>
+            <p>When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
+            
+            <p>You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password. You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
+            
+            <h3>Account Limitations</h3>
+            <p>You may not use as a username the name of another person or entity that is not lawfully available for use, a name or trademark that is subject to any rights of another person or entity without appropriate authorization, or a name that is offensive, vulgar, or obscene.</p>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Intellectual Property</h2>
+            <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Nutrition Tracker and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent.</p>
+            
+            <h3>User-Generated Content</h3>
+            <p>By submitting content to our Service, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, adapt, publish, translate, and distribute your content in any existing or future media. You also grant us the right to sublicense these rights, and the right to bring an action for infringement of these rights.</p>
+            
+            <p>You represent and warrant that:</p>
+            <ul>
+                <li>The content is yours or you have the right to use it and grant us the rights as provided in these Terms.</li>
+                <li>The content does not violate the privacy rights, publicity rights, copyrights, contract rights, or any other rights of any person.</li>
+            </ul>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Termination</h2>
+            <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+            
+            <p>Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply discontinue using the Service, or you may notify us that you wish to terminate your account.</p>
+            
+            <h3>Data Retention</h3>
+            <p>All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Disclaimer</h2>
+            <p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement, or course of performance.</p>
+            
+            <h3>Health Information</h3>
+            <p>The content provided through our Service is for informational and educational purposes only and is not intended as medical advice. The Service is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Limitation Of Liability</h2>
+            <p>In no event shall Nutrition Tracker, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use, or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence), or any other legal theory, whether or not we have been informed of the possibility of such damage.</p>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Governing Law</h2>
+            <p>These Terms shall be governed and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.</p>
+            
+            <p>Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect.</p>
+        </section>
+        
+        <section class="terms-section">
+            <h2>Changes</h2>
+            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+            
+            <p>By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="about.html">About Us</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="scripts/firebase-config.js"></script>
+    <script src="scripts/unified-auth.js"></script>
+    <script src="scripts/mobile-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the unified auth handler
+            if (window.auth) {
+                window.auth.initAuthHandler();
+            }
+        });
+    </script>
+</body>
+</html> 

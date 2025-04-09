@@ -1,0 +1,506 @@
+/* Responsive Design Utilities */
+
+/* Breakpoints */
+:root {
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+}
+
+/* Container Widths */
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* Responsive Grid System */
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 992px) {
+    .grid-lg-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-lg-1 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .grid-md-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-md-1 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 576px) {
+    .grid-sm-1 { grid-template-columns: 1fr; }
+}
+
+/* Responsive Spacing */
+.m-0 { margin: 0 !important; }
+.p-0 { padding: 0 !important; }
+
+@media (max-width: 768px) {
+    .m-md-0 { margin: 0 !important; }
+    .p-md-0 { padding: 0 !important; }
+}
+
+/* Responsive Text */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+@media (max-width: 768px) {
+    .text-md-center { text-align: center; }
+    .text-md-left { text-align: left; }
+    .text-md-right { text-align: right; }
+    
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.2rem !important; }
+}
+
+/* Responsive Display */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+.d-grid { display: grid !important; }
+
+@media (max-width: 992px) {
+    .d-lg-none { display: none !important; }
+    .d-lg-block { display: block !important; }
+    .d-lg-flex { display: flex !important; }
+}
+
+@media (max-width: 768px) {
+    .d-md-none { display: none !important; }
+    .d-md-block { display: block !important; }
+    .d-md-flex { display: flex !important; }
+}
+
+@media (max-width: 576px) {
+    .d-sm-none { display: none !important; }
+    .d-sm-block { display: block !important; }
+    .d-sm-flex { display: flex !important; }
+}
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background-color: white;
+        transition: left 0.3s ease;
+        z-index: 1000;
+    }
+    
+    nav ul.active {
+        left: 0;
+    }
+    
+    nav ul li {
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .nav-toggle {
+        display: block !important;
+    }
+}
+
+/* Responsive Forms */
+@media (max-width: 768px) {
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-row > * {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    input, select, textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+}
+
+/* Responsive Tables */
+@media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-stack th,
+    .table-stack td {
+        display: block;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .table-stack td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        margin-right: 1rem;
+    }
+}
+
+/* Responsive Images */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Responsive Cards */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-deck {
+        display: block;
+    }
+    
+    .card-deck .card {
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+/* Responsive Modals */
+@media (max-width: 576px) {
+    .modal-content {
+        width: 95% !important;
+        margin: 20px auto !important;
+    }
+}
+
+/* Touch-friendly Interactions */
+@media (hover: none) {
+    .hover-effect {
+        display: none;
+    }
+    
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+    
+    a[href]::after {
+        content: " (" attr(href) ")";
+    }
+    
+    body {
+        font-size: 12pt;
+    }
+    
+    .container {
+        max-width: none;
+    }
+}
+
+/* Responsive Styles */
+
+/* Large devices (desktops) */
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+/* Medium devices (tablets) */
+@media (max-width: 991px) and (min-width:: 768px) {
+    .container {
+        max-width: 720px;
+    }
+    
+    /* Summary cards grid */
+    .summary-cards,
+    .activity-summary,
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Nutrition cards */
+    .nutrition-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Recipe grid */
+    .recipe-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Small devices (phones) */
+@media (max-width: 767px) {
+    .container {
+        width: 100%;
+        padding: 0 15px;
+    }
+    
+    /* Header components */
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .header-actions {
+        justify-content: center;
+    }
+    
+    /* Mobile header fixes */
+    .header-content {
+        padding: 0 10px;
+    }
+    
+    .logo img {
+        height: 34px;
+    }
+    
+    .theme-toggle, .lang-selector {
+        margin-right: 10px;
+    }
+    
+    .dropdown-toggle {
+        padding: 6px 8px;
+    }
+    
+    /* Mobile navigation adjustments */
+    .mobile-nav-item a {
+        padding: 10px 20px;
+    }
+    
+    /* Summary cards grid */
+    .summary-cards,
+    .activity-summary,
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    /* Nutrition cards */
+    .nutrition-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Meal type tabs */
+    .meal-type-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .meal-tab {
+        flex: 0 0 calc(50% - 10px);
+        margin: 5px;
+    }
+    
+    /* Food logger tables */
+    .food-entry table th:nth-child(3),
+    .food-entry table td:nth-child(3) {
+        display: none;
+    }
+    
+    /* Recipe grid */
+    .recipe-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Modals */
+    .modal-content {
+        width: 95%;
+    }
+    
+    .tabs-nav {
+        flex-wrap: wrap;
+    }
+    
+    .tab-item {
+        flex: 1 1 auto;
+        min-width: 100px;
+        font-size: 14px;
+    }
+    
+    /* Form elements */
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-group {
+        width: 100%;
+    }
+    
+    /* Charts */
+    .chart-container {
+        height: 200px;
+    }
+    
+    /* Activity types */
+    .activity-types {
+        gap: 5px;
+    }
+    
+    .type-filter {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    /* Dashboard insights */
+    .insight-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Goal progress */
+    .goal-progress {
+        flex-direction: column;
+    }
+    
+    /* Water tracker */
+    .water-levels-visual {
+        height: 200px;
+    }
+    
+    /* Footer */
+    footer {
+        padding: 15px 0;
+        text-align: center;
+    }
+    
+    /* Share platforms */
+    .share-platforms {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 479px) {
+    /* Food search results */
+    .food-search-result {
+        flex-direction: column;
+    }
+    
+    .food-search-result-info {
+        width: 100%;
+    }
+    
+    .food-search-result-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+    
+    /* Export options */
+    .export-options,
+    .content-options,
+    .format-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    /* Share platforms */
+    .share-platforms {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Extra small devices - under 375px */
+@media (max-width: 375px) {
+    .hero-content {
+        gap: 20px;
+        padding: 30px 0;
+    }
+    
+    .hero-text h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-text p {
+        font-size: 0.9rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+    }
+    
+    .feature-card {
+        padding: 15px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .footer-app-downloads {
+        justify-content: center;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+    
+    .newsletter-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+} 

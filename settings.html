@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/settings.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="styles/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="scripts/theme-manager.js" defer></script>
+    <script src="scripts/i18n.js" defer></script>
+</head>
+<body>
+    <!-- Mobile Navigation Bar -->
+    <div class="mobile-nav">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1>Settings</h1>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="logo">
+            <img src="images/logo.png" alt="Nutrition Tracker Logo">
+            <h2>Nutrition Tracker</h2>
+        </div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+            <li><a href="activity.html"><i class="fas fa-running"></i> Activity</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book-open"></i> Recipes</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Search</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li class="active"><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="settings-container">
+        <header class="settings-header">
+            <h1>Settings</h1>
+        </header>
+
+        <!-- Settings Navigation -->
+        <div class="settings-navigation">
+            <ul>
+                <li class="active" data-section="general"><i class="fas fa-sliders-h"></i> General</li>
+                <li data-section="appearance"><i class="fas fa-palette"></i> Appearance</li>
+                <li data-section="notifications"><i class="fas fa-bell"></i> Notifications</li>
+                <li data-section="integrations"><i class="fas fa-plug"></i> Integrations</li>
+                <li data-section="privacy"><i class="fas fa-shield-alt"></i> Privacy</li>
+                <li data-section="data"><i class="fas fa-database"></i> Data Management</li>
+            </ul>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- General Settings -->
+            <section id="general-settings" class="settings-section active">
+                <h2>General Settings</h2>
+                
+                <div class="setting-group">
+                    <h3>Units of Measurement</h3>
+                    <div class="setting-item">
+                        <label for="weight-unit">Weight</label>
+                        <select id="weight-unit">
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="lb">Pounds (lb)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="volume-unit">Volume</label>
+                        <select id="volume-unit">
+                            <option value="ml">Milliliters (ml)</option>
+                            <option value="oz">Fluid Ounces (oz)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="energy-unit">Energy</label>
+                        <select id="energy-unit">
+                            <option value="kcal">Calories (kcal)</option>
+                            <option value="kj">Kilojoules (kJ)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Display Settings</h3>
+                    <div class="setting-item">
+                        <label for="date-format">Date Format</label>
+                        <select id="date-format">
+                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="time-format">Time Format</label>
+                        <select id="time-format">
+                            <option value="12h">12-hour (AM/PM)</option>
+                            <option value="24h">24-hour</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Default Meal Times</h3>
+                    <div class="setting-item">
+                        <label for="breakfast-time">Breakfast</label>
+                        <input type="time" id="breakfast-time" value="07:30">
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="lunch-time">Lunch</label>
+                        <input type="time" id="lunch-time" value="12:30">
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="dinner-time">Dinner</label>
+                        <input type="time" id="dinner-time" value="18:30">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Appearance Settings -->
+            <section id="appearance-settings" class="settings-section">
+                <h2>Appearance Settings</h2>
+                
+                <div class="setting-group">
+                    <h3>Theme</h3>
+                    <div class="setting-item">
+                        <label for="theme-select">Application Theme</label>
+                        <select id="theme-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System Default</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="color-scheme">Color Scheme</label>
+                        <div class="color-options">
+                            <div class="color-option selected" data-color="green" style="background-color: #4CAF50;"></div>
+                            <div class="color-option" data-color="blue" style="background-color: #2196F3;"></div>
+                            <div class="color-option" data-color="purple" style="background-color: #9C27B0;"></div>
+                            <div class="color-option" data-color="orange" style="background-color: #FF9800;"></div>
+                            <div class="color-option" data-color="red" style="background-color: #F44336;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Language Settings -->
+                <div class="setting-group">
+                    <div id="language-settings">
+                        <!-- Include the language selector component -->
+                        <div id="language-selector-container"></div>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Layout</h3>
+                    <div class="setting-item">
+                        <label for="dashboard-layout">Dashboard Layout</label>
+                        <select id="dashboard-layout">
+                            <option value="grid">Grid (Default)</option>
+                            <option value="list">List</option>
+                            <option value="compact">Compact</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Font Size</h3>
+                    <div class="setting-item">
+                        <label for="font-size">Font Size</label>
+                        <select id="font-size">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notifications Settings -->
+            <section id="notifications-settings" class="settings-section">
+                <h2>Notification Settings</h2>
+                
+                <div class="setting-group">
+                    <h3>Meal Reminders</h3>
+                    <div class="setting-item toggle">
+                        <label for="breakfast-reminder">Breakfast Reminder</label>
+                        <label class="switch">
+                            <input type="checkbox" id="breakfast-reminder" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label for="lunch-reminder">Lunch Reminder</label>
+                        <label class="switch">
+                            <input type="checkbox" id="lunch-reminder" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label for="dinner-reminder">Dinner Reminder</label>
+                        <label class="switch">
+                            <input type="checkbox" id="dinner-reminder" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Water Intake Reminders</h3>
+                    <div class="setting-item toggle">
+                        <label for="water-reminders">Water Intake Reminders</label>
+                        <label class="switch">
+                            <input type="checkbox" id="water-reminders" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="water-reminder-interval">Reminder Interval</label>
+                        <select id="water-reminder-interval">
+                            <option value="60">Every 1 hour</option>
+                            <option value="90">Every 1.5 hours</option>
+                            <option value="120">Every 2 hours</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Other Notifications</h3>
+                    <div class="setting-item toggle">
+                        <label for="goal-notifications">Goal Achievement Notifications</label>
+                        <label class="switch">
+                            <input type="checkbox" id="goal-notifications" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label for="weekly-summary">Weekly Summary Notification</label>
+                        <label class="switch">
+                            <input type="checkbox" id="weekly-summary" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Integrations Settings -->
+            <section id="integrations-settings" class="settings-section">
+                <h2>Integrations</h2>
+                
+                <div class="setting-group">
+                    <h3>Fitness Trackers</h3>
+                    <p class="setting-description">Connect your fitness trackers to automatically import activity data.</p>
+                    
+                    <div class="integration-item" id="fitbit-integration">
+                        <div class="integration-info">
+                            <img src="images/integrations/fitbit-logo.png" alt="Fitbit Logo" class="integration-logo">
+                            <div class="integration-details">
+                                <h4>Fitbit</h4>
+                                <p class="integration-status">Not connected</p>
+                            </div>
+                        </div>
+                        <button class="connect-btn primary-btn" data-provider="fitbit">Connect</button>
+                    </div>
+                    
+                    <div class="integration-item" id="google-fit-integration">
+                        <div class="integration-info">
+                            <img src="images/integrations/google-fit-logo.png" alt="Google Fit Logo" class="integration-logo">
+                            <div class="integration-details">
+                                <h4>Google Fit</h4>
+                                <p class="integration-status">Not connected</p>
+                            </div>
+                        </div>
+                        <button class="connect-btn primary-btn" data-provider="google_fit">Connect</button>
+                    </div>
+                    
+                    <div class="integration-item" id="strava-integration">
+                        <div class="integration-info">
+                            <img src="images/integrations/strava-logo.png" alt="Strava Logo" class="integration-logo">
+                            <div class="integration-details">
+                                <h4>Strava</h4>
+                                <p class="integration-status">Not connected</p>
+                            </div>
+                        </div>
+                        <button class="connect-btn primary-btn" data-provider="strava">Connect</button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Import Activity Data</h3>
+                    <div class="import-data-section">
+                        <p>Import your activity data from connected fitness trackers</p>
+                        
+                        <div class="setting-item">
+                            <label for="import-provider">Select Provider</label>
+                            <select id="import-provider">
+                                <option value="">Select a connected provider</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item date-range">
+                            <label for="import-start-date">Date Range</label>
+                            <div class="date-inputs">
+                                <input type="date" id="import-start-date">
+                                <span>to</span>
+                                <input type="date" id="import-end-date">
+                            </div>
+                        </div>
+                        
+                        <button id="import-activity-btn" class="secondary-btn">Import Activity Data</button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Other Integrations</h3>
+                    
+                    <div class="integration-item" id="meal-kit-integration">
+                        <div class="integration-info">
+                            <img src="images/integrations/meal-kit-logo.png" alt="Meal Kit Service Logo" class="integration-logo">
+                            <div class="integration-details">
+                                <h4>Meal Kit Services</h4>
+                                <p class="integration-status">Not connected</p>
+                            </div>
+                        </div>
+                        <button class="connect-btn primary-btn" data-provider="meal_kit">Connect</button>
+                    </div>
+                    
+                    <div class="integration-item" id="grocery-integration">
+                        <div class="integration-info">
+                            <img src="images/integrations/grocery-logo.png" alt="Grocery Service Logo" class="integration-logo">
+                            <div class="integration-details">
+                                <h4>Grocery Delivery</h4>
+                                <p class="integration-status">Not connected</p>
+                            </div>
+                        </div>
+                        <button class="connect-btn primary-btn" data-provider="grocery">Connect</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Privacy Settings -->
+            <section id="privacy-settings" class="settings-section">
+                <h2>Privacy Settings</h2>
+                
+                <div class="setting-group">
+                    <h3>Data Sharing</h3>
+                    <div class="setting-item toggle">
+                        <label for="share-nutrition-data">Share Nutrition Data</label>
+                        <label class="switch">
+                            <input type="checkbox" id="share-nutrition-data">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label for="share-activity-data">Share Activity Data</label>
+                        <label class="switch">
+                            <input type="checkbox" id="share-activity-data">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label for="share-achievements">Share Achievements</label>
+                        <label class="switch">
+                            <input type="checkbox" id="share-achievements" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Analytics</h3>
+                    <div class="setting-item toggle">
+                        <label for="usage-analytics">Usage Analytics</label>
+                        <label class="switch">
+                            <input type="checkbox" id="usage-analytics" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label for="personalized-recommendations">Personalized Recommendations</label>
+                        <label class="switch">
+                            <input type="checkbox" id="personalized-recommendations" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Management Settings -->
+            <section id="data-settings" class="settings-section">
+                <h2>Data Management</h2>
+                
+                <div class="setting-group">
+                    <h3>Export Data</h3>
+                    <p class="setting-description">Export your nutrition and activity data in various formats.</p>
+                    
+                    <div class="setting-item">
+                        <label for="export-format">Export Format</label>
+                        <select id="export-format">
+                            <option value="json">JSON</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>Data to Export</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="export-nutrition" checked>
+                                Nutrition Data
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="export-activity" checked>
+                                Activity Data
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="export-goals" checked>
+                                Goals & Progress
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button id="export-data-btn" class="secondary-btn">Export Data</button>
+                </div>
+                
+                <div class="setting-group">
+                    <h3>Import Data</h3>
+                    <p class="setting-description">Import previously exported nutrition and activity data.</p>
+                    
+                    <div class="setting-item">
+                        <label for="import-file">Select File</label>
+                        <input type="file" id="import-file" accept=".json,.csv">
+                    </div>
+                    
+                    <button id="import-data-btn" class="secondary-btn">Import Data</button>
+                </div>
+                
+                <div class="setting-group danger-zone">
+                    <h3>Danger Zone</h3>
+                    <p class="setting-description">These actions cannot be undone.</p>
+                    
+                    <div class="setting-item">
+                        <button id="clear-nutrition-data-btn" class="danger-btn">Clear Nutrition Data</button>
+                        <p class="setting-help">Delete all food entries and nutrition records.</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <button id="clear-activity-data-btn" class="danger-btn">Clear Activity Data</button>
+                        <p class="setting-help">Delete all activity and exercise records.</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <button id="delete-account-btn" class="danger-btn">Delete Account</button>
+                        <p class="setting-help">Permanently delete your account and all associated data.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Settings Save Button -->
+        <div class="settings-actions">
+            <button id="cancel-settings-btn" class="secondary-btn">Cancel</button>
+            <button id="save-settings-btn" class="primary-btn">Save Changes</button>
+        </div>
+    </main>
+
+    <!-- Import Data Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Progress</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="progress-container">
+                    <div class="progress-bar" id="import-progress-bar"></div>
+                </div>
+                <p id="import-status">Importing data...</p>
+                <div id="import-results"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="primary-btn" id="import-done-btn">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="delete-message">Are you sure you want to proceed? This action cannot be undone.</p>
+                
+                <div class="confirm-input">
+                    <label for="confirm-text">Type "DELETE" to confirm:</label>
+                    <input type="text" id="confirm-text" placeholder="DELETE">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancel-delete-btn">Cancel</button>
+                <button class="danger-btn" id="confirm-delete-btn" disabled>Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/mobile-nav.js"></script>
+    <script src="scripts/data-manager.js"></script>
+    <script src="scripts/fitness-integration.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script>
+        // Load language selector component
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the language selector component
+            fetch('components/language-selector.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('language-selector-container').innerHTML = html;
+                    
+                    // Initialize language selection
+                    const currentLang = document.documentElement.lang || 'en';
+                    const radioBtn = document.querySelector(`input[value="${currentLang}"]`);
+                    if (radioBtn) {
+                        radioBtn.checked = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading language selector:', error);
+                });
+                
+            // Connect theme select dropdown to theme manager
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect && window.themeManager) {
+                // Set initial value based on current theme
+                const currentTheme = localStorage.getItem('nutrition_tracker_theme') || 'light';
+                themeSelect.value = currentTheme;
+                
+                // Listen for changes
+                themeSelect.addEventListener('change', function() {
+                    window.themeManager.setTheme(this.value);
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

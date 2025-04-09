@@ -1,0 +1,386 @@
+.meal-prep-content {
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.meal-prep-body {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.prep-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.prep-section h4 {
+    color: var(--primary-color);
+    font-family: var(--font-ui);
+    font-size: 1.1em;
+    margin: 0 0 20px 0;
+}
+
+.prep-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.prep-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.stat-card {
+    background: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+.stat-content h5 {
+    color: var(--text-primary);
+    font-size: 0.9em;
+    margin: 0 0 5px 0;
+}
+
+.stat-value {
+    color: var(--primary-color);
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.prep-chart {
+    height: 300px;
+    position: relative;
+}
+
+.prep-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-day {
+    background: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 15px;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.day-header h5 {
+    color: var(--text-primary);
+    font-size: 1em;
+    margin: 0;
+}
+
+.total-time {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.day-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-item {
+    display: flex;
+    gap: 15px;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 12px;
+}
+
+.task-item.batch {
+    border-left: 3px solid var(--primary-color);
+}
+
+.task-time {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.task-content {
+    flex: 1;
+}
+
+.task-content h6 {
+    color: var(--text-primary);
+    font-size: 0.95em;
+    margin: 0 0 5px 0;
+}
+
+.task-meals {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+}
+
+.batch-suggestions {
+    margin-top: 20px;
+}
+
+.batch-suggestions h5 {
+    color: var(--text-primary);
+    font-size: 1em;
+    margin: 0 0 15px 0;
+}
+
+.batch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.batch-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.batch-card h6 {
+    color: var(--primary-color);
+    font-size: 1em;
+    margin: 0 0 10px 0;
+}
+
+.batch-meals {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.batch-tips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.batch-tips li {
+    color: var(--text-primary);
+    font-size: 0.85em;
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.batch-tips li::before {
+    content: '•';
+    position: absolute;
+    left: 8px;
+    color: var(--primary-color);
+}
+
+.storage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.storage-card {
+    background: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+}
+
+.storage-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.storage-content h5 {
+    color: var(--text-primary);
+    font-size: 1em;
+    margin: 0 0 5px 0;
+}
+
+.storage-content p {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin: 0 0 10px 0;
+}
+
+.storage-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tip-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: var(--text-primary);
+}
+
+.tip-item i {
+    color: var(--success-color);
+}
+
+.cleanup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cleanup-item {
+    background: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 12px;
+}
+
+.cleanup-item.completed {
+    opacity: 0.6;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.cleanup-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.cleanup-checkbox:checked {
+    background-color: var(--primary-color);
+}
+
+.cleanup-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+}
+
+.cleanup-text {
+    color: var(--text-primary);
+    font-size: 0.95em;
+}
+
+.meal-prep-btn {
+    margin-left: 10px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .stat-card,
+    .timeline-day,
+    .task-item,
+    .batch-card,
+    .storage-card,
+    .cleanup-item {
+        border: 2px solid var(--text-primary);
+    }
+
+    .task-item.batch {
+        border-left-width: 4px;
+    }
+
+    .cleanup-checkbox {
+        border-width: 2px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .cleanup-checkbox {
+        transition: none;
+    }
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    .meal-prep-content {
+        padding: 15px;
+    }
+
+    .meal-prep-body {
+        grid-template-columns: 1fr;
+    }
+
+    .prep-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .storage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .batch-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .storage-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .day-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .task-item {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .task-time {
+        align-self: flex-start;
+    }
+} 

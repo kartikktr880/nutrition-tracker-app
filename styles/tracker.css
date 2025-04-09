@@ -1,0 +1,217 @@
+/* Tracker page specific styles */
+.tracker-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .tracker-container h1 {
+    color: #28a745;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  /* Search section */
+  .search-section {
+    display: flex;
+    margin-bottom: 2rem;
+  }
+  
+  #food-search {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 1rem;
+  }
+  
+  #search-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0 1.5rem;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+  }
+  
+  /* Meal buttons */
+  .meal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .meal-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 0.8rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+  
+  .meal-btn:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .meal-btn.active {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+  }
+  
+  /* Food list */
+  .food-list {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .food-list h2 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.5rem;
+  }
+  
+  .empty-state {
+    color: #777;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  
+  .food-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .food-name {
+    font-weight: bold;
+  }
+  
+  .food-macros {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .remove-food {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  
+  /* Daily totals */
+  .daily-totals {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+  
+  .totals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .total-item {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  .total-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #666;
+  }
+  
+  .total-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #28a745;
+  }
+  
+  /* Nutrition chart */
+  .nutrition-chart {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .nutrition-chart h2 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.5rem;
+  }
+  
+  .chart-placeholder {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Simple macro bar for placeholder */
+  .macro-bar {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  .macro-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .protein {
+    background-color: #ff9800;
+  }
+  
+  .carbs {
+    background-color: #2196f3;
+  }
+  
+  .fat {
+    background-color: #f44336;
+  }
+  
+  /* Add styles for the advanced search button */
+  .advanced-search-btn {
+    display: inline-block;
+    margin-left: 10px;
+    background-color: transparent;
+    color: #28a745;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #28a745;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  
+  .advanced-search-btn:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+  }

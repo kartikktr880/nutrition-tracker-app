@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Dashboard - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/activity-dashboard.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Mobile Navigation Bar -->
+    <div class="mobile-nav">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1>Activity Dashboard</h1>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="logo">
+            <img src="images/logo.png" alt="Nutrition Tracker Logo">
+            <h2>Nutrition Tracker</h2>
+        </div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+            <li class="active"><a href="activity-dashboard.html"><i class="fas fa-running"></i> Activity</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book-open"></i> Recipes</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Search</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="activity-dashboard">
+        <!-- Header with date range selector -->
+        <div class="dashboard-header">
+            <h1>Activity Dashboard</h1>
+            <div class="date-range-selector">
+                <button class="date-range-btn active" data-range="7">Week</button>
+                <button class="date-range-btn" data-range="30">Month</button>
+                <button class="date-range-btn" data-range="90">3 Months</button>
+                <button class="date-range-btn" data-range="custom">Custom</button>
+            </div>
+            
+            <div class="custom-date-range" style="display: none;">
+                <input type="date" id="date-start" class="date-input">
+                <span>to</span>
+                <input type="date" id="date-end" class="date-input">
+                <button id="apply-date-range" class="primary-btn">Apply</button>
+            </div>
+        </div>
+        
+        <!-- Integration Status -->
+        <div class="integration-status-section">
+            <h2>Connected Fitness Trackers</h2>
+            <div class="connected-trackers">
+                <div class="no-trackers-message">
+                    <p>No fitness trackers connected yet.</p>
+                    <a href="settings.html#integrations" class="primary-btn">Connect a Tracker</a>
+                </div>
+                
+                <!-- Connected trackers will be displayed here dynamically -->
+                <div class="tracker-items" style="display: none;">
+                    <!-- Example of how connected trackers will look -->
+                    <!--
+                    <div class="tracker-item">
+                        <img src="images/integrations/fitbit-logo.png" alt="Fitbit Logo">
+                        <div class="tracker-info">
+                            <h3>Fitbit</h3>
+                            <p>Last sync: <span>Today, 10:35 AM</span></p>
+                        </div>
+                        <button class="sync-btn secondary-btn"><i class="fas fa-sync-alt"></i> Sync</button>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Summary -->
+        <div class="summary-section">
+            <h2>Activity Summary</h2>
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-shoe-prints"></i>
+                    </div>
+                    <div class="summary-data">
+                        <h3>Steps</h3>
+                        <div class="summary-value">0</div>
+                        <div class="summary-target">Goal: 10,000 steps</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="summary-data">
+                        <h3>Calories Burned</h3>
+                        <div class="summary-value">0</div>
+                        <div class="summary-target">Goal: 2,500 kcal</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <div class="summary-data">
+                        <h3>Distance</h3>
+                        <div class="summary-value">0 km</div>
+                        <div class="summary-target">Goal: 5 km</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="summary-data">
+                        <h3>Active Minutes</h3>
+                        <div class="summary-value">0</div>
+                        <div class="summary-target">Goal: 30 min</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <h2>Daily Activity</h2>
+                <canvas id="daily-activity-chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h2>Activity Types</h2>
+                <canvas id="activity-types-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Recent Activities Section -->
+        <div class="recent-activities-section">
+            <div class="section-header">
+                <h2>Recent Activities</h2>
+                <a href="activity-log.html" class="view-all">View All</a>
+            </div>
+            
+            <div class="activity-list">
+                <div class="no-activities-message">
+                    <p>No activities logged yet.</p>
+                    <a href="settings.html#integrations" class="primary-btn">Import Activities</a>
+                </div>
+                
+                <!-- Activities will be displayed here dynamically -->
+                <div class="activity-items" style="display: none;">
+                    <!-- Example of how activities will look -->
+                    <!--
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h3>Morning Run</h3>
+                            <div class="activity-stats">
+                                <span><i class="fas fa-calendar"></i> Today, 6:30 AM</span>
+                                <span><i class="fas fa-stopwatch"></i> 32 min</span>
+                                <span><i class="fas fa-route"></i> 4.2 km</span>
+                                <span><i class="fas fa-fire"></i> 320 kcal</span>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calories In vs Out Section -->
+        <div class="calories-section">
+            <h2>Calories In vs. Calories Out</h2>
+            <div class="chart-container">
+                <canvas id="calories-chart"></canvas>
+            </div>
+            <div class="calorie-summary">
+                <div class="calorie-item">
+                    <h3>Calories Consumed</h3>
+                    <div class="calorie-value">0</div>
+                </div>
+                <div class="calorie-separator">vs</div>
+                <div class="calorie-item">
+                    <h3>Calories Burned</h3>
+                    <div class="calorie-value">0</div>
+                </div>
+                <div class="calorie-separator">=</div>
+                <div class="calorie-item">
+                    <h3>Net Calories</h3>
+                    <div class="calorie-value">0</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Activity Detail Modal -->
+    <div class="modal" id="activity-detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="activity-modal-title">Activity Details</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="activity-detail-content">
+                    <!-- Activity details will be filled dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn close-detail-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/mobile-nav.js"></script>
+    <script src="scripts/data-manager.js"></script>
+    <script src="scripts/fitness-integration.js"></script>
+    <script src="scripts/activity-dashboard.js"></script>
+</body>
+</html> 

@@ -1,0 +1,28 @@
+<svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="250" height="200" rx="10" fill="#F3F4F6"/>
+  <rect x="50" y="30" width="150" height="140" rx="8" fill="white" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Chart title -->
+  <rect x="65" y="40" width="80" height="10" rx="5" fill="#9CA3AF"/>
+  
+  <!-- Pie chart -->
+  <circle cx="90" cy="90" r="30" fill="white" stroke="#E5E7EB" stroke-width="2"/>
+  <path d="M90 60C106.569 60 120 73.4315 120 90C120 106.569 106.569 120 90 120L90 90V60Z" fill="#6366F1"/>
+  <path d="M90 90L90 60C73.4315 60 60 73.4315 60 90C60 98.2843 63.268 105.801 68.7868 111.213L90 90Z" fill="#F59E0B"/>
+  <path d="M90 90L68.7868 111.213C74.199 116.732 81.7157 120 90 120L90 90Z" fill="#10B981"/>
+  
+  <!-- Bar graph -->
+  <rect x="140" y="60" width="10" height="60" rx="2" fill="#6366F1"/>
+  <rect x="155" y="80" width="10" height="40" rx="2" fill="#F59E0B"/>
+  <rect x="170" y="70" width="10" height="50" rx="2" fill="#10B981"/>
+  
+  <!-- Stats -->
+  <rect x="60" y="140" width="40" height="8" rx="4" fill="#6366F1" fill-opacity="0.3"/>
+  <rect x="65" y="140" width="30" height="8" rx="4" fill="#6366F1"/>
+  
+  <rect x="110" y="140" width="40" height="8" rx="4" fill="#F59E0B" fill-opacity="0.3"/>
+  <rect x="115" y="140" width="20" height="8" rx="4" fill="#F59E0B"/>
+  
+  <rect x="160" y="140" width="40" height="8" rx="4" fill="#10B981" fill-opacity="0.3"/>
+  <rect x="165" y="140" width="25" height="8" rx="4" fill="#10B981"/>
+</svg> 

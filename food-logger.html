@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Food Logger - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/food-logger.css">
+    <link rel="stylesheet" href="styles/loading.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="styles/custom-food.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js for nutrition visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Mobile Navigation Toggle Button -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="mobile-nav-overlay" onclick="toggleMobileNav()"></div>
+
+    <div class="mobile-nav">
+        <div class="mobile-nav-header">
+            <h3>Nutrition Tracker</h3>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+            <li><a href="food-logger.html" class="active"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar"></i> Meal Planner</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Database</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="#" id="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <header>
+        <div class="logo">Nutrition Tracker</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="food-logger.html" class="active">Food Logger</a></li>
+                <li><a href="meal-planner.html">Meal Planner</a></li>
+                <li><a href="food-search.html">Food Database</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li class="user-menu-container">
+                    <span id="header-username" class="user-name">User</span>
+                    <a href="#" id="logout-btn">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="logger-container">
+        <div class="logger-header">
+            <h1>Food Logger</h1>
+            <div class="header-actions">
+                <div class="date-selector">
+                    <button type="button" class="date-nav prev-day">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="current-date" id="selectedDate">Today</div>
+                    <button type="button" class="date-nav next-day">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button type="button" class="date-picker-btn">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                    <input type="date" id="datePicker" class="hidden-date-picker">
+                </div>
+                <button type="button" id="export-data-btn" class="action-btn">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+            </div>
+        </div>
+
+        <div class="logger-grid">
+            <!-- Left Column: Daily Summary & Goals -->
+            <section class="logger-section daily-summary">
+                <h2>Daily Summary</h2>
+                <div class="nutrition-overview">
+                    <div class="macro-summary">
+                        <div class="macro-card" id="calories-card">
+                            <div class="macro-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="macro-data">
+                                <h3>Calories</h3>
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="calories-progress"></div>
+                                </div>
+                                <div class="macro-values">
+                                    <span id="calories-current">0</span>
+                                    <span class="separator">/</span>
+                                    <span id="calories-goal">2000</span>
+                                    <span class="unit">kcal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="macro-grid">
+                            <div class="macro-card" id="protein-card">
+                                <div class="macro-icon">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <div class="macro-data">
+                                    <h3>Protein</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" id="protein-progress"></div>
+                                    </div>
+                                    <div class="macro-values">
+                                        <span id="protein-current">0</span>
+                                        <span class="separator">/</span>
+                                        <span id="protein-goal">60</span>
+                                        <span class="unit">g</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="macro-card" id="carbs-card">
+                                <div class="macro-icon">
+                                    <i class="fas fa-bread-slice"></i>
+                                </div>
+                                <div class="macro-data">
+                                    <h3>Carbs</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" id="carbs-progress"></div>
+                                    </div>
+                                    <div class="macro-values">
+                                        <span id="carbs-current">0</span>
+                                        <span class="separator">/</span>
+                                        <span id="carbs-goal">250</span>
+                                        <span class="unit">g</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="macro-card" id="fat-card">
+                                <div class="macro-icon">
+                                    <i class="fas fa-cheese"></i>
+                                </div>
+                                <div class="macro-data">
+                                    <h3>Fat</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" id="fat-progress"></div>
+                                    </div>
+                                    <div class="macro-values">
+                                        <span id="fat-current">0</span>
+                                        <span class="separator">/</span>
+                                        <span id="fat-goal">65</span>
+                                        <span class="unit">g</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="macro-card" id="fiber-card">
+                                <div class="macro-icon">
+                                    <i class="fas fa-seedling"></i>
+                                </div>
+                                <div class="macro-data">
+                                    <h3>Fiber</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" id="fiber-progress"></div>
+                                    </div>
+                                    <div class="macro-values">
+                                        <span id="fiber-current">0</span>
+                                        <span class="separator">/</span>
+                                        <span id="fiber-goal">25</span>
+                                        <span class="unit">g</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="macro-distribution">
+                            <h3>Macro Distribution</h3>
+                            <div class="distribution-chart-container">
+                                <canvas id="macroChart"></canvas>
+                            </div>
+                            <div class="distribution-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color protein-color"></span>
+                                    <span class="legend-label">Protein</span>
+                                    <span id="protein-percent">0%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color carbs-color"></span>
+                                    <span class="legend-label">Carbs</span>
+                                    <span id="carbs-percent">0%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color fat-color"></span>
+                                    <span class="legend-label">Fat</span>
+                                    <span id="fat-percent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="water-tracking">
+                        <h3>Water Intake</h3>
+                        <div class="water-container">
+                            <div class="water-progress">
+                                <div class="water-level" id="water-level"></div>
+                                <div class="water-marks">
+                                    <span class="water-mark" style="bottom: 25%">2L</span>
+                                    <span class="water-mark" style="bottom: 50%">4L</span>
+                                    <span class="water-mark" style="bottom: 75%">6L</span>
+                                </div>
+                            </div>
+                            <div class="water-controls">
+                                <div class="water-amount">
+                                    <span id="water-current">0</span>
+                                    <span class="separator">/</span>
+                                    <span id="water-goal">2.5</span>
+                                    <span class="unit">L</span>
+                                </div>
+                                <div class="water-buttons">
+                                    <button class="water-btn" data-amount="0.25">
+                                        <i class="fas fa-glass-water"></i> +250ml
+                                    </button>
+                                    <button class="water-btn" data-amount="0.5">
+                                        <i class="fas fa-bottle-water"></i> +500ml
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goal-insights">
+                        <h3>Daily Insights</h3>
+                        <div class="insights-container" id="daily-insights">
+                            <div class="insight-placeholder">
+                                <p>Log your meals to see personalized insights</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weekly Progress Chart -->
+            <section class="logger-section weekly-progress">
+                <h2>Weekly Progress</h2>
+                <div class="chart-controls">
+                    <div class="chart-metric-selector">
+                        <button class="metric-btn active" data-metric="calories">Calories</button>
+                        <button class="metric-btn" data-metric="protein">Protein</button>
+                        <button class="metric-btn" data-metric="carbs">Carbs</button>
+                        <button class="metric-btn" data-metric="fat">Fat</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="weeklyProgressChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color actual"></span>
+                        <span class="legend-label">Actual</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color target"></span>
+                        <span class="legend-label">Target</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Food Logger -->
+            <section class="logger-section meal-logger">
+                <div class="meal-tabs">
+                    <button class="meal-tab active" data-meal="breakfast">
+                        <i class="fas fa-coffee"></i>
+                        <span>Breakfast</span>
+                    </button>
+                    <button class="meal-tab" data-meal="lunch">
+                        <i class="fas fa-hamburger"></i>
+                        <span>Lunch</span>
+                    </button>
+                    <button class="meal-tab" data-meal="dinner">
+                        <i class="fas fa-utensils"></i>
+                        <span>Dinner</span>
+                    </button>
+                    <button class="meal-tab" data-meal="snacks">
+                        <i class="fas fa-apple-alt"></i>
+                        <span>Snacks</span>
+                    </button>
+                </div>
+
+                <div class="meal-header">
+                    <h2 id="current-meal">Breakfast</h2>
+                    <button type="button" class="add-food-btn">
+                        <i class="fas fa-plus"></i> Add Food
+                    </button>
+                </div>
+
+                <div class="search-container">
+                    <div class="search-input-container">
+                        <input type="text" id="food-search" placeholder="Search for foods...">
+                        <button type="button" class="search-clear" id="clear-search">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-results" id="search-results">
+                        <!-- Search results will appear here -->
+                    </div>
+                </div>
+
+                <div class="food-entries-container">
+                    <div class="food-entries-header">
+                        <span class="food-name-col">Food</span>
+                        <span class="food-amount-col">Amount</span>
+                        <span class="food-calories-col">Calories</span>
+                        <span class="food-protein-col">Protein</span>
+                        <span class="food-actions-col"></span>
+                    </div>
+                    <div id="food-entries" class="food-entries">
+                        <!-- Food entries will be displayed here -->
+                        <div class="empty-meal-message">
+                            <p>No foods logged for this meal yet.</p>
+                            <p>Use the search box above to add foods.</p>
+                        </div>
+                    </div>
+                    <div class="meal-totals">
+                        <div class="meal-total-row">
+                            <span class="meal-total-label">Total</span>
+                            <span class="meal-total-amount"></span>
+                            <span class="meal-total-calories" id="meal-calories">0 kcal</span>
+                            <span class="meal-total-protein" id="meal-protein">0 g</span>
+                            <span class="meal-total-actions"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-add-section">
+                    <h3>Quick Add</h3>
+                    <div class="recent-foods" id="recent-foods">
+                        <!-- Recent foods will be displayed here -->
+                        <div class="no-recent-foods">
+                            <p>Your recently logged foods will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meal-suggestions">
+                    <h3>Smart Suggestions</h3>
+                    <div class="suggestion-container" id="meal-suggestions">
+                        <!-- Meal suggestions will be displayed here -->
+                        <div class="suggestions-loading">
+                            <p>Generating personalized suggestions...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Food Detail Modal -->
+    <div id="food-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="food-detail-name">Food Details</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="food-detail-section">
+                    <div class="nutrition-facts">
+                        <h3>Nutrition Facts</h3>
+                        <div class="nutrition-grid" id="nutrition-facts">
+                            <!-- Nutrition facts will be displayed here -->
+                        </div>
+                    </div>
+                    <div class="portion-control">
+                        <h3>Portion</h3>
+                        <div class="portion-inputs">
+                            <div class="quantity-control">
+                                <label for="food-quantity">Amount</label>
+                                <div class="quantity-adjust">
+                                    <button type="button" class="quantity-btn decrease">-</button>
+                                    <input type="number" id="food-quantity" value="1" min="0.1" step="0.1">
+                                    <button type="button" class="quantity-btn increase">+</button>
+                                </div>
+                            </div>
+                            <div class="serving-control">
+                                <label for="serving-select">Serving</label>
+                                <select id="serving-select">
+                                    <option value="serving">1 serving</option>
+                                    <option value="100g">100g</option>
+                                    <option value="cup">1 cup</option>
+                                    <option value="ounce">1 ounce</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="meal-selection">
+                    <label for="meal-type">Add to</label>
+                    <select id="meal-type">
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="snacks">Snacks</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn secondary" id="add-to-favorites">
+                    <i class="far fa-heart"></i> Add to Favorites
+                </button>
+                <button type="button" class="btn primary" id="add-to-log">
+                    <i class="fas fa-plus"></i> Add to Log
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Setting Modal -->
+    <div id="goal-setting-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Adjust Nutrition Goals</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Set custom nutrition goals based on your needs and preferences.</p>
+                
+                <div class="goal-inputs">
+                    <div class="goal-input-group">
+                        <label for="calories-goal">Daily Calories</label>
+                        <div class="input-with-controls">
+                            <input type="number" id="calories-goal" min="1000" max="5000" step="50">
+                            <span class="input-unit">kcal</span>
+                        </div>
+                    </div>
+                    
+                    <div class="goal-input-group">
+                        <label for="protein-goal">Protein</label>
+                        <div class="input-with-controls">
+                            <input type="number" id="protein-goal" min="20" max="300" step="5">
+                            <span class="input-unit">g</span>
+                        </div>
+                    </div>
+                    
+                    <div class="goal-input-group">
+                        <label for="carbs-goal">Carbohydrates</label>
+                        <div class="input-with-controls">
+                            <input type="number" id="carbs-goal" min="50" max="500" step="10">
+                            <span class="input-unit">g</span>
+                        </div>
+                    </div>
+                    
+                    <div class="goal-input-group">
+                        <label for="fat-goal">Fat</label>
+                        <div class="input-with-controls">
+                            <input type="number" id="fat-goal" min="20" max="200" step="5">
+                            <span class="input-unit">g</span>
+                        </div>
+                    </div>
+                    
+                    <div class="goal-input-group">
+                        <label for="fiber-goal">Fiber</label>
+                        <div class="input-with-controls">
+                            <input type="number" id="fiber-goal" min="5" max="50" step="1">
+                            <span class="input-unit">g</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="goal-presets">
+                    <h3>Quick Presets</h3>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="maintenance">
+                            Maintenance
+                        </button>
+                        <button class="preset-btn" data-preset="weight-loss">
+                            Weight Loss
+                        </button>
+                        <button class="preset-btn" data-preset="muscle-gain">
+                            Muscle Gain
+                        </button>
+                        <button class="preset-btn" data-preset="keto">
+                            Keto
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn secondary" id="reset-goals">
+                    Reset to Default
+                </button>
+                <button type="button" class="btn primary" id="save-goals">
+                    Save Goals
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Data Modal -->
+    <div id="export-data-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Export Nutrition Data</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Export your nutrition data for analysis or backup purposes.</p>
+                
+                <div class="export-options">
+                    <div class="export-option">
+                        <input type="radio" id="export-range-week" name="export-range" value="week" checked>
+                        <label for="export-range-week">Last 7 days</label>
+                    </div>
+                    <div class="export-option">
+                        <input type="radio" id="export-range-month" name="export-range" value="month">
+                        <label for="export-range-month">Last 30 days</label>
+                    </div>
+                    <div class="export-option">
+                        <input type="radio" id="export-range-all" name="export-range" value="all">
+                        <label for="export-range-all">All data</label>
+                    </div>
+                    <div class="export-option">
+                        <input type="radio" id="export-range-custom" name="export-range" value="custom">
+                        <label for="export-range-custom">Custom range</label>
+                    </div>
+                </div>
+                
+                <div class="custom-range" id="custom-range-container" style="display: none;">
+                    <div class="date-input-group">
+                        <label for="start-date">Start Date</label>
+                        <input type="date" id="start-date">
+                    </div>
+                    <div class="date-input-group">
+                        <label for="end-date">End Date</label>
+                        <input type="date" id="end-date">
+                    </div>
+                </div>
+                
+                <div class="export-format">
+                    <h3>Format</h3>
+                    <div class="format-options">
+                        <div class="format-option">
+                            <input type="radio" id="format-csv" name="export-format" value="csv" checked>
+                            <label for="format-csv">CSV (for Excel)</label>
+                        </div>
+                        <div class="format-option">
+                            <input type="radio" id="format-json" name="export-format" value="json">
+                            <label for="format-json">JSON</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="export-content">
+                    <h3>What to include</h3>
+                    <div class="content-options">
+                        <div class="content-option">
+                            <input type="checkbox" id="include-food-entries" name="include-food-entries" checked>
+                            <label for="include-food-entries">Food entries</label>
+                        </div>
+                        <div class="content-option">
+                            <input type="checkbox" id="include-water" name="include-water" checked>
+                            <label for="include-water">Water intake</label>
+                        </div>
+                        <div class="content-option">
+                            <input type="checkbox" id="include-goals" name="include-goals" checked>
+                            <label for="include-goals">Nutrition goals</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn secondary" id="cancel-export">
+                    Cancel
+                </button>
+                <button type="button" class="btn primary" id="confirm-export">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div id="status-message" class="status-message"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div class="offline-indicator">You are offline. Some features may be limited.</div>
+
+    <script type="module">
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html?redirect=food-logger.html';
+        }
+    </script>
+    <script src="scripts/chart.js"></script>
+    <script src="scripts/food-logger.js"></script>
+    <script>
+        // Simple Mobile Navigation Script
+        function toggleMobileNav() {
+            const mobileNav = document.querySelector('.mobile-nav');
+            const overlay = document.querySelector('.mobile-nav-overlay');
+            
+            if (mobileNav.classList.contains('active')) {
+                mobileNav.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                mobileNav.classList.add('active');
+                overlay.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html> 

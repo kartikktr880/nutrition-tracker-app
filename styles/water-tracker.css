@@ -1,0 +1,755 @@
+/* Water Tracker Styles */
+.water-tracker-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.water-tracker-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.water-tracker-header h1 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.water-tracker-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.water-tracker-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Progress Container */
+.water-tracker-progress-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.progress-visualization {
+  display: flex;
+  flex: 2;
+  min-width: 280px;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Water Bottle Visualization */
+.water-bottle {
+  position: relative;
+  width: 80px;
+  height: 300px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid #c0e6ff;
+  border-radius: 40px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.water-level {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(to top, #0099ff, #66c2ff);
+  transition: height 0.5s ease-out;
+  border-radius: 0 0 40px 40px;
+}
+
+.water-marks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.water-mark {
+  position: absolute;
+  left: -30px;
+  width: 20px;
+  border-top: 1px dashed #c0e6ff;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+/* Water Stats */
+.water-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.intake-stat,
+.goal-stat,
+.percentage-stat {
+  flex: 1;
+}
+
+.intake-stat h3,
+.goal-stat h3,
+.percentage-stat h3 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-value .unit {
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--text-secondary);
+}
+
+#edit-goal-btn {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 0.25rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+#edit-goal-btn:hover {
+  color: var(--primary-color);
+}
+
+/* Quick Add Container */
+.quick-add-container {
+  flex: 1;
+  min-width: 280px;
+}
+
+.quick-add-container h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.quick-add-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.quick-add-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background-color: rgba(0, 153, 255, 0.1);
+  border: 1px solid rgba(0, 153, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-add-btn i {
+  font-size: 1.5rem;
+  color: #0099ff;
+  margin-bottom: 0.5rem;
+}
+
+.quick-add-btn span {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.quick-add-btn:hover {
+  background-color: rgba(0, 153, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.custom-add {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.custom-add input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.custom-add .unit {
+  position: absolute;
+  right: 80px;
+  color: var(--text-secondary);
+}
+
+.custom-add button {
+  margin-left: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-add button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+/* Water Tracker History */
+.water-tracker-history {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.history-header h2 {
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.date-nav button {
+  background-color: var(--bg-light);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.date-nav button:hover {
+  background-color: var(--border-color);
+}
+
+.date-nav span {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+#water-entries-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.empty-log-message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  background-color: var(--bg-light);
+  border-radius: 8px;
+}
+
+.water-entry {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.water-entry:hover {
+  background-color: var(--bg-light);
+}
+
+.entry-time {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  width: 80px;
+}
+
+.entry-amount {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.entry-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-entry,
+.delete-entry {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.edit-entry {
+  color: var(--secondary-color);
+}
+
+.delete-entry {
+  color: var(--danger-color);
+}
+
+.edit-entry:hover,
+.delete-entry:hover {
+  opacity: 0.8;
+}
+
+/* Insights Section */
+.water-insights {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.water-insights h2 {
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.insight-card {
+  background-color: var(--bg-light);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.insight-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 153, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.insight-icon i {
+  color: #0099ff;
+  font-size: 1.25rem;
+}
+
+.insight-content {
+  flex: 1;
+}
+
+.insight-content h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.insight-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.trend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.trend-icon i {
+  color: var(--success-color);
+}
+
+.trend-value {
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+.trend-period {
+  color: var(--text-secondary);
+}
+
+.streak-message {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.completion-progress {
+  margin-top: 0.5rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #0099ff;
+  border-radius: 4px;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.reminder-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #0099ff;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #0099ff;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.customize-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.customize-btn:hover {
+  background-color: var(--bg-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.modal.active {
+  display: block;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body p {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.input-with-unit {
+  position: relative;
+}
+
+.input-with-unit .unit {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.input-with-unit input {
+  padding-right: 40px;
+}
+
+.preset-goals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.preset-goal {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-goal:hover,
+.preset-goal.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.recommendation-note {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recommendation-note i {
+  color: var(--primary-color);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-primary, 
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color-light);
+  color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.hours-range {
+  display: flex;
+  gap: 1rem;
+}
+
+.time-input {
+  flex: 1;
+}
+
+.time-input label {
+  font-size: 0.85rem;
+  font-weight: normal;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .water-tracker-container {
+    padding: 1rem;
+  }
+  
+  .progress-visualization {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .water-stats {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .water-bottle {
+    height: 250px;
+  }
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+} 

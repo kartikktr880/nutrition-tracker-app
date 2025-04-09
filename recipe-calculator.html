@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Calculator - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/recipe-calculator.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Navigation Bar -->
+    <div class="mobile-nav">
+        <button id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-nav-title">Recipe Calculator</div>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="app-logo">
+            <img src="images/logo.png" alt="Nutrition Tracker Logo">
+            <span>Nutrition Tracker</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-simple"></i> Analytics</a></li>
+            <li><a href="activity-dashboard.html"><i class="fas fa-running"></i> Activity</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar-days"></i> Meal Planner</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book"></i> Recipes</a></li>
+            <li class="active"><a href="recipe-calculator.html"><i class="fas fa-calculator"></i> Recipe Calculator</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Search</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="recipe-calculator-container">
+        <header class="recipe-calculator-header">
+            <h1>Recipe Calculator</h1>
+            <p>Create custom recipes and calculate nutrition information</p>
+        </header>
+
+        <div class="recipe-form-container">
+            <div class="recipe-info-section">
+                <h2>Recipe Information</h2>
+                <div class="form-group">
+                    <label for="recipe-name">Recipe Name</label>
+                    <input type="text" id="recipe-name" placeholder="Enter recipe name">
+                </div>
+                <div class="form-group">
+                    <label for="recipe-description">Description</label>
+                    <textarea id="recipe-description" placeholder="Enter a brief description"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recipe-servings">Servings</label>
+                        <input type="number" id="recipe-servings" placeholder="Number of servings" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe-prep-time">Prep Time (min)</label>
+                        <input type="number" id="recipe-prep-time" placeholder="Prep time" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe-cook-time">Cook Time (min)</label>
+                        <input type="number" id="recipe-cook-time" placeholder="Cook time" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-ingredients-section">
+                <h2>Ingredients</h2>
+                <div id="ingredients-container">
+                    <!-- Ingredient rows will be added here -->
+                    <div class="ingredient-row">
+                        <div class="form-group">
+                            <input type="text" class="ingredient-name" placeholder="Ingredient name">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="ingredient-amount" placeholder="Amount" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <select class="ingredient-unit">
+                                <option value="g">grams (g)</option>
+                                <option value="oz">ounces (oz)</option>
+                                <option value="cups">cups</option>
+                                <option value="tbsp">tablespoons</option>
+                                <option value="tsp">teaspoons</option>
+                                <option value="ml">milliliters (ml)</option>
+                                <option value="piece">piece</option>
+                                <option value="slice">slice</option>
+                            </select>
+                        </div>
+                        <button class="remove-ingredient" title="Remove ingredient">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <button id="add-ingredient" class="btn-secondary">
+                    <i class="fas fa-plus"></i> Add Ingredient
+                </button>
+                <button id="search-ingredients" class="btn-secondary">
+                    <i class="fas fa-search"></i> Search Ingredients
+                </button>
+            </div>
+
+            <div class="recipe-instructions-section">
+                <h2>Instructions</h2>
+                <div id="instructions-container">
+                    <!-- Instruction steps will be added here -->
+                    <div class="instruction-step">
+                        <div class="step-number">1</div>
+                        <textarea class="step-text" placeholder="Enter instruction step"></textarea>
+                        <button class="remove-step" title="Remove step">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <button id="add-step" class="btn-secondary">
+                    <i class="fas fa-plus"></i> Add Step
+                </button>
+            </div>
+
+            <div class="recipe-calculation-section">
+                <h2>Nutritional Information</h2>
+                <div class="calculation-actions">
+                    <button id="calculate-nutrition" class="btn-primary">Calculate Nutrition</button>
+                    <button id="reset-recipe" class="btn-secondary">Reset</button>
+                </div>
+                <div class="nutrition-results">
+                    <div class="nutrition-summary">
+                        <div class="nutrition-card">
+                            <h3>Per Serving</h3>
+                            <div class="nutrition-value">
+                                <span id="calories-per-serving">0</span>
+                                <span class="unit">kcal</span>
+                            </div>
+                            <p>Calories</p>
+                        </div>
+                        <div class="nutrition-card">
+                            <h3>Protein</h3>
+                            <div class="nutrition-value">
+                                <span id="protein-per-serving">0</span>
+                                <span class="unit">g</span>
+                            </div>
+                        </div>
+                        <div class="nutrition-card">
+                            <h3>Carbs</h3>
+                            <div class="nutrition-value">
+                                <span id="carbs-per-serving">0</span>
+                                <span class="unit">g</span>
+                            </div>
+                        </div>
+                        <div class="nutrition-card">
+                            <h3>Fat</h3>
+                            <div class="nutrition-value">
+                                <span id="fat-per-serving">0</span>
+                                <span class="unit">g</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detailed-nutrition">
+                        <h3>Detailed Nutrition</h3>
+                        <table class="nutrition-table">
+                            <thead>
+                                <tr>
+                                    <th>Nutrient</th>
+                                    <th>Amount</th>
+                                    <th>% Daily Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Fat</td>
+                                    <td id="total-fat">0g</td>
+                                    <td id="total-fat-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td class="indent">Saturated Fat</td>
+                                    <td id="saturated-fat">0g</td>
+                                    <td id="saturated-fat-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td class="indent">Trans Fat</td>
+                                    <td id="trans-fat">0g</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Cholesterol</td>
+                                    <td id="cholesterol">0mg</td>
+                                    <td id="cholesterol-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Sodium</td>
+                                    <td id="sodium">0mg</td>
+                                    <td id="sodium-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Carbohydrate</td>
+                                    <td id="total-carbs">0g</td>
+                                    <td id="total-carbs-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td class="indent">Dietary Fiber</td>
+                                    <td id="fiber">0g</td>
+                                    <td id="fiber-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td class="indent">Total Sugars</td>
+                                    <td id="total-sugars">0g</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td class="indent-2">Added Sugars</td>
+                                    <td id="added-sugars">0g</td>
+                                    <td id="added-sugars-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="protein">0g</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Vitamin D</td>
+                                    <td id="vitamin-d">0mcg</td>
+                                    <td id="vitamin-d-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calcium</td>
+                                    <td id="calcium">0mg</td>
+                                    <td id="calcium-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Iron</td>
+                                    <td id="iron">0mg</td>
+                                    <td id="iron-percent">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Potassium</td>
+                                    <td id="potassium">0mg</td>
+                                    <td id="potassium-percent">0%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-save-section">
+                <button id="save-recipe" class="btn-primary">Save Recipe</button>
+                <button id="save-to-meal-plan" class="btn-secondary">Add to Meal Plan</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Search Ingredients Modal -->
+    <div class="modal" id="search-ingredients-modal">
+        <div class="modal-backdrop">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Search Ingredients</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="search-container">
+                        <input type="text" id="ingredient-search" placeholder="Search for ingredients...">
+                        <button id="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="search-results" id="ingredient-search-results">
+                        <!-- Search results will be displayed here -->
+                        <div class="search-result-item">
+                            <div class="ingredient-info">
+                                <h4>Chicken Breast</h4>
+                                <p>100g: 165 calories, 31g protein, 0g carbs, 3.6g fat</p>
+                            </div>
+                            <button class="add-search-result">Add</button>
+                        </div>
+                        <div class="search-result-item">
+                            <div class="ingredient-info">
+                                <h4>Brown Rice</h4>
+                                <p>100g: 112 calories, 2.6g protein, 23.5g carbs, 0.9g fat</p>
+                            </div>
+                            <button class="add-search-result">Add</button>
+                        </div>
+                        <div class="search-result-item">
+                            <div class="ingredient-info">
+                                <h4>Spinach</h4>
+                                <p>100g: 23 calories, 2.9g protein, 3.6g carbs, 0.4g fat</p>
+                            </div>
+                            <button class="add-search-result">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Meal Plan Modal -->
+    <div class="modal" id="add-to-meal-plan-modal">
+        <div class="modal-backdrop">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add to Meal Plan</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="meal-plan-date">Date</label>
+                        <input type="date" id="meal-plan-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="meal-plan-type">Meal Type</label>
+                        <select id="meal-plan-type">
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snacks">Snacks</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="confirm-add-to-meal-plan" class="btn-primary">Add to Meal Plan</button>
+                        <button class="close-modal btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/recipe-calculator.js"></script>
+</body>
+</html> 

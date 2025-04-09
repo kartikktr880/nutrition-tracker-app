@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Tracker - Meal Suggestions</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/meal-suggestions.css">
+    <script src="scripts/auth.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Nutrition Tracker</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tracker.html">Tracker</a></li>
+                <li><a href="meal-planner.html">Meal Planner</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="suggestions-container">
+        <h1>AI Meal Suggestions</h1>
+        <p class="intro-text">Our AI analyzes your profile information and dietary preferences to suggest meals that match your nutrition goals.</p>
+        
+        <div class="view-favorites-banner">
+            <p>Want to see your saved meals? Check out your favorites page!</p>
+            <a href="favorites.html" class="view-favorites-btn">View My Favorites</a>
+        </div>
+        
+        <div class="preferences-summary">
+            <h2>Your Preferences</h2>
+            <div class="preferences-grid">
+                <div class="preference-item">
+                    <span class="preference-label">Goal:</span>
+                    <span id="summary-goal">Loading...</span>
+                </div>
+                <div class="preference-item">
+                    <span class="preference-label">Daily Calories:</span>
+                    <span id="summary-calories">Loading...</span>
+                </div>
+                <div class="preference-item">
+                    <span class="preference-label">Dietary Preferences:</span>
+                    <span id="summary-dietary">Loading...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="generate-section">
+            <p>Click the button below to generate personalized meal suggestions:</p>
+            <button id="generate-btn" class="btn btn-primary">Generate Meal Suggestions</button>
+            
+            <div class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <p>Our AI is analyzing your profile and generating meal suggestions...</p>
+            </div>
+        </div>
+        
+        <div id="meal-suggestions" class="suggestions-grid" style="display: none;">
+            <!-- Meal suggestions will be added here by JavaScript -->
+        </div>
+        
+        <div id="error-message" class="error-box" style="display: none;">
+            <h3>Profile Information Needed</h3>
+            <p>Please complete your profile with dietary preferences and goals to receive personalized meal suggestions.</p>
+            <a href="profile.html" class="btn">Go to Profile</a>
+        </div>
+        
+        <div class="ai-info">
+            <h3>How Our AI Works</h3>
+            <p>Our nutrition AI analyzes your profile data, including:</p>
+            <ul>
+                <li>Your nutritional goals (weight loss, muscle gain, etc.)</li>
+                <li>Daily calorie targets</li>
+                <li>Dietary preferences and restrictions</li>
+                <li>Activity level</li>
+            </ul>
+            <p>Based on this information, it suggests meals that:</p>
+            <ul>
+                <li>Match your calorie needs</li>
+                <li>Provide balanced macronutrients</li>
+                <li>Respect your dietary preferences</li>
+                <li>Offer variety and healthy options</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="scripts/meal-suggestions.js"></script>
+</body>
+</html> 

@@ -1,0 +1,545 @@
+/* Favorites page specific styles */
+.favorites-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.favorites-container h1 {
+    color: #28a745;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.intro-text {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #555;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Favorites controls */
+.favorites-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    flex-wrap: wrap;
+}
+
+.favorites-filter, .favorites-sort {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem;
+}
+
+.favorites-filter label, .favorites-sort label {
+    margin-right: 0.8rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.favorites-filter select, .favorites-sort select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-width: 150px;
+}
+
+/* Favorites grid */
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Favorite meal card */
+.favorite-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+
+.favorite-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.favorite-image {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.favorite-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #28a745;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.favorite-content {
+    padding: 1.5rem;
+}
+
+.favorite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.favorite-title {
+    margin: 0;
+    color: #333;
+    font-size: 1.4rem;
+}
+
+.favorite-date {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.favorite-macros {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.macro-item {
+    text-align: center;
+    flex: 1;
+}
+
+.macro-value {
+    font-weight: 600;
+    color: #28a745;
+    display: block;
+}
+
+.macro-label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.favorite-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    background-color: white;
+    border: 1px solid #28a745;
+    color: #28a745;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.action-btn.remove-btn {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.action-btn.remove-btn:hover {
+    background-color: #fff8f8;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.empty-state h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.empty-state p {
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+.btn-primary {
+    background-color: #28a745;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Modal for adding to meal plan */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #777;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #28a745;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Toast notification styles */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    background-color: rgba(40, 167, 69, 0.9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.error {
+    background-color: rgba(220, 53, 69, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .favorites-controls {
+        flex-direction: column;
+    }
+    
+    .favorites-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .favorites-container {
+        padding: 1rem;
+    }
+    
+    .favorite-image {
+        height: 150px;
+    }
+    
+    .favorite-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+}
+
+/* Add new styles for sharing functionality and goal alignment */
+
+/* Share button styles */
+.share-btn {
+    border-color: #0088cc;
+    color: #0088cc;
+}
+
+.share-btn:hover {
+    background-color: #f0f8ff;
+}
+
+.share-icon {
+    margin-right: 5px;
+}
+
+/* Share modal styles */
+.share-meal-details {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.share-meal-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.share-meal-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.share-meal-macros {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.share-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.share-option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.share-option-btn:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.share-option-btn .share-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    margin-right: 0;
+}
+
+/* Goal alignment styles */
+.goal-alignment-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.alignment-title {
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.alignment-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+.alignment-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.8rem;
+    font-weight: bold;
+}
+
+.good-alignment {
+    background-color: #d4edda;
+    color: #28a745;
+}
+
+.low-alignment {
+    background-color: #fff3cd;
+    color: #ffc107;
+}
+
+.high-alignment {
+    background-color: #f8d7da;
+    color: #dc3545;
+}
+
+.alignment-text {
+    flex: 1;
+}
+
+.alignment-label {
+    font-weight: 500;
+    color: #444;
+}
+
+.alignment-detail {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.macro-balance-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 0.5rem;
+}
+
+.macro-balance-bar {
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.macro-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.protein-segment {
+    background-color: #28a745;
+}
+
+.carbs-segment {
+    background-color: #0088cc;
+}
+
+.fat-segment {
+    background-color: #dc3545;
+}
+
+.macro-balance-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Responsive adjustments for sharing and goal alignment */
+@media (max-width: 768px) {
+    .share-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .share-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .share-meal-macros {
+        flex-wrap: wrap;
+    }
+    
+    .share-meal-macros .macro-item {
+        width: 50%;
+        margin-bottom: 0.5rem;
+    }
+} 

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Meal Plan - Nutrition Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1A3C34;
+            --secondary-color: #3D5A80;
+            --accent-color: #FF8C42;
+            --background-light: #F5F7FA;
+            --text-primary: #2D3748;
+            --text-secondary: #4A5568;
+            --success-color: #48BB78;
+            --warning-color: #F6AD55;
+            --error-color: #F56565;
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-ui: 'Poppins', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--background-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .shared-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .shared-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+
+        .shared-header h1 {
+            font-family: var(--font-heading);
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .shared-info {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .shared-owner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .owner-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .owner-details {
+            text-align: left;
+        }
+
+        .owner-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .owner-email {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .day-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--background-light);
+        }
+
+        .day-name {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .day-date {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .meal-slot {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+            background-color: var(--background-light);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .meal-type {
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .meal-items {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .meal-details {
+            margin-top: 10px;
+            font-size: 0.85em;
+        }
+
+        .meal-details .recipe-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .meal-details .recipe-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+        }
+
+        .meal-details .recipe-info i {
+            color: var(--secondary-color);
+        }
+
+        .view-recipe {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            transition: color 0.2s;
+        }
+
+        .view-recipe:hover {
+            color: var(--secondary-color);
+        }
+
+        .shared-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-family: var(--font-ui);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .week-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .week-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .week-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .shared-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: var(--error-color);
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+
+        .social-share {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+
+        .social-share h3 {
+            font-family: var(--font-ui);
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .social-share-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border: none;
+            color: white;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            transition: opacity 0.2s;
+            width: 100%;
+        }
+
+        .btn-social:hover {
+            opacity: 0.9;
+        }
+
+        .btn-social.facebook {
+            background-color: #1877F2;
+        }
+
+        .btn-social.twitter {
+            background-color: #1DA1F2;
+        }
+
+        .btn-social.pinterest {
+            background-color: #E60023;
+        }
+
+        .btn-social.whatsapp {
+            background-color: #25D366;
+        }
+
+        @media (max-width: 480px) {
+            .social-share-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shared-container">
+        <div class="shared-header">
+            <h1>Shared Meal Plan</h1>
+            <div class="shared-info">
+                <span class="week-range">March 18 - March 24, 2024</span>
+            </div>
+            <div class="shared-owner">
+                <div class="owner-avatar">J</div>
+                <div class="owner-details">
+                    <div class="owner-name">Shared by</div>
+                    <div class="owner-email">john.doe@example.com</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Loading shared meal plan...
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Unable to load the shared meal plan. The link may be invalid or expired.</p>
+        </div>
+
+        <div id="weekGrid" class="week-grid" style="display: none">
+            <!-- Day cards will be populated by JavaScript -->
+        </div>
+
+        <div class="shared-actions">
+            <button class="btn btn-primary" id="copyPlan">
+                <i class="fas fa-copy"></i> Copy to My Meal Plans
+            </button>
+            <button class="btn btn-secondary" id="downloadPDF">
+                <i class="fas fa-file-pdf"></i> Download PDF
+            </button>
+        </div>
+
+        <div class="social-share">
+            <h3>Share this meal plan</h3>
+            <div class="social-share-options">
+                <button class="btn btn-social facebook" id="shareFacebook">
+                    <i class="fab fa-facebook-f"></i> Share on Facebook
+                </button>
+                <button class="btn btn-social twitter" id="shareTwitter">
+                    <i class="fab fa-twitter"></i> Share on Twitter
+                </button>
+                <button class="btn btn-social pinterest" id="sharePinterest">
+                    <i class="fab fa-pinterest-p"></i> Share on Pinterest
+                </button>
+                <button class="btn btn-social whatsapp" id="shareWhatsApp">
+                    <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="scripts/shared-meal-plan.js"></script>
+</body>
+</html> 

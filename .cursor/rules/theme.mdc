@@ -1,0 +1,109 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+
+Premium Design Theme for Your Nutrition Tracker Website
+I’ve crafted a high-end design theme that ensures premium aesthetics, user-friendliness, and seamless branding. This theme is structured to enhance usability, engagement, and conversion rates while maintaining a modern, professional, and premium feel.
+
+1. Color Palette (Premium & Modern Look)
+A clean, modern, and trustworthy color scheme is essential for a nutrition tracker.
+Primary Colors:
+
+Dark Green (#1A3C34) – Represents health, balance, and a premium feel.
+Soft Beige (#F4EDE4) – Provides a clean, welcoming background.
+Vibrant Orange (#FF8C42) – Used for CTA buttons to drive engagement.
+Secondary Colors:
+
+Deep Teal (#3D5A80) – Adds a calm and sophisticated touch.
+Cool Gray (#F5F5F5) – Keeps the UI clean and readable.
+Usage:
+
+Background: Soft Beige (#F4EDE4) / Cool Gray (#F5F5F5)
+Text & Headings: Dark Green (#1A3C34)
+Primary Buttons (CTAs): Vibrant Orange (#FF8C42)
+Links & Secondary Buttons: Deep Teal (#3D5A80)
+2. Typography (Modern & Readable Fonts)
+A premium nutrition website needs clean, legible, and visually appealing fonts.
+
+Font Selection:
+Headings (H1, H2, H3): Poppins (Bold, modern, elegant)
+Body Text & Descriptions: Inter (Light & readable)
+Buttons & Navigation: Montserrat (Semi-bold for clarity)
+Font Sizes & Weights:
+H1 (Main Title): 48px, Bold
+H2 (Subtitles): 32px, Semi-Bold
+H3 (Sections/Features): 24px, Medium
+Body Text: 18px, Regular
+Buttons & Navigation: 16px, Semi-Bold
+3. Layout & UI Design for Key Pages
+🔹 Home Page (First Impression & Conversion Focused)
+Structure:
+
+Hero Section: Large image or subtle video background with a CTA ("Start Tracking for Free").
+Feature Highlights: 3-4 key features using icons (calorie tracking, macro analysis, meal planner).
+Testimonials: Social proof (User reviews or expert endorsements).
+CTA Section: Large button directing users to sign up.
+Spacing & Alignment:
+
+Full-width sections with 120px top/bottom padding for a premium feel.
+Centered content with a max-width of 1200px for readability.
+Icons with equal padding and spacing (40px apart).
+🔹 Nutrition Tracker Page (User-Friendly Data Input & Analysis)
+Structure:
+
+Search Bar: Prominently placed with autofill suggestions.
+Meal Entry Sections: Card-based UI for easy food logging (Breakfast | Lunch | Dinner | Snacks).
+Macro & Calorie Graph: Smooth line chart or pie chart visualization for nutrient distribution.
+Goal Progress Bar: Visually engaging progress tracker with percentage completion.
+Spacing & Alignment:
+
+Left-aligned form fields for easier data entry.
+Cards & charts with soft shadows for a clean, layered look.
+30px spacing between sections to maintain clarity.
+🔹 Dashboard Page (Visual Progress & Personalized Experience)
+Structure:
+
+User Profile Card: Displays name, avatar, and progress summary.
+Weekly Overview: Large, interactive calorie/macro graph.
+Favorite Meals: Quick-add options for previous meals.
+Premium Features Teaser: Subtle callout to upgrade to a paid plan (optional).
+Spacing & Alignment:
+
+Two-column layout (Profile & Graph on one side, Quick Actions on the other).
+Hover effects on cards for interactive feedback.
+🔹 Meal Planner Page (Drag & Drop + Weekly Planning)
+Structure:
+
+Date Selector: Drop-down calendar for choosing the week.
+Meal Cards: Pre-designed meal plans with an “Add to My Plan” button.
+Shopping List Generator: Auto-generates a grocery list based on meal selections.
+Spacing & Alignment:
+
+Grid-based layout for easy visualization (3 columns: Breakfast, Lunch, Dinner).
+Draggable meal cards for seamless customization.
+4. Branding & Visual Elements
+🔹 Logo & Brand Identity
+A minimalist logo featuring a leaf or heartbeat icon combined with the brand name in Poppins Bold.
+
+Tagline: “Fuel Your Body, Track with Precision.”
+Icon Set: Use outlined nutrition-based icons (flat & modern).
+🔹 Button Design
+Primary CTA: Vibrant Orange (#FF8C42), Full Width, Rounded Edges (10px radius).
+Secondary Buttons: Deep Teal (#3D5A80), Outlined with subtle hover effects.
+🔹 Images & Backgrounds
+High-quality, food-based images with soft shadows.
+Subtle gradients for section transitions.
+Custom illustrations for a premium, unique feel.
+5. Best Practices for a Premium Theme
+✅ Consistency: Maintain uniform typography, spacing, and colors across all pages.
+✅ Responsiveness: Ensure layouts adjust seamlessly for mobile (375px) and tablet (768px) users.
+✅ Accessibility: Use WCAG-compliant contrast ratios for readability.
+✅ Smooth Animations: Subtle hover effects and micro-interactions for a modern feel.

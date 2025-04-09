@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Timing - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Navigation Bar -->
+    <div class="mobile-nav">
+        <button id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-nav-title">Meal Timing</div>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="app-logo">
+            <img src="images/logo.png" alt="Nutrition Tracker Logo">
+            <span>Nutrition Tracker</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-simple"></i> Analytics</a></li>
+            <li><a href="activity-dashboard.html"><i class="fas fa-running"></i> Activity</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar-days"></i> Meal Planner</a></li>
+            <li class="active"><a href="meal-timing.html"><i class="fas fa-clock"></i> Meal Timing</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book"></i> Recipes</a></li>
+            <li><a href="water-tracker.html"><i class="fas fa-water"></i> Water Tracker</a></li>
+            <li><a href="shopping-list.html"><i class="fas fa-shopping-basket"></i> Shopping List</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <header class="page-header">
+            <h1>Meal Timing Optimization</h1>
+            <p class="subheading">Optimize your meal timing for better nutrition and health outcomes</p>
+        </header>
+
+        <div class="timing-tabs">
+            <button class="timing-tab-button active" data-tab="recommended">Recommended Schedules</button>
+            <button class="timing-tab-button" data-tab="settings">Your Settings</button>
+            <button class="timing-tab-button" data-tab="custom">Custom Schedule</button>
+            <button class="timing-tab-button" data-tab="science">The Science</button>
+        </div>
+
+        <!-- Recommended Schedules Tab -->
+        <div id="recommended-tab" class="timing-tab active">
+            <div class="section-header">
+                <h2>Recommended Meal Timing Schedules</h2>
+                <p>Based on your goals and preferences, here are optimized meal timing schedules to follow:</p>
+            </div>
+            
+            <div id="recommended-schedules" class="recommended-schedules">
+                <!-- Schedule cards will be added here by JavaScript -->
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Loading recommended schedules...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="timing-tab">
+            <div class="section-header">
+                <h2>Your Timing Settings</h2>
+                <p>Customize these settings to get personalized meal timing recommendations:</p>
+            </div>
+            
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="nutrition-goal">Primary Nutrition Goal</label>
+                    <select id="nutrition-goal" class="form-control">
+                        <option value="weightLoss">Weight Loss</option>
+                        <option value="muscleGain">Muscle Gain</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="performance">Athletic Performance</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="wake-time">Wake-up Time</label>
+                    <input type="time" id="wake-time" class="form-control" value="07:00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bed-time">Bedtime</label>
+                    <input type="time" id="bed-time" class="form-control" value="22:00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="workout-time">Typical Workout Time</label>
+                    <input type="time" id="workout-time" class="form-control" value="17:30">
+                </div>
+                
+                <div class="form-group">
+                    <label for="workout-duration">Workout Duration (minutes)</label>
+                    <input type="number" id="workout-duration" class="form-control" min="0" max="180" value="60">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button id="save-timing-settings" class="btn-primary">Save Settings</button>
+            </div>
+        </div>
+
+        <!-- Custom Schedule Tab -->
+        <div id="custom-tab" class="timing-tab">
+            <div class="section-header">
+                <h2>Create Custom Schedule</h2>
+                <p>Design your own meal timing schedule that fits your lifestyle:</p>
+            </div>
+            
+            <div id="custom-schedule-container" class="custom-schedule-container">
+                <div class="custom-meals-header">
+                    <h3>Your Meals</h3>
+                    <button id="add-custom-meal" class="btn-secondary">
+                        <i class="fas fa-plus"></i> Add Meal
+                    </button>
+                </div>
+                
+                <div id="custom-meals-list" class="custom-meals-list">
+                    <!-- Custom meal rows will be added here by JavaScript -->
+                </div>
+                
+                <div class="schedule-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>For best results, plan meals 2-3 hours apart and avoid eating close to bedtime.</p>
+                </div>
+                
+                <div class="form-actions">
+                    <button id="save-custom-schedule" class="btn-primary">Save Custom Schedule</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Science Tab -->
+        <div id="science-tab" class="timing-tab">
+            <div class="section-header">
+                <h2>The Science of Meal Timing</h2>
+                <p>Understanding the research behind optimal meal timing:</p>
+            </div>
+            
+            <div class="science-content">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-weight-scale"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Weight Loss</h3>
+                        <p>Research suggests that earlier meal timing may benefit weight loss efforts. Time-restricted feeding, where all meals are consumed within an 8-10 hour window, has shown promising results for weight management.</p>
+                        <p>Studies have demonstrated that eating earlier in the day can lead to improved metabolism and reduced hunger, while late-night eating may contribute to weight gain.</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Muscle Growth</h3>
+                        <p>For muscle protein synthesis, spreading protein intake evenly throughout the day (every 3-4 hours) appears optimal. Research shows that consuming 20-40g of high-quality protein per meal is ideal for maximizing muscle growth.</p>
+                        <p>Post-workout nutrition remains important, with studies showing benefits of consuming protein within 2 hours after resistance training.</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-person-running"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Athletic Performance</h3>
+                        <p>Pre-workout nutrition should be consumed 1-3 hours before exercise, with a focus on easily digestible carbohydrates. For longer endurance activities, carbohydrate timing throughout the event is critical for maintaining performance.</p>
+                        <p>Post-workout carbohydrates help replenish glycogen stores, especially important when training sessions are close together.</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Circadian Rhythms</h3>
+                        <p>Our internal body clock affects metabolism, with insulin sensitivity being higher in the morning and decreasing throughout the day. This suggests benefits to consuming larger meals earlier in the day.</p>
+                        <p>Eating in alignment with your circadian rhythm may improve metabolic health, cognitive function, and sleep quality.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="resources-section">
+                <h3>Additional Resources</h3>
+                <ul class="resource-links">
+                    <li><a href="#" target="_blank">Time-Restricted Eating: A Detailed Guide</a></li>
+                    <li><a href="#" target="_blank">Protein Timing for Muscle Growth</a></li>
+                    <li><a href="#" target="_blank">Circadian Rhythms and Metabolism</a></li>
+                    <li><a href="#" target="_blank">Pre and Post Workout Nutrition Timing</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="about.html">About Us</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="scripts/firebase-config.js"></script>
+    <script src="scripts/unified-auth.js"></script>
+    <script src="scripts/mobile-nav.js"></script>
+    <script src="scripts/meal-timing.js"></script>
+</body>
+</html> 

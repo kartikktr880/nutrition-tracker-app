@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner - Nutrition Tracker</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+    
+    <!-- Barcode Scanner CSS -->
+    <link rel="stylesheet" href="styles/barcode-scanner.css">
+    
+    <!-- Dark mode support -->
+    <link rel="stylesheet" href="styles/dark-mode.css" id="dark-mode-stylesheet">
+</head>
+<body>
+    <!-- Include the shared navigation component -->
+    <div id="nav-container"></div>
+    
+    <main class="container">
+        <section class="scanner-page">
+            <h1 class="page-title" data-i18n="scanner.title">Barcode Scanner</h1>
+            
+            <div class="card">
+                <div class="card-content">
+                    <p class="scanner-intro" data-i18n="scanner.intro">
+                        Scan food product barcodes to quickly add them to your food log. Position the barcode in the center of the camera view.
+                    </p>
+                    
+                    <!-- Scanner container -->
+                    <div id="scanner-container"></div>
+                    
+                    <!-- Scanner controls -->
+                    <div class="scanner-controls">
+                        <button id="start-scanner-btn" class="scanner-control-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        <button id="stop-scanner-btn" class="scanner-control-btn" style="display: none;">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Scanner instructions -->
+                    <div class="instructions-box">
+                        <h3 data-i18n="scanner.instructions.title">How to use the scanner</h3>
+                        <ol>
+                            <li data-i18n="scanner.instructions.step1">Click the camera button to start scanning</li>
+                            <li data-i18n="scanner.instructions.step2">Allow camera access when prompted</li>
+                            <li data-i18n="scanner.instructions.step3">Position the barcode within the scanning frame</li>
+                            <li data-i18n="scanner.instructions.step4">Hold steady until the barcode is recognized</li>
+                            <li data-i18n="scanner.instructions.step5">Review the detected product details</li>
+                        </ol>
+                    </div>
+                    
+                    <!-- Product details card (initially hidden) -->
+                    <div id="product-details" class="product-details-card" style="display: none;">
+                        <div class="card-header">
+                            <h2 data-i18n="scanner.productFound">Product Found</h2>
+                            <button id="close-product-details" class="close-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div id="product-data" class="product-content">
+                            <!-- Product details will be populated here -->
+                        </div>
+                        <div class="card-actions">
+                            <button id="add-to-log-btn" class="btn primary-btn" data-i18n="scanner.addToLog">
+                                Add to Food Log
+                            </button>
+                            <button id="scan-another-btn" class="btn secondary-btn" data-i18n="scanner.scanAnother">
+                                Scan Another
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Message for when product is not found (initially hidden) -->
+                    <div id="product-not-found" class="error-message-card" style="display: none;">
+                        <div class="icon-container">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <h3 data-i18n="scanner.productNotFound">Product Not Found</h3>
+                        <p data-i18n="scanner.productNotFoundDesc">
+                            Sorry, we couldn't find this product in our database. You can add it manually.
+                        </p>
+                        <div class="card-actions">
+                            <button id="add-manually-btn" class="btn primary-btn" data-i18n="scanner.addManually">
+                                Add Manually
+                            </button>
+                            <button id="try-again-btn" class="btn secondary-btn" data-i18n="scanner.tryAgain">
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Toast message for results -->
+            <div id="scan-result-toast" class="scan-result-toast"></div>
+        </section>
+    </main>
+    
+    <!-- Include the shared footer component -->
+    <div id="footer-container"></div>
+    
+    <!-- Load common scripts -->
+    <script src="scripts/nav.js"></script>
+    <script src="scripts/footer.js"></script>
+    <script src="scripts/theme-manager.js"></script>
+    <script src="scripts/i18n.js"></script>
+    
+    <!-- QuaggaJS is loaded dynamically in the barcode-scanner.js file -->
+    
+    <!-- Barcode scanner script -->
+    <script type="module">
+        import barcodeScanner from './scripts/barcode-scanner.js';
+        
+        // DOM Elements
+        const scannerContainer = document.getElementById('scanner-container');
+        const startScannerBtn = document.getElementById('start-scanner-btn');
+        const stopScannerBtn = document.getElementById('stop-scanner-btn');
+        const productDetails = document.getElementById('product-details');
+        const productData = document.getElementById('product-data');
+        const productNotFound = document.getElementById('product-not-found');
+        const closeProductDetailsBtn = document.getElementById('close-product-details');
+        const addToLogBtn = document.getElementById('add-to-log-btn');
+        const scanAnotherBtn = document.getElementById('scan-another-btn');
+        const addManuallyBtn = document.getElementById('add-manually-btn');
+        const tryAgainBtn = document.getElementById('try-again-btn');
+        const resultToast = document.getElementById('scan-result-toast');
+        
+        // Function to handle barcode detection
+        const handleBarcodeDetected = async (barcode) => {
+            // Hide scanner and show loader
+            showToast('Searching for product...');
+            
+            // Look up the product
+            const product = await barcodeScanner.lookupProduct(barcode);
+            
+            // Stop the scanner
+            barcodeScanner.stop();
+            
+            if (product) {
+                // Display product details
+                displayProductDetails(product);
+            } else {
+                // Show product not found message
+                productNotFound.style.display = 'block';
+            }
+            
+            // Toggle buttons
+            startScannerBtn.style.display = 'inline-flex';
+            stopScannerBtn.style.display = 'none';
+        };
+        
+        // Function to display product details
+        const displayProductDetails = (product) => {
+            // Create product details HTML
+            productData.innerHTML = `
+                <div class="product-image-container">
+                    <img src="${product.image || 'images/placeholder-food.png'}" alt="${product.name}" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-brand">${product.brand || ''}</p>
+                    <div class="nutrition-summary">
+                        <div class="nutrition-item">
+                            <span class="label">Calories</span>
+                            <span class="value">${product.calories || 0}</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Protein</span>
+                            <span class="value">${product.protein || 0}g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Carbs</span>
+                            <span class="value">${product.carbohydrates || 0}g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Fat</span>
+                            <span class="value">${product.fat || 0}g</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Show product details card
+            productDetails.style.display = 'block';
+        };
+        
+        // Function to show toast message
+        const showToast = (message, duration = 3000) => {
+            resultToast.textContent = message;
+            resultToast.classList.add('visible');
+            
+            setTimeout(() => {
+                resultToast.classList.remove('visible');
+            }, duration);
+        };
+        
+        // Function to reset UI
+        const resetUI = () => {
+            productDetails.style.display = 'none';
+            productNotFound.style.display = 'none';
+            productData.innerHTML = '';
+        };
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize internationalization
+            if (window.i18n) {
+                await window.i18n.init();
+                window.i18n.translatePage();
+            }
+            
+            // Initialize the scanner when the page loads
+            const isInitialized = await barcodeScanner.initialize('scanner-container');
+            
+            if (!isInitialized) {
+                showToast('Could not initialize barcode scanner. Check camera permissions.', 5000);
+            }
+        });
+        
+        // Start scanner button
+        startScannerBtn.addEventListener('click', async () => {
+            resetUI();
+            
+            const started = await barcodeScanner.start(handleBarcodeDetected);
+            
+            if (started) {
+                startScannerBtn.style.display = 'none';
+                stopScannerBtn.style.display = 'inline-flex';
+            } else {
+                showToast('Failed to start the barcode scanner. Please try again.', 3000);
+            }
+        });
+        
+        // Stop scanner button
+        stopScannerBtn.addEventListener('click', () => {
+            barcodeScanner.stop();
+            startScannerBtn.style.display = 'inline-flex';
+            stopScannerBtn.style.display = 'none';
+        });
+        
+        // Close product details
+        closeProductDetailsBtn.addEventListener('click', () => {
+            resetUI();
+        });
+        
+        // Add to food log
+        addToLogBtn.addEventListener('click', () => {
+            // Here you would typically add the product to the food log
+            // and redirect to the food log page
+            showToast('Added to food log!');
+            
+            setTimeout(() => {
+                window.location.href = 'food-log.html';
+            }, 1000);
+        });
+        
+        // Scan another
+        scanAnotherBtn.addEventListener('click', async () => {
+            resetUI();
+            
+            const started = await barcodeScanner.start(handleBarcodeDetected);
+            
+            if (started) {
+                startScannerBtn.style.display = 'none';
+                stopScannerBtn.style.display = 'inline-flex';
+            }
+        });
+        
+        // Add manually
+        addManuallyBtn.addEventListener('click', () => {
+            // Redirect to manual food entry page
+            window.location.href = 'add-food.html';
+        });
+        
+        // Try again
+        tryAgainBtn.addEventListener('click', async () => {
+            resetUI();
+            
+            const started = await barcodeScanner.start(handleBarcodeDetected);
+            
+            if (started) {
+                startScannerBtn.style.display = 'none';
+                stopScannerBtn.style.display = 'inline-flex';
+            }
+        });
+    </script>
+</body>
+</html> 

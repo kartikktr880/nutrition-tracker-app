@@ -1,0 +1,442 @@
+/* Dark Mode Theme for Nutrition Tracker */
+
+:root {
+    /* Dark Mode Color Theme */
+    --dark-primary-color: #2a5f52;
+    --dark-primary-dark: #1d4b3f;
+    --dark-secondary-color: #5d7799;
+    --dark-background: #1a1a1a;
+    --dark-background-light: #2d2d2d;
+    --dark-background-gray: #333333;
+    --dark-accent-color: #FF8C42;
+    --dark-accent-dark: #e67e3a;
+    --dark-text-primary: #f0f0f0;
+    --dark-text-secondary: #b0b0b0;
+    --dark-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --dark-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --dark-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+    --dark-card-bg: #2d2d2d;
+    --dark-input-bg: #333333;
+    --dark-border-color: #444444;
+}
+
+/* Dark Mode Classes */
+.dark-mode {
+    background-color: var(--dark-background);
+    color: var(--dark-text-primary);
+}
+
+/* Typography - Dark Mode */
+.dark-mode h1, 
+.dark-mode h2, 
+.dark-mode h3, 
+.dark-mode h4, 
+.dark-mode h5, 
+.dark-mode h6 {
+    color: var(--dark-text-primary);
+}
+
+.dark-mode p, 
+.dark-mode li, 
+.dark-mode span, 
+.dark-mode label {
+    color: var(--dark-text-primary);
+}
+
+/* Header - Dark Mode */
+.dark-mode header {
+    background-color: var(--dark-background-light);
+    box-shadow: var(--dark-shadow-md);
+}
+
+.dark-mode .logo {
+    color: var(--dark-primary-color);
+}
+
+.dark-mode nav ul li a {
+    color: var(--dark-text-primary);
+}
+
+.dark-mode nav ul li a:hover {
+    color: var(--dark-accent-color);
+}
+
+/* Components - Dark Mode */
+.dark-mode .card {
+    background-color: var(--dark-card-bg);
+    box-shadow: var(--dark-shadow-md);
+    border: 1px solid var(--dark-border-color);
+}
+
+.dark-mode input, 
+.dark-mode textarea, 
+.dark-mode select {
+    background-color: var(--dark-input-bg);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-color);
+}
+
+.dark-mode input:focus, 
+.dark-mode textarea:focus, 
+.dark-mode select:focus {
+    border-color: var(--dark-primary-color);
+}
+
+/* Chart Colors - Dark Mode */
+.dark-mode .chart-container {
+    background-color: var(--dark-card-bg);
+}
+
+/* Footer - Dark Mode */
+.dark-mode footer {
+    background-color: var(--dark-background-light);
+}
+
+/* Background Classes - Dark Mode */
+.dark-mode .bg-light {
+    background-color: var(--dark-background-light);
+}
+
+.dark-mode .bg-white {
+    background-color: var(--dark-background);
+}
+
+.dark-mode .bg-primary {
+    background-color: var(--dark-primary-color);
+}
+
+/* Mobile Navigation - Dark Mode */
+.dark-mode .mobile-nav {
+    background-color: var(--dark-background);
+}
+
+.dark-mode .mobile-nav-header {
+    background-color: var(--dark-background-light);
+}
+
+.dark-mode .mobile-nav-links a {
+    color: var(--dark-text-primary);
+}
+
+.dark-mode .mobile-nav-links a:hover {
+    background-color: var(--dark-primary-color);
+}
+
+.dark-mode .mobile-nav-toggle {
+    color: var(--dark-text-primary);
+}
+
+.dark-mode .mobile-nav-toggle span {
+    background-color: var(--dark-text-primary);
+}
+
+/* Analytics Page - Dark Mode */
+.dark-mode .analytics-container {
+    background-color: var(--dark-background);
+}
+
+.dark-mode .chart-card {
+    background-color: var(--dark-card-bg);
+}
+
+.dark-mode .date-range-btn, 
+.dark-mode .chart-type-btn, 
+.dark-mode .chart-tab {
+    background-color: var(--dark-background-light);
+    color: var(--dark-text-primary);
+}
+
+.dark-mode .date-range-btn.active, 
+.dark-mode .chart-type-btn.active, 
+.dark-mode .chart-tab.active {
+    background-color: var(--dark-primary-color);
+}
+
+/* Table - Dark Mode */
+.dark-mode table {
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-color);
+}
+
+.dark-mode th {
+    background-color: var(--dark-background-light);
+}
+
+.dark-mode tr:nth-child(even) {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+.dark-mode tr:hover {
+    background-color: var(--dark-primary-dark);
+}
+
+/* Form Elements - Dark Mode */
+.dark-mode .form-group label {
+    color: var(--dark-text-primary);
+}
+
+/* Tooltips - Dark Mode */
+.dark-mode .tooltip {
+    background-color: var(--dark-background-light);
+    color: var(--dark-text-primary);
+}
+
+/* Toast Notifications - Dark Mode */
+.dark-mode .toast {
+    background-color: var(--dark-background-light);
+    color: var(--dark-text-primary);
+    border-left-color: var(--dark-primary-color);
+}
+
+.dark-mode .toast.success {
+    border-left-color: #28a745;
+}
+
+.dark-mode .toast.error {
+    border-left-color: #dc3545;
+}
+
+.dark-mode .toast.info {
+    border-left-color: #17a2b8;
+}
+
+/* Guided Tour - Dark Mode */
+.dark-mode .guided-tour-tooltip {
+    background-color: var(--dark-background-light);
+    color: var(--dark-text-primary);
+    box-shadow: var(--dark-shadow-md);
+}
+
+/* Theme Toggle Switch Styling */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    margin-left: 0.5rem;
+}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .switch-slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .switch-slider:before {
+    transform: translateX(24px);
+}
+
+.dark-mode input:checked + .switch-slider {
+    background-color: var(--dark-accent-color);
+}
+
+.switch-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .theme-toggle {
+        margin-left: 0.5rem;
+    }
+    
+    .switch {
+        width: 40px;
+        height: 20px;
+    }
+    
+    .switch-slider:before {
+        height: 14px;
+        width: 14px;
+    }
+    
+    input:checked + .switch-slider:before {
+        transform: translateX(20px);
+    }
+}
+
+/* Dark Mode Styles - Optimized */
+
+/* Only apply when dark mode is enabled */
+@media (prefers-color-scheme: dark) {
+    /* General elements */
+    body {
+        background-color: var(--background-dark);
+        color: var(--text-primary);
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary);
+    }
+    
+    a:not(.btn) {
+        color: var(--accent-color-light);
+    }
+    
+    a:not(.btn):hover {
+        color: var(--accent-color);
+    }
+    
+    /* Cards and containers */
+    .card, 
+    .feature-card, 
+    .step-content,
+    .testimonial-content {
+        background-color: var(--bg-light);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Header and navigation */
+    .header {
+        background-color: rgba(18, 18, 18, 0.8);
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .header-scrolled {
+        background-color: rgba(18, 18, 18, 0.95);
+    }
+    
+    .nav-link {
+        color: var(--text-primary);
+    }
+    
+    .nav-link:hover {
+        color: var(--accent-color);
+    }
+    
+    /* Buttons */
+    .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: var(--text-primary);
+    }
+    
+    .btn-outlined {
+        color: var(--text-primary);
+        border-color: var(--text-primary);
+    }
+    
+    .btn-outlined:hover {
+        color: var(--text-color-inverse);
+    }
+    
+    /* Features section */
+    .feature-icon {
+        background: linear-gradient(135deg, var(--primary-color-light), var(--accent-color-dark));
+    }
+    
+    .feature-link {
+        color: var(--accent-color);
+    }
+    
+    .feature-shape {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+    
+    /* How it works section */
+    .step-number {
+        background-color: var(--primary-color-dark);
+        color: var(--text-primary);
+    }
+    
+    .step-icon {
+        background: linear-gradient(135deg, var(--primary-color-light), var(--accent-color-dark));
+    }
+    
+    .step-illustration img {
+        filter: brightness(0.9);
+    }
+    
+    /* Hero section */
+    .hero-gradient {
+        background: radial-gradient(circle at 90% 20%, rgba(var(--accent-rgb), 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 10% 80%, rgba(var(--primary-light-rgb), 0.1) 0%, transparent 50%);
+    }
+    
+    .hero-stats {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .floating-badge {
+        background: rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Testimonials */
+    .testimonial-avatar {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .testimonial-dot {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .testimonial-dot.active {
+        background-color: var(--accent-color);
+    }
+    
+    /* Footer */
+    footer {
+        background: linear-gradient(135deg, var(--primary-color-dark), #000);
+    }
+    
+    .footer-links-column h3::after {
+        background-color: var(--accent-color-dark);
+    }
+    
+    /* Form elements */
+    .form-control {
+        background-color: var(--background-dark);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+    }
+    
+    .form-control:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
+    }
+    
+    /* Add invert for some SVGs */
+    .footer-logo img {
+        filter: brightness(0) invert(1);
+    }
+} 

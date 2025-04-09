@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Tracker - My Favorite Meals</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/favorites.css">
+    <script src="scripts/auth.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Nutrition Tracker</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tracker.html">Tracker</a></li>
+                <li><a href="meal-planner.html">Meal Planner</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="favorites-container">
+        <h1>My Favorite Meals</h1>
+        <p class="intro-text">Here are the meals you've saved as favorites. You can remove items or add them to your meal plan.</p>
+        
+        <div class="favorites-controls">
+            <div class="favorites-filter">
+                <label for="meal-type-filter">Filter by:</label>
+                <select id="meal-type-filter">
+                    <option value="all">All Meals</option>
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                </select>
+            </div>
+            
+            <div class="favorites-sort">
+                <label for="sort-order">Sort by:</label>
+                <select id="sort-order">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="calories">Calories (Low to High)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="favorites-grid" class="favorites-grid">
+            <!-- Favorite meals will be added here by JavaScript -->
+        </div>
+        
+        <div id="empty-favorites" class="empty-state" style="display: none;">
+            <h3>No Favorite Meals Yet</h3>
+            <p>You haven't saved any meals as favorites yet. Visit the AI Meal Suggestions page to find meals you like.</p>
+            <a href="meal-suggestions.html" class="btn btn-primary">Get Meal Suggestions</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <!-- Modal for adding to meal plan -->
+    <div id="add-to-plan-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add to Meal Plan</h2>
+            
+            <form id="add-to-plan-form">
+                <input type="hidden" id="meal-id-input">
+                
+                <div class="form-group">
+                    <label for="plan-day">Day:</label>
+                    <select id="plan-day" required>
+                        <option value="monday">Monday</option>
+                        <option value="tuesday">Tuesday</option>
+                        <option value="wednesday">Wednesday</option>
+                        <option value="thursday">Thursday</option>
+                        <option value="friday">Friday</option>
+                        <option value="saturday">Saturday</option>
+                        <option value="sunday">Sunday</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="plan-meal-type">Meal:</label>
+                    <select id="plan-meal-type" required>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="snacks">Snacks</option>
+                    </select>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add to Plan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for sharing meal -->
+    <div id="share-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Share This Meal</h2>
+            
+            <div class="share-meal-details">
+                <h3 class="share-meal-title"></h3>
+                <div class="share-meal-image"></div>
+                <div class="share-meal-macros"></div>
+            </div>
+            
+            <div class="share-options">
+                <button class="share-option-btn" data-option="email">
+                    <span class="share-icon">✉️</span>Email
+                </button>
+                <button class="share-option-btn" data-option="whatsapp">
+                    <span class="share-icon">📱</span>WhatsApp
+                </button>
+                <button class="share-option-btn" data-option="facebook">
+                    <span class="share-icon">fb</span>Facebook
+                </button>
+                <button class="share-option-btn" data-option="twitter">
+                    <span class="share-icon">🐦</span>Twitter
+                </button>
+                <button class="share-option-btn" data-option="copy">
+                    <span class="share-icon">🔗</span>Copy Link
+                </button>
+            </div>
+            
+            <textarea id="clipboard-input" style="position: absolute; left: -9999px;"></textarea>
+            
+            <div class="form-buttons">
+                <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/favorites.js"></script>
+</body>
+</html> 

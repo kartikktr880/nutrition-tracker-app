@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shopping List - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/shopping-list.css">
+    <link rel="stylesheet" href="styles/print-shopping-list.css" media="print">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Mobile Navigation Toggle Button -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="mobile-nav-overlay"></div>
+
+    <div class="mobile-nav">
+        <div class="mobile-nav-header">
+            <h3>Nutrition Tracker</h3>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="tracker.html"><i class="fas fa-utensils"></i> Tracker</a></li>
+            <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar"></i> Meal Planner</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Database</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book-open"></i> Recipes</a></li>
+            <li><a href="shopping-list.html" class="active"><i class="fas fa-shopping-basket"></i> Shopping List</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li id="login-item"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li id="logout-item" style="display: none;"><a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <header>
+        <div class="logo">Nutrition Tracker</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tracker.html">Tracker</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="meal-planner.html">Meal Planner</a></li>
+                <li><a href="food-search.html">Food Database</a></li>
+                <li><a href="recipes.html">Recipes</a></li>
+                <li><a href="shopping-list.html" class="active">Shopping List</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li id="nav-login-item"><a href="login.html">Login</a></li>
+                <li id="nav-logout-item" style="display: none;"><a href="#" onclick="logoutUser()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Shopping List</h1>
+        
+        <div class="page-description">
+            <p>Manage your grocery shopping list based on your meal plans or add items manually.</p>
+        </div>
+        
+        <div class="page-tabs">
+            <button class="tab-button active" data-tab="list">Shopping List</button>
+            <button class="tab-button" data-tab="mealplan">From Meal Plan</button>
+            <button class="tab-button" data-tab="history">History</button>
+        </div>
+        
+        <div class="shopping-list-container" id="listTab">
+            <div class="shopping-list-header">
+                <h2>Current Shopping List</h2>
+                <div class="shopping-list-actions">
+                    <button class="btn-primary" id="addItemBtn">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                    <button class="btn-secondary" id="clearListBtn">
+                        <i class="fas fa-trash"></i> Clear List
+                    </button>
+                    <button class="btn-secondary" id="printListBtn">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                </div>
+            </div>
+            
+            <div class="categories-filter">
+                <span class="category-tag active" data-category="all">All</span>
+                <span class="category-tag" data-category="produce">Produce</span>
+                <span class="category-tag" data-category="dairy">Dairy</span>
+                <span class="category-tag" data-category="meat">Meat & Protein</span>
+                <span class="category-tag" data-category="pantry">Pantry</span>
+                <span class="category-tag" data-category="frozen">Frozen</span>
+                <span class="category-tag" data-category="other">Other</span>
+            </div>
+            
+            <div id="shoppingListItems">
+                <!-- Shopping list items will be inserted here by JavaScript -->
+                <div class="empty-list" id="emptyListMessage">
+                    <i class="fas fa-shopping-basket fa-3x"></i>
+                    <p>Your shopping list is empty</p>
+                    <button class="btn-primary" id="startAddingBtn">Start Adding Items</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="shopping-list-container" id="mealPlanTab" style="display: none;">
+            <div class="shopping-list-header">
+                <h2>Generate from Meal Plan</h2>
+            </div>
+            
+            <div class="meal-plan-selector">
+                <label for="mealPlanSelect">Select Meal Plan:</label>
+                <select id="mealPlanSelect" class="form-control">
+                    <option value="">Select a meal plan</option>
+                    <option value="this-week">This Week</option>
+                    <option value="next-week">Next Week</option>
+                    <option value="custom">Custom Plan</option>
+                </select>
+                
+                <button class="btn-primary" id="generateListBtn">Generate Shopping List</button>
+            </div>
+        </div>
+        
+        <div class="shopping-list-container" id="historyTab" style="display: none;">
+            <div class="shopping-list-header">
+                <h2>Shopping History</h2>
+            </div>
+            
+            <div id="shoppingHistory">
+                <p>Your previous shopping lists will appear here.</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Add Item Modal -->
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Item to Shopping List</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" id="itemName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemQuantity">Quantity</label>
+                        <input type="text" id="itemQuantity" class="form-control" placeholder="e.g. 2 lbs, 3 pcs" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemCategory">Category</label>
+                        <select id="itemCategory" class="form-control">
+                            <option value="produce">Produce</option>
+                            <option value="dairy">Dairy</option>
+                            <option value="meat">Meat & Protein</option>
+                            <option value="pantry">Pantry</option>
+                            <option value="frozen">Frozen</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary cancel-modal">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirmationTitle">Confirm Action</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmationMessage">Are you sure you want to proceed?</p>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary cancel-modal">Cancel</button>
+                    <button type="button" class="btn-primary" id="confirmActionBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="about.html">About Us</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="scripts/firebase-config.js"></script>
+    <script src="scripts/unified-auth.js"></script>
+    <script src="scripts/mobile-nav.js"></script>
+    <script src="scripts/shopping-list.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the unified auth handler
+            if (window.auth) {
+                window.auth.initAuthHandler();
+            }
+            
+            // Check if we're coming from meal planner
+            const urlParams = new URLSearchParams(window.location.search);
+            const source = urlParams.get('source');
+            
+            if (source === 'mealplan') {
+                // Automatically switch to the meal plan tab and generate list
+                document.querySelector('.tab-button[data-tab="mealplan"]').click();
+                
+                // Set the meal plan select value to "This Week"
+                const mealPlanSelect = document.getElementById('mealPlanSelect');
+                if (mealPlanSelect) {
+                    mealPlanSelect.value = 'this-week';
+                }
+                
+                // Trigger the generate list button after a short delay to ensure page is loaded
+                setTimeout(() => {
+                    const generateListBtn = document.getElementById('generateListBtn');
+                    if (generateListBtn) {
+                        generateListBtn.click();
+                    }
+                }, 500);
+            }
+            
+            // Tab switching functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = {
+                'list': document.getElementById('listTab'),
+                'mealplan': document.getElementById('mealPlanTab'),
+                'history': document.getElementById('historyTab')
+            };
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show selected tab content, hide others
+                    Object.keys(tabContents).forEach(key => {
+                        tabContents[key].style.display = key === tab ? 'block' : 'none';
+                    });
+                });
+            });
+            
+            // Modal functionality
+            const addItemModal = document.getElementById('addItemModal');
+            const confirmationModal = document.getElementById('confirmationModal');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const startAddingBtn = document.getElementById('startAddingBtn');
+            
+            function openModal(modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+            }
+            
+            function closeModal(modal) {
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = 'none', 300);
+            }
+            
+            // Open add item modal
+            addItemBtn.addEventListener('click', () => openModal(addItemModal));
+            startAddingBtn.addEventListener('click', () => openModal(addItemModal));
+            
+            // Close modals with close buttons
+            document.querySelectorAll('.close-modal, .cancel-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    closeModal(e.target);
+                }
+            });
+            
+            // Handle item form submission
+            document.getElementById('addItemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Here you would normally use the shopping list functionality
+                // from shopping-list.js
+                
+                // Temporary stand-in implementation:
+                const itemName = document.getElementById('itemName').value;
+                const itemQuantity = document.getElementById('itemQuantity').value;
+                const itemCategory = document.getElementById('itemCategory').value;
+                
+                console.log('Adding item:', { 
+                    name: itemName, 
+                    quantity: itemQuantity, 
+                    category: itemCategory 
+                });
+                
+                // Reset form and close modal
+                this.reset();
+                closeModal(addItemModal);
+                
+                // Update UI to show the item
+                const emptyMessage = document.getElementById('emptyListMessage');
+                if (emptyMessage) {
+                    emptyMessage.style.display = 'none';
+                }
+                
+                const listContainer = document.getElementById('shoppingListItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'shopping-list-item';
+                newItem.innerHTML = `
+                    <div class="item-details">
+                        <input type="checkbox" class="item-checkbox">
+                        <div>
+                            <div class="item-name">${itemName}</div>
+                            <div class="item-quantity">${itemQuantity}</div>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                listContainer.appendChild(newItem);
+                
+                // Add checkbox functionality
+                const checkbox = newItem.querySelector('.item-checkbox');
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        newItem.classList.add('purchased');
+                    } else {
+                        newItem.classList.remove('purchased');
+                    }
+                });
+                
+                // Add delete button functionality
+                const deleteBtn = newItem.querySelector('.btn-delete');
+                deleteBtn.addEventListener('click', function() {
+                    newItem.remove();
+                    
+                    // Show empty message if no items left
+                    if (document.querySelectorAll('.shopping-list-item').length === 0) {
+                        emptyMessage.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Clear list button
+            document.getElementById('clearListBtn').addEventListener('click', function() {
+                const confirmationTitle = document.getElementById('confirmationTitle');
+                const confirmationMessage = document.getElementById('confirmationMessage');
+                const confirmActionBtn = document.getElementById('confirmActionBtn');
+                
+                confirmationTitle.textContent = 'Clear Shopping List';
+                confirmationMessage.textContent = 'Are you sure you want to clear your entire shopping list?';
+                
+                confirmActionBtn.onclick = function() {
+                    // Clear the shopping list
+                    document.getElementById('shoppingListItems').innerHTML = `
+                        <div class="empty-list" id="emptyListMessage">
+                            <i class="fas fa-shopping-basket fa-3x"></i>
+                            <p>Your shopping list is empty</p>
+                            <button class="btn-primary" id="startAddingBtn">Start Adding Items</button>
+                        </div>
+                    `;
+                    
+                    // Re-add event listener to the new button
+                    document.getElementById('startAddingBtn').addEventListener('click', () => openModal(addItemModal));
+                    
+                    closeModal(confirmationModal);
+                };
+                
+                openModal(confirmationModal);
+            });
+            
+            // Category filtering
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // Update active tag
+                    document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real implementation, you would filter the items by category
+                    console.log('Filtering by category:', this.getAttribute('data-category'));
+                });
+            });
+            
+            // Generate list from meal plan
+            document.getElementById('generateListBtn').addEventListener('click', function() {
+                const mealPlanSelect = document.getElementById('mealPlanSelect');
+                const selectedPlan = mealPlanSelect.value;
+                
+                if (!selectedPlan) {
+                    alert('Please select a meal plan first.');
+                    return;
+                }
+                
+                // Call the ShoppingList object's generateFromMealPlan method
+                if (typeof ShoppingList !== 'undefined' && ShoppingList.generateFromMealPlan) {
+                    ShoppingList.generateFromMealPlan(selectedPlan);
+                    
+                    // Switch to the list tab to show the generated list
+                    document.querySelector('.tab-button[data-tab="list"]').click();
+                } else {
+                    console.error('ShoppingList object or generateFromMealPlan method not found');
+                    alert('Unable to generate shopping list. Please try again later.');
+                }
+            });
+            
+            // Print shopping list
+            document.getElementById('printListBtn').addEventListener('click', function() {
+                // Add current date attribute for print stylesheet
+                const currentDate = new Date().toLocaleDateString();
+                document.getElementById('listTab').setAttribute('data-print-date', currentDate);
+                
+                // Print the page
+                window.print();
+            });
+        });
+    </script>
+</body>
+</html> 

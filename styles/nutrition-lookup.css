@@ -1,0 +1,165 @@
+/* Nutrition Lookup Button */
+.nutrition-lookup {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--border-radius);
+    transition: all 0.2s;
+}
+
+.nutrition-lookup:hover {
+    background-color: var(--background-light);
+    color: var(--primary-color);
+}
+
+/* Nutrition Lookup Popup */
+.nutrition-lookup-popup {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    width: 280px;
+    z-index: 1000;
+}
+
+.lookup-content {
+    padding: 15px;
+}
+
+.lookup-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.lookup-header h4 {
+    color: var(--primary-color);
+    font-family: var(--font-ui);
+    font-size: 0.95em;
+    margin: 0;
+}
+
+.lookup-header small {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    margin-top: 2px;
+}
+
+.close-lookup {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    line-height: 1;
+}
+
+.nutrition-facts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.nutrition-fact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px;
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+}
+
+.fact-value {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95em;
+}
+
+.fact-label {
+    color: var(--text-secondary);
+    font-size: 0.8em;
+    margin-top: 2px;
+}
+
+.apply-nutrition {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.lookup-loading,
+.lookup-error {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.lookup-error {
+    color: var(--error-color);
+}
+
+/* Loading Animation */
+.lookup-loading::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+    border: 2px solid var(--text-secondary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: lookup-loading 0.8s linear infinite;
+}
+
+@keyframes lookup-loading {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .nutrition-lookup-popup {
+        position: fixed !important;
+        top: auto !important;
+        left: 50% !important;
+        bottom: 20px;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 320px;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .nutrition-lookup {
+        border: 1px solid currentColor;
+    }
+
+    .nutrition-fact {
+        border: 1px solid var(--primary-color);
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .nutrition-lookup {
+        transition: none;
+    }
+
+    .lookup-loading::after {
+        animation: none;
+    }
+} 

@@ -1,0 +1,146 @@
+.analytics-content {
+    max-width: 800px;
+    max-height: 90vh;
+}
+
+.analytics-body {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.analytics-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.summary-card h4 {
+    color: var(--primary-color);
+    font-family: var(--font-ui);
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: var(--font-ui);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.analytics-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.detail-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-card h4 {
+    color: var(--primary-color);
+    font-family: var(--font-ui);
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.ingredients-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ingredient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--background-light);
+}
+
+.ingredient-item:last-child {
+    border-bottom: none;
+}
+
+.ingredient-name {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.ingredient-count {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Chart containers */
+#macroChart,
+#mealTypeChart {
+    height: 200px;
+    width: 100%;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .summary-card,
+    .detail-card {
+        border: 2px solid var(--text-primary);
+    }
+
+    .ingredient-item {
+        border-bottom-width: 2px;
+    }
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    .analytics-summary,
+    .analytics-details {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .summary-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-value {
+        font-size: 1.5em;
+    }
+} 

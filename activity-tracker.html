@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Tracker - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/activity-tracker.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav">
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <img src="images/logo.svg" alt="Nutrition Tracker">
+            </div>
+            <button class="notifications-toggle">
+                <i class="fas fa-bell"></i>
+            </button>
+        </nav>
+
+        <!-- Side Navigation -->
+        <nav class="side-nav">
+            <div class="logo">
+                <img src="images/logo.svg" alt="Nutrition Tracker">
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="food-logger.html">
+                        <i class="fas fa-utensils"></i>
+                        <span>Food Logger</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.html">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="activity-tracker.html">
+                        <i class="fas fa-running"></i>
+                        <span>Activity</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="food-search.html">
+                        <i class="fas fa-search"></i>
+                        <span>Search Foods</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-footer">
+                <a href="#" class="help-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="activity-container">
+                <!-- Activity Header -->
+                <div class="activity-header">
+                    <h1>Activity Tracker</h1>
+                    <button class="primary-btn" id="log-activity-btn">
+                        <i class="fas fa-plus"></i>
+                        Log Activity
+                    </button>
+                </div>
+
+                <!-- Activity Stats -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Calories Burned</h3>
+                            <div class="stat-value" id="calories-burned">0</div>
+                            <div class="stat-period">This Week</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Active Minutes</h3>
+                            <div class="stat-value" id="active-minutes">0</div>
+                            <div class="stat-period">This Week</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Active Days</h3>
+                            <div class="stat-value" id="active-days">0</div>
+                            <div class="stat-period">This Week</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Charts -->
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h2>Weekly Activity</h2>
+                        <div class="chart-wrapper">
+                            <canvas id="activity-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h2>Activity Distribution</h2>
+                        <div class="chart-wrapper">
+                            <canvas id="activity-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="activity-log-container">
+                    <div class="activity-log-header">
+                        <h2>Activity History</h2>
+                        <div class="activity-log-filters">
+                            <div class="filter-group">
+                                <label for="activity-filter">Filter by:</label>
+                                <select id="activity-filter">
+                                    <option value="all">All Activities</option>
+                                    <option value="running">Running</option>
+                                    <option value="walking">Walking</option>
+                                    <option value="cycling">Cycling</option>
+                                    <option value="swimming">Swimming</option>
+                                    <option value="yoga">Yoga</option>
+                                    <option value="weightlifting">Weight Training</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="time-filter">Time Period:</label>
+                                <select id="time-filter">
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="3months">Last 3 Months</option>
+                                    <option value="all">All Time</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Log Table -->
+                    <div class="activity-table-container">
+                        <table class="activity-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Activity</th>
+                                    <th>Duration</th>
+                                    <th>Calories</th>
+                                    <th>Notes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activity-log-body">
+                                <!-- Activity logs will be inserted here via JavaScript -->
+                                <tr class="empty-state">
+                                    <td colspan="6">
+                                        <div class="empty-message">
+                                            <i class="fas fa-running"></i>
+                                            <p>No activities logged yet. Start by adding your first activity!</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Activity Modal -->
+    <div class="modal" id="activity-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="activity-modal-title">Log Activity</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="activity-form">
+                    <input type="hidden" id="activity-id">
+                    
+                    <div class="form-group">
+                        <label for="activity-type">Activity Type</label>
+                        <div class="activity-type-grid" id="activity-type-grid">
+                            <!-- Activity types will be populated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="activity-date">Date</label>
+                            <input type="date" id="activity-date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="activity-duration">Duration (minutes)</label>
+                            <input type="number" id="activity-duration" min="1" max="1440" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="activity-intensity">Intensity</label>
+                            <select id="activity-intensity">
+                                <option value="low">Low</option>
+                                <option value="moderate" selected>Moderate</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="activity-calories">Calories Burned</label>
+                            <input type="number" id="activity-calories" min="0" placeholder="Auto-calculated">
+                            <small>Leave blank to auto-calculate</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activity-notes">Notes</label>
+                        <textarea id="activity-notes" rows="3" placeholder="Optional notes about your activity"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary cancel-modal">Cancel</button>
+                <button class="btn primary" id="save-activity-btn">Save Activity</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Delete Activity</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this activity? This cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary cancel-modal">Cancel</button>
+                <button class="btn danger" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="scripts/mobile-nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/activity-tracker.js"></script>
+</body>
+</html> 

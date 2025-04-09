@@ -1,0 +1,127 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+
+Comprehensive Blueprint for Your Nutrition Tracker Tool Website
+1. Website Overview
+•	Purpose: To provide users with a tool to track their nutrition, calorie intake, macronutrients, and overall diet for health and fitness goals.
+•	Monetization Strategy: Google AdSense, affiliate marketing (health supplements, meal plans), premium features (subscription-based), and sponsored content.
+2. Target Audience
+Since you’re unsure about the audience, here’s a breakdown:
+•	Primary Users:
+o	Health-conscious individuals tracking their diet.
+o	Fitness enthusiasts monitoring macros.
+o	People with dietary restrictions (e.g., keto, vegan, diabetic).
+o	Nutritionists & dietitians recommending tools for clients.
+•	Secondary Users:
+o	Athletes needing precise nutritional monitoring.
+o	Weight loss seekers following structured meal plans.
+3. Site Architecture & User Flow
+A. Site Architecture (Navigation Structure)
+1.	Homepage – Overview of the tool, benefits, and CTA (Start Tracking).
+2.	Nutrition Tracker – The main tool for tracking food and nutrition.
+3.	Food Database – Searchable database of foods with calorie and macronutrient values.
+4.	Meal Planning – Custom meal planner based on user goals.
+5.	User Dashboard – Personalized area for saved meals, history, and progress tracking.
+6.	Blog & Resources – Nutrition guides, diet tips, and SEO-optimized articles.
+7.	Community Forum (Optional) – User discussions, diet success stories.
+8.	Premium Features (Optional) – Advanced tracking, custom diet plans, AI recommendations.
+9.	Contact & Support – FAQs, support chat, contact form.
+B. User Flow (Step-by-Step User Journey)
+1.	User lands on the homepage → Sees benefits, CTA (Start Tracking).
+2.	User registers/logs in (optional for guest access).
+3.	User enters meals & snacks → Selects from database or adds custom food.
+4.	Tool calculates calories/macros → Provides insights & recommendations.
+5.	User checks dashboard → Reviews progress, trends, and history.
+6.	User explores additional features (meal planning, blog, premium).
+7.	User returns daily for continued tracking and engagement.
+________________________________________
+4. Key Features
+A. Core Features (Mandatory)
+✅ Food Logging & Nutrition Tracking – Users can input meals, and the tool calculates calories/macros.
+✅ Food Database – A preloaded list of common foods with nutritional values.
+✅ Custom Food Entry – Users can manually enter homemade meals or rare foods.
+✅ Meal Planner – Generate meal plans based on user preferences (e.g., keto, vegan).
+✅ User Dashboard – Displays calorie intake, macro breakdown, and progress charts.
+✅ Google AdSense Integration – For passive income.
+✅ SEO-Optimized Blog – Drives organic traffic with nutrition and diet tips.
+B. Advanced Features (Optional but Recommended)
+⭐ AI-Based Recommendations – Suggests meals based on past entries.
+⭐ Barcode Scanner – Users scan packaged food to auto-fill nutrition info.
+⭐ Water Intake Tracker – Helps users track hydration.
+⭐ Integration with Wearables – Sync with Fitbit, Apple Health, Google Fit.
+⭐ Gamification – Streaks, badges, and rewards for consistent tracking.
+⭐ Premium Subscription Model – Ad-free experience, advanced analytics, personalized diet plans.
+⭐ Dark Mode & Custom Themes – Enhances UX with personalization.
+________________________________________
+5. Preferred Color Scheme
+•	Primary Colors: Green (#28a745) – Health & vitality.
+•	Secondary Colors: White (#ffffff) & Light Gray (#f5f5f5) – Clean and modern.
+•	Accent Colors: Orange (#ff9800) – Highlights & CTAs.
+Why? Green promotes health, while a white/light theme ensures a clean, professional UX.
+________________________________________
+6. Desired UI/UX Elements
+A. UI (User Interface) Best Practices
+✅ Minimalist Design – Clean, clutter-free layout.
+✅ Mobile-First Approach – Optimized for small screens first.
+✅ Easy Navigation – Intuitive menu with clear sections.
+✅ Consistent Typography – Use modern sans-serif fonts like Poppins or Open Sans.
+✅ Clear CTA Buttons – High-contrast buttons for key actions (e.g., "Log a Meal").
+B. UX (User Experience) Best Practices
+✅ Quick Registration – Google/Facebook login to reduce friction.
+✅ Instant Feedback – Animations & notifications for success/failure.
+✅ Auto-Save Functionality – Prevents users from losing meal entries.
+✅ Progress Tracking & Visualization – Charts & graphs for user motivation.
+✅ Accessibility Features – High-contrast mode, keyboard navigation.
+________________________________________
+7. Security Measures (Mandatory)
+✅ SSL Encryption – Protects user data & ensures HTTPS security.
+✅ Secure Authentication – Google/Facebook login & 2FA for added protection.
+✅ Data Privacy Compliance – Adhere to GDPR & CCPA for handling user data.
+✅ Regular Backups – Ensures user data is not lost.
+✅ SQL Injection Protection – Prevents database breaches.
+✅ Rate Limiting & CAPTCHA – Stops bot attacks on login & forms.
+✅ User Data Control – Allow users to delete accounts & data easily.
+________________________________________
+8. Content Structure & SEO Strategy
+A. Blog & SEO (Essential for Traffic)
+✅ Keyword-Rich Articles – Cover topics like "Best Diets for Weight Loss," "Macro Tracking for Beginners."
+✅ Internal Linking – Connect related pages & blog posts to improve navigation.
+✅ Image Optimization – Compressed images for fast loading.
+✅ Schema Markup – Helps Google understand content structure.
+B. Content Hierarchy
+1.	Homepage – Overview + CTA
+2.	Tracker Page – Main tool
+3.	Dashboard – User stats & history
+4.	Blog – SEO content for traffic
+5.	Premium Features – Upsell paid plans
+6.	Contact & Support – Help resources
+________________________________________
+9. Additional Recommendations (Optional but Beneficial)
+⭐ Community Forum – Users can discuss diets, recipes, and experiences.
+⭐ Recipe Database – Users can find healthy recipes & auto-add them to their daily tracker.
+⭐ PWA (Progressive Web App) – Makes the website feel like an app, improving mobile UX.
+________________________________________
+10. Development Plan & Tech Stack
+A. Tech Stack Recommendation
+•	Frontend: React.js or Next.js (Fast UI rendering).
+•	Backend: Node.js + Express.js or Django (Scalability & security).
+•	Database: PostgreSQL or MongoDB (Handles food data well).
+•	Authentication: Firebase Auth or Auth0 (Secure login).
+•	Hosting: Vercel or AWS (Fast, reliable hosting).
+B. Development Roadmap
+1.	Phase 1: UI/UX Design – Create wireframes & mockups.
+2.	Phase 2: Core Feature Development – Build the nutrition tracker & food database.
+3.	Phase 3: User Dashboard & Progress Tracking – Implement data visualization.
+4.	Phase 4: SEO & Content Strategy – Start publishing blog content.
+5.	Phase 5: Security & Optimization – Final testing & security audits.
+6.	Phase 6: Launch & Marketing – Promote through SEO, social media, and partnerships.
+

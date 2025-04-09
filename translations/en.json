@@ -1,0 +1,123 @@
+{
+  "app": {
+    "name": "Nutrition Tracker",
+    "tagline": "Your personal nutrition companion",
+    "description": "Track your daily nutrition, set goals, and achieve a healthier lifestyle"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "name": "Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "submit": "Submit",
+    "required": "Required",
+    "optional": "Optional",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  },
+  "home": {
+    "hero": {
+      "title": "Track Your Nutrition Journey",
+      "subtitle": "Effortlessly monitor your daily nutrition, set health goals, and live a more balanced lifestyle",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "title": "Key Features",
+      "subtitle": "Everything you need to manage your nutrition",
+      "trackMeals": {
+        "title": "Track Meals",
+        "description": "Log your meals and snacks with our easy-to-use food diary"
+      },
+      "nutrientAnalysis": {
+        "title": "Nutrient Analysis",
+        "description": "Get detailed breakdowns of calories, macros, vitamins, and minerals"
+      },
+      "goalSetting": {
+        "title": "Goal Setting",
+        "description": "Set personalized health goals and track your progress over time"
+      },
+      "mealPlanning": {
+        "title": "Meal Planning",
+        "description": "Plan your weekly meals and generate shopping lists"
+      }
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "subtitle": "Success stories from people who transformed their health",
+      "testimonial1": {
+        "quote": "This app has completely changed my relationship with food. I'm more mindful of what I eat and feel better than ever.",
+        "author": "Sarah M."
+      },
+      "testimonial2": {
+        "quote": "As a fitness coach, I recommend Nutrition Tracker to all my clients. The insights are invaluable for achieving their goals.",
+        "author": "Mark T."
+      },
+      "testimonial3": {
+        "quote": "I've lost 20 pounds in 3 months by tracking my nutrition with this app. The interface is so easy to use!",
+        "author": "Jennifer L."
+      }
+    },
+    "cta": {
+      "title": "Ready to Start Your Nutrition Journey?",
+      "subtitle": "Join thousands of users who have transformed their health with Nutrition Tracker",
+      "button": "Sign Up Now"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "foodLog": "Food Log",
+    "mealPlanner": "Meal Planner",
+    "recipes": "Recipes",
+    "reports": "Reports",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "signup": "Sign Up",
+    "language": "Language"
+  },
+  "footer": {
+    "description": "Your personal nutrition companion. Track meals, analyze nutrients, and reach your health goals.",
+    "features": "Features",
+    "dashboard": "Dashboard",
+    "foodLog": "Food Log",
+    "mealPlanner": "Meal Planner",
+    "reports": "Reports",
+    "recipes": "Recipes",
+    "resources": "Resources",
+    "blog": "Blog",
+    "guides": "Guides",
+    "faq": "FAQ",
+    "support": "Support",
+    "api": "API",
+    "company": "Company",
+    "about": "About Us",
+    "careers": "Careers",
+    "press": "Press",
+    "contact": "Contact",
+    "partners": "Partners",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "disclaimer": "Disclaimer",
+    "rights": "All rights reserved.",
+    "downloadApp": "Download App"
+  }
+} 

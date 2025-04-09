@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Search - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/food-search.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Navigation Bar -->
+    <div class="mobile-nav">
+        <button id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-nav-title">Food Search</div>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="app-logo">
+            <img src="images/logo.png" alt="Nutrition Tracker Logo">
+            <span>Nutrition Tracker</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-simple"></i> Analytics</a></li>
+            <li><a href="activity-dashboard.html"><i class="fas fa-running"></i> Activity</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar-days"></i> Meal Planner</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book"></i> Recipes</a></li>
+            <li><a href="recipe-calculator.html"><i class="fas fa-calculator"></i> Recipe Calculator</a></li>
+            <li><a href="water-tracker.html"><i class="fas fa-water"></i> Water Tracker</a></li>
+            <li><a href="goals.html"><i class="fas fa-bullseye"></i> Goals</a></li>
+            <li class="active"><a href="food-search.html"><i class="fas fa-search"></i> Food Search</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="search-container">
+        <header class="search-header">
+            <h1>Food Search</h1>
+            <p class="search-description">Find detailed nutritional information for thousands of foods and ingredients.</p>
+        </header>
+
+        <section class="search-section">
+            <div class="search-bar">
+                <input type="text" id="food-search-input" placeholder="Search for a food (e.g., apple, chicken breast, quinoa)">
+                <button id="search-btn" class="primary-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+            
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label for="food-category">Category</label>
+                    <select id="food-category">
+                        <option value="all">All Categories</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="grains">Grains</option>
+                        <option value="proteins">Proteins</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="nuts-seeds">Nuts & Seeds</option>
+                        <option value="beverages">Beverages</option>
+                        <option value="prepared">Prepared Foods</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sort-by">Sort By</label>
+                    <select id="sort-by">
+                        <option value="relevance">Relevance</option>
+                        <option value="calories-asc">Calories (Low to High)</option>
+                        <option value="calories-desc">Calories (High to Low)</option>
+                        <option value="protein-desc">Protein (High to Low)</option>
+                        <option value="fat-desc">Fat (High to Low)</option>
+                        <option value="carbs-desc">Carbs (High to Low)</option>
+                    </select>
+                </div>
+                
+                <div class="filter-toggle">
+                    <button id="advanced-filter-toggle" class="text-btn">
+                        <i class="fas fa-sliders"></i> Advanced Filters
+                    </button>
+                </div>
+            </div>
+            
+            <div id="advanced-filters" class="advanced-filters">
+                <div class="filter-row">
+                    <div class="range-filter">
+                        <label>Calories</label>
+                        <div class="range-inputs">
+                            <input type="number" id="calories-min" placeholder="Min">
+                            <span class="range-separator">to</span>
+                            <input type="number" id="calories-max" placeholder="Max">
+                        </div>
+                    </div>
+                    
+                    <div class="range-filter">
+                        <label>Protein (g)</label>
+                        <div class="range-inputs">
+                            <input type="number" id="protein-min" placeholder="Min">
+                            <span class="range-separator">to</span>
+                            <input type="number" id="protein-max" placeholder="Max">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="range-filter">
+                        <label>Carbs (g)</label>
+                        <div class="range-inputs">
+                            <input type="number" id="carbs-min" placeholder="Min">
+                            <span class="range-separator">to</span>
+                            <input type="number" id="carbs-max" placeholder="Max">
+                        </div>
+                    </div>
+                    
+                    <div class="range-filter">
+                        <label>Fat (g)</label>
+                        <div class="range-inputs">
+                            <input type="number" id="fat-min" placeholder="Min">
+                            <span class="range-separator">to</span>
+                            <input type="number" id="fat-max" placeholder="Max">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="checkbox-filter">
+                        <input type="checkbox" id="only-favorites">
+                        <label for="only-favorites">Show only favorites</label>
+                    </div>
+                    
+                    <div class="checkbox-filter">
+                        <input type="checkbox" id="recently-used">
+                        <label for="recently-used">Recently used</label>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button id="apply-filters" class="primary-btn">Apply Filters</button>
+                    <button id="reset-filters" class="secondary-btn">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="search-results">
+            <div class="results-header">
+                <h2>Search Results</h2>
+                <div class="results-count">0 items found</div>
+            </div>
+            
+            <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+                <div class="loading-text">Searching...</div>
+            </div>
+            
+            <div id="empty-results" class="empty-results">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No search results yet</h3>
+                <p>Enter a food in the search bar above to view nutritional information.</p>
+            </div>
+            
+            <div id="results-grid" class="results-grid">
+                <!-- Search results will be dynamically added here -->
+            </div>
+            
+            <div id="pagination" class="pagination">
+                <button class="page-btn prev-btn" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <div class="page-numbers">
+                    <span class="current-page">1</span> of <span class="total-pages">1</span>
+                </div>
+                <button class="page-btn next-btn" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+        
+        <section class="common-foods">
+            <h2>Common Foods</h2>
+            <div class="food-categories">
+                <div class="food-category">
+                    <h3>Fruits</h3>
+                    <ul class="food-list">
+                        <li><a href="#" data-food="Apple">Apple</a></li>
+                        <li><a href="#" data-food="Banana">Banana</a></li>
+                        <li><a href="#" data-food="Orange">Orange</a></li>
+                        <li><a href="#" data-food="Strawberry">Strawberry</a></li>
+                        <li><a href="#" data-food="Avocado">Avocado</a></li>
+                    </ul>
+                </div>
+                
+                <div class="food-category">
+                    <h3>Vegetables</h3>
+                    <ul class="food-list">
+                        <li><a href="#" data-food="Broccoli">Broccoli</a></li>
+                        <li><a href="#" data-food="Spinach">Spinach</a></li>
+                        <li><a href="#" data-food="Carrot">Carrot</a></li>
+                        <li><a href="#" data-food="Bell Pepper">Bell Pepper</a></li>
+                        <li><a href="#" data-food="Sweet Potato">Sweet Potato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="food-category">
+                    <h3>Proteins</h3>
+                    <ul class="food-list">
+                        <li><a href="#" data-food="Chicken Breast">Chicken Breast</a></li>
+                        <li><a href="#" data-food="Salmon">Salmon</a></li>
+                        <li><a href="#" data-food="Eggs">Eggs</a></li>
+                        <li><a href="#" data-food="Tofu">Tofu</a></li>
+                        <li><a href="#" data-food="Greek Yogurt">Greek Yogurt</a></li>
+                    </ul>
+                </div>
+                
+                <div class="food-category">
+                    <h3>Grains</h3>
+                    <ul class="food-list">
+                        <li><a href="#" data-food="Quinoa">Quinoa</a></li>
+                        <li><a href="#" data-food="Brown Rice">Brown Rice</a></li>
+                        <li><a href="#" data-food="Oats">Oats</a></li>
+                        <li><a href="#" data-food="Whole Wheat Bread">Whole Wheat Bread</a></li>
+                        <li><a href="#" data-food="Pasta">Pasta</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Food Detail Modal -->
+    <div id="food-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="food-detail-title">Food Name</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="food-detail-header">
+                    <div class="food-image">
+                        <img id="food-image" src="images/placeholder-food.jpg" alt="Food Image">
+                    </div>
+                    <div class="serving-info">
+                        <div class="serving-size">
+                            <label for="serving-size-select">Serving Size:</label>
+                            <select id="serving-size-select">
+                                <option value="100g">100g</option>
+                                <option value="1cup">1 cup (240ml)</option>
+                                <option value="1oz">1 oz (28g)</option>
+                                <option value="1tbsp">1 tbsp (15ml)</option>
+                                <option value="1tsp">1 tsp (5ml)</option>
+                            </select>
+                        </div>
+                        <div class="serving-actions">
+                            <button id="favorite-btn" class="icon-btn">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button id="add-to-diary-btn" class="primary-btn">
+                                <i class="fas fa-plus"></i> Add to Diary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nutrition-summary">
+                    <div class="nutrient-box">
+                        <div class="nutrient-value" id="calories-value">0</div>
+                        <div class="nutrient-label">Calories</div>
+                    </div>
+                    <div class="nutrient-box">
+                        <div class="nutrient-value" id="protein-value">0g</div>
+                        <div class="nutrient-label">Protein</div>
+                    </div>
+                    <div class="nutrient-box">
+                        <div class="nutrient-value" id="carbs-value">0g</div>
+                        <div class="nutrient-label">Carbs</div>
+                    </div>
+                    <div class="nutrient-box">
+                        <div class="nutrient-value" id="fat-value">0g</div>
+                        <div class="nutrient-label">Fat</div>
+                    </div>
+                </div>
+                
+                <div class="nutrition-tabs">
+                    <button class="tab-btn active" data-tab="nutrition-facts">Nutrition Facts</button>
+                    <button class="tab-btn" data-tab="vitamins-minerals">Vitamins & Minerals</button>
+                    <button class="tab-btn" data-tab="health-info">Health Info</button>
+                </div>
+                
+                <div class="tab-content">
+                    <div id="nutrition-facts" class="tab-pane active">
+                        <table class="nutrition-table">
+                            <tr>
+                                <th colspan="2">Nutrition Facts</th>
+                            </tr>
+                            <tr>
+                                <td>Calories</td>
+                                <td id="calories-detail">0</td>
+                            </tr>
+                            <tr class="divider">
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td>Total Fat</td>
+                                <td id="total-fat">0g</td>
+                            </tr>
+                            <tr class="sub-item">
+                                <td>Saturated Fat</td>
+                                <td id="saturated-fat">0g</td>
+                            </tr>
+                            <tr class="sub-item">
+                                <td>Trans Fat</td>
+                                <td id="trans-fat">0g</td>
+                            </tr>
+                            <tr class="sub-item">
+                                <td>Monounsaturated Fat</td>
+                                <td id="mono-fat">0g</td>
+                            </tr>
+                            <tr class="sub-item">
+                                <td>Polyunsaturated Fat</td>
+                                <td id="poly-fat">0g</td>
+                            </tr>
+                            <tr>
+                                <td>Cholesterol</td>
+                                <td id="cholesterol">0mg</td>
+                            </tr>
+                            <tr>
+                                <td>Sodium</td>
+                                <td id="sodium">0mg</td>
+                            </tr>
+                            <tr>
+                                <td>Total Carbohydrates</td>
+                                <td id="total-carbs">0g</td>
+                            </tr>
+                            <tr class="sub-item">
+                                <td>Dietary Fiber</td>
+                                <td id="fiber">0g</td>
+                            </tr>
+                            <tr class="sub-item">
+                                <td>Sugars</td>
+                                <td id="sugars">0g</td>
+                            </tr>
+                            <tr>
+                                <td>Protein</td>
+                                <td id="protein-detail">0g</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="vitamins-minerals" class="tab-pane">
+                        <table class="nutrition-table">
+                            <tr>
+                                <th colspan="2">Vitamins & Minerals</th>
+                            </tr>
+                            <tr>
+                                <td>Vitamin A</td>
+                                <td id="vitamin-a">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Vitamin C</td>
+                                <td id="vitamin-c">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Vitamin D</td>
+                                <td id="vitamin-d">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Vitamin E</td>
+                                <td id="vitamin-e">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Vitamin K</td>
+                                <td id="vitamin-k">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Thiamin (B1)</td>
+                                <td id="thiamin">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Riboflavin (B2)</td>
+                                <td id="riboflavin">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Niacin (B3)</td>
+                                <td id="niacin">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Vitamin B6</td>
+                                <td id="vitamin-b6">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Folate (B9)</td>
+                                <td id="folate">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Vitamin B12</td>
+                                <td id="vitamin-b12">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Calcium</td>
+                                <td id="calcium">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Iron</td>
+                                <td id="iron">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Magnesium</td>
+                                <td id="magnesium">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Phosphorus</td>
+                                <td id="phosphorus">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Potassium</td>
+                                <td id="potassium">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Zinc</td>
+                                <td id="zinc">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Copper</td>
+                                <td id="copper">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Manganese</td>
+                                <td id="manganese">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Selenium</td>
+                                <td id="selenium">0%</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="health-info" class="tab-pane">
+                        <div class="health-section">
+                            <h3>Health Benefits</h3>
+                            <ul id="health-benefits" class="health-list">
+                                <li>No information available</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="health-section">
+                            <h3>Dietary Considerations</h3>
+                            <div id="dietary-tags" class="dietary-tags">
+                                <span class="dietary-tag">No information available</span>
+                            </div>
+                        </div>
+                        
+                        <div class="health-section">
+                            <h3>Glycemic Index</h3>
+                            <div class="glycemic-index">
+                                <div class="gi-value" id="gi-value">N/A</div>
+                                <div class="gi-scale">
+                                    <div class="gi-range low">Low</div>
+                                    <div class="gi-range medium">Medium</div>
+                                    <div class="gi-range high">High</div>
+                                </div>
+                                <div class="gi-marker" style="left: 0%;"></div>
+                            </div>
+                            <p class="gi-description">The Glycemic Index measures how quickly a food raises blood sugar levels on a scale of 0-100.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="close-detail-btn" class="secondary-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Diary Modal -->
+    <div id="add-to-diary-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add to Food Diary</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="food-info">
+                    <h3 id="add-food-name">Food Name</h3>
+                    <div class="food-nutrition-summary">
+                        <span id="add-calories">0</span> calories | 
+                        <span id="add-protein">0g</span> protein | 
+                        <span id="add-carbs">0g</span> carbs | 
+                        <span id="add-fat">0g</span> fat
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="diary-date">Date</label>
+                    <input type="date" id="diary-date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="meal-type">Meal</label>
+                    <select id="meal-type">
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="snack">Snack</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="serving-size">Serving Size</label>
+                    <div class="serving-input">
+                        <input type="number" id="serving-amount" value="1" min="0.1" step="0.1">
+                        <select id="serving-unit">
+                            <option value="100g">100g</option>
+                            <option value="cup">cup</option>
+                            <option value="oz">oz</option>
+                            <option value="tbsp">tbsp</option>
+                            <option value="tsp">tsp</option>
+                            <option value="piece">piece</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="nutrition-update">
+                    <div class="nutrition-row">
+                        <span>Calories:</span>
+                        <span id="updated-calories">0</span>
+                    </div>
+                    <div class="nutrition-row">
+                        <span>Protein:</span>
+                        <span id="updated-protein">0g</span>
+                    </div>
+                    <div class="nutrition-row">
+                        <span>Carbs:</span>
+                        <span id="updated-carbs">0g</span>
+                    </div>
+                    <div class="nutrition-row">
+                        <span>Fat:</span>
+                        <span id="updated-fat">0g</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="add-to-diary-confirm" class="primary-btn">Add to Diary</button>
+                <button class="secondary-btn close-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/food-search.js"></script>
+</body>
+</html>

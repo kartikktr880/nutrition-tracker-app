@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <style>
+        .auth-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .auth-status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .auth-status.success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+        }
+        
+        .auth-status.error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <img src="images/logo.png" alt="Nutrition Tracker Logo" width="80">
+        <h1>Authentication</h1>
+        
+        <div class="spinner" id="auth-spinner"></div>
+        
+        <p id="auth-message">Processing your authorization. Please wait...</p>
+        
+        <div id="auth-status" class="auth-status" style="display: none;"></div>
+        
+        <button id="redirect-btn" class="primary-btn" style="display: none;">Continue to Settings</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const spinner = document.getElementById('auth-spinner');
+            const authMessage = document.getElementById('auth-message');
+            const authStatus = document.getElementById('auth-status');
+            const redirectBtn = document.getElementById('redirect-btn');
+            
+            // Check URL parameters for auth status
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                // Authentication failed
+                showError(`Authentication failed: ${error}`);
+            } else if (code && state) {
+                // Authentication successful
+                // The fitness-integration.js module will handle the actual exchange of the authorization code
+                // for an access token when the page is redirected back to settings
+                
+                // Simulate a delay for visual feedback
+                setTimeout(() => {
+                    showSuccess('Authentication successful! You will be redirected to the settings page.');
+                    
+                    // Auto redirect after a delay
+                    setTimeout(() => {
+                        window.location.href = '/settings.html';
+                    }, 2000);
+                }, 1500);
+            } else {
+                // No authentication data found
+                showError('No authentication data found. Please try connecting again.');
+            }
+            
+            // Handle manual redirect
+            redirectBtn.addEventListener('click', function() {
+                window.location.href = '/settings.html';
+            });
+            
+            function showError(message) {
+                spinner.style.display = 'none';
+                authMessage.style.display = 'none';
+                
+                authStatus.className = 'auth-status error';
+                authStatus.textContent = message;
+                authStatus.style.display = 'block';
+                
+                redirectBtn.style.display = 'inline-block';
+            }
+            
+            function showSuccess(message) {
+                spinner.style.display = 'none';
+                authMessage.style.display = 'none';
+                
+                authStatus.className = 'auth-status success';
+                authStatus.textContent = message;
+                authStatus.style.display = 'block';
+                
+                redirectBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Tracker - Your Personal Nutrition Companion</title>
+    
+    <!-- Remove no-js class if JavaScript is enabled -->
+    <script>document.documentElement.classList.remove('no-js');</script>
+    
+    <!-- Immediate execution to ensure hero section is visible -->
+    <script>
+    (function() {
+        // Force critical content to be visible immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroSection = document.querySelector('.hero-section');
+            const heroContent = document.querySelector('.hero-content');
+            const heroText = document.querySelector('.hero-text');
+            const heroImage = document.querySelector('.hero-image');
+            
+            // Force visibility on hero section
+            if (heroSection) {
+                heroSection.style.opacity = '1';
+                heroSection.style.visibility = 'visible';
+                heroSection.style.transform = 'translateY(0)';
+            }
+            
+            // Force visibility on hero content
+            if (heroContent) {
+                heroContent.style.opacity = '1';
+                heroContent.style.visibility = 'visible';
+                heroContent.style.display = 'flex';
+            }
+            
+            // Force visibility on hero text
+            if (heroText) {
+                heroText.style.opacity = '1';
+                heroText.style.visibility = 'visible';
+            }
+            
+            // Force visibility on hero image
+            if (heroImage) {
+                heroImage.style.opacity = '1';
+                heroImage.style.visibility = 'visible';
+                heroImage.style.display = 'block';
+            }
+        });
+        
+        // Immediate execution - don't wait for DOMContentLoaded
+        setTimeout(function() {
+            const heroSection = document.querySelector('.hero-section');
+            if (heroSection) {
+                heroSection.style.opacity = '1';
+                heroSection.style.visibility = 'visible';
+            }
+        }, 0);
+    })();
+    </script>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/home-page.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- Modern Enhanced Header -->
+    <header class="header" role="banner">
+        <div class="announcement-bar">
+            <div class="container">
+                <p>🎉 New Feature: AI-powered meal recommendations now available! <a href="#try-now">Try it free</a></p>
+                <button class="close-announcement" aria-label="Close announcement"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="index.html" class="logo" aria-label="Nutrition Tracker Home">
+                    <img src="images/logo.png" alt="Nutrition Tracker" onerror="this.src='images/logo-placeholder.png';">
+                </a>
+                <nav class="main-nav" aria-label="Main Navigation">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="dashboard.html" class="nav-link" aria-label="Go to Dashboard">
+                                <i class="fas fa-chart-pie nav-icon" aria-hidden="true"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item mega-dropdown">
+                            <a href="food-log.html" class="nav-link has-mega-menu" aria-expanded="false" aria-haspopup="true">
+                                <i class="fas fa-utensils nav-icon" aria-hidden="true"></i>Food Log
+                                <i class="fas fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+                            </a>
+                            <div class="mega-menu">
+                                <div class="mega-menu-grid">
+                                    <div class="mega-menu-column">
+                                        <h4>Quick Add</h4>
+                                        <div class="quick-add-foods">
+                                            <button class="quick-add-item">
+                                                <img src="https://via.placeholder.com/40" alt="Apple">
+                                                <span>Apple</span>
+                                            </button>
+                                            <button class="quick-add-item">
+                                                <img src="https://via.placeholder.com/40" alt="Chicken">
+                                                <span>Chicken</span>
+                                            </button>
+                                            <button class="quick-add-item">
+                                                <img src="https://via.placeholder.com/40" alt="Eggs">
+                                                <span>Eggs</span>
+                                            </button>
+                                            <button class="quick-add-item">
+                                                <img src="https://via.placeholder.com/40" alt="Salad">
+                                                <span>Salad</span>
+                                            </button>
+                                        </div>
+                                        <div class="mini-search">
+                                            <input type="text" placeholder="Search foods...">
+                                            <button><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="mega-menu-column">
+                                        <h4>Recent Foods</h4>
+                                        <ul class="mega-menu-links">
+                                            <li><a href="#"><i class="fas fa-carrot"></i> Greek Yogurt</a></li>
+                                            <li><a href="#"><i class="fas fa-bread-slice"></i> Whole Grain Bread</a></li>
+                                            <li><a href="#"><i class="fas fa-egg"></i> Scrambled Eggs</a></li>
+                                            <li><a href="#"><i class="fas fa-apple-alt"></i> Banana</a></li>
+                                            <li><a href="#"><i class="fas fa-fish"></i> Salmon</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="mega-menu-column">
+                                        <h4>Log Options</h4>
+                                        <ul class="mega-menu-links">
+                                            <li><a href="food-log.html"><i class="fas fa-plus-circle"></i> Add New Food</a></li>
+                                            <li><a href="meals.html"><i class="fas fa-utensils"></i> Add Meal</a></li>
+                                            <li><a href="recipes.html"><i class="fas fa-book-open"></i> Find Recipe</a></li>
+                                            <li><a href="scanner.html"><i class="fas fa-barcode"></i> Scan Barcode</a></li>
+                                            <li><a href="history.html"><i class="fas fa-history"></i> View History</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="mega-menu-feature">
+                                        <div class="feature-card">
+                                            <h4>AI Meal Assistant</h4>
+                                            <p>Let our AI suggest meals based on your nutrition goals and preferences.</p>
+                                            <a href="ai-assistant.html" class="feature-button">Try Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="meal-planner.html" class="nav-link" aria-label="Go to Meal Planner">
+                                <i class="fas fa-calendar-alt nav-icon" aria-hidden="true"></i>Meal Planner
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="recipes.html" class="nav-link" aria-label="Go to Recipes">
+                                <i class="fas fa-book-open nav-icon" aria-hidden="true"></i>Recipes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="reports.html" class="nav-link" aria-label="Go to Reports">
+                                <i class="fas fa-chart-line nav-icon" aria-hidden="true"></i>Reports
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                                <i class="fas fa-ellipsis-h nav-icon" aria-hidden="true"></i>More
+                                <i class="fas fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="goals.html">Goals</a></li>
+                                <li><a href="analytics.html">Analytics</a></li>
+                                <li><a href="supplements.html">Supplements</a></li>
+                                <li><a href="food-database.html">Food Database</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-bar">
+                    <form action="/search" method="get" class="search-form">
+                        <input type="text" placeholder="Search foods, recipes..." class="search-input" aria-label="Search">
+                        <button type="submit" class="search-button" aria-label="Submit search">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                    <div class="search-suggestions">
+                        <div class="suggestions-category">
+                            <h4>Popular Searches</h4>
+                            <ul>
+                                <li><a href="#"><i class="fas fa-search"></i> Low calorie recipes</a></li>
+                                <li><a href="#"><i class="fas fa-search"></i> High protein meals</a></li>
+                                <li><a href="#"><i class="fas fa-search"></i> Vegan options</a></li>
+                            </ul>
+                        </div>
+                        <div class="suggestions-category">
+                            <h4>Foods</h4>
+                            <ul>
+                                <li><a href="#"><i class="fas fa-apple-alt"></i> Apples</a></li>
+                                <li><a href="#"><i class="fas fa-egg"></i> Eggs</a></li>
+                                <li><a href="#"><i class="fas fa-bread-slice"></i> Bread</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <div class="action-item language-selector" aria-label="Select language">
+                        <select id="language-select" aria-label="Language">
+                            <option value="en">EN</option>
+                            <option value="es">ES</option>
+                            <option value="fr">FR</option>
+                            <option value="de">DE</option>
+                        </select>
+                    </div>
+                    
+                    <a href="#" class="action-item theme-toggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon" aria-hidden="true"></i>
+                        <span class="tooltip">Toggle Dark Mode</span>
+                    </a>
+                    
+                    <button class="action-item quick-add-btn" aria-label="Quick add food">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span class="tooltip">Quick Add</span>
+                    </button>
+                    
+                    <a href="#" class="action-item notification-icon" aria-label="3 new notifications">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                        <span class="notification-badge" aria-hidden="true">3</span>
+                        <span class="tooltip">Notifications</span>
+                    </a>
+                    
+                    <div class="user-profile dropdown">
+                        <a href="#" class="profile-toggle" aria-expanded="false" aria-haspopup="true">
+                            <img src="images/profile.jpg" alt="User profile" class="profile-image" onerror="this.src='images/profile-placeholder.png';">
+                            <span class="profile-name">Julie</span>
+                            <i class="fas fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+                        </a>
+                        <div class="profile-dropdown">
+                            <div class="profile-header">
+                                <img src="images/profile.jpg" alt="Julie" class="header-avatar" onerror="this.src='images/profile-placeholder.png';">
+                                <div class="profile-info">
+                                    <h4>Julie Davidson</h4>
+                                    <p>Premium Member</p>
+                                </div>
+                            </div>
+                            <ul class="profile-menu">
+                                <li><a href="my-profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                                <li><a href="help.html"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                                <li class="divider"></li>
+                                <li><a href="logout.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <button class="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Panel -->
+        <div class="mobile-nav" aria-label="Mobile Navigation">
+            <div class="mobile-search">
+                <form action="/search" method="get">
+                    <input type="text" placeholder="Search foods, recipes...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            
+            <nav class="mobile-menu">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                    <li><a href="food-log.html"><i class="fas fa-utensils"></i> Food Log</a></li>
+                    <li><a href="meal-planner.html"><i class="fas fa-calendar-alt"></i> Meal Planner</a></li>
+                    <li><a href="recipes.html"><i class="fas fa-book-open"></i> Recipes</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a></li>
+                    <li class="mobile-dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="mobile-submenu">
+                            <li><a href="goals.html">Goals</a></li>
+                            <li><a href="analytics.html">Analytics</a></li>
+                            <li><a href="supplements.html">Supplements</a></li>
+                            <li><a href="food-database.html">Food Database</a></li>
+                        </ul>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="my-profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="help.html"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                    <li><a href="logout.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+            
+            <div class="mobile-footer">
+                <div class="language-select-mobile">
+                    <select>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+                
+                <div class="theme-toggle-mobile">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle-mobile">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress indicator for scrolling -->
+        <div class="scroll-progress-container">
+            <div class="scroll-progress-bar"></div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section" style="opacity: 1 !important; visibility: visible !important;">
+            <div class="hero-gradient" style="opacity: 0.6 !important;"></div>
+            <div class="container" style="position: relative; z-index: 5;">
+                <div class="hero-content" style="opacity: 1 !important; visibility: visible !important; display: flex !important;">
+                    <div class="hero-text" style="color: white !important;">
+                        <h1 style="color: white !important;">Track Your Nutrition Journey</h1>
+                        <p style="color: rgba(255, 255, 255, 0.9) !important;">Achieve your health goals with AI-powered nutrition tracking. Get personalized insights, track progress, and make informed decisions about your diet.</p>
+                        
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <div class="stat-number">5M+</div>
+                                <div class="stat-label">Active Users</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="stat-number">98%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="stat-number">4.9</div>
+                                <div class="stat-label">App Rating</div>
+                            </div>
+                        </div>
+                        
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-primary">Get Started Free</a>
+                            <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-image" style="opacity: 1 !important; visibility: visible !important; display: block !important;">
+                        <img src="images/hero-app.png" 
+                             alt="Nutrition Tracker App Interface" 
+                             style="max-width: 100%; height: auto; display: block !important; opacity: 1 !important;"
+                             onerror="this.src='https://via.placeholder.com/400x600/2A5E50/FFFFFF?text=Nutrition+Tracker'; this.style.maxWidth='100%'; this.style.height='auto'; this.style.display='block'; this.style.opacity='1'; this.onerror=null;">
+                        <div class="floating-badge">
+                            <i class="fas fa-star"></i>
+                            <span>Rated #1 Nutrition App</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="section-background"></div>
+            <div class="container">
+                <div class="section-tag">
+                    <i class="fas fa-star"></i>
+                    <span>Premium Features</span>
+                </div>
+                <div class="section-header">
+                    <h2>Smart Nutrition Tracking Made Simple</h2>
+                    <p>Our powerful features work together to make nutrition management effortless and effective</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #E07023); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);">
+                            <i class="fas fa-brain feature-icon" style="font-size: 2rem; color: white; margin: 0; padding: 0; line-height: 1;"></i>
+                        </div>
+                        <h3>AI-Powered Analysis</h3>
+                        <p>Our advanced AI analyzes your eating patterns and provides personalized recommendations to optimize your nutrition and health goals.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #2A5E50, #1A3C34); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);">
+                            <i class="fas fa-camera feature-icon" style="font-size: 2rem; color: white; margin: 0; padding: 0; line-height: 1;"></i>
+                        </div>
+                        <h3>Smart Food Recognition</h3>
+                        <p>Simply take a photo of your meal and our app instantly identifies foods, portions, and nutritional content with remarkable accuracy.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #FFA668); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);">
+                            <i class="fas fa-chart-line feature-icon" style="font-size: 2rem; color: white; margin: 0; padding: 0; line-height: 1;"></i>
+                        </div>
+                        <h3>Progress Tracking</h3>
+                        <p>Visualize your nutrition journey with intuitive charts and insights that help you stay on track and meet your health objectives.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #1A3C34, #2A5E50); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);">
+                            <i class="fas fa-users feature-icon" style="font-size: 2rem; color: white; margin: 0; padding: 0; line-height: 1;"></i>
+                        </div>
+                        <h3>Community Support</h3>
+                        <p>Connect with like-minded individuals, share recipes, and get motivation from our active community of nutrition enthusiasts.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- How It Works Section -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <div class="section-tag">
+                    <i class="fas fa-bolt"></i>
+                    <span>Start Now</span>
+                </div>
+                
+                <div class="section-header">
+                    <h2>Track Your Nutrition</h2>
+                    <p>Simple steps to better health</p>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>Profile</h3>
+                            <p>Quick setup</p>
+                            <ul class="step-features">
+                                <li><i class="fas fa-check"></i>2min</li>
+                                <li><i class="fas fa-check"></i>AI</li>
+                                <li><i class="fas fa-check"></i>Goals</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h3>Log Food</h3>
+                            <p>Easy tracking</p>
+                            <ul class="step-features">
+                                <li><i class="fas fa-check"></i>Scan</li>
+                                <li><i class="fas fa-check"></i>Photo</li>
+                                <li><i class="fas fa-check"></i>Voice</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3>Insights</h3>
+                            <p>Smart data</p>
+                            <ul class="step-features">
+                                <li><i class="fas fa-check"></i>AI</li>
+                                <li><i class="fas fa-check"></i>Stats</li>
+                                <li><i class="fas fa-check"></i>Tips</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3>Success</h3>
+                            <p>Hit goals</p>
+                            <ul class="step-features">
+                                <li><i class="fas fa-check"></i>Track</li>
+                                <li><i class="fas fa-check"></i>Win</li>
+                                <li><i class="fas fa-check"></i>Share</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-button-container">
+                        <a href="signup.html" class="btn btn-glow">Get Started</a>
+                        <p class="step-support-text">Join 5M+ users</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials-section">
+            <div class="section-background"></div>
+            <div class="container">
+                <div class="section-tag">
+                    <i class="fas fa-star"></i>
+                    <span>Success Stories</span>
+                </div>
+                <div class="section-header">
+                    <h2>What Our Members Are Saying</h2>
+                    <p>Join thousands of people who have transformed their nutrition habits and achieved their health goals</p>
+                </div>
+                
+                <div class="testimonials-grid">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <div class="testimonial-content">
+                            <p>"I've lost 15 pounds in just 3 months while still enjoying my favorite foods. The AI recommendations are incredibly accurate and helped me understand my eating patterns better."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="images/testimonial-1.jpg" alt="Sarah L." onerror="this.src='https://via.placeholder.com/50x50/1A3C34/FFFFFF?text=SL'; this.onerror=null;">
+                            <div class="testimonial-author-info">
+                                <div class="testimonial-author-name">Sarah L.</div>
+                                <div class="testimonial-author-title">Lost 15 lbs in 3 months</div>
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <div class="testimonial-content">
+                            <p>"As a professional athlete, tracking my nutrition precisely is critical. This app makes it effortless with its smart photo recognition system—I just snap a photo and get detailed macros instantly."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="images/testimonial-2.jpg" alt="Mark T." onerror="this.src='https://via.placeholder.com/50x50/1A3C34/FFFFFF?text=MT'; this.onerror=null;">
+                            <div class="testimonial-author-info">
+                                <div class="testimonial-author-name">Mark T.</div>
+                                <div class="testimonial-author-title">Professional Runner</div>
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-card">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <div class="testimonial-content">
+                            <p>"The supportive community has been incredible for my journey. I've discovered so many healthy recipes and nutrition tips from other members. Plus, the interface is beautifully designed and intuitive."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="images/testimonial-3.jpg" alt="Jennifer K." onerror="this.src='https://via.placeholder.com/50x50/1A3C34/FFFFFF?text=JK'; this.onerror=null;">
+                            <div class="testimonial-author-info">
+                                <div class="testimonial-author-name">Jennifer K.</div>
+                                <div class="testimonial-author-title">Nutrition Coach</div>
+                                <div class="testimonial-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonials-controls">
+                    <button class="testimonial-control prev-testimonial">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="testimonial-control next-testimonial">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Call to Action Section -->
+        <section class="cta-section">
+            <div class="section-background"></div>
+            <div class="container">
+                <div class="section-header">
+                    <h2>Take Control of Your Nutrition Today</h2>
+                    <p>Join thousands of users who have transformed their health with our intelligent nutrition platform</p>
+                </div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-primary-btn">
+                        <i class="fas fa-rocket"></i>
+                        Start Free Trial
+                    </a>
+                    <a href="#" class="cta-secondary-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Watch Demo
+                    </a>
+                </div>
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>14-day free trial</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-unlock-alt"></i>
+                        <span>Cancel anytime</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="newsletter-section">
+            <div class="section-background"></div>
+            <div class="container">
+                <div class="section-tag">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <span>Stay Updated</span>
+                </div>
+                <div class="section-header">
+                    <h2>Nutrition Tips in Your Inbox</h2>
+                    <p>Join our community and receive personalized nutrition advice, healthy recipes, and exclusive content to support your health journey</p>
+                </div>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required>
+                    <button type="submit">
+                        <span>Subscribe</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                <div class="newsletter-benefits">
+                    <div class="newsletter-benefit">
+                        <i class="fas fa-lock"></i>
+                        <span>Your data is secure</span>
+                    </div>
+                    <div class="newsletter-benefit">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Weekly insights</span>
+                    </div>
+                    <div class="newsletter-benefit">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Unsubscribe anytime</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Enhanced Modern Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <img src="images/logo-light.png" alt="Nutrition Tracker Logo">
+                        <span class="footer-logo-text">NutriTrack</span>
+                    </div>
+                    <p>Your personal AI-powered nutrition companion. Track meals, analyze nutrients, and reach your health goals with smart insights and personalized recommendations.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="#">Download App</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Nutrition Guide</a></li>
+                        <li><a href="#">Recipe Database</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-map-marker-alt"></i><span>123 Nutrition St, Health City, HC 12345</span></p>
+                    <p><i class="fas fa-phone-alt"></i><span>+1 (555) 123-4567</span></p>
+                    <p><i class="fas fa-envelope"></i><span>support@nutritrack.com</span></p>
+                    <p><i class="fas fa-clock"></i><span>Mon-Fri: 9AM - 5PM EST</span></p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 NutriTrack. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cookie Consent -->
+    <div class="cookie-consent">
+        <div class="cookie-content">
+            <p>We use cookies to enhance your experience and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.</p>
+            <div class="cookie-buttons">
+                <button class="cookie-btn secondary">Customize</button>
+                <button class="cookie-btn primary">Accept All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top-floating" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Basic JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure hero section is visible immediately
+            try {
+                const heroSection = document.querySelector('.hero-section');
+                if (heroSection) {
+                    heroSection.classList.add('in-view');
+                    
+                    // Force the hero section to be visible immediately
+                    heroSection.style.opacity = '1';
+                    heroSection.style.transform = 'translateY(0)';
+                }
+            } catch (error) {
+                console.error("Error initializing hero section:", error);
+            }
+            
+            // Wrap critical code in try-catch blocks
+            try {
+                // Announcement bar close
+                const announcementBar = document.querySelector('.announcement-bar');
+                const closeAnnouncementBtn = document.querySelector('.close-announcement');
+                
+                if (closeAnnouncementBtn && announcementBar) {
+                    closeAnnouncementBtn.addEventListener('click', function() {
+                        announcementBar.classList.add('closed');
+                        localStorage.setItem('announcementClosed', 'true');
+                    });
+                    
+                    // Check if announcement was previously closed
+                    if (localStorage.getItem('announcementClosed') === 'true') {
+                        announcementBar.classList.add('closed');
+                    }
+                }
+            } catch (error) {
+                console.error("Error in announcement bar functionality:", error);
+            }
+            
+            try {
+                // Scroll progress indicator
+                const progressBar = document.querySelector('.scroll-progress-bar');
+                
+                if (progressBar) {
+                    window.addEventListener('scroll', function() {
+                        const maxHeight = document.body.scrollHeight - window.innerHeight;
+                        const progress = (window.scrollY / maxHeight) * 100;
+                        progressBar.style.width = progress + '%';
+                    });
+                }
+            } catch (error) {
+                console.error("Error in scroll progress functionality:", error);
+            }
+            
+            try {
+                // Advanced header behavior
+                const header = document.querySelector('.header');
+                let lastScrollTop = 0;
+                let scrollTimer;
+                
+                window.addEventListener('scroll', function() {
+                    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    if (currentScroll > 100) {
+                        header.classList.add('compact');
+                    } else {
+                        header.classList.remove('compact');
+                    }
+                    
+                    if (currentScroll > lastScrollTop && currentScroll > 300) {
+                        header.classList.add('header-hidden');
+                    } else {
+                        header.classList.remove('header-hidden');
+                    }
+                    
+                    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+                    
+                    // Clear existing timeout
+                    clearTimeout(scrollTimer);
+                    
+                    // Set a new timeout
+                    scrollTimer = setTimeout(function() {
+                        // When scrolling stops, show header after a short delay
+                        header.classList.remove('header-hidden');
+                    }, 1000);
+                });
+            } catch (error) {
+                console.error("Error in header behavior:", error);
+            }
+            
+            try {
+                // Theme toggle functionality
+                const themeToggle = document.querySelector('.theme-toggle');
+                const themeToggleMobile = document.querySelector('#theme-toggle-mobile');
+                const body = document.body;
+                
+                // Check for saved theme preference or respect OS preference
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    body.classList.add('dark-theme');
+                    if (themeToggleMobile) themeToggleMobile.checked = true;
+                } else if (savedTheme === 'light') {
+                    body.classList.remove('dark-theme');
+                    if (themeToggleMobile) themeToggleMobile.checked = false;
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('dark-theme');
+                    if (themeToggleMobile) themeToggleMobile.checked = true;
+                }
+                
+                // Desktop theme toggle
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        body.classList.toggle('dark-theme');
+                        
+                        if (body.classList.contains('dark-theme')) {
+                            localStorage.setItem('theme', 'dark');
+                            if (themeToggleMobile) themeToggleMobile.checked = true;
+                        } else {
+                            localStorage.setItem('theme', 'light');
+                            if (themeToggleMobile) themeToggleMobile.checked = false;
+                        }
+                    });
+                }
+                
+                // Mobile theme toggle
+                if (themeToggleMobile) {
+                    themeToggleMobile.addEventListener('change', function() {
+                        if (this.checked) {
+                            body.classList.add('dark-theme');
+                            localStorage.setItem('theme', 'dark');
+                        } else {
+                            body.classList.remove('dark-theme');
+                            localStorage.setItem('theme', 'light');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error in theme toggle functionality:", error);
+            }
+            
+            try {
+                // Mobile navigation toggle
+                const mobileToggle = document.querySelector('.mobile-toggle');
+                const mobileNav = document.querySelector('.mobile-nav');
+                
+                if (mobileToggle && mobileNav) {
+                    mobileToggle.addEventListener('click', function() {
+                        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                        this.setAttribute('aria-expanded', !isExpanded);
+                        this.classList.toggle('active');
+                        mobileNav.classList.toggle('active');
+                        document.body.classList.toggle('nav-open');
+                    });
+                }
+                
+                // Mobile submenu toggles
+                const mobileDropdowns = document.querySelectorAll('.mobile-dropdown .dropdown-toggle');
+                
+                if (mobileDropdowns.length > 0) {
+                    mobileDropdowns.forEach(dropdown => {
+                        dropdown.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            this.parentNode.classList.toggle('open');
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error("Error in mobile navigation functionality:", error);
+            }
+            
+            try {
+                // Number counter animation for stats
+                const stats = document.querySelectorAll('.stat-number[data-count]');
+                
+                if (stats.length > 0 && 'IntersectionObserver' in window) {
+                    const statsObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const stat = entry.target;
+                                const finalValue = parseInt(stat.dataset.count, 10);
+                                if (isNaN(finalValue)) return;
+
+                                let currentValue = 0;
+                                const duration = 2000; // 2 seconds
+                                const stepTime = Math.abs(Math.floor(duration / finalValue));
+                                
+                                const timer = setInterval(() => {
+                                    currentValue += 1;
+                                    
+                                    // Keep the "K+" or "M+" suffix
+                                    const text = stat.textContent;
+                                    const suffix = text.replace(/[0-9]/g, '');
+                                    stat.textContent = currentValue + suffix;
+                                    
+                                    if (currentValue >= finalValue) {
+                                        clearInterval(timer);
+                                    }
+                                }, stepTime);
+                                
+                                statsObserver.unobserve(stat);
+                            }
+                        });
+                    }, {
+                        threshold: 0.5
+                    });
+                    
+                    stats.forEach(stat => {
+                        statsObserver.observe(stat);
+                    });
+                }
+            } catch (error) {
+                console.error("Error in stats counter animation:", error);
+            }
+            
+            try {
+                // Animate on scroll functionality
+                const animatedElements = document.querySelectorAll('.animate-on-scroll');
+                
+                // Check if IntersectionObserver is supported
+                if ('IntersectionObserver' in window && animatedElements.length > 0) {
+                    const animationObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('animated');
+                                // Unobserve after animation is triggered
+                                animationObserver.unobserve(entry.target);
+                            }
+                        });
+                    }, {
+                        root: null,
+                        rootMargin: '0px',
+                        threshold: 0.15
+                    });
+                    
+                    // Observe all elements with animation class
+                    animatedElements.forEach(element => {
+                        animationObserver.observe(element);
+                    });
+                } else {
+                    // Fallback for browsers that don't support IntersectionObserver
+                    animatedElements.forEach(element => {
+                        element.classList.add('animated');
+                    });
+                }
+            } catch (error) {
+                console.error("Error in scroll animation functionality:", error);
+            }
+            
+            try {
+                // Section animations
+                const sections = document.querySelectorAll('section');
+                
+                if ('IntersectionObserver' in window && sections.length > 0) {
+                    const sectionObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('in-view');
+                            }
+                        });
+                    }, {
+                        root: null,
+                        rootMargin: '-10% 0px',
+                        threshold: 0.1
+                    });
+                    
+                    sections.forEach(section => {
+                        sectionObserver.observe(section);
+                    });
+                } else {
+                    // Fallback for browsers that don't support IntersectionObserver
+                    sections.forEach(section => {
+                        section.classList.add('in-view');
+                    });
+                }
+            } catch (error) {
+                console.error("Error in section animation:", error);
+                // Fallback if error occurs
+                document.querySelectorAll('section').forEach(section => {
+                    section.classList.add('in-view');
+                });
+            }
+            
+            try {
+                // Enhanced testimonial carousel with proper initialization
+                const testimonials = document.querySelectorAll('.testimonial');
+                const testimonialDots = document.querySelectorAll('.testimonial-dot');
+                
+                if (testimonials.length > 1 && testimonialDots.length > 0) {
+                    let currentTestimonial = 0;
+                    let testimonialInterval;
+                    
+                    // Named functions for event listeners to allow for removal if needed
+                    function handleMouseEnter() {
+                        clearInterval(testimonialInterval);
+                    }
+                    
+                    function handleMouseLeave() {
+                        startInterval();
+                    }
+                    
+                    // Function to change active testimonial with animation
+                    function changeTestimonial(index) {
+                        // Fade out current testimonial
+                        testimonials[currentTestimonial].style.opacity = '0';
+                        testimonials[currentTestimonial].style.transform = 'translateY(20px)';
+                        
+                        // Remove active classes
+                        testimonials[currentTestimonial].classList.remove('active');
+                        testimonialDots[currentTestimonial].classList.remove('active');
+                        
+                        // After short delay, show new testimonial
+                        setTimeout(() => {
+                            // Hide previous testimonial
+                            testimonials[currentTestimonial].style.display = 'none';
+                            
+                            // Set up new testimonial for entrance
+                            testimonials[index].style.display = 'block';
+                            testimonials[index].classList.add('active');
+                            testimonialDots[index].classList.add('active');
+                            
+                            // Force reflow
+                            void testimonials[index].offsetWidth;
+                            
+                            // Animate in
+                            testimonials[index].style.opacity = '1';
+                            testimonials[index].style.transform = 'translateY(0)';
+                            
+                            currentTestimonial = index;
+                        }, 300);
+                    }
+                    
+                    // Start auto rotation
+                    function startInterval() {
+                        clearInterval(testimonialInterval); // Clear existing interval first
+                        testimonialInterval = setInterval(() => {
+                            changeTestimonial((currentTestimonial + 1) % testimonials.length);
+                        }, 5000);
+                    }
+                    
+                    // Initialize testimonials on page load
+                    function initTestimonials() {
+                        // Set initial state for all testimonials
+                        testimonials.forEach((testimonial, i) => {
+                            if (i === 0) {
+                                // First testimonial is visible
+                                testimonial.classList.add('active');
+                                testimonial.style.display = 'block';
+                                testimonial.style.opacity = '1';
+                                testimonial.style.transform = 'translateY(0)';
+                                testimonialDots[i].classList.add('active');
+                            } else {
+                                // Hide others
+                                testimonial.classList.remove('active');
+                                testimonial.style.display = 'none';
+                                testimonial.style.opacity = '0';
+                                testimonial.style.transform = 'translateY(20px)';
+                                testimonialDots[i].classList.remove('active');
+                            }
+                        });
+                    }
+                    
+                    // Add click handlers to dots
+                    testimonialDots.forEach((dot, index) => {
+                        dot.addEventListener('click', () => {
+                            // Only change if not already on this testimonial
+                            if (currentTestimonial !== index) {
+                                // Clear the interval
+                                clearInterval(testimonialInterval);
+                                
+                                // Change to clicked testimonial
+                                changeTestimonial(index);
+                                
+                                // Restart interval
+                                startInterval();
+                            }
+                        });
+                    });
+                    
+                    // Initialize the testimonials
+                    initTestimonials();
+                    
+                    // Initialize the interval
+                    startInterval();
+                    
+                    // Pause on hover
+                    const testimonialContainer = document.querySelector('.testimonials-container');
+                    if (testimonialContainer) {
+                        testimonialContainer.addEventListener('mouseenter', handleMouseEnter);
+                        testimonialContainer.addEventListener('mouseleave', handleMouseLeave);
+                    }
+                    
+                    // Cleanup function if needed (e.g., for SPA)
+                    window.cleanupTestimonials = function() {
+                        if (testimonialContainer) {
+                            testimonialContainer.removeEventListener('mouseenter', handleMouseEnter);
+                            testimonialContainer.removeEventListener('mouseleave', handleMouseLeave);
+                        }
+                        clearInterval(testimonialInterval);
+                    };
+                }
+            } catch (error) {
+                console.error("Error in testimonial carousel functionality:", error);
+                // Fallback: make first testimonial visible if there's an error
+                try {
+                    const firstTestimonial = document.querySelector('.testimonial');
+                    if (firstTestimonial) {
+                        firstTestimonial.classList.add('active');
+                        firstTestimonial.style.display = 'block';
+                        firstTestimonial.style.opacity = '1';
+                    }
+                } catch (e) {
+                    // Last resort error handling
+                    console.error("Failed to apply testimonial fallback:", e);
+                }
+            }
+            
+            try {
+                // Initialize smooth scrolling for anchor links
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        const targetId = this.getAttribute('href');
+                        
+                        if (targetId !== '#') {
+                            e.preventDefault();
+                            
+                            const targetElement = document.querySelector(targetId);
+                            
+                            if (targetElement) {
+                                const headerOffset = document.querySelector('.header').offsetHeight;
+                                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                                const offsetPosition = targetPosition - headerOffset;
+                                
+                                window.scrollTo({
+                                    top: offsetPosition,
+                                    behavior: 'smooth'
+                                });
+                                
+                                // Update URL but without scrolling
+                                history.pushState(null, null, targetId);
+                            }
+                        }
+                    });
+            });
+            } catch (error) {
+                console.error("Error in smooth scrolling functionality:", error);
+            }
+            
+            try {
+                // Add parallax effect to hero section with performance optimization
+                const heroSection = document.querySelector('.hero-section');
+                const heroContent = document.querySelector('.hero-content');
+                
+                if (heroSection && heroContent) {
+                    let ticking = false;
+                    window.addEventListener('scroll', function() {
+                        if (!ticking) {
+                            window.requestAnimationFrame(function() {
+                                const scrollPosition = window.pageYOffset;
+                                if (scrollPosition < window.innerHeight) {
+                                    heroContent.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+                                    heroSection.querySelector('.hero-gradient').style.opacity = 0.6 + (scrollPosition * 0.001);
+                                }
+                                ticking = false;
+                            });
+                            ticking = true;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error in parallax effect:", error);
+            }
+            
+            try {
+                // Mega menu functionality
+                const megaMenuTriggers = document.querySelectorAll('.has-mega-menu');
+                
+                if (megaMenuTriggers.length > 0) {
+                    megaMenuTriggers.forEach(trigger => {
+                        trigger.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+                            this.setAttribute('aria-expanded', !expanded);
+                            const megaMenuParent = this.closest('.mega-dropdown');
+                            
+                            if (megaMenuParent) {
+                                megaMenuParent.classList.toggle('active');
+                            }
+                        });
+                    });
+                    
+                    // Close on outside click
+                    document.addEventListener('click', function(e) {
+                        megaMenuTriggers.forEach(trigger => {
+                            const megaMenuParent = trigger.closest('.mega-dropdown');
+                            if (megaMenuParent && !megaMenuParent.contains(e.target)) {
+                                megaMenuParent.classList.remove('active');
+                                trigger.setAttribute('aria-expanded', 'false');
+                            }
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error("Error in mega menu functionality:", error);
+            }
+            
+            try {
+                // Search suggestions
+                const searchInput = document.querySelector('.search-input');
+                const searchSuggestions = document.querySelector('.search-suggestions');
+                
+                if (searchInput && searchSuggestions) {
+                    searchInput.addEventListener('focus', function() {
+                        searchSuggestions.classList.add('active');
+                    });
+                    
+                    searchInput.addEventListener('blur', function(e) {
+                        // Small delay to allow for clicking on suggestions
+                        setTimeout(() => {
+                            searchSuggestions.classList.remove('active');
+                        }, 200);
+                    });
+                }
+            } catch (error) {
+                console.error("Error in search functionality:", error);
+            }
+            
+            try {
+                // Cookie consent
+                const cookieConsent = document.querySelector('.cookie-consent');
+                const acceptCookieBtn = document.querySelector('.cookie-btn.primary');
+                const customizeCookieBtn = document.querySelector('.cookie-btn.secondary');
+                
+                if (cookieConsent && acceptCookieBtn) {
+                    // Check if user has already accepted cookies
+                    if (!localStorage.getItem('cookiesAccepted')) {
+                        // Show after a slight delay
+                        setTimeout(() => {
+                            cookieConsent.classList.add('active');
+                        }, 1000);
+                    }
+                    
+                    acceptCookieBtn.addEventListener('click', function() {
+                        localStorage.setItem('cookiesAccepted', 'true');
+                        cookieConsent.classList.remove('active');
+                    });
+                    
+                    if (customizeCookieBtn) {
+                        customizeCookieBtn.addEventListener('click', function() {
+                            // Implement cookie preferences panel logic here
+                            cookieConsent.classList.remove('active');
+                            // For demo purposes, just store a basic preference
+                            localStorage.setItem('cookiesAccepted', 'partial');
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error in cookie consent functionality:", error);
+            }
+            
+            try {
+                // Back to top button
+                const backToTopBtn = document.querySelector('.back-to-top-floating');
+                const backToTopLinks = document.querySelectorAll('.back-to-top');
+                
+                if (backToTopBtn) {
+                    window.addEventListener('scroll', function() {
+                        if (window.scrollY > 300) {
+                            backToTopBtn.classList.add('visible');
+                        } else {
+                            backToTopBtn.classList.remove('visible');
+                        }
+                    });
+                    
+                    backToTopBtn.addEventListener('click', function() {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    });
+                }
+                
+                if (backToTopLinks.length > 0) {
+                    backToTopLinks.forEach(link => {
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error("Error in back-to-top functionality:", error);
+            }
+        });
+    </script>
+</body>
+</html> 

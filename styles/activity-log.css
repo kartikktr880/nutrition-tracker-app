@@ -1,0 +1,504 @@
+/* Activity Log Styles */
+
+/* Main container */
+.activity-log-container {
+    padding: 20px;
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s;
+}
+
+/* Header with title and add button */
+.activity-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-title h1 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.header-title p {
+    color: #666;
+    margin: 5px 0 0 0;
+}
+
+#add-activity-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+}
+
+/* Filters section */
+.filters-section {
+    background-color: white;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+    margin-bottom: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.date-filter,
+.type-filter,
+.sort-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 0.95rem;
+}
+
+.search-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-filter input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.search-filter button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-filter button:hover {
+    background-color: var(--primary-dark);
+}
+
+.custom-date-range {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.date-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+/* Activity list */
+.activity-log-list {
+    background-color: white;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+}
+
+/* Empty state */
+.activity-log-empty {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+.activity-log-empty h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.activity-log-empty p {
+    color: #666;
+    margin: 0 0 20px 0;
+}
+
+/* Activity table */
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.activity-table th,
+.activity-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.activity-table th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555;
+}
+
+.activity-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.activity-table td {
+    color: #444;
+}
+
+.activity-type {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.activity-type-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.activity-type-icon.run, .activity-type-icon.running {
+    background-color: var(--activity-run-color);
+}
+
+.activity-type-icon.walk, .activity-type-icon.walking {
+    background-color: var(--activity-walk-color);
+}
+
+.activity-type-icon.cycle, .activity-type-icon.cycling {
+    background-color: var(--activity-cycle-color);
+}
+
+.activity-type-icon.swim, .activity-type-icon.swimming {
+    background-color: var(--activity-swim-color);
+}
+
+.activity-type-icon.weight_lifting, .activity-type-icon.weights {
+    background-color: var(--activity-weights-color);
+}
+
+.activity-type-icon.other {
+    background-color: var(--activity-other-color);
+}
+
+.activity-source {
+    font-size: 0.85rem;
+    color: #777;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.activity-source img {
+    width: 16px;
+    height: 16px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.action-btn.edit {
+    color: var(--primary-color);
+}
+
+.action-btn.delete {
+    color: #dc3545;
+}
+
+.action-btn.view {
+    color: #555;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination-btn {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #e9e9e9;
+}
+
+.pagination-btn:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.pagination-info {
+    color: #666;
+}
+
+/* Add/Edit Activity Modal */
+#activity-modal .modal-content {
+    max-width: 700px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group-half {
+    flex: 1;
+}
+
+.duration-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.duration-inputs input {
+    flex: 1;
+    text-align: center;
+}
+
+.duration-inputs span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Activity Detail Modal */
+.activity-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.activity-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.activity-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.activity-info h3 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.activity-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.activity-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.stat-card {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-card h4 {
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.activity-notes {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Confirmation Modal */
+.confirm-modal-content {
+    max-width: 400px;
+}
+
+.confirm-modal-content .modal-body {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.confirm-modal-content .modal-body p {
+    margin: 0;
+    color: #555;
+}
+
+/* Button styles */
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.secondary-btn {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.secondary-btn:hover {
+    background-color: #e9e9e9;
+}
+
+.danger-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.danger-btn:hover {
+    background-color: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .activity-log-container {
+        margin-left: 0;
+        padding-top: 60px;
+    }
+    
+    .activity-log-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .activity-table {
+        font-size: 0.9rem;
+    }
+    
+    .activity-table th:nth-child(5),
+    .activity-table td:nth-child(5),
+    .activity-table th:nth-child(6),
+    .activity-table td:nth-child(6) {
+        display: none;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .pagination-info {
+        order: -1;
+    }
+} 

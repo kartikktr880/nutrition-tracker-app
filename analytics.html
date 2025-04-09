@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/mobile-nav.css">
+    <link rel="stylesheet" href="styles/analytics.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .advanced-insights {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .insights-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .insights-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .insight-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .insight-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-card h3 i {
+            margin-right: 10px;
+        }
+        
+        .pattern-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .pattern-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .pattern-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+        
+        .pattern-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .recommendation-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .recommendation-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e3f2fd;
+            color: #2196f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .recommendation-content {
+            flex: 1;
+        }
+        
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+        
+        .recommendation-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .alert-item {
+            display: flex;
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .alert-icon {
+            color: #ffc107;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .alert-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .data-quality {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .data-quality:hover {
+            background-color: #eee;
+        }
+        
+        .data-quality-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .data-quality-indicator {
+            display: flex;
+            align-items: center;
+        }
+        
+        .data-quality-dots {
+            display: flex;
+            gap: 4px;
+            margin-right: 10px;
+        }
+        
+        .quality-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+        
+        .quality-dot.active {
+            background-color: #4caf50;
+        }
+        
+        .data-quality-details {
+            background-color: #f9f9f9;
+            border-radius: 0 0 8px 8px;
+            margin-top: -5px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-top: none;
+        }
+        
+        .data-quality-metrics {
+            margin-bottom: 15px;
+        }
+        
+        .quality-metric {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            width: 120px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+        
+        .metric-bar-container {
+            flex: 1;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        
+        .metric-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .metric-value {
+            width: 50px;
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+        
+        .quality-issues {
+            font-size: 0.9rem;
+        }
+        
+        .quality-issue {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+        
+        .quality-issue i {
+            color: #ff9800;
+            margin-right: 8px;
+            margin-top: 3px;
+        }
+        
+        .no-data-message {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Navigation Bar -->
+    <div class="mobile-nav">
+        <button id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-nav-title">Reports & Analytics</div>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="app-logo">
+            <img src="images/logo.png" alt="Nutrition Tracker Logo">
+            <span>Nutrition Tracker</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
+            <li class="active"><a href="analytics.html"><i class="fas fa-chart-simple"></i> Analytics</a></li>
+            <li><a href="activity-dashboard.html"><i class="fas fa-running"></i> Activity</a></li>
+            <li><a href="meal-planner.html"><i class="fas fa-calendar-days"></i> Meal Planner</a></li>
+            <li><a href="recipes.html"><i class="fas fa-book"></i> Recipes</a></li>
+            <li><a href="recipe-calculator.html"><i class="fas fa-calculator"></i> Recipe Calculator</a></li>
+            <li><a href="water-tracker.html"><i class="fas fa-water"></i> Water Tracker</a></li>
+            <li><a href="goals.html"><i class="fas fa-bullseye"></i> Goals</a></li>
+            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Search</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="analytics-container">
+        <header class="analytics-header">
+            <h1>Reports & Analytics</h1>
+            <button id="start-analytics-tour" class="btn-secondary" style="margin-left: 15px;">
+                <i class="fas fa-question-circle"></i> Take a Tour
+            </button>
+            <div class="date-range-selector">
+                <button class="date-range-btn active" data-range="week">Week</button>
+                <button class="date-range-btn" data-range="month">Month</button>
+                <button class="date-range-btn" data-range="year">Year</button>
+                <button class="date-range-btn" data-range="custom">Custom</button>
+            </div>
+            <div class="custom-date-range" style="display: none;">
+                <div class="date-input-group">
+                    <label for="start-date">From:</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="date-input-group">
+                    <label for="end-date">To:</label>
+                    <input type="date" id="end-date">
+                </div>
+                <button id="apply-date-range" class="btn-primary">Apply</button>
+            </div>
+        </header>
+
+        <section class="nutrition-summary">
+            <h2>Nutrition Summary</h2>
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-icon calories-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Calories</h3>
+                        <div class="card-value" id="avg-calories">0</div>
+                        <div class="card-label">daily average</div>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i> 5% from last period
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon protein-icon">
+                        <i class="fas fa-drumstick-bite"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Protein</h3>
+                        <div class="card-value" id="avg-protein">0g</div>
+                        <div class="card-label">daily average</div>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i> 12% from last period
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon carbs-icon">
+                        <i class="fas fa-bread-slice"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Carbs</h3>
+                        <div class="card-value" id="avg-carbs">0g</div>
+                        <div class="card-label">daily average</div>
+                        <div class="card-trend negative">
+                            <i class="fas fa-arrow-down"></i> 3% from last period
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon fat-icon">
+                        <i class="fas fa-cheese"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Fat</h3>
+                        <div class="card-value" id="avg-fat">0g</div>
+                        <div class="card-label">daily average</div>
+                        <div class="card-trend flat">
+                            <i class="fas fa-minus"></i> No change from last period
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calorie-trends">
+            <div class="section-header">
+                <h2>Calorie Trends</h2>
+                <div class="chart-type-toggle">
+                    <button class="chart-type-btn active" data-type="line">Line</button>
+                    <button class="chart-type-btn" data-type="bar">Bar</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="calories-chart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4a6fa5;"></div>
+                    <div class="legend-label">Calories Consumed</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #6c757d;"></div>
+                    <div class="legend-label">Target</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #28a745;"></div>
+                    <div class="legend-label">Calories Burned</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="macronutrient-breakdown">
+            <h2>Macronutrient Breakdown</h2>
+            <div class="chart-grid">
+                <div class="chart-item">
+                    <h3>Daily Average</h3>
+                    <div class="donut-chart-container">
+                        <canvas id="macro-donut-chart"></canvas>
+                    </div>
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Protein</div>
+                            <div class="stat-value" id="macro-protein-percent">0%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Carbs</div>
+                            <div class="stat-value" id="macro-carbs-percent">0%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Fat</div>
+                            <div class="stat-value" id="macro-fat-percent">0%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-item">
+                    <h3>Daily Targets</h3>
+                    <div class="target-bars">
+                        <div class="target-bar-item">
+                            <div class="target-label">Protein</div>
+                            <div class="target-bar-container">
+                                <div class="target-bar protein-bar" style="width: 85%;"></div>
+                            </div>
+                            <div class="target-value">85%</div>
+                        </div>
+                        <div class="target-bar-item">
+                            <div class="target-label">Carbs</div>
+                            <div class="target-bar-container">
+                                <div class="target-bar carbs-bar" style="width: 60%;"></div>
+                            </div>
+                            <div class="target-value">60%</div>
+                        </div>
+                        <div class="target-bar-item">
+                            <div class="target-label">Fat</div>
+                            <div class="target-bar-container">
+                                <div class="target-bar fat-bar" style="width: 75%;"></div>
+                            </div>
+                            <div class="target-value">75%</div>
+                        </div>
+                        <div class="target-bar-item">
+                            <div class="target-label">Fiber</div>
+                            <div class="target-bar-container">
+                                <div class="target-bar fiber-bar" style="width: 55%;"></div>
+                            </div>
+                            <div class="target-value">55%</div>
+                        </div>
+                        <div class="target-bar-item">
+                            <div class="target-label">Sugar</div>
+                            <div class="target-bar-container">
+                                <div class="target-bar sugar-bar" style="width: 120%;"></div>
+                            </div>
+                            <div class="target-value">120%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="nutrient-trends">
+            <h2>Nutrient Trends</h2>
+            <div class="chart-tabs">
+                <button class="chart-tab active" data-nutrient="macros">Macros</button>
+                <button class="chart-tab" data-nutrient="vitamins">Vitamins</button>
+                <button class="chart-tab" data-nutrient="minerals">Minerals</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="nutrient-trend-chart"></canvas>
+            </div>
+        </section>
+
+        <section class="food-insights">
+            <h2>Food Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h3>Top Foods by Calories</h3>
+                    <div class="horizontal-bars-chart">
+                        <div class="horizontal-bar-item">
+                            <div class="bar-label">Salmon</div>
+                            <div class="bar-container">
+                                <div class="horizontal-bar" style="width: 85%;"></div>
+                            </div>
+                            <div class="bar-value">425 kcal</div>
+                        </div>
+                        <div class="horizontal-bar-item">
+                            <div class="bar-label">Avocado Toast</div>
+                            <div class="bar-container">
+                                <div class="horizontal-bar" style="width: 70%;"></div>
+                            </div>
+                            <div class="bar-value">350 kcal</div>
+                        </div>
+                        <div class="horizontal-bar-item">
+                            <div class="bar-label">Greek Yogurt</div>
+                            <div class="bar-container">
+                                <div class="horizontal-bar" style="width: 50%;"></div>
+                            </div>
+                            <div class="bar-value">250 kcal</div>
+                        </div>
+                        <div class="horizontal-bar-item">
+                            <div class="bar-label">Chicken Breast</div>
+                            <div class="bar-container">
+                                <div class="horizontal-bar" style="width: 48%;"></div>
+                            </div>
+                            <div class="bar-value">240 kcal</div>
+                        </div>
+                        <div class="horizontal-bar-item">
+                            <div class="bar-label">Oatmeal</div>
+                            <div class="bar-container">
+                                <div class="horizontal-bar" style="width: 40%;"></div>
+                            </div>
+                            <div class="bar-value">200 kcal</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <h3>Meals Breakdown</h3>
+                    <div class="small-donut-chart-container">
+                        <canvas id="meals-breakdown-chart"></canvas>
+                    </div>
+                    <div class="chart-legend horizontal">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #4a6fa5;"></div>
+                            <div class="legend-label">Breakfast: 25%</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #28a745;"></div>
+                            <div class="legend-label">Lunch: 30%</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #fd7e14;"></div>
+                            <div class="legend-label">Dinner: 35%</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #6c757d;"></div>
+                            <div class="legend-label">Snacks: 10%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <h3>Most Frequent Foods</h3>
+                    <div class="tag-cloud">
+                        <span class="tag size-5">Eggs</span>
+                        <span class="tag size-4">Chicken</span>
+                        <span class="tag size-5">Coffee</span>
+                        <span class="tag size-3">Oatmeal</span>
+                        <span class="tag size-4">Banana</span>
+                        <span class="tag size-2">Almonds</span>
+                        <span class="tag size-3">Yogurt</span>
+                        <span class="tag size-4">Spinach</span>
+                        <span class="tag size-2">Salmon</span>
+                        <span class="tag size-3">Apple</span>
+                        <span class="tag size-2">Brown Rice</span>
+                        <span class="tag size-3">Avocado</span>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <h3>Weekly Pattern</h3>
+                    <div class="weekly-pattern-chart">
+                        <canvas id="weekly-pattern-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Advanced Insights Section -->
+        <section class="advanced-insights">
+            <div class="insights-header">
+                <h2>Advanced Insights</h2>
+                <button id="refresh-insights" class="btn-primary">
+                    <i class="fas fa-sync-alt"></i> Refresh Insights
+                </button>
+            </div>
+            
+            <div id="insights-loading" class="no-data-message" style="display: none;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Analyzing your nutrition data...</p>
+            </div>
+            
+            <div id="insights-no-data" class="no-data-message" style="display: none;">
+                <i class="fas fa-chart-bar fa-2x"></i>
+                <p>Not enough data to generate advanced insights.</p>
+                <p>Please log at least 7 days of meals to see patterns and recommendations.</p>
+            </div>
+            
+            <div id="insights-content">
+                <div class="insights-cards">
+                    <div class="insight-card">
+                        <h3><i class="fas fa-lightbulb"></i> Personalized Recommendations</h3>
+                        <div id="recommendations-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Nutrition Alerts</h3>
+                        <div id="alerts-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h3><i class="fas fa-utensils"></i> Eating Patterns</h3>
+                        <div id="patterns-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h3><i class="fas fa-calendar-day"></i> Day of Week Patterns</h3>
+                        <div id="weekday-patterns-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-quality">
+                    <div class="data-quality-text">
+                        Data quality affects analysis accuracy. More consistent logging improves insights.
+                    </div>
+                    <div class="data-quality-indicator">
+                        <div class="data-quality-dots">
+                            <div class="quality-dot active"></div>
+                            <div class="quality-dot active"></div>
+                            <div class="quality-dot active"></div>
+                            <div class="quality-dot"></div>
+                            <div class="quality-dot"></div>
+                        </div>
+                        <span id="data-quality-text">Good</span>
+                    </div>
+                </div>
+                
+                <div id="data-quality-details" class="data-quality-details" style="display: none;">
+                    <div class="data-quality-metrics">
+                        <div class="quality-metric">
+                            <span class="metric-label">Completeness:</span>
+                            <div class="metric-bar-container">
+                                <div id="completeness-bar" class="metric-bar" style="width: 60%;"></div>
+                            </div>
+                            <span id="completeness-value" class="metric-value">60%</span>
+                        </div>
+                        <div class="quality-metric">
+                            <span class="metric-label">Consistency:</span>
+                            <div class="metric-bar-container">
+                                <div id="consistency-bar" class="metric-bar" style="width: 70%;"></div>
+                            </div>
+                            <span id="consistency-value" class="metric-value">70%</span>
+                        </div>
+                        <div class="quality-metric">
+                            <span class="metric-label">Detail Level:</span>
+                            <div class="metric-bar-container">
+                                <div id="detail-bar" class="metric-bar" style="width: 50%;"></div>
+                            </div>
+                            <span id="detail-value" class="metric-value">50%</span>
+                        </div>
+                    </div>
+                    
+                    <div id="quality-issues" class="quality-issues">
+                        <!-- Will be populated with data quality issues -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="export-section">
+            <h2>Export Data</h2>
+            <p>Download your nutrition data for further analysis or record keeping.</p>
+            <div class="export-buttons">
+                <button class="export-btn" data-format="csv">
+                    <i class="fas fa-file-csv"></i> Export as CSV
+                </button>
+                <button class="export-btn" data-format="pdf">
+                    <i class="fas fa-file-pdf"></i> Export as PDF
+                </button>
+                <button class="export-btn" data-format="json">
+                    <i class="fas fa-file-code"></i> Export as JSON
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="scripts/analytics.js"></script>
+    <script src="scripts/advanced-analytics.js" type="module"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize normal analytics (existing code)
+            
+            // Initialize advanced analytics
+            initAdvancedAnalytics();
+            
+            // Set up event listeners
+            document.getElementById('refresh-insights').addEventListener('click', refreshInsights);
+            
+            // Add toggle behavior for data quality details
+            const dataQualityElement = document.querySelector('.data-quality');
+            const dataQualityDetails = document.getElementById('data-quality-details');
+            
+            dataQualityElement.addEventListener('click', function() {
+                if (dataQualityDetails.style.display === 'none') {
+                    dataQualityDetails.style.display = 'block';
+                } else {
+                    dataQualityDetails.style.display = 'none';
+                }
+            });
+            
+            // Initialize the guided tour button
+            if (window.tourManager && window.tourManager.tours.analytics) {
+                document.getElementById('start-analytics-tour').addEventListener('click', function() {
+                    window.tourManager.tours.analytics.start();
+                });
+            } else {
+                document.getElementById('start-analytics-tour').style.display = 'none';
+            }
+        });
+        
+        async function initAdvancedAnalytics() {
+            if (!window.advancedAnalytics) {
+                console.warn('Advanced analytics module not loaded');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                // Get last 30 days data by default
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 30);
+                
+                // Get analytics data
+                const analytics = await window.advancedAnalytics.getAnalytics(startDate, endDate);
+                
+                if (!analytics || !analytics.trends || !analytics.trends.hasSufficientData) {
+                    showNoDataMessage(true);
+                    return;
+                }
+                
+                // Update UI with analytics data
+                updateAdvancedAnalyticsUI(analytics);
+                showContent(true);
+            } catch (error) {
+                console.error('Error initializing advanced analytics:', error);
+                showError('Failed to load advanced analytics. Please try again later.');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function refreshInsights() {
+            showContent(false);
+            showNoDataMessage(false);
+            initAdvancedAnalytics();
+        }
+        
+        function updateAdvancedAnalyticsUI(analytics) {
+            // Update recommendations
+            updateRecommendationsUI(analytics.insights.recommendations);
+            
+            // Update alerts
+            updateAlertsUI(analytics.insights.alerts);
+            
+            // Update patterns
+            updatePatternsUI(analytics.patterns);
+            
+            // Update weekday patterns
+            updateWeekdayPatternsUI(analytics.patterns.weekdayPatterns);
+            
+            // Update data quality indicator
+            updateDataQualityIndicator(analytics.dataQuality);
+        }
+        
+        function updateRecommendationsUI(recommendations) {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
+            
+            if (!recommendations || recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="recommendation-item">
+                        <div class="recommendation-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="recommendation-content">
+                            <div class="recommendation-title">No recommendations needed</div>
+                            <div class="recommendation-description">
+                                Your nutrition looks balanced! Continue with your current eating patterns.
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            recommendations.forEach(rec => {
+                const item = document.createElement('div');
+                item.className = 'recommendation-item';
+                
+                const icon = rec.type === 'increase' ? 'arrow-up' : 'arrow-down';
+                
+                item.innerHTML = `
+                    <div class="recommendation-icon">
+                        <i class="fas fa-${icon}"></i>
+                    </div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">${rec.nutrient} ${rec.type === 'increase' ? 'Increase' : 'Decrease'}</div>
+                        <div class="recommendation-description">${rec.description}</div>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+        
+        function updateAlertsUI(alerts) {
+            const container = document.getElementById('alerts-container');
+            container.innerHTML = '';
+            
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="alert-item" style="background-color: #e8f5e9; border-left-color: #4caf50;">
+                        <div class="alert-icon" style="color: #4caf50;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">No alerts detected</div>
+                            <div class="alert-description">
+                                Great job! We haven't detected any concerning nutrition trends.
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            alerts.forEach(alert => {
+                const item = document.createElement('div');
+                item.className = 'alert-item';
+                
+                item.innerHTML = `
+                    <div class="alert-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">${alert.metric} ${alert.direction} Trend</div>
+                        <div class="alert-description">${alert.description}</div>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+        
+        function updatePatternsUI(patterns) {
+            const container = document.getElementById('patterns-container');
+            container.innerHTML = '';
+            
+            if (!patterns || !patterns.hasSufficientData) {
+                container.innerHTML = `
+                    <div class="pattern-item">
+                        <div class="pattern-title">Insufficient data</div>
+                        <div class="pattern-description">
+                            Continue logging your meals to discover your eating patterns.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Add meal timing patterns
+            if (patterns.mealTiming && patterns.mealTiming.length > 0) {
+                patterns.mealTiming.slice(0, 2).forEach(timing => {
+                    const item = document.createElement('div');
+                    item.className = 'pattern-item';
+                    
+                    item.innerHTML = `
+                        <div class="pattern-title">${timing.mealType} Timing</div>
+                        <div class="pattern-description">
+                            You typically have ${timing.mealType} at ${timing.time} with ${timing.consistency} consistency.
+                        </div>
+                    `;
+                    
+                    container.appendChild(item);
+                });
+            }
+            
+            // Add food combinations
+            if (patterns.foodCombinations && patterns.foodCombinations.length > 0) {
+                const combo = patterns.foodCombinations[0];
+                const item = document.createElement('div');
+                item.className = 'pattern-item';
+                
+                item.innerHTML = `
+                    <div class="pattern-title">Food Combinations</div>
+                    <div class="pattern-description">
+                        You frequently pair ${combo.foods.join(' and ')} (${combo.frequency}% of the time) in your ${combo.mealType} meals.
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            }
+        }
+        
+        function updateWeekdayPatternsUI(weekdayPatterns) {
+            const container = document.getElementById('weekday-patterns-container');
+            container.innerHTML = '';
+            
+            if (!weekdayPatterns) {
+                container.innerHTML = `
+                    <div class="pattern-item">
+                        <div class="pattern-title">Insufficient data</div>
+                        <div class="pattern-description">
+                            Continue logging your meals to discover day-of-week patterns.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Weekend vs weekday patterns
+            if (weekdayPatterns.hasWeekendPattern) {
+                const item = document.createElement('div');
+                item.className = 'pattern-item';
+                
+                const direction = weekdayPatterns.weekendDifference > 0 ? 'more' : 'less';
+                const nutrient = weekdayPatterns.weekendDifference > 0 ? 'calories' : 'protein';
+                
+                item.innerHTML = `
+                    <div class="pattern-title">Weekend Pattern</div>
+                    <div class="pattern-description">
+                        You consume ${direction} ${nutrient} on weekends compared to weekdays (${Math.abs(weekdayPatterns.weekendDifference).toFixed(0)}% difference).
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            }
+            
+            // Specific day patterns
+            if (weekdayPatterns.specificDayPatterns && weekdayPatterns.specificDayPatterns.length > 0) {
+                weekdayPatterns.specificDayPatterns.forEach(dayPattern => {
+                    const item = document.createElement('div');
+                    item.className = 'pattern-item';
+                    
+                    item.innerHTML = `
+                        <div class="pattern-title">${dayPattern.day} Pattern</div>
+                        <div class="pattern-description">${dayPattern.description}</div>
+                    `;
+                    
+                    container.appendChild(item);
+                });
+            }
+        }
+        
+        function updateDataQualityIndicator(quality) {
+            if (!quality) return;
+            
+            const dots = document.querySelectorAll('.quality-dot');
+            const qualityText = document.getElementById('data-quality-text');
+            
+            // Reset all dots
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            // Set active dots based on quality score (1-5)
+            const score = Math.min(Math.max(Math.round(quality.score), 1), 5);
+            for (let i = 0; i < score; i++) {
+                dots[i].classList.add('active');
+            }
+            
+            // Set quality text
+            const qualityLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+            qualityText.textContent = qualityLabels[score - 1];
+            
+            // Update detailed metrics
+            const completenessBar = document.getElementById('completeness-bar');
+            const consistencyBar = document.getElementById('consistency-bar');
+            const detailBar = document.getElementById('detail-bar');
+            
+            const completenessValue = document.getElementById('completeness-value');
+            const consistencyValue = document.getElementById('consistency-value');
+            const detailValue = document.getElementById('detail-value');
+            
+            completenessBar.style.width = `${quality.completeness}%`;
+            consistencyBar.style.width = `${quality.consistency}%`;
+            detailBar.style.width = `${quality.detailLevel}%`;
+            
+            completenessValue.textContent = `${quality.completeness}%`;
+            consistencyValue.textContent = `${quality.consistency}%`;
+            detailValue.textContent = `${quality.detailLevel}%`;
+            
+            // Update quality issues
+            const issuesContainer = document.getElementById('quality-issues');
+            issuesContainer.innerHTML = '';
+            
+            if (quality.issues && quality.issues.length > 0) {
+                quality.issues.forEach(issue => {
+                    const issueElement = document.createElement('div');
+                    issueElement.className = 'quality-issue';
+                    issueElement.innerHTML = `
+                        <i class="fas fa-info-circle"></i>
+                        <span>${issue}</span>
+                    `;
+                    issuesContainer.appendChild(issueElement);
+                });
+            } else {
+                issuesContainer.innerHTML = `
+                    <div class="quality-issue" style="color: #4caf50;">
+                        <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+                        <span>No data quality issues detected</span>
+                    </div>
+                `;
+            }
+        }
+        
+        function showLoading(show) {
+            document.getElementById('insights-loading').style.display = show ? 'block' : 'none';
+        }
+        
+        function showContent(show) {
+            document.getElementById('insights-content').style.display = show ? 'block' : 'none';
+        }
+        
+        function showNoDataMessage(show) {
+            document.getElementById('insights-no-data').style.display = show ? 'block' : 'none';
+        }
+        
+        function showError(message) {
+            // Simple alert for this example
+            alert(message);
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Nutrition Tracker - Track your nutrition journey with our comprehensive tools">
+    <title>Nutrition Tracker - Take Control of Your Health</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dark-mode.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/home-page.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- JavaScript -->
+    <script src="scripts/theme-manager.js" defer></script>
+    <script src="scripts/i18n.js" defer></script>
+    <script src="scripts/nav.js" defer></script>
+    <script src="scripts/footer.js" defer></script>
+    <script src="scripts/home-page.js" defer></script>
+    <script src="scripts/version-checker.js" defer></script>
+</head>
+<body>
+    <!-- Navigation Container -->
+    <div id="nav-container"></div>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-container"></section>
+        
+        <!-- Features Section -->
+        <section class="features-section"></section>
+        
+        <!-- Testimonials Section -->
+        <section class="testimonial-section"></section>
+        
+        <!-- Call to Action Section -->
+        <section class="cta-section"></section>
+    </main>
+    
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dark-mode.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="scripts/theme-manager.js" defer></script>
+    <script src="scripts/i18n.js" defer></script>
+    <script src="scripts/nav.js" defer></script>
+    <script src="scripts/footer.js" defer></script>
+    <style>
+        /* Premium Design Theme */
+        :root {
+            --primary-color: #1A3C34;
+            --primary-dark: #122b24;
+            --secondary-color: #3D5A80;
+            --background-light: #F4EDE4;
+            --background-gray: #F5F5F5;
+            --accent-color: #FF8C42;
+            --accent-dark: #e67e3a;
+            --text-primary: #1A3C34;
+            --text-secondary: #5c6c68;
+            --shadow-sm: 0 2px 4px rgba(26, 60, 52, 0.05);
+            --shadow-md: 0 4px 6px rgba(26, 60, 52, 0.1);
+            --shadow-lg: 0 10px 15px rgba(26, 60, 52, 0.1);
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-ui: 'Montserrat', sans-serif;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-primary);
+            background-color: var(--background-light);
+        }
+
+        /* Simple Mobile Navigation Styles */
+        .mobile-nav-toggle {
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            z-index: 9999;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 45px;
+            height: 45px;
+            display: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s;
+        }
+
+        .mobile-nav-toggle:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .mobile-nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px auto;
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background-color: white;
+            z-index: 9998;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .mobile-nav.active {
+            left: 0;
+        }
+
+        .mobile-nav-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            font-family: var(--font-heading);
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            border-bottom: 1px solid var(--background-light);
+        }
+
+        .mobile-nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            font-family: var(--font-ui);
+        }
+
+        .mobile-nav-links a i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .mobile-nav-links a:hover {
+            background-color: var(--background-light);
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 9997;
+            display: none;
+        }
+
+        .mobile-nav-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            header nav {
+                display: none;
+            }
+
+            .hero-content {
+                padding: 30px 20px;
+            }
+
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .secondary-button {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
+        }
+        
+        /* Hero section styles */
+        .hero {
+            background-color: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Features section styles */
+        .features {
+            padding: 80px 0;
+            background-color: var(--background-light);
+        }
+
+        .features-heading {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
+        }
+
+        .features-heading h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .features-heading p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Other styles from original CSS */
+    </style>
+</head>
+<body>
+    <div id="nav-container">
+        <!-- This will be populated by nav.js -->
+    </div>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Fuel Your Body, Track with Precision</h1>
+            <p>Take control of your nutrition journey with our intelligent tracking system. Monitor calories, macros, and meals in one beautiful, easy-to-use platform.</p>
+            <div class="hero-buttons">
+                <a href="signup.html" class="cta-button">Start Tracking for Free</a>
+                <a href="#features" class="secondary-button">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="features-heading">
+            <h2>Smart Nutrition Made Simple</h2>
+            <p>Our comprehensive tools help you make informed decisions about your diet and reach your health goals with confidence.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3>Food Tracking</h3>
+                <p>Log your meals with our extensive food database. Search, scan, or create custom foods to keep your nutrition data accurate.</p>
+                <a href="tracker.html" class="feature-link">Start tracking now</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3>Nutrition Analysis</h3>
+                <p>Get detailed breakdowns of calories, macronutrients, and micronutrients. Visualize your dietary patterns with beautiful charts.</p>
+                <a href="dashboard.html" class="feature-link">Explore analytics</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Meal Planning</h3>
+                <p>Plan your meals in advance with our intuitive meal planner. Save your favorite recipes and create weekly meal plans effortlessly.</p>
+                <a href="meal-planner.html" class="feature-link">Plan your meals</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shopping-basket"></i>
+                </div>
+                <h3>Shopping Lists</h3>
+                <p>Generate shopping lists from your meal plans or create custom lists. Organize by categories and mark items as purchased for easy grocery shopping.</p>
+                <a href="shopping-list.html" class="feature-link">Create shopping list</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Meal Timing</h3>
+                <p>Optimize your meal timing based on your goals. Schedule meals for weight loss, muscle gain, or better energy levels.</p>
+                <a href="meal-timing.html" class="feature-link">Optimize meal timing</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Nutrition Goals</h3>
+                <p>Set personalized nutrition goals, track your progress, and earn achievements as you make progress on your health journey.</p>
+                <a href="nutrition-goals.html" class="feature-link">Set nutrition goals</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3>Achievements</h3>
+                <p>Earn achievements and celebrate your progress as you meet nutrition and fitness goals. Share your success with friends!</p>
+                <a href="nutrition-goals.html#achievements" class="feature-link">View achievements</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <h2>What Our Users Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-content">"This app has completely transformed my relationship with food. The intuitive interface makes tracking my meals so easy, and the insights have helped me reach my fitness goals."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="images/testimonial-1.jpg" alt="Sarah J.">
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah J.</h4>
+                        <p>Lost 15 lbs in 3 months</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-content">"As a nutritionist, I recommend this app to all my clients. The detailed breakdowns of macros and micronutrients provide exactly the information they need to make healthy choices."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="images/testimonial-2.jpg" alt="Dr. Michael T.">
+                    </div>
+                    <div class="author-info">
+                        <h4>Dr. Michael T.</h4>
+                        <p>Certified Nutritionist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-content">"The meal planning feature has saved me so much time and stress. I can plan my entire week in minutes, and the shopping list feature ensures I always have what I need."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="images/testimonial-3.jpg" alt="James L.">
+                    </div>
+                    <div class="author-info">
+                        <h4>James L.</h4>
+                        <p>Busy professional</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Transform Your Nutrition Journey?</h2>
+            <p>Join thousands of users who have already improved their health with our powerful nutrition tracking tools.</p>
+            <div class="cta-benefits">
+                <div class="cta-benefit">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Personalized nutrition tracking</span>
+                </div>
+                <div class="cta-benefit">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Smart meal recommendations</span>
+                </div>
+                <div class="cta-benefit">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Progress tracking & insights</span>
+                </div>
+            </div>
+            <div class="cta-buttons">
+                <a href="signup.html" class="cta-button">Create Free Account</a>
+                <a href="about.html" class="cta-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-container">
+        <!-- This will be populated by footer.js -->
+    </div>
+
+    <script>
+        // Simple Mobile Navigation Script
+        function toggleMobileNav() {
+            const mobileNav = document.querySelector('.mobile-nav');
+            const overlay = document.querySelector('.mobile-nav-overlay');
+
+            if (mobileNav.classList.contains('active')) {
+                mobileNav.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                mobileNav.classList.add('active');
+                overlay.classList.add('active');
+            }
+        }
+
+        // Hide nav on scroll down, show on scroll up
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            const mobileNavToggle = document.getElementById('mobileNavToggle');
+
+            if (currentScroll > lastScrollTop && currentScroll > 100) {
+                // Scrolling down - hide the button
+                mobileNavToggle.style.transform = 'translateY(-100%)';
+                mobileNavToggle.style.opacity = '0';
+            } else {
+                // Scrolling up - show the button
+                mobileNavToggle.style.transform = 'translateY(0)';
+                mobileNavToggle.style.opacity = '1';
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        });
+
+        // Check authentication state and update UI accordingly
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+        });
+
+        function checkAuthState() {
+            // Access the Firebase auth object
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        // User is signed in
+                        document.getElementById('login-item').style.display = 'none';
+                        document.getElementById('logout-item').style.display = 'block';
+                        document.getElementById('nav-login-item').style.display = 'none';
+                        document.getElementById('nav-logout-item').style.display = 'block';
+                    } else {
+                        // User is signed out
+                        document.getElementById('login-item').style.display = 'block';
+                        document.getElementById('logout-item').style.display = 'none';
+                        document.getElementById('nav-login-item').style.display = 'block';
+                        document.getElementById('nav-logout-item').style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        function logoutUser() {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().signOut().then(function() {
+                    // Sign-out successful
+                    window.location.href = 'login.html';
+                }).catch(function(error) {
+                    // An error happened
+                    console.error('Logout Error:', error);
+                    alert('Error signing out. Please try again.');
+                });
+            }
+        }
+    </script>
+
+    <!-- Replace Firebase module scripts with regular Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            // This will be populated from your firebase-config.js
+            // For now using placeholders that will be replaced during runtime
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Check auth state
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                document.getElementById('login-item').style.display = 'none';
+                document.getElementById('logout-item').style.display = 'block';
+                document.getElementById('nav-login-item').style.display = 'none';
+                document.getElementById('nav-logout-item').style.display = 'block';
+            } else {
+                // User is signed out
+                document.getElementById('login-item').style.display = 'block';
+                document.getElementById('logout-item').style.display = 'none';
+                document.getElementById('nav-login-item').style.display = 'block';
+                document.getElementById('nav-logout-item').style.display = 'none';
+            }
+        });
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+
+    <!-- Offline Support Script -->
+    <script src="scripts/offline-support.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the offline support
+            const offlineSupport = new OfflineSupport();
+
+            // Make it globally available
+            window.offlineSupport = offlineSupport;
+        });
+    </script>
+
+    <!-- Initialize welcome tour for first-time visitors -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if this is the user's first visit
+            if (!localStorage.getItem('app_first_visit_completed')) {
+                // Set a small delay to ensure all elements are loaded
+                setTimeout(() => {
+                    // Start the dashboard tour if available
+                    if (window.tourManager) {
+                        window.tourManager.startTour('dashboard');
+                        // Mark first visit as completed
+                        localStorage.setItem('app_first_visit_completed', 'true');
+                    }
+                }, 1000);
+            }
+
+            // Set up tour menu button event listeners
+            document.getElementById('dashboard-tour').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.tourManager.startTour('dashboard');
+            });
+
+            document.getElementById('food-logger-tour').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.tourManager.startTour('foodLogger');
+            });
+
+            document.getElementById('meal-planner-tour').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.tourManager.startTour('mealPlanner');
+            });
+
+            document.getElementById('reset-all-tours').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.tourManager.resetAllTours();
+                alert('All tours have been reset. They will be shown again the next time you visit the respective pages.');
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,148 @@
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-top">
+            <div class="footer-info">
+                <a href="index.html" class="footer-logo">
+                    <img src="images/logo.png" alt="Nutrition Tracker" onerror="this.onerror=null; this.src='images/fallback-logo.png';">
+                </a>
+                <p class="footer-description" data-i18n="footer.description">
+                    Your personal nutrition companion. Track meals, analyze nutrients, and reach your health goals.
+                </p>
+                <div class="footer-social">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-links-column">
+                    <h3 data-i18n="footer.features">Features</h3>
+                    <ul class="footer-links">
+                        <li><a href="dashboard.html" data-i18n="footer.dashboard">Dashboard</a></li>
+                        <li><a href="food-log.html" data-i18n="footer.foodLog">Food Log</a></li>
+                        <li><a href="meal-planner.html" data-i18n="footer.mealPlanner">Meal Planner</a></li>
+                        <li><a href="reports.html" data-i18n="footer.reports">Reports</a></li>
+                        <li><a href="recipes.html" data-i18n="footer.recipes">Recipes</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links-column">
+                    <h3 data-i18n="footer.resources">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="blog.html" data-i18n="footer.blog">Blog</a></li>
+                        <li><a href="guides.html" data-i18n="footer.guides">Guides</a></li>
+                        <li><a href="faq.html" data-i18n="footer.faq">FAQ</a></li>
+                        <li><a href="support.html" data-i18n="footer.support">Support</a></li>
+                        <li><a href="api.html" data-i18n="footer.api">API</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links-column">
+                    <h3 data-i18n="footer.company">Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="about.html" data-i18n="footer.about">About Us</a></li>
+                        <li><a href="careers.html" data-i18n="footer.careers">Careers</a></li>
+                        <li><a href="press.html" data-i18n="footer.press">Press</a></li>
+                        <li><a href="contact.html" data-i18n="footer.contact">Contact</a></li>
+                        <li><a href="partners.html" data-i18n="footer.partners">Partners</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links-column">
+                    <h3 data-i18n="footer.legal">Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="terms.html" data-i18n="footer.terms">Terms of Service</a></li>
+                        <li><a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a></li>
+                        <li><a href="cookies.html" data-i18n="footer.cookies">Cookie Policy</a></li>
+                        <li><a href="disclaimer.html" data-i18n="footer.disclaimer">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                <p>&copy; <span data-current-year>2023</span> Nutrition Tracker. <span data-i18n="footer.rights">All rights reserved.</span></p>
+            </div>
+            
+            <div class="footer-app-downloads">
+                <a href="#" class="app-download-link" aria-label="Download on App Store">
+                    <img src="images/app-store-badge.png" alt="App Store" onerror="this.onerror=null; this.src='images/app-store-badge-placeholder.png';">
+                </a>
+                <a href="#" class="app-download-link" aria-label="Get it on Google Play">
+                    <img src="images/google-play-badge.png" alt="Google Play" onerror="this.onerror=null; this.src='images/google-play-badge-placeholder.png';">
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer-newsletter">
+            <h3 data-i18n="footer.newsletter.title">Subscribe to Our Newsletter</h3>
+            <p data-i18n="footer.newsletter.description">Get the latest nutrition tips and updates delivered to your inbox.</p>
+            <form id="newsletter-form" class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-button" data-i18n="footer.newsletter.button">Subscribe</button>
+                <div id="newsletter-feedback" class="newsletter-feedback"></div>
+            </form>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Set current year
+    document.querySelectorAll('[data-current-year]').forEach(el => {
+        el.textContent = new Date().getFullYear();
+    });
+    
+    // Apply translations if i18n is available
+    if (window.i18n) {
+        window.i18n.updateContent();
+    }
+    
+    // Set dark mode based on preference
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+    
+    // Handle newsletter form submission
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailInput = this.querySelector('input[type="email"]');
+            const submitButton = this.querySelector('button[type="submit"]');
+            
+            if (!emailInput || !emailInput.value) return;
+            
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Subscribing...';
+            
+            // Simulate API request (replace with actual API call)
+            setTimeout(() => {
+                // Success state
+                this.classList.add('success');
+                submitButton.innerHTML = 'Subscribed!';
+                emailInput.value = '';
+                
+                // Reset after delay
+                setTimeout(() => {
+                    this.classList.remove('success');
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Subscribe';
+                }, 3000);
+            }, 1500);
+        });
+    }
+</script> 

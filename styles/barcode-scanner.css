@@ -1,0 +1,212 @@
+/* Barcode Scanner Styles */
+
+.barcode-scanner-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    max-height: 80vh;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: #000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#barcode-scanner-viewport {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#barcode-scanner-viewport video,
+#barcode-scanner-viewport canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+}
+
+.barcode-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.scanner-crosshair {
+    width: 200px;
+    height: 200px;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.scanner-crosshair::before,
+.scanner-crosshair::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.scanner-crosshair::before {
+    width: 100%;
+    height: 2px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-1px);
+}
+
+.scanner-crosshair::after {
+    width: 2px;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-1px);
+}
+
+.scanner-message {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+/* Scanning line animation */
+.scanner-crosshair::before {
+    animation: scanline 2s linear infinite;
+}
+
+@keyframes scanline {
+    0% {
+        top: 0%;
+    }
+    50% {
+        top: 100%;
+    }
+    100% {
+        top: 0%;
+    }
+}
+
+/* Error message styling */
+.barcode-scanner-error {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    color: #d32f2f;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.error-message {
+    font-size: 16px;
+    max-width: 80%;
+}
+
+/* Control buttons */
+.scanner-controls {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.scanner-control-btn {
+    background-color: var(--primary-color, #4caf50);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.scanner-control-btn:hover {
+    background-color: var(--primary-color-dark, #388e3c);
+    transform: scale(1.05);
+}
+
+.scanner-control-btn:active {
+    transform: scale(0.95);
+}
+
+.scanner-control-btn i {
+    font-size: 24px;
+}
+
+/* Toast for scan results */
+.scan-result-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    max-width: 90%;
+    text-align: center;
+}
+
+.scan-result-toast.visible {
+    opacity: 1;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+    .barcode-scanner-container {
+        height: 60vh;
+        border-radius: 0;
+    }
+    
+    .scanner-crosshair {
+        width: 70%;
+        height: 35%;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .barcode-scanner-error {
+        background-color: #1e1e1e;
+        color: #ff6b6b;
+    }
+}
+
+.dark-mode .barcode-scanner-error {
+    background-color: #1e1e1e;
+    color: #ff6b6b;
+} 

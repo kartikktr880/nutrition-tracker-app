@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Tracker - Blog</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/blog.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Nutrition Tracker</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tracker.html">Tracker</a></li>
+                <li><a href="meal-planner.html">Meal Planner</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="blog-container">
+        <h1>Nutrition Blog</h1>
+        
+        <div class="blog-search">
+            <input type="text" id="blog-search-input" placeholder="Search for articles...">
+            <button id="blog-search-btn">Search</button>
+        </div>
+        
+        <div class="blog-categories">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="weight-loss">Weight Loss</button>
+            <button class="category-btn" data-category="muscle-gain">Muscle Gain</button>
+            <button class="category-btn" data-category="special-diets">Special Diets</button>
+            <button class="category-btn" data-category="recipes">Recipes</button>
+        </div>
+        
+        <div class="blog-grid">
+            <!-- Article 1 -->
+            <article class="blog-card" data-categories="weight-loss special-diets">
+                <div class="blog-image" style="background-color: #e9f7ef;">
+                    <!-- Placeholder for article image -->
+                    <div class="placeholder-text">Image</div>
+                </div>
+                <div class="blog-content">
+                    <h2>10 Foods That Help You Lose Weight</h2>
+                    <p class="blog-meta">June 15, 2025 | <span class="blog-category">Weight Loss</span></p>
+                    <p class="blog-excerpt">Discover the top 10 foods that can boost your metabolism and help you shed those extra pounds naturally.</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </article>
+            
+            <!-- Article 2 -->
+            <article class="blog-card" data-categories="muscle-gain">
+                <div class="blog-image" style="background-color: #e3f2fd;">
+                    <!-- Placeholder for article image -->
+                    <div class="placeholder-text">Image</div>
+                </div>
+                <div class="blog-content">
+                    <h2>Optimal Protein Intake for Muscle Growth</h2>
+                    <p class="blog-meta">June 10, 2025 | <span class="blog-category">Muscle Gain</span></p>
+                    <p class="blog-excerpt">Learn how much protein you really need to build muscle effectively and which sources are best.</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </article>
+            
+            <!-- Article 3 -->
+            <article class="blog-card" data-categories="special-diets">
+                <div class="blog-image" style="background-color: #fff8e1;">
+                    <!-- Placeholder for article image -->
+                    <div class="placeholder-text">Image</div>
+                </div>
+                <div class="blog-content">
+                    <h2>The Complete Guide to Keto Diet</h2>
+                    <p class="blog-meta">June 5, 2025 | <span class="blog-category">Special Diets</span></p>
+                    <p class="blog-excerpt">Everything you need to know about starting and maintaining a ketogenic diet for optimal results.</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </article>
+            
+            <!-- Article 4 -->
+            <article class="blog-card" data-categories="recipes">
+                <div class="blog-image" style="background-color: #f3e5f5;">
+                    <!-- Placeholder for article image -->
+                    <div class="placeholder-text">Image</div>
+                </div>
+                <div class="blog-content">
+                    <h2>5 High-Protein Breakfast Recipes</h2>
+                    <p class="blog-meta">June 1, 2025 | <span class="blog-category">Recipes</span></p>
+                    <p class="blog-excerpt">Start your day right with these delicious high-protein breakfast recipes that will keep you full until lunch.</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </article>
+        </div>
+        
+        <div class="blog-pagination">
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn next">Next →</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="scripts/blog.js"></script>
+</body>
+</html>

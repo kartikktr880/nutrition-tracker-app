@@ -1,0 +1,192 @@
+/* Custom Food Modal Styles */
+.custom-food-modal {
+    max-width: 700px;
+    max-height: 90vh;
+    width: 95%;
+}
+
+.custom-food-modal .modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    max-height: calc(90vh - 140px); /* Subtract header and footer height */
+}
+
+.custom-food-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid var(--background-light);
+    border-radius: var(--border-radius);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.form-group input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.form-group input::-webkit-outer-spin-button,
+.form-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.form-group input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--background-light);
+    padding-bottom: 8px;
+    margin-bottom: 5px;
+}
+
+.section-header h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.servings-section {
+    background-color: var(--background-light);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-top: 10px;
+}
+
+.serving-option-row {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.serving-option-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.serving-option-row .form-row {
+    grid-template-columns: 3fr 2fr 40px;
+}
+
+.form-action {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 8px;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--over-limit);
+}
+
+.icon-btn.remove-serving:hover {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--over-limit);
+}
+
+.btn.secondary.small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+/* Required field indicator */
+.form-group label[for]:after {
+    content: '';
+}
+
+.form-group label[for] + input[required] + label[for]:after,
+.form-group label[for] + select[required] + label[for]:after {
+    content: '*';
+    color: var(--over-limit);
+    margin-left: 3px;
+}
+
+/* Form validation styles */
+.form-group input:invalid {
+    border-color: var(--over-limit);
+}
+
+.form-group input:focus:invalid {
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .nutrition-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .serving-option-row .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .form-action {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        padding-top: 8px;
+    }
+} 

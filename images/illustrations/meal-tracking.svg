@@ -1,0 +1,35 @@
+<svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="250" height="200" rx="10" fill="#F3F4F6"/>
+  <rect x="50" y="30" width="150" height="140" rx="8" fill="white" stroke="#E5E7EB" stroke-width="2"/>
+  <rect x="60" y="50" width="130" height="25" rx="5" fill="#E5E7EB"/>
+  <rect x="60" y="85" width="130" height="25" rx="5" fill="#E5E7EB"/>
+  <rect x="60" y="120" width="130" height="25" rx="5" fill="#E5E7EB"/>
+  
+  <!-- Food icon -->
+  <circle cx="75" cy="63" r="8" fill="#F97316"/>
+  <path d="M71 63H79M75 59V67" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Meal name and calorie count -->
+  <rect x="90" y="59" width="50" height="8" rx="4" fill="#9CA3AF"/>
+  <rect x="150" y="59" width="30" height="8" rx="4" fill="#9CA3AF"/>
+
+  <!-- Food icon -->
+  <circle cx="75" cy="98" r="8" fill="#8B5CF6"/>
+  <path d="M71 98H79M75 94V102" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Meal name and calorie count -->
+  <rect x="90" y="94" width="50" height="8" rx="4" fill="#9CA3AF"/>
+  <rect x="150" y="94" width="30" height="8" rx="4" fill="#9CA3AF"/>
+
+  <!-- Food icon -->
+  <circle cx="75" cy="133" r="8" fill="#06B6D4"/>
+  <path d="M71 133H79M75 129V137" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Meal name and calorie count -->
+  <rect x="90" y="129" width="50" height="8" rx="4" fill="#9CA3AF"/>
+  <rect x="150" y="129" width="30" height="8" rx="4" fill="#9CA3AF"/>
+  
+  <!-- Add button -->
+  <circle cx="200" cy="170" r="15" fill="#6366F1"/>
+  <path d="M195 170H205M200 165V175" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg> 

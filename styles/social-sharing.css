@@ -1,0 +1,151 @@
+/* Social Sharing Styles */
+#share-modal {
+    /* Modal base styles inherit from common modal styles */
+}
+
+.share-modal-content {
+    max-width: 500px;
+}
+
+.share-preview {
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.share-preview-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.share-preview-image {
+    border-radius: var(--border-radius);
+    margin: 15px auto;
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.share-preview-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.share-platforms {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.share-platform-btn {
+    background-color: var(--light-bg);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    gap: 10px;
+    padding: 15px;
+    transition: all 0.2s;
+}
+
+.share-platform-btn:hover {
+    background-color: var(--hover-bg);
+    transform: translateY(-2px);
+}
+
+.share-platform-btn i {
+    font-size: 1.5rem;
+}
+
+.share-platform-btn.facebook i {
+    color: #1877f2;
+}
+
+.share-platform-btn.twitter i {
+    color: #1da1f2;
+}
+
+.share-platform-btn.pinterest i {
+    color: #e60023;
+}
+
+.share-platform-btn.whatsapp i {
+    color: #25d366;
+}
+
+.share-platform-btn.email i {
+    color: #ea4335;
+}
+
+.share-platform-btn.copy-link i {
+    color: #6c757d;
+}
+
+/* Notification Styles */
+.notification {
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius);
+    bottom: 20px;
+    box-shadow: var(--shadow-md);
+    color: white;
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    left: 50%;
+    opacity: 0;
+    padding: 12px 20px;
+    position: fixed;
+    transform: translate(-50%, 20px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 2000;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.notification.success {
+    background-color: var(--success-color);
+}
+
+.notification.error {
+    background-color: var(--danger-color);
+}
+
+/* Share Button Styles */
+.share-btn {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    height: 40px;
+    width: 40px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.share-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Responsive Styles */
+@media (max-width: 480px) {
+    .share-platforms {
+        grid-template-columns: repeat(2, 1fr);
+    }
+} 

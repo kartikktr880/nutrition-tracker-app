@@ -1,0 +1,118 @@
+/* Print styles for Shopping List */
+
+@media print {
+    /* Hide navigation and non-essential elements */
+    header, 
+    footer, 
+    .mobile-nav-toggle,
+    .mobile-nav,
+    .mobile-nav-overlay,
+    .page-tabs,
+    .shopping-list-actions,
+    .btn-edit,
+    #mealPlanTab,
+    #historyTab,
+    .modal {
+        display: none !important;
+    }
+    
+    /* Clean page formatting */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        background: white;
+        color: black;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+    }
+    
+    /* Header formatting */
+    h1 {
+        font-size: 18pt;
+        margin-bottom: 10px;
+    }
+    
+    .page-description {
+        margin-bottom: 20px;
+    }
+    
+    /* Shopping list container */
+    .shopping-list-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+    
+    /* Category tags */
+    .categories-filter .category-tag:not(.active) {
+        display: none;
+    }
+    
+    .categories-filter .category-tag.active {
+        background: none;
+        color: black;
+        font-weight: bold;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+    
+    .categories-filter .category-tag.active::before {
+        content: "Category: ";
+    }
+    
+    /* Shopping list items */
+    .shopping-list-item {
+        padding: 8px 0;
+        page-break-inside: avoid;
+    }
+    
+    .item-checkbox {
+        border: 1px solid #000;
+        margin-right: 10px;
+    }
+    
+    .item-name {
+        font-weight: bold;
+    }
+    
+    .item-quantity {
+        color: #333;
+    }
+    
+    /* Add checkboxes for manual checking */
+    .item-checkbox {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        border: 1px solid black;
+        background-color: white;
+    }
+    
+    /* Add print-specific notes */
+    #listTab::after {
+        content: "Printed on " attr(data-print-date);
+        display: block;
+        margin-top: 20px;
+        font-size: 10pt;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Empty list state (don't print if list is empty) */
+    .empty-list {
+        display: none;
+    }
+    
+    /* Mark purchased items */
+    .shopping-list-item.purchased .item-name {
+        text-decoration: line-through;
+    }
+} 
