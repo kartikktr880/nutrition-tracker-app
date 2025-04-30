@@ -1,8 +1,8 @@
 // footer.js - Handle loading the footer component
 
 /**
- * Footer Component Loader
- * Responsible for loading the footer component
+ * Ultra Premium Footer Component Loader
+ * Responsible for loading the sophisticated footer component
  */
 class FooterLoader {
     constructor() {
@@ -24,9 +24,9 @@ class FooterLoader {
 
         // Load enhanced footer styles
         const footerStyles = document.createElement('link');
-        footerStyles.id = 'footer-enhanced-styles';
+        footerStyles.id = 'footer-ultra-premium-styles';
         footerStyles.rel = 'stylesheet';
-        footerStyles.href = 'styles/footer-premium.css';
+        footerStyles.href = 'styles/footer-ultra-premium.css';
         document.head.appendChild(footerStyles);
 
         // Initialize immediately
@@ -38,6 +38,9 @@ class FooterLoader {
             if (footer) {
                 // Add class to enable animations
                 footer.classList.add('animations-ready');
+                
+                // Add scroll reveal animations
+                this.setupScrollReveal();
             }
         };
     }
@@ -46,7 +49,7 @@ class FooterLoader {
      * Initialize footer loading
      */
     async init() {
-        console.log('👣 Initializing premium footer component...');
+        console.log('✨ Initializing ultra premium footer component...');
         try {
             await this.loadFooter();
             this.setupFooterFunctionality();
@@ -61,15 +64,18 @@ class FooterLoader {
      */
     async loadFooter() {
         this.footerContainer.innerHTML = `
-            <!-- Premium Footer -->
+            <!-- Ultra Premium Footer -->
             <footer class="footer">
-                <!-- Decorative Elements -->
+                <!-- Luxury Decorative Elements -->
                 <div class="footer-decoration">
-                    <div class="decoration-blob"></div>
-                    <div class="decoration-dots"></div>
+                    <div class="decoration-glow"></div>
+                    <div class="decoration-particles"></div>
+                    <div class="decoration-gradient-blob"></div>
+                    <div class="decoration-luxury-pattern"></div>
                     <div class="decoration-gradient-circles">
                         <div class="gradient-circle circle-1"></div>
                         <div class="gradient-circle circle-2"></div>
+                        <div class="gradient-circle circle-3"></div>
                     </div>
                 </div>
 
@@ -79,11 +85,15 @@ class FooterLoader {
                         <!-- Brand Info -->
                         <div class="footer-info">
                             <a href="/" class="footer-logo">
-                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="24" cy="24" r="22" fill="#F4EDE4"/>
-                                    <path d="M16.5 31.5C16.5 31.5 17 18 24 18C31 18 31.5 31.5 31.5 31.5" stroke="#FF8C42" stroke-width="3.5" stroke-linecap="round"/>
-                                    <circle cx="24" cy="14" r="4" fill="#FF8C42"/>
-                                </svg>
+                                <div class="logo-container">
+                                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="26" cy="26" r="24" fill="#F4EDE4"/>
+                                        <path d="M17.5 34.5C17.5 34.5 18 18 26 18C34 18 34.5 34.5 34.5 34.5" stroke="#FF8C42" stroke-width="4" stroke-linecap="round"/>
+                                        <circle cx="26" cy="14" r="4.5" fill="#FF8C42"/>
+                                        <circle cx="26" cy="26" r="24" stroke="rgba(255, 140, 66, 0.3)" stroke-width="1.5"/>
+                                    </svg>
+                                    <div class="logo-glow"></div>
+                                </div>
                                 <span class="footer-logo-text">NutriTrack</span>
                             </a>
                             <p class="footer-description">Your personal companion for maintaining a healthy lifestyle through smart nutrition tracking and personalized insights. Join thousands of users who have transformed their health journey.</p>
@@ -164,6 +174,7 @@ class FooterLoader {
                 
                 <!-- Footer Bottom -->
                 <div class="footer-bottom">
+                    <div class="footer-divider"></div>
                     <div class="footer-bottom-content">
                         <div class="footer-copyright">
                             <p>&copy; ${new Date().getFullYear()} NutriTrack. All rights reserved.</p>
@@ -171,11 +182,11 @@ class FooterLoader {
                         <div class="footer-app-downloads">
                             <a href="#" class="app-download-link" aria-label="Download on App Store">
                                 <img src="images/app-store-badge.png" alt="Download on App Store" 
-                                     onerror="this.src='https://via.placeholder.com/120x40/1A3C34/FFFFFF?text=App+Store'; this.onerror=null;">
+                                     onerror="this.src='https://via.placeholder.com/135x45/1A3C34/FFFFFF?text=App+Store'; this.onerror=null;">
                             </a>
                             <a href="#" class="app-download-link" aria-label="Get it on Google Play">
                                 <img src="images/google-play-badge.png" alt="Get it on Google Play"
-                                     onerror="this.src='https://via.placeholder.com/120x40/1A3C34/FFFFFF?text=Google+Play'; this.onerror=null;">
+                                     onerror="this.src='https://via.placeholder.com/135x45/1A3C34/FFFFFF?text=Google+Play'; this.onerror=null;">
                             </a>
                         </div>
                     </div>
@@ -196,7 +207,9 @@ class FooterLoader {
 
                 <!-- Scroll to Top Button -->
                 <button class="scroll-to-top" aria-label="Scroll to top">
-                    <i class="fas fa-arrow-up"></i>
+                    <div class="scroll-icon-container">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
                 </button>
             </footer>
         `;
@@ -208,6 +221,7 @@ class FooterLoader {
     setupFooterFunctionality() {
         this.setupScrollToTop();
         this.setupLanguageSelector();
+        this.setupParticleEffects();
     }
 
     /**
@@ -255,6 +269,58 @@ class FooterLoader {
             // Here you would typically reload the page or update the UI
             console.log('Language changed to:', languageSelector.value);
         });
+    }
+
+    /**
+     * Setup scroll reveal animations
+     */
+    setupScrollReveal() {
+        const footerElements = document.querySelectorAll('.footer-info, .footer-links-column, .footer-bottom-content');
+        
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        footerElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+
+    /**
+     * Setup particle effects for an ultra premium look
+     */
+    setupParticleEffects() {
+        const particlesContainer = document.querySelector('.decoration-particles');
+        if (!particlesContainer) return;
+        
+        // Create particle elements
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random position and size
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.width = `${Math.random() * 4 + 1}px`;
+            particle.style.height = particle.style.width;
+            
+            // Random animation delay
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            
+            particlesContainer.appendChild(particle);
+        }
     }
 
     /**
