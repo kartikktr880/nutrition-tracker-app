@@ -1021,75 +1021,6 @@
                 </div>
             </div>
         </section>
-    
-        <!-- Stay Updated Section -->
-        <section class="stay-updated-section">
-        <div class="container">
-                <div class="stay-updated-content">
-                    <div class="premium-badge">
-                        <i class="fas fa-bell"></i>
-                        <span>Never Miss Updates</span>
-                    </div>
-                    <h2 class="section-title">Stay Updated with <span class="premium-text-accent">Nutrition</span></h2>
-                    <p class="section-description">Get the latest nutrition tips, healthy recipes, and exclusive offers delivered to your inbox. Join our community of nutrition enthusiasts!</p>
-                    
-                    <!-- Benefits List -->
-                    <div class="newsletter-benefits">
-                        <div class="benefit-item premium-card">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Weekly personalized meal plans</span>
-                        </div>
-                        <div class="benefit-item premium-card">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Expert nutrition advice</span>
-                        </div>
-                        <div class="benefit-item premium-card">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Exclusive discount codes</span>
-                        </div>
-                    </div>
-                
-                    <form class="home-newsletter-form">
-                        <div class="newsletter-input-group">
-                            <input type="email" class="newsletter-input premium-input" placeholder="Enter your email address" required>
-                            <button type="submit" class="newsletter-button btn-primary">
-                                <span>Subscribe Now</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                        <div class="newsletter-privacy">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Your data is secure with us. We respect your privacy.</span>
-                        </div>
-                    </form>
-
-                    <!-- Trust Badges -->
-                    <div class="trust-badges">
-                        <div class="badge">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>SSL Secured</span>
-                </div>
-                        <div class="badge">
-                            <i class="fas fa-lock"></i>
-                            <span>Privacy First</span>
-            </div>
-                        <div class="badge">
-                            <i class="fas fa-medal"></i>
-                            <span>Top Rated</span>
-            </div>
-        </div>
-    </div>
-
-                <!-- Decorative Elements -->
-                <div class="stay-updated-decoration">
-                    <div class="decoration-circle"></div>
-                    <div class="decoration-dots"></div>
-                    <div class="floating-envelope">
-                        <i class="fas fa-envelope-open-text"></i>
-                    </div>
-                    </div>
-                    </div>
-        </section>
     </main>
     
     <!-- Footer Container -->
@@ -1106,14 +1037,6 @@
             // Initialize the unified auth handler
             if (window.auth) {
                 window.auth.initAuthHandler();
-            }
-            
-            // Ensure stay-updated section is visible
-            const stayUpdatedSection = document.querySelector('.stay-updated-section');
-            if (stayUpdatedSection) {
-                stayUpdatedSection.style.opacity = '1';
-                stayUpdatedSection.style.visibility = 'visible';
-                stayUpdatedSection.classList.add('in-view');
             }
         });
     </script>
