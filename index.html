@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="styles/premium-elements.css">
     <link rel="stylesheet" href="styles/premium-dark-mode.css">
     <link rel="stylesheet" href="styles/premium-header.css">
-    <link rel="stylesheet" href="styles/premium-steps.css">
+    <link rel="stylesheet" href="styles/premium-features-showcase.css">
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -359,6 +359,13 @@
     </style>
 </head>
 <body>
+    <!-- Premium Announcement Bar -->
+    <div class="premium-announcement-bar">
+        <div class="container">
+            <span>🎉 Special offer: 30% off Premium Plan for a limited time! <a href="#" style="color: #FFA668; text-decoration: underline; font-weight: 600;">Upgrade now</a></span>
+        </div>
+    </div>
+    
     <!-- CRITICAL FIX SCRIPT: Fix header icons and dropdowns immediately -->
     <script>
     (function() {
@@ -470,36 +477,63 @@
 
             <!-- Main Navigation -->
             <nav class="main-nav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="index.html" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="features.html" class="nav-link dropdown-toggle">Features</a>
-                        <div class="dropdown-menu">
-                            <a href="meal-planning.html" class="dropdown-item">Meal Planning</a>
-                            <a href="nutrition-analytics.html" class="dropdown-item">Nutrition Analytics</a>
-                            <a href="recipe-finder.html" class="dropdown-item">Recipe Finder</a>
-                            <a href="progress-tracking.html" class="dropdown-item">Progress Tracking</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pricing.html" class="nav-link">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="resources.html" class="nav-link dropdown-toggle">Resources</a>
-                        <div class="dropdown-menu">
-                            <a href="blog.html" class="dropdown-item">Blog</a>
-                            <a href="guides.html" class="dropdown-item">Guides</a>
-                            <a href="calculators.html" class="dropdown-item">Calculators</a>
-                            <a href="faq.html" class="dropdown-item">FAQ</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a href="about.html" class="nav-link">About Us</a>
-                    </li>
-                </ul>
-            </nav>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="features.html" class="nav-link dropdown-toggle">Features</a>
+                            <div class="dropdown-menu">
+                                <a href="meal-planning.html" class="dropdown-item">
+                                    <i class="fas fa-utensils" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Meal Planning
+                                </a>
+                                <a href="nutrition-analytics.html" class="dropdown-item">
+                                    <i class="fas fa-chart-pie" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Nutrition Analytics
+                                </a>
+                                <a href="recipe-finder.html" class="dropdown-item">
+                                    <i class="fas fa-search" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Recipe Finder
+                                </a>
+                                <a href="progress-tracking.html" class="dropdown-item">
+                                    <i class="fas fa-chart-line" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Progress Tracking
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pricing.html" class="nav-link">Pricing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="resources.html" class="nav-link dropdown-toggle">Resources</a>
+                            <div class="dropdown-menu">
+                                <a href="blog.html" class="dropdown-item">
+                                    <i class="fas fa-newspaper" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Blog
+                                </a>
+                                <a href="guides.html" class="dropdown-item">
+                                    <i class="fas fa-book" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Guides
+                                </a>
+                                <a href="calculators.html" class="dropdown-item">
+                                    <i class="fas fa-calculator" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    Calculators
+                                </a>
+                                <a href="faq.html" class="dropdown-item">
+                                    <i class="fas fa-question-circle" style="margin-right: 10px; color: #2A5E50;"></i>
+                                    FAQ
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="premium.html" class="nav-link">
+                                Premium
+                                <span class="nav-premium-badge">New</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
 
             <!-- User Actions -->
             <div class="user-actions">
@@ -554,18 +588,30 @@
                         </svg>
                     </div>
                     <div class="dropdown-menu">
-                        <a href="profile.html" class="dropdown-item">My Profile</a>
-                        <a href="dashboard.html" class="dropdown-item">Dashboard</a>
-                        <a href="settings.html" class="dropdown-item">Settings</a>
-                        <a href="logout.html" class="dropdown-item">Logout</a>
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user" style="margin-right: 10px; color: #2A5E50;"></i>
+                            My Profile
+                        </a>
+                        <a href="dashboard.html" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt" style="margin-right: 10px; color: #2A5E50;"></i>
+                            Dashboard
+                        </a>
+                        <a href="settings.html" class="dropdown-item">
+                            <i class="fas fa-cog" style="margin-right: 10px; color: #2A5E50;"></i>
+                            Settings
+                        </a>
+                        <a href="logout.html" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt" style="margin-right: 10px; color: #2A5E50;"></i>
+                            Logout
+                        </a>
                     </div>
                 </div>
                 
                 <!-- Mobile Menu Toggle -->
                 <div class="mobile-menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
                 </div>
             </div>
         </div>
@@ -577,7 +623,7 @@
                     <a href="index.html" class="mobile-nav-link">Home</a>
                 </li>
                 <li class="mobile-nav-item mobile-dropdown">
-                    <a href="javascript:void(0);" class="mobile-nav-link dropdown-toggle">Features</a>
+                    <a href="javascript:void(0);" class="mobile-nav-link">Features</a>
                     <div class="mobile-dropdown-menu">
                         <a href="meal-planning.html" class="mobile-dropdown-item">Meal Planning</a>
                         <a href="nutrition-analytics.html" class="mobile-dropdown-item">Nutrition Analytics</a>
@@ -589,7 +635,7 @@
                     <a href="pricing.html" class="mobile-nav-link">Pricing</a>
                 </li>
                 <li class="mobile-nav-item mobile-dropdown">
-                    <a href="javascript:void(0);" class="mobile-nav-link dropdown-toggle">Resources</a>
+                    <a href="javascript:void(0);" class="mobile-nav-link">Resources</a>
                     <div class="mobile-dropdown-menu">
                         <a href="blog.html" class="mobile-dropdown-item">Blog</a>
                         <a href="guides.html" class="mobile-dropdown-item">Guides</a>
@@ -598,7 +644,7 @@
                     </div>
                 </li>
                 <li class="mobile-nav-item">
-                    <a href="about.html" class="mobile-nav-link">About Us</a>
+                    <a href="premium.html" class="mobile-nav-link">Premium <span class="nav-premium-badge">New</span></a>
                 </li>
             </ul>
             
@@ -653,6 +699,128 @@
                         <div class="floating-badge">
                             <i class="fas fa-star"></i>
                             <span>Rated #1 Nutrition App</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Premium Features Showcase -->
+        <section class="premium-features-showcase">
+            <div class="container">
+                <div class="premium-showcase-header">
+                    <div class="premium-badge">
+                        <i class="fas fa-crown"></i>
+                        <span>Premium Experience</span>
+                    </div>
+                    <h2>Unlock Premium Features</h2>
+                    <p>Elevate your nutrition journey with our premium features designed to provide personalized insights and advanced tracking capabilities</p>
+                </div>
+                
+                <div class="premium-features-grid">
+                    <!-- Premium Feature 1 -->
+                    <div class="premium-feature-card">
+                        <span class="premium-feature-badge">Popular</span>
+                        <div class="premium-feature-header">
+                            <div class="premium-feature-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="premium-feature-title">
+                                <h3>AI Nutrition Coach</h3>
+                                <span>Personalized Guidance</span>
+                            </div>
+                        </div>
+                        <div class="premium-feature-content">
+                            <p class="premium-feature-desc">Get personalized nutrition recommendations based on your goals, preferences, and progress with our advanced AI coach.</p>
+                            <ul class="premium-feature-list">
+                                <li>Custom meal suggestions</li>
+                                <li>Adaptive nutrition plans</li>
+                                <li>Real-time feedback</li>
+                                <li>Goal-based adjustments</li>
+                            </ul>
+                        </div>
+                        <div class="premium-feature-footer">
+                            <div class="premium-feature-price">
+                                <span class="old-price">$9.99/mo</span>
+                                <span class="current-price">$6.99/mo</span>
+                            </div>
+                            <a href="#" class="premium-feature-btn">Try Now</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Feature 2 -->
+                    <div class="premium-feature-card">
+                        <div class="premium-feature-header">
+                            <div class="premium-feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="premium-feature-title">
+                                <h3>Advanced Analytics</h3>
+                                <span>Detailed Insights</span>
+                            </div>
+                        </div>
+                        <div class="premium-feature-content">
+                            <p class="premium-feature-desc">Dive deep into your nutrition data with comprehensive analytics, trends, and visual reports to optimize your diet.</p>
+                            <ul class="premium-feature-list">
+                                <li>Nutrient correlation insights</li>
+                                <li>Custom report generation</li>
+                                <li>Progress prediction</li>
+                                <li>Benchmark comparisons</li>
+                            </ul>
+                        </div>
+                        <div class="premium-feature-footer">
+                            <div class="premium-feature-price">
+                                <span class="old-price">$7.99/mo</span>
+                                <span class="current-price">$4.99/mo</span>
+                            </div>
+                            <a href="#" class="premium-feature-btn">Try Now</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Feature 3 -->
+                    <div class="premium-feature-card">
+                        <span class="premium-feature-badge">New</span>
+                        <div class="premium-feature-header">
+                            <div class="premium-feature-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <div class="premium-feature-title">
+                                <h3>Food Recognition</h3>
+                                <span>Instant Tracking</span>
+                            </div>
+                        </div>
+                        <div class="premium-feature-content">
+                            <p class="premium-feature-desc">Simply take a photo of your meal and our advanced AI identifies all foods, portions, and calculates nutritional values automatically.</p>
+                            <ul class="premium-feature-list">
+                                <li>Multi-food recognition</li>
+                                <li>Portion estimation</li>
+                                <li>Ingredient breakdown</li>
+                                <li>Restaurant menu scanning</li>
+                            </ul>
+                        </div>
+                        <div class="premium-feature-footer">
+                            <div class="premium-feature-price">
+                                <span class="old-price">$8.99/mo</span>
+                                <span class="current-price">$5.99/mo</span>
+                            </div>
+                            <a href="#" class="premium-feature-btn">Try Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Premium Feature Highlight -->
+                <div class="premium-feature-highlight">
+                    <div class="premium-highlight-content">
+                        <div class="premium-highlight-text">
+                            <h3>All-in-One Premium Bundle</h3>
+                            <p>Get unlimited access to all premium features including AI Coach, Advanced Analytics, Food Recognition, and more for one low price.</p>
+                            <a href="#" class="premium-feature-btn">
+                                <i class="fas fa-crown" style="margin-right: 8px;"></i>
+                                Get Premium Bundle
+                            </a>
+                        </div>
+                        <div class="premium-highlight-image">
+                            <img src="images/premium-bundle.png" alt="Premium Bundle Features" onerror="this.src='https://via.placeholder.com/400x300/2A5E50/FFFFFF?text=Premium+Bundle'; this.onerror=null;">
                         </div>
                     </div>
                 </div>
