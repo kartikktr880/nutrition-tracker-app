@@ -1,0 +1,737 @@
+/* 
+ * premium-steps.css
+ * Premium styles and animations for the step section
+ */
+
+/* Custom step icon colors */
+:root {
+    --step-icon-1-color: 255, 140, 66; /* Accent color */
+    --step-icon-2-color: 42, 157, 143; /* Primary color */
+    --step-icon-3-color: 231, 111, 81; /* Secondary accent */
+    --step-icon-4-color: 38, 70, 83; /* Dark blue-green */
+}
+
+/* Step section with enhanced design */
+.steps-section {
+    padding: 5rem 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    z-index: 10 !important;
+}
+
+/* Background effects for section */
+.steps-section::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    right: -50% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.05) 0%, transparent 70%) !important;
+    z-index: -1 !important;
+}
+
+/* Enhanced step container */
+.steps-grid,
+.steps-container,
+.step-grid,
+.steps-wrapper {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+    gap: 30px !important;
+    position: relative !important;
+}
+
+/* Premium step card styling */
+.step, 
+.step-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 40px 28px !important;
+    background: var(--card-bg, white) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(var(--primary-rgb), 0.05) !important;
+    transition: all 0.5s cubic-bezier(0.2, 0.85, 0.4, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    z-index: 2 !important;
+    transform: translateY(0) !important;
+}
+
+/* Elegant hover effect */
+.step:hover,
+.step-card:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(var(--primary-rgb), 0.1) !important;
+}
+
+/* Premium gradient line on hover */
+.step::after,
+.step-card::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 5px !important;
+    background: linear-gradient(90deg, var(--primary-color, #2A9D8F), var(--accent-color, #FF8C42)) !important;
+    transform: scaleX(0) !important;
+    transform-origin: left !important;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    z-index: 5 !important;
+}
+
+.step:hover::after,
+.step-card:hover::after {
+    transform: scaleX(1) !important;
+}
+
+/* Premium number styling */
+.step-number {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, var(--accent-color, #FF8C42), var(--accent-color-dark, #F26419)) !important;
+    color: white !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 8px 25px rgba(var(--accent-rgb, 255, 140, 66), 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.25) !important;
+    transition: all 0.4s ease !important;
+}
+
+.step:hover .step-number,
+.step-card:hover .step-number {
+    transform: scale(1.1) !important;
+    box-shadow: 0 12px 30px rgba(var(--accent-rgb, 255, 140, 66), 0.4) !important;
+}
+
+/* Premium icon styling with enhanced colors */
+.step-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, rgba(var(--primary-rgb, 42, 157, 143), 0.1), rgba(var(--primary-rgb, 42, 157, 143), 0.2)) !important;
+    margin-bottom: 20px !important;
+    color: var(--primary-color, #2A9D8F) !important;
+    font-size: 28px !important;
+    transition: all 0.4s ease !important;
+    box-shadow: 0 8px 20px rgba(var(--primary-rgb, 42, 157, 143), 0.15) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Icon shimmer effect */
+.step-icon::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    left: -50% !important;
+    width: 200% !important;
+    height: 200% !important;
+    background: linear-gradient(
+        to right, 
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    ) !important;
+    transform: rotate(30deg) !important;
+    animation: shimmerEffect 3s infinite !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.step:hover .step-icon::after {
+    opacity: 1 !important;
+}
+
+@keyframes shimmerEffect {
+    from {
+        transform: translateX(-100%) rotate(30deg);
+    }
+    to {
+        transform: translateX(100%) rotate(30deg);
+    }
+}
+
+/* Pulse animation for icons */
+@keyframes iconPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(var(--primary-rgb, 42, 157, 143), 0.15);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(var(--primary-rgb, 42, 157, 143), 0.25);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(var(--primary-rgb, 42, 157, 143), 0.15);
+    }
+}
+
+/* Apply pulse animation to each step icon with staggered delays */
+.steps-grid .step:nth-child(1) .step-icon,
+.steps-container .step:nth-child(1) .step-icon,
+.step-grid .step:nth-child(1) .step-icon {
+    animation: iconPulse 3s ease-in-out infinite !important;
+    animation-delay: 0s !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-1-color), 0.15), rgba(var(--step-icon-1-color), 0.3)) !important;
+    color: rgb(var(--step-icon-1-color)) !important;
+    box-shadow: 0 8px 20px rgba(var(--step-icon-1-color), 0.2) !important;
+}
+
+.steps-grid .step:nth-child(2) .step-icon,
+.steps-container .step:nth-child(2) .step-icon,
+.step-grid .step:nth-child(2) .step-icon {
+    animation: iconPulse 3s ease-in-out infinite !important;
+    animation-delay: 0.5s !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-2-color), 0.15), rgba(var(--step-icon-2-color), 0.3)) !important;
+    color: rgb(var(--step-icon-2-color)) !important;
+    box-shadow: 0 8px 20px rgba(var(--step-icon-2-color), 0.2) !important;
+}
+
+.steps-grid .step:nth-child(3) .step-icon,
+.steps-container .step:nth-child(3) .step-icon,
+.step-grid .step:nth-child(3) .step-icon {
+    animation: iconPulse 3s ease-in-out infinite !important;
+    animation-delay: 1s !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-3-color), 0.15), rgba(var(--step-icon-3-color), 0.3)) !important;
+    color: rgb(var(--step-icon-3-color)) !important;
+    box-shadow: 0 8px 20px rgba(var(--step-icon-3-color), 0.2) !important;
+}
+
+.steps-grid .step:nth-child(4) .step-icon,
+.steps-container .step:nth-child(4) .step-icon,
+.step-grid .step:nth-child(4) .step-icon {
+    animation: iconPulse 3s ease-in-out infinite !important;
+    animation-delay: 1.5s !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-4-color), 0.15), rgba(var(--step-icon-4-color), 0.3)) !important;
+    color: rgb(var(--step-icon-4-color)) !important;
+    box-shadow: 0 8px 20px rgba(var(--step-icon-4-color), 0.2) !important;
+}
+
+/* Stop pulse animation on hover and apply hover effect instead */
+.step:hover .step-icon,
+.step-card:hover .step-icon {
+    animation: none !important;
+}
+
+/* Custom step icon colors */
+.steps-grid .step:nth-child(1):hover .step-icon,
+.steps-container .step:nth-child(1):hover .step-icon,
+.step-grid .step:nth-child(1):hover .step-icon {
+    transform: rotate(5deg) scale(1.1) !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-1-color), 0.2), rgba(var(--step-icon-1-color), 0.4)) !important;
+    box-shadow: 0 12px 30px rgba(var(--step-icon-1-color), 0.3) !important;
+}
+
+.steps-grid .step:nth-child(2):hover .step-icon,
+.steps-container .step:nth-child(2):hover .step-icon,
+.step-grid .step:nth-child(2):hover .step-icon {
+    transform: rotate(5deg) scale(1.1) !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-2-color), 0.2), rgba(var(--step-icon-2-color), 0.4)) !important;
+    box-shadow: 0 12px 30px rgba(var(--step-icon-2-color), 0.3) !important;
+}
+
+.steps-grid .step:nth-child(3):hover .step-icon,
+.steps-container .step:nth-child(3):hover .step-icon,
+.step-grid .step:nth-child(3):hover .step-icon {
+    transform: rotate(5deg) scale(1.1) !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-3-color), 0.2), rgba(var(--step-icon-3-color), 0.4)) !important;
+    box-shadow: 0 12px 30px rgba(var(--step-icon-3-color), 0.3) !important;
+}
+
+.steps-grid .step:nth-child(4):hover .step-icon,
+.steps-container .step:nth-child(4):hover .step-icon,
+.step-grid .step:nth-child(4):hover .step-icon {
+    transform: rotate(5deg) scale(1.1) !important;
+    background: linear-gradient(135deg, rgba(var(--step-icon-4-color), 0.2), rgba(var(--step-icon-4-color), 0.4)) !important;
+    box-shadow: 0 12px 30px rgba(var(--step-icon-4-color), 0.3) !important;
+}
+
+/* Premium content styling */
+.step-title {
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: var(--heading-color, #222) !important;
+    margin: 0 0 15px !important;
+    transition: color 0.3s ease !important;
+}
+
+.step:hover .step-title,
+.step-card:hover .step-title {
+    color: var(--primary-color, #2A9D8F) !important;
+}
+
+.step-description, 
+.step p {
+    font-size: 1.05rem !important;
+    line-height: 1.7 !important;
+    color: var(--text-color, #555) !important;
+    transition: color 0.3s ease !important;
+}
+
+/* Staggered animation for steps */
+.steps-grid .step:nth-child(1),
+.steps-container .step:nth-child(1),
+.step-grid .step:nth-child(1) {
+    animation: stepAppearPremium 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+    animation-delay: 0.1s !important;
+}
+
+.steps-grid .step:nth-child(2),
+.steps-container .step:nth-child(2),
+.step-grid .step:nth-child(2) {
+    animation: stepAppearPremium 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+    animation-delay: 0.3s !important;
+}
+
+.steps-grid .step:nth-child(3),
+.steps-container .step:nth-child(3),
+.step-grid .step:nth-child(3) {
+    animation: stepAppearPremium 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+    animation-delay: 0.5s !important;
+}
+
+.steps-grid .step:nth-child(4),
+.steps-container .step:nth-child(4),
+.step-grid .step:nth-child(4) {
+    animation: stepAppearPremium 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+    animation-delay: 0.7s !important;
+}
+
+/* Premium animations */
+@keyframes stepAppearPremium {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dark mode enhancements */
+html.dark-mode .step,
+html.dark-mode .step-card,
+html.dark-theme .step,
+html.dark-theme .step-card {
+    background-color: rgba(26, 60, 52, 0.8) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+html.dark-mode .step:hover,
+html.dark-mode .step-card:hover,
+html.dark-theme .step:hover,
+html.dark-theme .step-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark-mode .step-title,
+html.dark-theme .step-title {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html.dark-mode .step-description,
+html.dark-mode .step p,
+html.dark-theme .step-description,
+html.dark-theme .step p {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .steps-grid,
+    .steps-container,
+    .step-grid,
+    .steps-wrapper {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .step,
+    .step-card {
+        padding: 30px 20px !important;
+    }
+    
+    .step-icon {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 24px !important;
+    }
+    
+    .step-title {
+        font-size: 1.4rem !important;
+    }
+}
+
+/* Premium Steps Section Styling
+ * This file enhances the How It Works steps section with premium styling
+ * and fixes the orientation to keep the steps centered
+ */
+
+/* Enhanced Steps Container Styling */
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 0;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Timeline for steps */
+.steps-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    background: linear-gradient(to bottom, transparent, var(--primary-color, #1A3C34) 10%, var(--primary-color, #1A3C34) 90%, transparent);
+    transform: translateX(-50%);
+    border-radius: 4px;
+    z-index: 1;
+}
+
+/* Enhanced Step Styling */
+.step {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 4rem;
+    position: relative;
+    z-index: 2;
+}
+
+.step:last-child {
+    margin-bottom: 0;
+}
+
+/* Create alternating layout with even steps on the right */
+.step:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+/* Step Number Styling */
+.step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-color, #1A3C34);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: 3px solid white;
+}
+
+.dark-mode .step-number {
+    background: var(--dark-gradient-accent, linear-gradient(135deg, #FF8C42 0%, #E07023 100%));
+    border-color: var(--dark-background, #1a1a1a);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Step Content Styling */
+.step-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: calc(50% - 40px);
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.step:nth-child(odd) .step-content {
+    margin-right: auto;
+    margin-left: 40px;
+}
+
+.step:nth-child(even) .step-content {
+    margin-left: auto;
+    margin-right: 40px;
+}
+
+.step-content::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    background: white;
+    transform: translateY(-50%) rotate(45deg);
+    z-index: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.step:nth-child(odd) .step-content::before {
+    left: -10px;
+    border-right: none;
+    border-top: none;
+}
+
+.step:nth-child(even) .step-content::before {
+    right: -10px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.step-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode styling */
+.dark-mode .step-content {
+    background: var(--dark-gradient-card, linear-gradient(145deg, #1e3d36 0%, #162c27 100%));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .step-content::before {
+    background: var(--dark-background-light, #2d2d2d);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Step Icon Styling */
+.step-icon {
+    background: rgba(26, 60, 52, 0.1);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.step-icon i {
+    font-size: 1.75rem;
+    color: var(--primary-color, #1A3C34);
+    transition: all 0.3s ease;
+}
+
+.step:hover .step-icon {
+    background: var(--primary-color, #1A3C34);
+}
+
+.step:hover .step-icon i {
+    color: white;
+    transform: scale(1.1);
+}
+
+.dark-mode .step-icon {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .step-icon i {
+    color: var(--dark-accent-color, #FF8C42);
+}
+
+.dark-mode .step:hover .step-icon {
+    background: var(--dark-accent-color, #FF8C42);
+}
+
+.dark-mode .step:hover .step-icon i {
+    color: white;
+}
+
+/* Step Content Typography */
+.step-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: var(--primary-color, #1A3C34);
+}
+
+.step-content p {
+    font-size: 1rem;
+    color: var(--text-secondary, #4A5568);
+    margin-bottom: 1rem;
+}
+
+.dark-mode .step-content h3 {
+    color: white;
+}
+
+.dark-mode .step-content p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Step Features */
+.step-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.step-features li {
+    background: rgba(26, 60, 52, 0.1);
+    color: var(--primary-color, #1A3C34);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.3s ease;
+}
+
+.step-features li i {
+    font-size: 0.75rem;
+}
+
+.step-features li:hover {
+    background: var(--primary-color, #1A3C34);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.dark-mode .step-features li {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .step-features li:hover {
+    background: var(--dark-accent-color, #FF8C42);
+}
+
+/* CTA Button Container */
+.cta-button-container {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-glow {
+    background: var(--accent-color, #FF8C42);
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 5px 15px rgba(255, 140, 66, 0.4);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    animation: shine 3s infinite;
+}
+
+.btn-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 140, 66, 0.5);
+}
+
+.step-support-text {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #4A5568);
+    font-weight: 500;
+}
+
+.dark-mode .step-support-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Animation for the shine effect */
+@keyframes shine {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .steps-container::before {
+        left: 30px;
+    }
+    
+    .step {
+        flex-direction: row !important;
+    }
+    
+    .step-number {
+        left: 30px;
+        transform: translateX(0);
+    }
+    
+    .step-content {
+        width: calc(100% - 80px);
+        margin-left: 80px !important;
+        margin-right: 0 !important;
+    }
+    
+    .step-content::before {
+        left: -10px !important;
+        right: auto !important;
+        border-right: none !important;
+        border-top: none !important;
+        border-left: 1px solid rgba(0, 0, 0, 0.05) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .step-content {
+        padding: 1.5rem;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+    
+    .btn-glow {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+} 
