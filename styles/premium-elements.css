@@ -1,0 +1,288 @@
+/* Premium UI Elements for Nutrition Tracker
+ * This file adds sophisticated UI components like premium cards,
+ * custom-styled form elements, and animated indicators
+ */
+
+/* Premium Card Variants */
+.premium-card {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  border: 1px solid rgba(26, 60, 52, 0.08);
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(26, 60, 52, 0.05), transparent 60%);
+  z-index: 0;
+}
+
+.premium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.premium-card .card-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Premium Badge */
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #1A3C34 0%, #2A5E50 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(26, 60, 52, 0.2);
+  margin-bottom: 1rem;
+}
+
+.premium-badge i {
+  margin-right: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Premium Highlight Text */
+.premium-text {
+  background: linear-gradient(135deg, #2A5E50 0%, #1A3C34 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.premium-text-accent {
+  background: linear-gradient(135deg, #FF8C42 0%, #E07023 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* Premium Divider */
+.premium-divider {
+  height: 3px;
+  background: linear-gradient(to right, #1A3C34, #2A5E50, #1A3C34);
+  margin: 2rem 0;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-divider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: translateX(-100%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Premium Form Elements */
+.premium-input {
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(26, 60, 52, 0.2);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.premium-input:focus {
+  border-color: #1A3C34;
+  box-shadow: 0 0 0 3px rgba(26, 60, 52, 0.1);
+  outline: none;
+}
+
+.dark-mode .premium-input {
+  background-color: rgba(15, 44, 38, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f0f0;
+}
+
+.dark-mode .premium-input:focus {
+  border-color: #2A5E50;
+  box-shadow: 0 0 0 3px rgba(42, 94, 80, 0.2);
+}
+
+/* Premium Progress Bar */
+.premium-progress {
+  height: 0.5rem;
+  background-color: rgba(26, 60, 52, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.premium-progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #1A3C34, #2A5E50);
+  border-radius: 1rem;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  animation: progress-shine 2s infinite;
+}
+
+.dark-mode .premium-progress {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .premium-progress-bar {
+  background: linear-gradient(to right, #2A5E50, #3D5A80);
+}
+
+@keyframes progress-shine {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Premium Toggle Switch */
+.premium-toggle {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.premium-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.premium-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(26, 60, 52, 0.2);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.premium-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .premium-toggle-slider {
+  background: linear-gradient(135deg, #1A3C34 0%, #2A5E50 100%);
+}
+
+input:checked + .premium-toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.dark-mode .premium-toggle-slider {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode input:checked + .premium-toggle-slider {
+  background: linear-gradient(135deg, #2A5E50 0%, #3D5A80 100%);
+}
+
+/* Premium Select Element */
+.premium-select-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.premium-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 1rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(26, 60, 52, 0.2);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding-right: 2.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.premium-select:focus {
+  border-color: #1A3C34;
+  box-shadow: 0 0 0 3px rgba(26, 60, 52, 0.1);
+  outline: none;
+}
+
+.premium-select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1A3C34;
+  pointer-events: none;
+}
+
+.dark-mode .premium-select {
+  background-color: rgba(15, 44, 38, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f0f0;
+}
+
+.dark-mode .premium-select-arrow {
+  border-top-color: #f0f0f0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .premium-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .premium-input,
+  .premium-select {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+} 
