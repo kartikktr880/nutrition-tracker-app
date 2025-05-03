@@ -1,0 +1,62 @@
+/**
+ * This file disables all floating-badge styles from other CSS files
+ * It should be loaded last in the HTML
+ */
+
+/* We're using attribute selectors with !important to completely override
+   other floating-badge styles from all CSS files */
+[class~="floating-badge"] {
+    /* These properties will make sure our definitive rule in complete-fixes.css takes precedence */
+    position: absolute !important;
+    left: 50% !important;
+    bottom: 16px !important;
+    transform: translateX(-50%) !important;
+    padding: 4px 14px !important;
+    border-radius: 16px !important;
+    background: rgba(26, 60, 52, 0.95) !important;
+    color: #FF8C42 !important;
+    z-index: 999 !important;
+    animation: definitiveBadgeFloat 2.2s ease-in-out infinite alternate !important;
+}
+
+/* Prevent any other float animations from working */
+@keyframes float {
+    0%, 50%, 100% {
+        transform: translateX(-50%) !important; /* Force our transform */
+    }
+}
+
+/* Disable pulse animations */
+@keyframes pulse {
+    0%, 50%, 100% {
+        transform: none !important;
+    }
+}
+
+/* Disable any existing animations */
+.floating-badge {
+    animation: none !important;
+    animation: definitiveBadgeFloat 2.2s ease-in-out infinite alternate !important;
+}
+
+/* Target specifically positioned floating badges in hero sections */
+.hero-image .floating-badge,
+.hero-section .floating-badge {
+    position: absolute !important;
+    left: 50% !important;
+    bottom: 16px !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    right: auto !important;
+}
+
+/* Apply to different variations to ensure coverage */
+div.floating-badge,
+span.floating-badge,
+.hero-image > .floating-badge,
+.floating-badge[class*="badge"] {
+    position: absolute !important;
+    left: 50% !important;
+    bottom: 16px !important;
+    transform: translateX(-50%) !important;
+} 

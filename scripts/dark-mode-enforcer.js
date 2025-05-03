@@ -8,11 +8,12 @@
     function forceDarkMode() {
         // Add dark mode classes to html and body
         document.documentElement.classList.add('dark-mode', 'dark-theme');
-        document.body.classList.add('dark-theme', 'dark-mode');
+        document.body.classList.add('dark-theme', 'dark-mode', 'gradient-background');
         
         // Store dark mode preference
         localStorage.setItem('darkMode', 'true');
         localStorage.setItem('dark-theme', 'true');
+        localStorage.setItem('theme', 'dark');
         
         // Remove any light theme related classes
         document.documentElement.classList.remove('light-mode', 'light-theme');
@@ -46,7 +47,18 @@
             metaThemeColor.setAttribute('name', 'theme-color');
             document.head.appendChild(metaThemeColor);
         }
-        metaThemeColor.setAttribute('content', '#1a1a1a');
+        metaThemeColor.setAttribute('content', '#1A3C34');
+        
+        // Ensure the floating badge is visible
+        const floatingBadges = document.querySelectorAll('.floating-badge');
+        if (floatingBadges.length) {
+            floatingBadges.forEach(badge => {
+                badge.style.display = 'flex';
+                badge.style.visibility = 'visible';
+                badge.style.opacity = '1';
+                badge.style.zIndex = '999';
+            });
+        }
         
         console.log('Dark mode enforced by dark-mode-enforcer.js');
     }
@@ -56,6 +68,13 @@
     
     // Also run when DOM is ready to ensure it works even if script is loaded later
     document.addEventListener('DOMContentLoaded', forceDarkMode);
+    
+    // Also run when page becomes visible (in case of tab switching)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            forceDarkMode();
+        }
+    });
     
     // Override any attempts to switch themes
     window.addEventListener('storage', function(e) {
@@ -85,4 +104,7 @@
             return 'dark';
         };
     }
+    
+    // Run again after a slight delay to catch any late theme toggles
+    setTimeout(forceDarkMode, 500);
 })(); 

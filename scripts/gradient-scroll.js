@@ -1,19 +1,10 @@
 /**
  * Gradient Scroll Effect
  * Changes background gradient intensity based on scroll position
- * Optimized for performance and visual appeal
  */
 
 (function() {
-    // Track if we're in the process of updating to avoid unnecessary reflows
-    let ticking = false;
-    
-    // Cache DOM elements and values for performance
-    let styleEl = null;
-    let docHeight = 0;
-    let viewportHeight = window.innerHeight;
-    
-    // Get total document height - call this only when needed (window resize)
+    // Get total document height
     const getDocHeight = () => {
         return Math.max(
             document.body.scrollHeight,
@@ -25,15 +16,18 @@
         );
     };
     
-    // Calculate scroll percentage (0-100) - more efficient
+    // Calculate scroll percentage (0-100)
     const getScrollPercent = () => {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        return Math.min(100, Math.max(0, (scrollTop / (docHeight - viewportHeight)) * 100));
+        const h = getDocHeight();
+        const st = window.pageYOffset || document.documentElement.scrollTop;
+        const vh = window.innerHeight;
+        return Math.min(100, Math.max(0, (st / (h - vh)) * 100));
     };
     
-    // Create the gradient style element once during initialization
+    // Create and update the gradient style element
     const createGradientStyle = () => {
-        styleEl = document.getElementById('dynamic-gradient-style');
+        // Create style element if it doesn't exist
+        let styleEl = document.getElementById('dynamic-gradient-style');
         if (!styleEl) {
             styleEl = document.createElement('style');
             styleEl.id = 'dynamic-gradient-style';
@@ -44,113 +38,112 @@
     
     // Update gradient based on scroll position
     const updateGradient = () => {
-        if (!ticking) {
-            // Use requestAnimationFrame for performance
-            window.requestAnimationFrame(() => {
-                const scrollPercent = getScrollPercent();
-                
-                // Enhanced gradient calculation - smoother transitions
-                // Base color #1A3C34 (HSL: 163, 40%, 26%)
-                // Create a dynamic gradient that evolves as user scrolls
-                
-                // Top gets slightly lighter as you scroll down (more contrast)
-                const topLight = Math.max(28, 36 - (scrollPercent * 0.12));
-                
-                // Middle stays relatively consistent but shifts slightly
-                const middleShade = Math.max(20, 26 - (scrollPercent * 0.06));
-                
-                // Bottom gets darker as you scroll down (more depth)
-                const bottomDark = Math.max(14, 22 - (scrollPercent * 0.15));
-                
-                // Create enhanced gradient CSS with subtle variations
-                const css = `
-                    body:before {
-                        background: linear-gradient(to bottom, 
-                            hsl(163, 40%, ${topLight}%) 0%,
-                            hsl(163, 45%, ${middleShade}%) 50%,
-                            hsl(163, 50%, ${bottomDark}%) 100%
-                        ) !important;
-                        background-attachment: fixed !important;
-                        transition: background 0.5s ease-out !important;
-                    }
-                    
-                    /* Apply consistent styling for feature section backgrounds */
-                    .features-section:before,
-                    .steps-section:before,
-                    .testimonials-section:before,
-                    .cta-section:before,
-                    .newsletter-section:before {
-                        opacity: ${0.8 - (scrollPercent * 0.003)} !important;
-                        transition: opacity 0.5s ease-out !important;
-                    }
-                    
-                    /* Improve card visibility against gradient */
-                    .feature-card, 
-                    .step-card, 
-                    .testimonial-card,
-                    .premium-card {
-                        background-color: rgba(26, 60, 52, ${0.6 + (scrollPercent * 0.002)}) !important;
-                        backdrop-filter: blur(${5 + (scrollPercent * 0.05)}px) !important;
-                    }
-                `;
-                
-                styleEl.innerHTML = css;
-                ticking = false;
-            });
-            
-            ticking = true;
-        }
-    };
-    
-    // Reset calculations on resize
-    const handleResize = () => {
-        viewportHeight = window.innerHeight;
-        docHeight = getDocHeight();
-        updateGradient();
-    };
-    
-    // Initialize the gradient effect
-    const init = () => {
-        // Create the style element
-        styleEl = createGradientStyle();
+        const scrollPercent = getScrollPercent();
+        const styleEl = createGradientStyle();
         
-        // Set initial document height
-        docHeight = getDocHeight();
+        // Calculate gradient stops based on scroll position
+        // As user scrolls down, make the gradient darker
+        const topLight = 36 - (scrollPercent * 0.15); // Use a darker green at the top
+        const bottomDark = 18 - (scrollPercent * 0.12); // Make it even darker at the bottom
+        
+        // Create the gradient CSS with our #1A3C34 shade
+        const css = `
+            body:before {
+                background: linear-gradient(to bottom, 
+                    hsl(163, 40%, ${topLight}%) 0%,
+                    hsl(163, 45%, 26%) 40%,
+                    hsl(163, 50%, ${bottomDark}%) 100%
+                ) !important;
+                background-attachment: fixed !important;
+                z-index: -1 !important;
+                content: "" !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+            
+            /* Override any remaining gray areas */
+            .hero-section, 
+            .hero-content, 
+            .hero-text,
+            .hero-stats,
+            .stat-number,
+            .stat-label,
+            .hero-gradient,
+            .section-background,
+            main > section,
+            .container,
+            .footer,
+            .footer-container,
+            .footer-links-column,
+            .footer-column {
+                background-color: transparent !important;
+                background: transparent !important;
+            }
+            
+            /* Fix stat cards */
+            .hero-stat, .stat-card {
+                background-color: rgba(26, 60, 52, 0.6) !important;
+                backdrop-filter: blur(5px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+        `;
+        
+        styleEl.innerHTML = css;
+    };
+    
+    // Initialize and add scroll event listener
+    const init = () => {
+        // Add dark mode classes to ensure consistency
+        document.documentElement.classList.add('dark-mode', 'dark-theme');
+        document.body.classList.add('dark-theme', 'dark-mode', 'gradient-background');
         
         // Set initial gradient
         updateGradient();
         
-        // Add performance-optimized event listeners
-        window.addEventListener('scroll', updateGradient, { passive: true });
-        window.addEventListener('resize', handleResize, { passive: true });
+        // Update gradient on scroll
+        window.addEventListener('scroll', () => {
+            window.requestAnimationFrame(updateGradient);
+        });
         
-        // Fix any remaining gray areas immediately with a separate style
+        // Update gradient on resize
+        window.addEventListener('resize', () => {
+            window.requestAnimationFrame(updateGradient);
+        });
+        
+        // Fix any remaining gray areas immediately
         const fixGrayAreas = document.createElement('style');
         fixGrayAreas.innerHTML = `
             /* Immediate fix for gray areas */
-            .hero-section, .container, .hero-content, .hero-stats, .main, main, section {
+            .hero-section, .container, .hero-content, .hero-stats, .main, main, section,
+            .footer, .footer-container, .footer-links, .footer-column, .footer-links-column {
                 background-color: transparent !important;
                 background: transparent !important;
             }
             
             /* Force the body background */
             body {
-                background-color: #1A3C34 !important;
+                background-color: transparent !important;
             }
             
-            /* Enhance content visibility */
-            .hero-section h1, .hero-section p, 
-            .features-section h2, .features-section p,
-            .steps-section h2, .steps-section p,
-            .testimonials-section h2, .testimonials-section p,
-            .cta-section h2, .cta-section p,
-            .newsletter-section h2, .newsletter-section p {
-                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+            /* Ensure the floating badge is visible and properly animated */
+            .floating-badge {
+                animation: definitiveBadgeFloat 2.2s ease-in-out infinite alternate !important;
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            @keyframes definitiveBadgeFloat {
+                0% { transform: translateX(-50%) translateY(0); }
+                100% { transform: translateX(-50%) translateY(-10px); }
             }
         `;
         document.head.appendChild(fixGrayAreas);
         
-        console.log('Enhanced gradient scroll effect initialized with performance optimizations');
+        console.log('Enhanced gradient scroll effect initialized');
     };
     
     // Run when DOM is loaded
