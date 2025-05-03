@@ -2373,3 +2373,156 @@ main > section,
 .hero-stat .stat-label {
     color: rgba(255, 255, 255, 0.9) !important;
 }
+
+/* Fix CTA section and footer to match the green gradient background */
+.cta-section,
+#footer-container,
+.footer,
+.footer-container,
+.newsletter-section {
+    background-color: transparent !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Add a subtle overlay for CTA section that blends with the gradient */
+.cta-section::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(to bottom, rgba(26, 60, 52, 0.3), rgba(15, 35, 31, 0.7)) !important;
+    z-index: -1 !important;
+}
+
+/* Style for footer to blend with the gradient */
+#footer-container::before,
+.footer::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(to bottom, rgba(15, 35, 31, 0.8), rgba(10, 25, 20, 0.95)) !important;
+    z-index: -1 !important;
+}
+
+/* Fix content within CTA section */
+.cta-section .container,
+.cta-section .section-background,
+.cta-section .premium-badge,
+.cta-section .section-header,
+.cta-section .cta-buttons,
+.cta-section .cta-features {
+    background-color: transparent !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Make the CTA premium badge stand out */
+.cta-section .premium-badge {
+    background-color: rgba(26, 60, 52, 0.7) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 30px !important;
+    padding: 8px 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Style CTA button */
+.cta-primary-btn,
+.cta-secondary-btn {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.cta-primary-btn {
+    background-color: #FF8C42 !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 28px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3) !important;
+}
+
+.cta-secondary-btn {
+    background-color: rgba(26, 60, 52, 0.7) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 14px 28px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+/* Fix CTA features cards */
+.cta-feature {
+    background-color: rgba(26, 60, 52, 0.6) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+}
+
+/* Fix text colors */
+.cta-section h2,
+.cta-section .premium-text-accent,
+.cta-section p,
+.footer h3,
+.footer h4,
+.footer-links-column h3,
+.footer-bottom {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Add transparency to footer elements */
+.footer .container,
+.footer-container,
+.footer-top,
+.footer-links,
+.footer-links-column,
+.footer-bottom,
+.footer-logo,
+.footer-social,
+.footer-column {
+    background-color: transparent !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Fix the newsletter section */
+.newsletter-section::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(to top, rgba(15, 35, 31, 0.6), rgba(26, 60, 52, 0.3)) !important;
+    z-index: -1 !important;
+}
+
+.newsletter-section .container,
+.newsletter-section .section-background,
+.newsletter-section .section-tag,
+.newsletter-section .section-header,
+.newsletter-section .premium-divider,
+.newsletter-section .newsletter-form,
+.newsletter-section .newsletter-benefits {
+    background-color: transparent !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 5 !important;
+}

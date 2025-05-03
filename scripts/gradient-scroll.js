@@ -55,6 +55,12 @@
                     hsl(163, 50%, ${bottomDark}%) 100%
                 ) !important;
                 background-attachment: fixed !important;
+                height: 100% !important;
+                width: 100% !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: -10 !important;
             }
             
             /* Override any remaining gray areas */
@@ -67,7 +73,11 @@
             .hero-gradient,
             .section-background,
             main > section,
-            .container {
+            .container,
+            .cta-section,
+            .footer,
+            #footer-container,
+            .newsletter-section {
                 background-color: transparent !important;
                 background: transparent !important;
             }
@@ -77,6 +87,24 @@
                 background-color: rgba(26, 60, 52, 0.6) !important;
                 backdrop-filter: blur(5px) !important;
                 border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            
+            /* Fix CTA section and footer */
+            .cta-section::before {
+                z-index: -1 !important;
+                background: linear-gradient(to bottom, 
+                    rgba(26, 60, 52, 0.3), 
+                    rgba(15, 35, 31, 0.7)
+                ) !important;
+            }
+            
+            #footer-container::before,
+            .footer::before {
+                z-index: -1 !important;
+                background: linear-gradient(to bottom, 
+                    rgba(15, 35, 31, 0.8), 
+                    rgba(10, 25, 20, 0.95)
+                ) !important;
             }
         `;
         
@@ -102,7 +130,8 @@
         const fixGrayAreas = document.createElement('style');
         fixGrayAreas.innerHTML = `
             /* Immediate fix for gray areas */
-            .hero-section, .container, .hero-content, .hero-stats, .main, main, section {
+            .hero-section, .container, .hero-content, .hero-stats, .main, main, section,
+            .cta-section, .footer, #footer-container, .newsletter-section {
                 background-color: transparent !important;
                 background: transparent !important;
             }
@@ -110,6 +139,20 @@
             /* Force the body background */
             body {
                 background-color: #1A3C34 !important;
+            }
+            
+            /* Fix CTA section and ensure it's visible */
+            .cta-section {
+                position: relative !important;
+                z-index: 5 !important;
+                color: white !important;
+            }
+            
+            /* Ensure footer is visible */
+            .footer, #footer-container {
+                position: relative !important;
+                z-index: 5 !important;
+                color: white !important;
             }
         `;
         document.head.appendChild(fixGrayAreas);

@@ -354,4 +354,68 @@ tr:hover {
     .footer-logo img {
         filter: brightness(0.9);
     }
+}
+
+/* Additional styles for CTA section and footer */
+.cta-section {
+    background-color: transparent !important;
+    background-image: none !important;
+    position: relative !important;
+    z-index: 1 !important;
+    padding: 3rem 0 !important;
+}
+
+.cta-section h2,
+.cta-section p,
+.cta-section .premium-text-accent {
+    color: var(--dark-text-primary) !important;
+}
+
+.cta-section .card,
+.cta-section .premium-badge,
+.cta-section .feature-card {
+    background-color: rgba(26, 60, 52, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+#footer-container,
+.footer {
+    background-color: transparent !important;
+    background-image: none !important;
+    position: relative !important;
+    z-index: 1 !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.footer-links a,
+.footer-social a {
+    color: var(--dark-text-secondary) !important;
+}
+
+.footer-logo {
+    color: var(--dark-text-primary) !important;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ensure absolutely all sections are transparent */
+.content-section,
+.feature-section,
+.testimonial-section,
+.app-section,
+.partners-section,
+.benefits-section,
+.pricing-section,
+.comparison-section,
+.team-section,
+.contact-section,
+.about-section,
+.cta-section,
+#footer-container,
+.footer,
+.newsletter-section {
+    background-color: transparent !important;
+    background-image: none !important;
 } 
