@@ -1,7 +1,7 @@
 /**
- * NutriTrack Ultra-Premium Footer - Dark Mode Enhanced
+ * NutriTrack Ultra-Premium Footer
  * A sophisticated, high-end footer implementation with luxury animations and effects
- * Optimized for dark mode gradient background
+ * - Modified for dark theme gradient background
  */
 class UltraPremiumFooter {
     constructor() {
@@ -22,7 +22,7 @@ class UltraPremiumFooter {
         if (this.isInitialized) return;
         this.isInitialized = true;
         
-        console.log('✧ Initializing Ultra-Premium Footer Experience (Dark Mode)');
+        console.log('✧ Initializing Ultra-Premium Footer Experience (Dark Theme)');
         
         // Create footer container if it doesn't exist
         this.footerContainer = document.getElementById('footer-container');
@@ -32,12 +32,6 @@ class UltraPremiumFooter {
             document.body.appendChild(this.footerContainer);
         }
 
-        // Set initial styles to ensure transparency
-        this.footerContainer.style.backgroundColor = 'transparent';
-        this.footerContainer.style.backgroundImage = 'none';
-        this.footerContainer.style.position = 'relative';
-        this.footerContainer.style.zIndex = '5';
-
         // Initialize the footer with proper sequence
         this.initializeResources()
             .then(() => this.renderFooter())
@@ -45,7 +39,6 @@ class UltraPremiumFooter {
                 this.setupInteractions();
                 this.setupAnimations();
                 this.revealFooter();
-                this.enforceTransparency();
             })
             .catch(error => {
                 console.error('Failed to initialize premium footer:', error);
@@ -80,13 +73,6 @@ class UltraPremiumFooter {
             preconnect.href = 'https://fonts.googleapis.com';
             document.head.appendChild(preconnect);
             
-            // Ensure our override CSS is loaded
-            const overrideStyleLink = document.createElement('link');
-            overrideStyleLink.id = 'footer-override-styles';
-            overrideStyleLink.rel = 'stylesheet';
-            overrideStyleLink.href = 'styles/footer-override.css';
-            document.head.appendChild(overrideStyleLink);
-            
             // Add the stylesheet
             const styles = document.createElement('link');
             styles.id = styleId;
@@ -100,70 +86,6 @@ class UltraPremiumFooter {
             };
             
             document.head.appendChild(styles);
-        });
-    }
-    
-    /**
-     * Enforce transparency for footer elements
-     */
-    enforceTransparency() {
-        // Add a style element to enforce transparency
-        const transparencyStyle = document.createElement('style');
-        transparencyStyle.id = 'footer-transparency-styles';
-        transparencyStyle.innerHTML = `
-            /* Override footer background to be transparent */
-            #footer-container, 
-            .footer, 
-            .footer-container,
-            .footer-top,
-            .footer-bottom,
-            .footer-links-column,
-            .footer-newsletter,
-            .footer-description,
-            .newsletter-content,
-            .footer-decoration,
-            .newsletter-decoration {
-                background-color: transparent !important;
-                background-image: none !important;
-                position: relative !important;
-                z-index: 5 !important;
-            }
-            
-            /* Create proper overlay for footer */
-            .footer::before {
-                content: '' !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                background: linear-gradient(to bottom, rgba(15, 35, 31, 0.8), rgba(10, 25, 20, 0.95)) !important;
-                z-index: -1 !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-        `;
-        document.head.appendChild(transparencyStyle);
-        
-        // Apply styles to elements directly
-        const footer = document.querySelector('.footer');
-        if (footer) {
-            footer.style.backgroundColor = 'transparent';
-            footer.style.backgroundImage = 'none';
-            footer.style.position = 'relative';
-            footer.style.zIndex = '5';
-        }
-        
-        const footerContainer = document.querySelector('.footer-container');
-        if (footerContainer) {
-            footerContainer.style.backgroundColor = 'transparent';
-            footerContainer.style.backgroundImage = 'none';
-        }
-        
-        // Force all footer sections to be transparent
-        const footerSections = document.querySelectorAll('.footer-top, .footer-bottom, .footer-links-column, .footer-newsletter');
-        footerSections.forEach(section => {
-            section.style.backgroundColor = 'transparent';
-            section.style.backgroundImage = 'none';
         });
     }
     
@@ -283,6 +205,18 @@ class UltraPremiumFooter {
                 </footer>
             `;
             
+            // Apply dark theme styling 
+            const footer = this.footerContainer.querySelector('footer');
+            if (footer) {
+                footer.style.backgroundColor = 'transparent';
+                footer.style.color = '#f0f0f0';
+                footer.style.position = 'relative';
+                footer.style.zIndex = '5';
+                footer.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
+                footer.style.paddingTop = '60px';
+                footer.style.paddingBottom = '30px';
+            }
+            
             // Apply consistent styling to footer logo
             const footerLogo = this.footerContainer.querySelector('.footer-logo a');
             if (footerLogo) {
@@ -326,16 +260,99 @@ class UltraPremiumFooter {
                             circles[1].setAttribute('fill', '#FF8C42'); // Accent circle
                         }
                     }
-                    
-                    const paths = logoSvg.querySelectorAll('path');
-                    if (paths.length > 0) {
-                        paths.forEach(path => {
-                            path.setAttribute('stroke', '#FF8C42');
-                            path.setAttribute('stroke-width', '3');
-                            path.setAttribute('stroke-linecap', 'round');
-                        });
-                    }
                 }
+            }
+            
+            // Style footer container for dark theme
+            const footerContainer = this.footerContainer.querySelector('.footer-container');
+            if (footerContainer) {
+                footerContainer.style.maxWidth = '1200px';
+                footerContainer.style.margin = '0 auto';
+                footerContainer.style.padding = '0 20px';
+                footerContainer.style.position = 'relative';
+                footerContainer.style.zIndex = '2';
+            }
+            
+            // Style footer description
+            const footerDescription = this.footerContainer.querySelector('.footer-description');
+            if (footerDescription) {
+                footerDescription.style.color = 'rgba(244, 237, 228, 0.8)';
+                footerDescription.style.marginTop = '20px';
+                footerDescription.style.marginBottom = '40px';
+                footerDescription.style.maxWidth = '450px';
+                footerDescription.style.lineHeight = '1.6';
+            }
+            
+            // Style footer links
+            const footerLinks = this.footerContainer.querySelectorAll('.footer-links a');
+            footerLinks.forEach(link => {
+                link.style.color = 'rgba(244, 237, 228, 0.8)';
+                link.style.textDecoration = 'none';
+                link.style.transition = 'color 0.3s ease';
+            });
+            
+            // Style footer column headings
+            const footerHeadings = this.footerContainer.querySelectorAll('.footer-column h3');
+            footerHeadings.forEach(heading => {
+                heading.style.color = '#F4EDE4';
+                heading.style.fontSize = '18px';
+                heading.style.fontWeight = '600';
+                heading.style.marginBottom = '15px';
+            });
+
+            // Style footer bottom
+            const footerBottom = this.footerContainer.querySelector('.footer-bottom');
+            if (footerBottom) {
+                footerBottom.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
+                footerBottom.style.paddingTop = '20px';
+                footerBottom.style.marginTop = '40px';
+                footerBottom.style.display = 'flex';
+                footerBottom.style.justifyContent = 'space-between';
+                footerBottom.style.alignItems = 'center';
+                footerBottom.style.flexWrap = 'wrap';
+                footerBottom.style.gap = '20px';
+            }
+            
+            // Style copyright
+            const footerCopyright = this.footerContainer.querySelector('.footer-copyright');
+            if (footerCopyright) {
+                footerCopyright.style.color = 'rgba(244, 237, 228, 0.6)';
+                footerCopyright.style.fontSize = '14px';
+            }
+            
+            // Style social icons
+            const socialIcons = this.footerContainer.querySelectorAll('.social-icon');
+            socialIcons.forEach(icon => {
+                icon.style.width = '36px';
+                icon.style.height = '36px';
+                icon.style.borderRadius = '50%';
+                icon.style.background = 'rgba(255, 255, 255, 0.1)';
+                icon.style.display = 'flex';
+                icon.style.alignItems = 'center';
+                icon.style.justifyContent = 'center';
+                icon.style.color = '#F4EDE4';
+                icon.style.transition = 'all 0.3s ease';
+            });
+            
+            // Set background gradient overlay
+            const footerElement = this.footerContainer.querySelector('footer');
+            if (footerElement) {
+                // Create a pseudo-element for the background gradient
+                const style = document.createElement('style');
+                style.textContent = `
+                    #footer-container footer::before {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: radial-gradient(circle at bottom, rgba(15, 35, 31, 0.7), rgba(10, 25, 22, 0.9));
+                        z-index: -1;
+                        pointer-events: none;
+                    }
+                `;
+                document.head.appendChild(style);
             }
             
             resolve();
@@ -545,11 +562,6 @@ class UltraPremiumFooter {
                 footer.classList.add('initialized');
             }, 100);
         }
-        
-        // After revealing the footer, enforce transparency
-        setTimeout(() => {
-            this.enforceTransparency();
-        }, 100);
     }
     
     /**
@@ -575,5 +587,5 @@ class UltraPremiumFooter {
     }
 }
 
-// Initialize the Premium Footer
-new UltraPremiumFooter(); 
+// Initialize footer
+const footer = new UltraPremiumFooter(); 

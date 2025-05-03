@@ -32,19 +32,26 @@ html, body {
 /* Add gradient background */
 body:before {
     content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    /* Create a gradient that transitions from lighter to darker */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: -1 !important;
+    /* Enhanced gradient with smoother transitions */
     background: linear-gradient(to bottom, 
-        #28604F 0%, /* Lighter shade of #1A3C34 */
-        #1A3C34 50%, /* Original color */
-        #0F231F 100% /* Darker shade of #1A3C34 */
+        #2D735F 0%, /* Lightest shade at the top */
+        #1A3C34 40%, /* Original color in the middle */
+        #152F29 70%, /* Darker shade after middle */
+        #0F231F 100% /* Darkest shade at the bottom */
     ) !important;
     background-attachment: fixed !important;
+    background-size: 100% 100% !important;
+}
+
+/* Remove the gradient animation */
+body:before {
+    animation: none !important;
 }
 
 /* Ensure sections have transparent backgrounds to show the gradient */
@@ -58,6 +65,12 @@ section,
 .stay-updated-section,
 .newsletter-section {
     background-color: transparent !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+    position: relative !important;
+    z-index: 2 !important;
 }
 
 /* Make background elements transparent */
@@ -324,13 +337,110 @@ section[class*="get-started"],
 [id*="get-started"],
 [id*="join"],
 [id*="signup"] {
-    background-color: var(--primary-color, #1A3C34) !important;
+    background-color: transparent !important;
     color: white !important;
     padding: 60px 0 !important;
     text-align: center !important;
     position: relative !important;
     z-index: 5 !important;
     margin: 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Add a subtle overlay to the CTA section to enhance text readability */
+.cta-section:before,
+.get-started-section:before,
+section[class*="cta"]:before,
+section[class*="get-started"]:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(circle at center, rgba(26, 60, 52, 0.5), rgba(15, 35, 31, 0.2)) !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+}
+
+/* Enhance CTA content visibility */
+.cta-section .container,
+.get-started-section .container,
+section[class*="cta"] .container,
+section[class*="get-started"] .container {
+    position: relative !important;
+    z-index: 2 !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Remove dark theme overrides that set a specific background color */
+body.dark-mode .cta-section,
+body.dark-mode .get-started-section,
+body.dark-mode section[class*="cta"],
+body.dark-mode section[class*="get-started"],
+body.dark-theme .cta-section,
+body.dark-theme .get-started-section,
+body.dark-theme section[class*="cta"],
+body.dark-theme section[class*="get-started"],
+html.dark-mode .cta-section,
+html.dark-mode .get-started-section,
+html.dark-mode section[class*="cta"],
+html.dark-mode section[class*="get-started"],
+html.dark-theme .cta-section,
+html.dark-theme .get-started-section,
+html.dark-theme section[class*="cta"],
+html.dark-theme section[class*="get-started"] {
+    background-color: transparent !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Enhance CTA section styling */
+.cta-section .premium-badge,
+.get-started-section .premium-badge {
+    background: rgba(255, 140, 66, 0.15) !important;
+    border: 1px solid rgba(255, 140, 66, 0.3) !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+/* Make CTA buttons pop against transparent background */
+.cta-buttons {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 1.5rem !important;
+    margin-bottom: 40px !important;
+    flex-wrap: wrap !important;
+}
+
+.cta-primary-btn {
+    background: var(--accent-color) !important;
+    box-shadow: 0 5px 15px rgba(255, 140, 66, 0.3) !important;
+}
+
+.cta-secondary-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+/* Fix CTA features so they're transparent with subtle backgrounds */
+.cta-features {
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+}
+
+.cta-feature.premium-card {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 50px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .cta-section h2,
@@ -2374,155 +2484,165 @@ main > section,
     color: rgba(255, 255, 255, 0.9) !important;
 }
 
-/* Fix CTA section and footer to match the green gradient background */
-.cta-section,
-#footer-container,
+/* Fix Footer Background to Match Gradient */
 .footer,
+.site-footer,
+footer,
+#footer,
+#footer-container,
 .footer-container,
-.newsletter-section {
+[class*="footer"],
+[id*="footer"] {
     background-color: transparent !important;
-    background: transparent !important;
+    color: #f0f0f0 !important;
     position: relative !important;
     z-index: 5 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    margin-top: 0 !important;
 }
 
-/* Add a subtle overlay for CTA section that blends with the gradient */
-.cta-section::before {
+/* Add subtle overlay to footer */
+.footer:before,
+.site-footer:before,
+footer:before,
+#footer:before,
+#footer-container:before,
+.footer-container:before,
+[class*="footer"]:before,
+[id*="footer"]:before {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: linear-gradient(to bottom, rgba(26, 60, 52, 0.3), rgba(15, 35, 31, 0.7)) !important;
+    background: radial-gradient(circle at bottom, rgba(15, 35, 31, 0.7), rgba(10, 25, 22, 0.9)) !important; 
     z-index: -1 !important;
+    pointer-events: none !important;
 }
 
-/* Style for footer to blend with the gradient */
-#footer-container::before,
-.footer::before {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: linear-gradient(to bottom, rgba(15, 35, 31, 0.8), rgba(10, 25, 20, 0.95)) !important;
-    z-index: -1 !important;
-}
-
-/* Fix content within CTA section */
-.cta-section .container,
-.cta-section .section-background,
-.cta-section .premium-badge,
-.cta-section .section-header,
-.cta-section .cta-buttons,
-.cta-section .cta-features {
-    background-color: transparent !important;
-    background: transparent !important;
+/* Footer content styling */
+.footer-content,
+.footer-container,
+footer .container {
     position: relative !important;
-    z-index: 5 !important;
+    z-index: 2 !important;
 }
 
-/* Make the CTA premium badge stand out */
-.cta-section .premium-badge {
-    background-color: rgba(26, 60, 52, 0.7) !important;
-    backdrop-filter: blur(5px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 30px !important;
-    padding: 8px 16px !important;
-    display: inline-flex !important;
+/* Footer logo */
+.footer-logo a, 
+.footer-brand a,
+.site-footer .logo a {
+    display: flex !important;
     align-items: center !important;
-    margin-bottom: 1.5rem !important;
+    gap: 10px !important;
+    text-decoration: none !important;
 }
 
-/* Style CTA button */
-.cta-primary-btn,
-.cta-secondary-btn {
-    position: relative !important;
-    z-index: 10 !important;
+.footer-logo span, 
+.footer-brand span,
+.site-footer .logo span {
+    color: #F4EDE4 !important;
+    font-weight: 700 !important;
 }
 
-.cta-primary-btn {
-    background-color: #FF8C42 !important;
-    color: white !important;
-    border: none !important;
-    padding: 14px 28px !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3) !important;
-}
-
-.cta-secondary-btn {
-    background-color: rgba(26, 60, 52, 0.7) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    padding: 14px 28px !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
-    backdrop-filter: blur(5px) !important;
-}
-
-/* Fix CTA features cards */
-.cta-feature {
-    background-color: rgba(26, 60, 52, 0.6) !important;
-    backdrop-filter: blur(5px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 8px !important;
-    padding: 12px 16px !important;
-}
-
-/* Fix text colors */
-.cta-section h2,
-.cta-section .premium-text-accent,
-.cta-section p,
+/* Footer text styling */
 .footer h3,
+.site-footer h3,
 .footer h4,
-.footer-links-column h3,
-.footer-bottom {
-    color: white !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+.site-footer h4,
+.footer-column h3,
+.footer-nav h4 {
+    color: #F4EDE4 !important;
+    font-weight: 600 !important;
 }
 
-/* Add transparency to footer elements */
-.footer .container,
-.footer-container,
-.footer-top,
-.footer-links,
-.footer-links-column,
-.footer-bottom,
-.footer-logo,
+.footer p,
+.site-footer p,
+.footer-description {
+    color: rgba(244, 237, 228, 0.8) !important;
+}
+
+/* Footer links */
+.footer a:not(.social-link):not(.social-icon),
+.site-footer a:not(.social-link):not(.social-icon),
+.footer-nav a,
+.footer-links a {
+    color: rgba(244, 237, 228, 0.8) !important;
+    transition: all 0.3s ease !important;
+}
+
+.footer a:not(.social-link):not(.social-icon):hover,
+.site-footer a:not(.social-link):not(.social-icon):hover,
+.footer-nav a:hover,
+.footer-links a:hover {
+    color: #FF8C42 !important;
+    text-decoration: none !important;
+}
+
+/* Footer social links */
+.social-links,
 .footer-social,
-.footer-column {
-    background-color: transparent !important;
-    background: transparent !important;
-    position: relative !important;
-    z-index: 5 !important;
+.social-icons {
+    display: flex !important;
+    gap: 1rem !important;
 }
 
-/* Fix the newsletter section */
-.newsletter-section::before {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: linear-gradient(to top, rgba(15, 35, 31, 0.6), rgba(26, 60, 52, 0.3)) !important;
-    z-index: -1 !important;
+.social-link,
+.social-icon {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #F4EDE4 !important;
+    transition: all 0.3s ease !important;
 }
 
-.newsletter-section .container,
-.newsletter-section .section-background,
-.newsletter-section .section-tag,
-.newsletter-section .section-header,
-.newsletter-section .premium-divider,
-.newsletter-section .newsletter-form,
-.newsletter-section .newsletter-benefits {
-    background-color: transparent !important;
-    background: transparent !important;
-    position: relative !important;
-    z-index: 5 !important;
+.social-link:hover,
+.social-icon:hover {
+    background: #FF8C42 !important;
+    transform: translateY(-3px) !important;
+}
+
+/* Footer bottom section */
+.footer-bottom,
+.site-footer .bottom,
+.copyright-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(244, 237, 228, 0.6) !important;
+}
+
+/* Newsletter form in footer */
+.footer input, 
+.site-footer input,
+.footer button,
+.site-footer button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #F4EDE4 !important;
+}
+
+.footer button,
+.site-footer button {
+    background: #FF8C42 !important;
+    color: white !important;
+}
+
+/* Remove the extra space div */
+div[style*="height: 2000px"] {
+    display: none !important;
+    height: 0 !important;
+}
+
+/* Ensure footer connects smoothly with content */
+main + #footer-container,
+main + footer,
+main + .footer,
+main + div + #footer-container,
+main + div + footer,
+main + div + .footer {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Ensure proper spacing between stacked sections */
+section + section {
+    padding-top: 60px !important;
 }
