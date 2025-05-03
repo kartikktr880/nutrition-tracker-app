@@ -10,7 +10,7 @@
     --primary-color: #2a5f52 !important;
     --primary-dark: #1d4b3f !important;
     --secondary-color: #5d7799 !important;
-    --background: #1a1a1a !important;
+    --background: #1A3C34 !important; /* Set the base color to #1A3C34 */
     --background-light: #2d2d2d !important;
     --background-gray: #333333 !important;
     --accent-color: #FF8C42 !important;
@@ -22,10 +22,60 @@
     --border-color: #444444 !important;
 }
 
-/* Force dark mode on html and body */
+/* Force dark mode on html and body with gradient background */
 html, body {
-    background-color: #1a1a1a !important;
+    /* Remove previous background-color */
+    background-color: transparent !important;
     color: #f0f0f0 !important;
+}
+
+/* Add gradient background */
+body:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Create a gradient that transitions from lighter to darker */
+    background: linear-gradient(to bottom, 
+        #28604F 0%, /* Lighter shade of #1A3C34 */
+        #1A3C34 50%, /* Original color */
+        #0F231F 100% /* Darker shade of #1A3C34 */
+    ) !important;
+    background-attachment: fixed !important;
+}
+
+/* Ensure sections have transparent backgrounds to show the gradient */
+section, 
+.section,
+.hero-section,
+.features-section,
+.steps-section, 
+.testimonials-section,
+.cta-section,
+.stay-updated-section,
+.newsletter-section {
+    background-color: transparent !important;
+}
+
+/* Make background elements transparent */
+.section-background,
+.hero-gradient {
+    opacity: 0.3 !important;
+    background: transparent !important;
+}
+
+/* Adjust section content to ensure readability on the gradient background */
+section h1, section h2 {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+section p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Force dark styles on common elements */
@@ -36,9 +86,10 @@ html, body {
 .module, 
 .feature-card, 
 .step-card {
-    background-color: #2d2d2d !important;
+    background-color: rgba(45, 45, 45, 0.65) !important; /* Semi-transparent */
     color: #f0f0f0 !important;
     border-color: #444444 !important;
+    backdrop-filter: blur(5px) !important; /* Add slight blur effect */
 }
 
 /* Force text colors */
@@ -2098,4 +2149,141 @@ i.fab,
 
 .footer-column a:hover {
     color: var(--accent-color, #FF8C42) !important;
-} 
+}
+
+/* Enhance section backgrounds with subtle gradient overlays */
+.hero-section {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.hero-section:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(circle at top right, rgba(40, 96, 79, 0.7), rgba(15, 35, 31, 0.1)) !important;
+    z-index: -1 !important;
+}
+
+.features-section:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(135deg, rgba(26, 60, 52, 0.7), rgba(15, 35, 31, 0.9)) !important;
+    z-index: -1 !important;
+}
+
+.steps-section:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(45deg, rgba(26, 60, 52, 0.8), rgba(15, 35, 31, 0.6)) !important;
+    z-index: -1 !important;
+}
+
+.testimonials-section:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(to right, rgba(26, 60, 52, 0.9), rgba(15, 35, 31, 0.5)) !important;
+    z-index: -1 !important;
+}
+
+.cta-section:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(to bottom, rgba(26, 60, 52, 0.7), rgba(10, 25, 20, 0.95)) !important;
+    z-index: -1 !important;
+}
+
+.newsletter-section:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(to top, rgba(15, 35, 31, 0.9), rgba(26, 60, 52, 0.6)) !important;
+    z-index: -1 !important;
+}
+
+/* Add relative positioning to all sections to allow for absolute positioning of the overlay */
+.features-section,
+.steps-section,
+.testimonials-section,
+.cta-section,
+.newsletter-section {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Add subtle depth effect with box shadows */
+.card, 
+.premium-card, 
+.feature-card, 
+.testimonial-card,
+.step,
+.newsletter-form {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.card:hover, 
+.premium-card:hover, 
+.feature-card:hover, 
+.testimonial-card:hover,
+.step:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Add specific style for gradient-background class */
+.gradient-background {
+    background-attachment: fixed !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+/* Add scroll-based gradient effect using CSS */
+@keyframes gradientScroll {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 0% 100%;
+    }
+}
+
+/* Apply the animation to the body:before element */
+body:before {
+    animation: gradientScroll 10s ease-in-out infinite alternate !important;
+    background-size: 100% 300% !important; /* Make the gradient larger than the viewport to allow for scrolling effect */
+}
+
+/* Enhanced gradient with more color variations */
+body:before {
+    background: linear-gradient(to bottom, 
+        #2D735F 0%, /* Even lighter shade at the very top */
+        #28604F 20%, /* Lighter shade of #1A3C34 */
+        #1A3C34 50%, /* Original color */
+        #14302A 80%, /* Slightly darker */
+        #0F231F 100% /* Darkest shade at the bottom */
+    ) !important;
+}
