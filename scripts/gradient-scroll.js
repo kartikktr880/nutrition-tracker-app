@@ -1,10 +1,19 @@
 /**
  * Gradient Scroll Effect
  * Changes background gradient intensity based on scroll position
+ * Optimized for performance and visual appeal
  */
 
 (function() {
-    // Get total document height
+    // Track if we're in the process of updating to avoid unnecessary reflows
+    let ticking = false;
+    
+    // Cache DOM elements and values for performance
+    let styleEl = null;
+    let docHeight = 0;
+    let viewportHeight = window.innerHeight;
+    
+    // Get total document height - call this only when needed (window resize)
     const getDocHeight = () => {
         return Math.max(
             document.body.scrollHeight,
@@ -16,18 +25,15 @@
         );
     };
     
-    // Calculate scroll percentage (0-100)
+    // Calculate scroll percentage (0-100) - more efficient
     const getScrollPercent = () => {
-        const h = getDocHeight();
-        const st = window.pageYOffset || document.documentElement.scrollTop;
-        const vh = window.innerHeight;
-        return Math.min(100, Math.max(0, (st / (h - vh)) * 100));
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return Math.min(100, Math.max(0, (scrollTop / (docHeight - viewportHeight)) * 100));
     };
     
-    // Create and update the gradient style element
+    // Create the gradient style element once during initialization
     const createGradientStyle = () => {
-        // Create style element if it doesn't exist
-        let styleEl = document.getElementById('dynamic-gradient-style');
+        styleEl = document.getElementById('dynamic-gradient-style');
         if (!styleEl) {
             styleEl = document.createElement('style');
             styleEl.id = 'dynamic-gradient-style';
@@ -38,100 +44,91 @@
     
     // Update gradient based on scroll position
     const updateGradient = () => {
-        const scrollPercent = getScrollPercent();
-        const styleEl = createGradientStyle();
-        
-        // Calculate gradient stops based on scroll position
-        // As user scrolls down, make the gradient darker
-        const topLight = 36 - (scrollPercent * 0.15); // Use a darker green at the top
-        const bottomDark = 18 - (scrollPercent * 0.12); // Make it even darker at the bottom
-        
-        // Create the gradient CSS with our #1A3C34 shade
-        const css = `
-            body:before {
-                background: linear-gradient(to bottom, 
-                    hsl(163, 40%, ${topLight}%) 0%,
-                    hsl(163, 45%, 26%) 40%,
-                    hsl(163, 50%, ${bottomDark}%) 100%
-                ) !important;
-                background-attachment: fixed !important;
-                height: 100% !important;
-                width: 100% !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                z-index: -10 !important;
-            }
+        if (!ticking) {
+            // Use requestAnimationFrame for performance
+            window.requestAnimationFrame(() => {
+                const scrollPercent = getScrollPercent();
+                
+                // Enhanced gradient calculation - smoother transitions
+                // Base color #1A3C34 (HSL: 163, 40%, 26%)
+                // Create a dynamic gradient that evolves as user scrolls
+                
+                // Top gets slightly lighter as you scroll down (more contrast)
+                const topLight = Math.max(28, 36 - (scrollPercent * 0.12));
+                
+                // Middle stays relatively consistent but shifts slightly
+                const middleShade = Math.max(20, 26 - (scrollPercent * 0.06));
+                
+                // Bottom gets darker as you scroll down (more depth)
+                const bottomDark = Math.max(14, 22 - (scrollPercent * 0.15));
+                
+                // Create enhanced gradient CSS with subtle variations
+                const css = `
+                    body:before {
+                        background: linear-gradient(to bottom, 
+                            hsl(163, 40%, ${topLight}%) 0%,
+                            hsl(163, 45%, ${middleShade}%) 50%,
+                            hsl(163, 50%, ${bottomDark}%) 100%
+                        ) !important;
+                        background-attachment: fixed !important;
+                        transition: background 0.5s ease-out !important;
+                    }
+                    
+                    /* Apply consistent styling for feature section backgrounds */
+                    .features-section:before,
+                    .steps-section:before,
+                    .testimonials-section:before,
+                    .cta-section:before,
+                    .newsletter-section:before {
+                        opacity: ${0.8 - (scrollPercent * 0.003)} !important;
+                        transition: opacity 0.5s ease-out !important;
+                    }
+                    
+                    /* Improve card visibility against gradient */
+                    .feature-card, 
+                    .step-card, 
+                    .testimonial-card,
+                    .premium-card {
+                        background-color: rgba(26, 60, 52, ${0.6 + (scrollPercent * 0.002)}) !important;
+                        backdrop-filter: blur(${5 + (scrollPercent * 0.05)}px) !important;
+                    }
+                `;
+                
+                styleEl.innerHTML = css;
+                ticking = false;
+            });
             
-            /* Override any remaining gray areas */
-            .hero-section, 
-            .hero-content, 
-            .hero-text,
-            .hero-stats,
-            .stat-number,
-            .stat-label,
-            .hero-gradient,
-            .section-background,
-            main > section,
-            .container,
-            .cta-section,
-            .footer,
-            #footer-container,
-            .newsletter-section {
-                background-color: transparent !important;
-                background: transparent !important;
-            }
-            
-            /* Fix stat cards */
-            .hero-stat, .stat-card {
-                background-color: rgba(26, 60, 52, 0.6) !important;
-                backdrop-filter: blur(5px) !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-            
-            /* Fix CTA section and footer */
-            .cta-section::before {
-                z-index: -1 !important;
-                background: linear-gradient(to bottom, 
-                    rgba(26, 60, 52, 0.3), 
-                    rgba(15, 35, 31, 0.7)
-                ) !important;
-            }
-            
-            #footer-container::before,
-            .footer::before {
-                z-index: -1 !important;
-                background: linear-gradient(to bottom, 
-                    rgba(15, 35, 31, 0.8), 
-                    rgba(10, 25, 20, 0.95)
-                ) !important;
-            }
-        `;
-        
-        styleEl.innerHTML = css;
+            ticking = true;
+        }
     };
     
-    // Initialize and add scroll event listener
+    // Reset calculations on resize
+    const handleResize = () => {
+        viewportHeight = window.innerHeight;
+        docHeight = getDocHeight();
+        updateGradient();
+    };
+    
+    // Initialize the gradient effect
     const init = () => {
+        // Create the style element
+        styleEl = createGradientStyle();
+        
+        // Set initial document height
+        docHeight = getDocHeight();
+        
         // Set initial gradient
         updateGradient();
         
-        // Update gradient on scroll
-        window.addEventListener('scroll', () => {
-            window.requestAnimationFrame(updateGradient);
-        });
+        // Add performance-optimized event listeners
+        window.addEventListener('scroll', updateGradient, { passive: true });
+        window.addEventListener('resize', handleResize, { passive: true });
         
-        // Update gradient on resize
-        window.addEventListener('resize', () => {
-            window.requestAnimationFrame(updateGradient);
-        });
-        
-        // Fix any remaining gray areas immediately
+        // Fix any remaining gray areas immediately with a separate style
         const fixGrayAreas = document.createElement('style');
         fixGrayAreas.innerHTML = `
             /* Immediate fix for gray areas */
-            .hero-section, .container, .hero-content, .hero-stats, .main, main, section,
-            .cta-section, .footer, #footer-container, .newsletter-section {
+            .hero-section, .container, .hero-content, .hero-stats, .main, main, section {
                 background-color: transparent !important;
                 background: transparent !important;
             }
@@ -141,23 +138,19 @@
                 background-color: #1A3C34 !important;
             }
             
-            /* Fix CTA section and ensure it's visible */
-            .cta-section {
-                position: relative !important;
-                z-index: 5 !important;
-                color: white !important;
-            }
-            
-            /* Ensure footer is visible */
-            .footer, #footer-container {
-                position: relative !important;
-                z-index: 5 !important;
-                color: white !important;
+            /* Enhance content visibility */
+            .hero-section h1, .hero-section p, 
+            .features-section h2, .features-section p,
+            .steps-section h2, .steps-section p,
+            .testimonials-section h2, .testimonials-section p,
+            .cta-section h2, .cta-section p,
+            .newsletter-section h2, .newsletter-section p {
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
             }
         `;
         document.head.appendChild(fixGrayAreas);
         
-        console.log('Enhanced gradient scroll effect initialized');
+        console.log('Enhanced gradient scroll effect initialized with performance optimizations');
     };
     
     // Run when DOM is loaded

@@ -27,245 +27,158 @@ class UltraPremiumFooter {
         // Create footer container if it doesn't exist
         this.footerContainer = document.getElementById('footer-container');
         if (!this.footerContainer) {
-            this.footerContainer = document.createElement('div');
+            console.warn('Footer container not found, creating one');
+            this.footerContainer = document.createElement('footer');
             this.footerContainer.id = 'footer-container';
             document.body.appendChild(this.footerContainer);
         }
-
-        // Initialize the footer with proper sequence
-        this.initializeResources()
-            .then(() => this.renderFooter())
-            .then(() => {
-                this.setupInteractions();
-                this.setupAnimations();
-                this.revealFooter();
-            })
-            .catch(error => {
-                console.error('Failed to initialize premium footer:', error);
-                this.renderFallbackFooter();
-            });
-    }
-    
-    /**
-     * Initialize required resources (styles, fonts)
-     */
-    initializeResources() {
-        return Promise.all([
-            this.loadFonts()
-        ]);
-    }
-    
-    /**
-     * Load required premium fonts
-     */
-    loadFonts() {
-        return new Promise(resolve => {
-            if (document.getElementById('premium-fonts')) {
-                resolve();
-                return;
-            }
-            
-            const fontLink = document.createElement('link');
-            fontLink.id = 'premium-fonts';
-            fontLink.rel = 'stylesheet';
-            fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap';
-            
-            fontLink.onload = () => resolve();
-            fontLink.onerror = () => {
-                console.warn('Premium fonts failed to load, using system fonts');
-                resolve();
-            };
-            
-            document.head.appendChild(fontLink);
-        });
-    }
-    
-    /**
-     * Render the premium footer HTML
-     */
-    renderFooter() {
-        return new Promise(resolve => {
-            const currentYear = new Date().getFullYear();
-            
-            this.footerContainer.innerHTML = `
-                <footer class="premium-footer">
-                    <div class="footer-container">
-                        <div class="footer-branding">
-                            <div class="footer-logo">
-                                <a href="index.html">
-                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="20" cy="20" r="18" fill="#1A3C34"/>
-                                        <path d="M14.5 26.5C14.5 26.5 15 15 20 15C25 15 25.5 26.5 25.5 26.5" stroke="#FF8C42" stroke-width="3" stroke-linecap="round"/>
-                                        <circle cx="20" cy="12" r="3" fill="#FF8C42"/>
-                                    </svg>
-                                    <span>NutriTrack</span>
-                                </a>
-                            </div>
-                            
-                            <div class="footer-description">
-                                A better way to track your nutrition and take control of your health with AI-powered insights and personalized recommendations.
-                            </div>
-                        </div>
-                        
-                        <div class="footer-links">
-                            <div class="footer-column">
-                                <h3>Features</h3>
-                                <ul>
-                                    <li><a href="meal-planning.html">Meal Planning</a></li>
-                                    <li><a href="nutrition-analytics.html">Nutrition Analytics</a></li>
-                                    <li><a href="recipe-finder.html">Recipe Finder</a></li>
-                                    <li><a href="progress-tracking.html">Progress Tracking</a></li>
-                                </ul>
-                            </div>
-                            
-                            <div class="footer-column">
-                                <h3>Company</h3>
-                                <ul>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="careers.html">Careers</a></li>
-                                    <li><a href="press.html">Press</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                </ul>
-                            </div>
-                            
-                            <div class="footer-column">
-                                <h3>Resources</h3>
-                                <ul>
-                                    <li><a href="blog.html">Blog</a></li>
-                                    <li><a href="guides.html">Guides</a></li>
-                                    <li><a href="calculators.html">Calculators</a></li>
-                                    <li><a href="faq.html">FAQ</a></li>
-                                </ul>
-                            </div>
-                            
-                            <div class="footer-column">
-                                <h3>Legal</h3>
-                                <ul>
-                                    <li><a href="privacy.html">Privacy Policy</a></li>
-                                    <li><a href="terms.html">Terms of Service</a></li>
-                                    <li><a href="cookies.html">Cookie Policy</a></li>
-                                    <li><a href="gdpr.html">GDPR</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="footer-bottom">
-                            <div class="footer-copyright">
-                                © ${currentYear} NutriTrack. All rights reserved.
-                            </div>
-                            
-                            <div class="footer-social">
-                                <a href="#" class="social-icon" aria-label="Facebook">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="#" class="social-icon" aria-label="Twitter">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="#" class="social-icon" aria-label="Instagram">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="#" class="social-icon" aria-label="LinkedIn">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            `;
-            
-            resolve();
-        });
-    }
-
-    /**
-     * Setup all interactive elements
-     */
-    setupInteractions() {
-        this.setupLinks();
-        this.setupSocialLinks();
-    }
-
-    /**
-     * Setup links hover effects
-     */
-    setupLinks() {
-        const links = this.footerContainer.querySelectorAll('a:not(.social-icon)');
         
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.classList.add('hover');
-            });
-            
-            link.addEventListener('mouseleave', () => {
-                link.classList.remove('hover');
-            });
-        });
-    }
-    
-    /**
-     * Setup social links hover effects
-     */
-    setupSocialLinks() {
-        const socialLinks = this.footerContainer.querySelectorAll('.social-icon');
+        // Inject footer HTML with dark theme styling
+        this.injectFooterHTML();
         
-        socialLinks.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.classList.add('hover');
-            });
-            
-            link.addEventListener('mouseleave', () => {
-                link.classList.remove('hover');
-            });
-        });
+        // Initialize footer interactions
+        this.initFooterInteractions();
     }
 
     /**
-     * Setup animations
+     * Inject the HTML for the footer
      */
-    setupAnimations() {
-        // Add animation classes to all footer elements
-        const footerElements = this.footerContainer.querySelectorAll('.footer-column, .footer-logo, .footer-description, .footer-copyright, .footer-social');
-        
-        footerElements.forEach((element, index) => {
-            element.classList.add('animate-on-scroll');
-            element.style.animationDelay = `${index * 100}ms`;
-        });
-    }
-
-    /**
-     * Reveal the footer with animation
-     */
-    revealFooter() {
-        const footer = this.footerContainer.querySelector('footer');
-        if (footer) {
-            setTimeout(() => {
-                footer.classList.add('initialized');
-            }, 100);
-        }
-    }
-    
-    /**
-     * Render a simplified fallback footer if main one fails
-     */
-    renderFallbackFooter() {
+    injectFooterHTML() {
+        // Create a stunning footer with proper dark theme
         const currentYear = new Date().getFullYear();
         
         this.footerContainer.innerHTML = `
-            <footer class="fallback-footer">
-                <div class="fallback-container">
-                    <div class="fallback-content">
-                        <p>&copy; ${currentYear} NutriTrack. All rights reserved.</p>
-                        <nav class="fallback-links">
-                            <a href="/terms">Terms</a>
-                            <a href="/privacy">Privacy</a>
-                            <a href="/contact">Contact</a>
-                        </nav>
+            <footer class="site-footer" style="background: transparent !important; color: #f0f0f0; position: relative; z-index: 10; padding: 4rem 0 2rem; overflow: hidden;">
+                <div class="footer-backdrop" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 60, 52, 0.4); backdrop-filter: blur(10px); z-index: -1;"></div>
+                
+                <div class="container">
+                    <!-- Footer Top Section -->
+                    <div class="footer-top" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                        <!-- Brand Column -->
+                        <div class="footer-brand">
+                            <div class="footer-logo" style="margin-bottom: 1.5rem;">
+                                <h2 style="font-size: 2rem; font-weight: 700; color: #fff; margin: 0;">Nutri<span style="color: #FF8C42;">Track</span></h2>
+                            </div>
+                            <p style="font-size: 1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); margin-bottom: 1.5rem;">Transform your nutrition journey with AI-powered insights and personalized recommendations.</p>
+                            <div class="app-buttons" style="display: flex; gap: 1rem;">
+                                <a href="#" aria-label="Download on the App Store" style="display: inline-block; transition: transform 0.3s ease;">
+                                    <img src="https://placehold.co/120x40/1A3C34/FFFFFF?text=App+Store" alt="App Store" style="height: 40px; border-radius: 6px;">
+                                </a>
+                                <a href="#" aria-label="Get it on Google Play" style="display: inline-block; transition: transform 0.3s ease;">
+                                    <img src="https://placehold.co/120x40/1A3C34/FFFFFF?text=Google+Play" alt="Google Play" style="height: 40px; border-radius: 6px;">
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Links Columns -->
+                        <div class="footer-links">
+                            <h3 style="font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 1.5rem;">Features</h3>
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Food Tracking</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Meal Planning</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Nutrition Analysis</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Recipe Database</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Progress Tracking</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-links">
+                            <h3 style="font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 1.5rem;">Resources</h3>
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Blog</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Nutrition Guides</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Workout Plans</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Community Forum</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Support Center</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-links">
+                            <h3 style="font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 1.5rem;">Company</h3>
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">About Us</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Careers</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Press</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Privacy Policy</a></li>
+                                <li style="margin-bottom: 0.75rem;"><a href="#" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: color 0.3s ease;">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer Divider -->
+                    <div class="footer-divider" style="height: 1px; background: linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0.2), rgba(255,255,255,0.1)); margin: 1rem 0 2rem;"></div>
+                    
+                    <!-- Footer Bottom -->
+                    <div class="footer-bottom" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; color: rgba(255, 255, 255, 0.7);">
+                        <div class="footer-copyright" style="margin-bottom: 1rem;">
+                            <p style="font-size: 0.9rem; margin: 0;">&copy; ${currentYear} NutriTrack. All rights reserved.</p>
+                        </div>
+                        
+                        <div class="footer-social" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <a href="#" aria-label="Facebook" style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" aria-label="Twitter" style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram" style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="LinkedIn" style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
             </footer>
         `;
     }
+
+    /**
+     * Initialize footer interactions and effects
+     */
+    initFooterInteractions() {
+        // Add hover effects to footer links
+        const footerLinks = this.footerContainer.querySelectorAll('.footer-links a');
+        footerLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.color = '#FF8C42';
+                link.style.paddingLeft = '5px';
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                link.style.color = 'rgba(255, 255, 255, 0.9)';
+                link.style.paddingLeft = '0';
+            });
+        });
+        
+        // Add hover effects to social links
+        const socialLinks = this.footerContainer.querySelectorAll('.footer-social a');
+        socialLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.backgroundColor = 'rgba(255, 140, 66, 0.2)';
+                link.style.transform = 'translateY(-3px)';
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                link.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                link.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Add hover effects to app buttons
+        const appButtons = this.footerContainer.querySelectorAll('.app-buttons a');
+        appButtons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.style.transform = 'translateY(-3px)';
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'translateY(0)';
+            });
+        });
+    }
 }
 
-// Initialize footer
+// Initialize the footer
 const footer = new UltraPremiumFooter(); 
