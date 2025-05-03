@@ -2493,15 +2493,18 @@ footer,
 .footer-container,
 [class*="footer"],
 [id*="footer"] {
+    position: relative !important;
     background-color: transparent !important;
     color: #f0f0f0 !important;
-    position: relative !important;
-    z-index: 5 !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-    margin-top: 0 !important;
+    padding-top: 3rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-top: 2rem !important;
+    overflow: hidden !important; /* Hide any overflowing content */
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important; /* Subtle separator */
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow at the top */
 }
 
-/* Add subtle overlay to footer */
+/* Improved footer background overlay with gradient */
 .footer:before,
 .site-footer:before,
 footer:before,
@@ -2516,9 +2519,55 @@ footer:before,
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(circle at bottom, rgba(15, 35, 31, 0.7), rgba(10, 25, 22, 0.9)) !important; 
+    background: linear-gradient(170deg, 
+        rgba(26, 60, 52, 0.9) 0%,
+        rgba(21, 47, 41, 0.95) 40%,
+        rgba(15, 35, 31, 0.98) 80%) !important;
     z-index: -1 !important;
     pointer-events: none !important;
+}
+
+/* Subtle animated particle effect for the footer */
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(-20px) rotate(360deg); opacity: 0; }
+}
+
+/* Create floating particles in the footer */
+.footer:after,
+.site-footer:after,
+footer:after {
+    content: "" !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 140, 66, 0.15) 0%, rgba(255, 140, 66, 0) 50%),
+        radial-gradient(circle at 80% 30%, rgba(93, 119, 153, 0.15) 0%, rgba(93, 119, 153, 0) 50%) !important;
+    z-index: -1 !important;
+    opacity: 0.5 !important;
+}
+
+/* Add a subtle visual divider to the footer-bottom */
+.footer-bottom,
+.site-footer .bottom,
+.copyright-section {
+    position: relative !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    padding-top: 1.5rem !important;
+    margin-top: 2rem !important;
+    color: rgba(244, 237, 228, 0.6) !important;
+    z-index: 2 !important;
+}
+
+/* Add subtle glow to the footer logo */
+.footer-logo svg,
+.footer-brand svg,
+.site-footer .logo svg {
+    filter: drop-shadow(0 0 8px rgba(255, 140, 66, 0.3)) !important;
 }
 
 /* Footer content styling */
@@ -2544,23 +2593,75 @@ footer .container {
 .site-footer .logo span {
     color: #F4EDE4 !important;
     font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    letter-spacing: 0.5px !important;
 }
 
-/* Footer text styling */
+.footer-description {
+    color: rgba(244, 237, 228, 0.7) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    margin-top: 1rem !important;
+}
+
+.footer-column h3,
 .footer h3,
 .site-footer h3,
 .footer h4,
 .site-footer h4,
-.footer-column h3,
 .footer-nav h4 {
-    color: #F4EDE4 !important;
+    color: #FF8C42 !important; /* Use the accent color for headings */
     font-weight: 600 !important;
+    font-size: 1.125rem !important;
+    margin: 0 0 1rem 0 !important;
+    letter-spacing: 0.5px !important;
+    position: relative !important;
 }
 
-.footer p,
-.site-footer p,
-.footer-description {
+/* Add subtle underline to headers */
+.footer-column h3:after,
+.footer h3:after,
+.site-footer h3:after {
+    content: "" !important;
+    position: absolute !important;
+    bottom: -0.5rem !important;
+    left: 0 !important;
+    width: 2.5rem !important;
+    height: 2px !important;
+    background-color: rgba(255, 140, 66, 0.5) !important; /* Accent color with reduced opacity */
+}
+
+/* Footer links styling */
+.footer-column ul li a,
+.footer a:not(.social-link):not(.social-icon),
+.site-footer a:not(.social-link):not(.social-icon),
+.footer-nav a,
+.footer-links a {
     color: rgba(244, 237, 228, 0.8) !important;
+    text-decoration: none !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease !important;
+    display: inline-block !important;
+    padding: 0.125rem 0 !important;
+    position: relative !important;
+}
+
+/* Link hover effect - text color change and left padding */
+.footer-column ul li a:hover,
+.footer a:not(.social-link):not(.social-icon):hover,
+.site-footer a:not(.social-link):not(.social-icon):hover,
+.footer-nav a:hover,
+.footer-links a:hover {
+    color: #FF8C42 !important;
+    transform: translateX(5px) !important;
+}
+
+/* Footer copyright */
+.footer-copyright,
+.footer .copyright,
+.site-footer .copyright {
+    color: rgba(244, 237, 228, 0.5) !important;
+    font-size: 0.875rem !important;
 }
 
 /* Footer links */
@@ -2645,4 +2746,247 @@ main + div + .footer {
 /* Ensure proper spacing between stacked sections */
 section + section {
     padding-top: 60px !important;
+}
+
+/* Footer Layout Improvements */
+.footer-container,
+#footer-container .footer-container {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    padding: 2rem 1.5rem !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+@media (min-width: 768px) {
+    .footer-container,
+    #footer-container .footer-container {
+        grid-template-columns: 1fr 2fr !important;
+        padding: 3rem 2rem 2rem !important;
+    }
+}
+
+.footer-logo, 
+.footer-description {
+    grid-column: 1 !important;
+}
+
+.footer-links {
+    display: grid !important;
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 2rem !important;
+    margin-top: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .footer-links {
+        grid-column: 2 !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .footer-links {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+.footer-bottom {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1.5rem !important;
+    margin-top: 2rem !important;
+    padding-top: 1.5rem !important;
+}
+
+@media (min-width: 768px) {
+    .footer-bottom {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+    }
+}
+
+.footer-column {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+}
+
+.footer-column ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+}
+
+/* Enhanced Social Media Icon Styling */
+.footer-social,
+.social-links,
+.social-icons {
+    display: flex !important;
+    gap: 1rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Style for social icons */
+.social-link,
+.social-icon,
+.footer-social a {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #F4EDE4 !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 140, 66, 0.2) !important; /* Subtle border with accent color */
+}
+
+/* Enhanced hover effect for social icons */
+.social-link:hover,
+.social-icon:hover,
+.footer-social a:hover {
+    background: #FF8C42 !important;
+    transform: translateY(-3px) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 5px 15px rgba(255, 140, 66, 0.3) !important; /* Subtle glow effect */
+}
+
+/* Create ripple effect on social icon hover */
+.social-link::before,
+.social-icon::before,
+.footer-social a::before {
+    content: "" !important;
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%) !important;
+    opacity: 0 !important;
+    transition: opacity 0.5s ease !important;
+    z-index: -1 !important;
+}
+
+.social-link:hover::before,
+.social-icon:hover::before,
+.footer-social a:hover::before {
+    opacity: 1 !important;
+}
+
+/* Style for social icon content */
+.social-link i,
+.social-icon i,
+.footer-social a i {
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+}
+
+.social-link:hover i,
+.social-icon:hover i,
+.footer-social a:hover i {
+    transform: scale(1.2) !important;
+}
+
+/* Footer Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.premium-footer {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.2s;
+}
+
+.premium-footer.initialized {
+    opacity: 1;
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.animate-on-scroll.visible,
+.initialized .animate-on-scroll {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered animation for footer columns */
+.footer-logo {
+    animation-delay: 100ms;
+}
+
+.footer-description {
+    animation-delay: 200ms;
+}
+
+.footer-column:nth-child(1) {
+    animation-delay: 300ms;
+}
+
+.footer-column:nth-child(2) {
+    animation-delay: 400ms;
+}
+
+.footer-column:nth-child(3) {
+    animation-delay: 500ms;
+}
+
+.footer-column:nth-child(4) {
+    animation-delay: 600ms;
+}
+
+.footer-copyright {
+    animation-delay: 700ms;
+}
+
+.footer-social {
+    animation-delay: 800ms;
+}
+
+/* Improved footer branding section */
+.footer-branding {
+    margin-bottom: 2rem;
+}
+
+.footer-logo a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    text-decoration: none !important;
+}
+
+/* Make sure the footer's spacing looks good on all screen sizes */
+@media (max-width: 767px) {
+    .footer-links {
+        margin-top: 2rem !important;
+    }
+    
+    .footer-column {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .footer-bottom {
+        text-align: center !important;
+    }
 }
