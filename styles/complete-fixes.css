@@ -340,4 +340,37 @@ footer .footer-links-column {
     .modal-header h3 {
         font-size: 1.2rem;
     }
+}
+
+/* ---- HOW IT WORKS SECTION FIXES ---- */
+#how-it-works {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    scroll-margin-top: 80px !important; /* Provides space at the top when scrolled to */
+    position: relative !important;
+    z-index: 10 !important; /* Ensure it's above other elements */
+    padding-top: 80px !important; /* Extra padding to ensure visible content */
+    margin-top: 60px !important;
+    margin-bottom: 60px !important;
+}
+
+/* Ensure the steps content is visible */
+.steps-container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+.step {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Smooth scrolling behavior for the entire page */
+html {
+    scroll-behavior: smooth !important;
 } 

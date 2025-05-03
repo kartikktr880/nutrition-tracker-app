@@ -148,7 +148,7 @@
                         
                         <div class="hero-buttons">
                             <a href="signup.html" class="btn btn-primary">Get Started Free</a>
-                            <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+                            <a href="#how-it-works" class="btn btn-secondary" id="see-how-it-works-btn">See How It Works</a>
                         </div>
                     </div>
                     
@@ -648,6 +648,64 @@
     </script>
     <script>
     window.addEventListener('scroll', () => console.log('Global scroll event!'));
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if the How It Works section exists
+        const howItWorksSection = document.getElementById('how-it-works');
+        if (howItWorksSection) {
+            console.log('How It Works section found:', howItWorksSection);
+        } else {
+            console.error('How It Works section not found!');
+        }
+        
+        // Check if the See How It Works button exists
+        const seeHowItWorksBtn = document.getElementById('see-how-it-works-btn');
+        if (seeHowItWorksBtn) {
+            console.log('See How It Works button found:', seeHowItWorksBtn);
+        } else {
+            console.error('See How It Works button not found!');
+        }
+    });
+    </script>
+    <script>
+    // Immediate self-executing function to set up the See How It Works button
+    (function() {
+        // Wait until DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupButton);
+        } else {
+            setupButton();
+        }
+        
+        function setupButton() {
+            const btn = document.getElementById('see-how-it-works-btn');
+            const section = document.getElementById('how-it-works');
+            
+            if (btn && section) {
+                console.log('Setting up See How It Works button directly');
+                
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('See How It Works button clicked directly');
+                    
+                    // Ensure section is visible
+                    section.style.display = 'block';
+                    section.style.visibility = 'visible';
+                    section.style.opacity = '1';
+                    
+                    // Scroll to section
+                    section.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Update URL hash
+                    history.pushState(null, null, '#how-it-works');
+                });
+            }
+        }
+    })();
     </script>
 </body>
 </html> 

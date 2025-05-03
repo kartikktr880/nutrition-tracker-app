@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize demo video modal
     initDemoVideoModal();
     
+    // Add direct click handler for 'See How It Works' button
+    initSeeHowItWorksButton();
+    
     console.log('✨ NutriTrack premium experience initialized');
 });
 
@@ -266,27 +269,52 @@ function initSmoothScrolling() {
     // Get all links with hash (#) in href
     const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
     
+    if (anchorLinks.length === 0) {
+        console.warn('No anchor links found for smooth scrolling');
+        return;
+    }
+    
+    console.log(`Found ${anchorLinks.length} anchor links for smooth scrolling`);
+    
     anchorLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Prevent default anchor click behavior
-            e.preventDefault();
+        // Remove any existing event listeners to prevent duplicates
+        const newLink = link.cloneNode(true);
+        if (link.parentNode) {
+            link.parentNode.replaceChild(newLink, link);
             
-            // Get the target element
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                // Smooth scroll to target
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Offset for header
-                    behavior: 'smooth'
-                });
+            newLink.addEventListener('click', function(e) {
+                // Prevent default anchor click behavior
+                e.preventDefault();
                 
-                // Update URL hash without causing a jump
-                history.pushState(null, null, targetId);
-            }
-        });
+                // Get the target element
+                const targetId = this.getAttribute('href');
+                console.log(`Smooth scrolling to target: ${targetId}`);
+                
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // First ensure the element is visible
+                    targetElement.style.display = 'block';
+                    targetElement.style.visibility = 'visible';
+                    targetElement.style.opacity = '1';
+                    
+                    // Use scrollIntoView for better browser compatibility
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Update URL hash without causing a jump
+                    history.pushState(null, null, targetId);
+                    console.log(`Scrolled to ${targetId}`);
+                } else {
+                    console.error(`Target element not found: ${targetId}`);
+                }
+            });
+        }
     });
+    
+    console.log('Smooth scrolling initialized successfully');
 }
 
 /**
@@ -336,4 +364,34 @@ function initDemoVideoModal() {
             iframe.src = iframeSrc; // Reset iframe to stop video
         }
     }
+}
+
+/**
+ * Initialize direct handling for the 'See How It Works' button
+ * This ensures the button works even if the general smooth scrolling has issues
+ */
+function initSeeHowItWorksButton() {
+    const seeHowItWorksBtn = document.getElementById('see-how-it-works-btn');
+    const howItWorksSection = document.getElementById('how-it-works');
+    
+    if (!seeHowItWorksBtn || !howItWorksSection) {
+        console.error('See How It Works button or target section not found');
+        return;
+    }
+    
+    seeHowItWorksBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('See How It Works button clicked');
+        
+        // Smooth scroll to the How It Works section
+        howItWorksSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+        
+        // Update URL hash without causing a jump
+        history.pushState(null, null, '#how-it-works');
+    });
+    
+    console.log('See How It Works button handler initialized');
 }
