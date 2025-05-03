@@ -1,20 +1,30 @@
-// footer.js - Handle loading the footer component
-
 /**
- * Ultra Premium Footer Component Loader
- * Responsible for loading the sophisticated footer component
+ * NutriTrack Ultra-Premium Footer - Dark Mode Enhanced
+ * A sophisticated, high-end footer implementation with luxury animations and effects
+ * Optimized for dark mode gradient background
  */
-class FooterLoader {
+class UltraPremiumFooter {
     constructor() {
-        // Wait for DOM to be ready
+        this.isInitialized = false;
+        
+        // Initialize when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.initialize());
+            document.addEventListener('DOMContentLoaded', () => this.init());
         } else {
-            this.initialize();
+            this.init();
         }
     }
 
-    initialize() {
+    /**
+     * Initialize the footer experience
+     */
+    init() {
+        if (this.isInitialized) return;
+        this.isInitialized = true;
+        
+        console.log('✧ Initializing Ultra-Premium Footer Experience (Dark Mode)');
+        
+        // Create footer container if it doesn't exist
         this.footerContainer = document.getElementById('footer-container');
         if (!this.footerContainer) {
             this.footerContainer = document.createElement('div');
@@ -22,216 +32,336 @@ class FooterLoader {
             document.body.appendChild(this.footerContainer);
         }
 
-        // Load enhanced footer styles
-        const footerStyles = document.createElement('link');
-        footerStyles.id = 'footer-ultra-premium-styles';
-        footerStyles.rel = 'stylesheet';
-        footerStyles.href = 'styles/footer-ultra-premium.css';
-        document.head.appendChild(footerStyles);
+        // Set initial styles to ensure transparency
+        this.footerContainer.style.backgroundColor = 'transparent';
+        this.footerContainer.style.backgroundImage = 'none';
+        this.footerContainer.style.position = 'relative';
+        this.footerContainer.style.zIndex = '5';
 
-        // Initialize immediately
-        this.init();
-        
-        // Add animations once styles are loaded
-        footerStyles.onload = () => {
-            const footer = document.querySelector('.footer');
-            if (footer) {
-                // Add class to enable animations
-                footer.classList.add('animations-ready');
-                
-                // Add scroll reveal animations
-                this.setupScrollReveal();
+        // Initialize the footer with proper sequence
+        this.initializeResources()
+            .then(() => this.renderFooter())
+            .then(() => {
+                this.setupInteractions();
+                this.setupAnimations();
+                this.revealFooter();
+                this.enforceTransparency();
+            })
+            .catch(error => {
+                console.error('Failed to initialize premium footer:', error);
+                this.renderFallbackFooter();
+            });
+    }
+    
+    /**
+     * Initialize required resources (styles, fonts)
+     */
+    initializeResources() {
+        return Promise.all([
+            this.loadStyles(),
+            this.loadFonts()
+        ]);
+    }
+    
+    /**
+     * Load the premium footer styles
+     */
+    loadStyles() {
+        return new Promise(resolve => {
+            const styleId = 'ultra-premium-footer-styles';
+            
+            // Remove existing styles if any
+            const existingStyles = document.getElementById(styleId);
+            if (existingStyles) existingStyles.remove();
+            
+            // Add preconnect for performance
+            const preconnect = document.createElement('link');
+            preconnect.rel = 'preconnect';
+            preconnect.href = 'https://fonts.googleapis.com';
+            document.head.appendChild(preconnect);
+            
+            // Ensure our override CSS is loaded
+            const overrideStyleLink = document.createElement('link');
+            overrideStyleLink.id = 'footer-override-styles';
+            overrideStyleLink.rel = 'stylesheet';
+            overrideStyleLink.href = 'styles/footer-override.css';
+            document.head.appendChild(overrideStyleLink);
+            
+            // Add the stylesheet
+            const styles = document.createElement('link');
+            styles.id = styleId;
+            styles.rel = 'stylesheet';
+            styles.href = 'styles/footer-elite-luxury.css';
+            
+            styles.onload = () => resolve();
+            styles.onerror = () => {
+                console.error('Failed to load footer styles');
+                resolve(); // Resolve anyway to continue with fallback
+            };
+            
+            document.head.appendChild(styles);
+        });
+    }
+    
+    /**
+     * Enforce transparency for footer elements
+     */
+    enforceTransparency() {
+        // Add a style element to enforce transparency
+        const transparencyStyle = document.createElement('style');
+        transparencyStyle.id = 'footer-transparency-styles';
+        transparencyStyle.innerHTML = `
+            /* Override footer background to be transparent */
+            #footer-container, 
+            .footer, 
+            .footer-container,
+            .footer-top,
+            .footer-bottom,
+            .footer-links-column,
+            .footer-newsletter,
+            .footer-description,
+            .newsletter-content,
+            .footer-decoration,
+            .newsletter-decoration {
+                background-color: transparent !important;
+                background-image: none !important;
+                position: relative !important;
+                z-index: 5 !important;
             }
-        };
-    }
-
-    /**
-     * Initialize footer loading
-     */
-    async init() {
-        console.log('✨ Initializing ultra premium footer component...');
-        try {
-            await this.loadFooter();
-            this.setupFooterFunctionality();
-        } catch (error) {
-            console.error('Failed to initialize footer:', error);
-            this.createMinimalFooter();
+            
+            /* Create proper overlay for footer */
+            .footer::before {
+                content: '' !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: linear-gradient(to bottom, rgba(15, 35, 31, 0.8), rgba(10, 25, 20, 0.95)) !important;
+                z-index: -1 !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+        `;
+        document.head.appendChild(transparencyStyle);
+        
+        // Apply styles to elements directly
+        const footer = document.querySelector('.footer');
+        if (footer) {
+            footer.style.backgroundColor = 'transparent';
+            footer.style.backgroundImage = 'none';
+            footer.style.position = 'relative';
+            footer.style.zIndex = '5';
         }
+        
+        const footerContainer = document.querySelector('.footer-container');
+        if (footerContainer) {
+            footerContainer.style.backgroundColor = 'transparent';
+            footerContainer.style.backgroundImage = 'none';
+        }
+        
+        // Force all footer sections to be transparent
+        const footerSections = document.querySelectorAll('.footer-top, .footer-bottom, .footer-links-column, .footer-newsletter');
+        footerSections.forEach(section => {
+            section.style.backgroundColor = 'transparent';
+            section.style.backgroundImage = 'none';
+        });
     }
-
+    
     /**
-     * Load the footer component
+     * Load required premium fonts
      */
-    async loadFooter() {
-        this.footerContainer.innerHTML = `
-            <!-- Ultra Premium Footer -->
-            <footer class="footer">
-                <!-- Luxury Decorative Elements -->
-                <div class="footer-decoration">
-                    <div class="decoration-glow"></div>
-                    <div class="decoration-particles"></div>
-                    <div class="decoration-gradient-blob"></div>
-                    <div class="decoration-luxury-pattern"></div>
-                    <div class="decoration-gradient-circles">
-                        <div class="gradient-circle circle-1"></div>
-                        <div class="gradient-circle circle-2"></div>
-                        <div class="gradient-circle circle-3"></div>
-                    </div>
-                </div>
-
-                <div class="footer-container">
-                    <!-- Main Footer Content -->
-                    <div class="footer-top">
-                        <!-- Brand Info -->
-                        <div class="footer-info">
-                            <a href="/" class="footer-logo">
-                                <div class="logo-container">
-                                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="26" cy="26" r="24" fill="#F4EDE4"/>
-                                        <path d="M17.5 34.5C17.5 34.5 18 18 26 18C34 18 34.5 34.5 34.5 34.5" stroke="#FF8C42" stroke-width="4" stroke-linecap="round"/>
-                                        <circle cx="26" cy="14" r="4.5" fill="#FF8C42"/>
-                                        <circle cx="26" cy="26" r="24" stroke="rgba(255, 140, 66, 0.3)" stroke-width="1.5"/>
-                                    </svg>
-                                    <div class="logo-glow"></div>
-                                </div>
-                                <span class="footer-logo-text">NutriTrack</span>
+    loadFonts() {
+        return new Promise(resolve => {
+            if (document.getElementById('premium-fonts')) {
+                resolve();
+                return;
+            }
+            
+            const fontLink = document.createElement('link');
+            fontLink.id = 'premium-fonts';
+            fontLink.rel = 'stylesheet';
+            fontLink.href = 'https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap';
+            
+            fontLink.onload = () => resolve();
+            fontLink.onerror = () => {
+                console.warn('Premium fonts failed to load, using system fonts');
+                resolve();
+            };
+            
+            document.head.appendChild(fontLink);
+        });
+    }
+    
+    /**
+     * Render the premium footer HTML
+     */
+    renderFooter() {
+        return new Promise(resolve => {
+            const currentYear = new Date().getFullYear();
+            
+            this.footerContainer.innerHTML = `
+                <footer>
+                    <div class="footer-container">
+                        <div class="footer-logo">
+                            <a href="index.html">
+                                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="20" cy="20" r="18" fill="#1A3C34"/>
+                                    <path d="M14.5 26.5C14.5 26.5 15 15 20 15C25 15 25.5 26.5 25.5 26.5" stroke="#FF8C42" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="20" cy="12" r="3" fill="#FF8C42"/>
+                                </svg>
+                                <span>NutriTrack</span>
                             </a>
-                            <p class="footer-description">Your personal companion for maintaining a healthy lifestyle through smart nutrition tracking and personalized insights. Join thousands of users who have transformed their health journey.</p>
+                        </div>
+                        
+                        <div class="footer-description">
+                            A better way to track your nutrition and take control of your health with AI-powered insights and personalized recommendations.
+                        </div>
+                        
+                        <div class="footer-links">
+                            <div class="footer-column">
+                                <h3>Features</h3>
+                                <ul>
+                                    <li><a href="meal-planning.html">Meal Planning</a></li>
+                                    <li><a href="nutrition-analytics.html">Nutrition Analytics</a></li>
+                                    <li><a href="recipe-finder.html">Recipe Finder</a></li>
+                                    <li><a href="progress-tracking.html">Progress Tracking</a></li>
+                                </ul>
+                            </div>
                             
-                            <div class="footer-badges">
-                                <div class="badge">
-                                    <i class="fas fa-shield-alt"></i>
-                                    <span>SSL Secured</span>
-                                </div>
-                                <div class="badge">
-                                    <i class="fas fa-lock"></i>
-                                    <span>Privacy First</span>
-                                </div>
-                                <div class="badge">
-                                    <i class="fas fa-medal"></i>
-                                    <span>Top Rated</span>
-                                </div>
+                            <div class="footer-column">
+                                <h3>Company</h3>
+                                <ul>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="careers.html">Careers</a></li>
+                                    <li><a href="press.html">Press</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="footer-column">
+                                <h3>Resources</h3>
+                                <ul>
+                                    <li><a href="blog.html">Blog</a></li>
+                                    <li><a href="guides.html">Guides</a></li>
+                                    <li><a href="calculators.html">Calculators</a></li>
+                                    <li><a href="faq.html">FAQ</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="footer-column">
+                                <h3>Legal</h3>
+                                <ul>
+                                    <li><a href="privacy.html">Privacy Policy</a></li>
+                                    <li><a href="terms.html">Terms of Service</a></li>
+                                    <li><a href="cookies.html">Cookie Policy</a></li>
+                                    <li><a href="gdpr.html">GDPR</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-bottom">
+                            <div class="footer-copyright">
+                                © ${currentYear} NutriTrack. All rights reserved.
                             </div>
                             
                             <div class="footer-social">
-                                <a href="#" class="social-link" aria-label="Follow us on Facebook">
+                                <a href="#" class="social-icon" aria-label="Facebook">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="#" class="social-link" aria-label="Follow us on Twitter">
+                                <a href="#" class="social-icon" aria-label="Twitter">
                                     <i class="fab fa-twitter"></i>
                                 </a>
-                                <a href="#" class="social-link" aria-label="Follow us on Instagram">
+                                <a href="#" class="social-icon" aria-label="Instagram">
                                     <i class="fab fa-instagram"></i>
                                 </a>
-                                <a href="#" class="social-link" aria-label="Follow us on LinkedIn">
+                                <a href="#" class="social-icon" aria-label="LinkedIn">
                                     <i class="fab fa-linkedin-in"></i>
-                                </a>
-                                <a href="#" class="social-link" aria-label="Subscribe on YouTube">
-                                    <i class="fab fa-youtube"></i>
                                 </a>
                             </div>
                         </div>
-                        
-                        <!-- Quick Links -->
-                        <div class="footer-links-column">
-                            <h3>Quick Links</h3>
-                            <ul class="footer-links">
-                                <li><a href="/features"><i class="fas fa-chevron-right"></i>Features</a></li>
-                                <li><a href="/meal-plans"><i class="fas fa-chevron-right"></i>Meal Plans</a></li>
-                                <li><a href="/recipes"><i class="fas fa-chevron-right"></i>Recipes</a></li>
-                                <li><a href="/nutrition-guide"><i class="fas fa-chevron-right"></i>Nutrition Guide</a></li>
-                                <li><a href="/blog"><i class="fas fa-chevron-right"></i>Blog</a></li>
-                                <li><a href="/pricing"><i class="fas fa-chevron-right"></i>Pricing</a></li>
-                            </ul>
-                        </div>
-                        
-                        <!-- Support -->
-                        <div class="footer-links-column">
-                            <h3>Support</h3>
-                            <ul class="footer-links">
-                                <li><a href="/help-center"><i class="fas fa-chevron-right"></i>Help Center</a></li>
-                                <li><a href="/faq"><i class="fas fa-chevron-right"></i>FAQ</a></li>
-                                <li><a href="/contact"><i class="fas fa-chevron-right"></i>Contact Us</a></li>
-                                <li><a href="/community"><i class="fas fa-chevron-right"></i>Community</a></li>
-                                <li><a href="/feedback"><i class="fas fa-chevron-right"></i>Feedback</a></li>
-                                <li><a href="/careers"><i class="fas fa-chevron-right"></i>Careers</a></li>
-                            </ul>
-                        </div>
-                        
-                        <!-- Legal -->
-                        <div class="footer-links-column">
-                            <h3>Legal</h3>
-                            <ul class="footer-links">
-                                <li><a href="/privacy-policy"><i class="fas fa-chevron-right"></i>Privacy Policy</a></li>
-                                <li><a href="/terms"><i class="fas fa-chevron-right"></i>Terms of Service</a></li>
-                                <li><a href="/cookie-policy"><i class="fas fa-chevron-right"></i>Cookie Policy</a></li>
-                                <li><a href="/security"><i class="fas fa-chevron-right"></i>Security</a></li>
-                                <li><a href="/compliance"><i class="fas fa-chevron-right"></i>Compliance</a></li>
-                                <li><a href="/accessibility"><i class="fas fa-chevron-right"></i>Accessibility</a></li>
-                            </ul>
-                        </div>
                     </div>
+                </footer>
+            `;
+            
+            // Apply consistent styling to footer logo
+            const footerLogo = this.footerContainer.querySelector('.footer-logo a');
+            if (footerLogo) {
+                footerLogo.style.display = 'flex';
+                footerLogo.style.alignItems = 'center';
+                footerLogo.style.gap = '10px';
+                footerLogo.style.textDecoration = 'none';
+                footerLogo.style.position = 'relative';
+                footerLogo.style.zIndex = '10';
                 
-                <!-- Footer Bottom -->
-                <div class="footer-bottom">
-                    <div class="footer-divider"></div>
-                    <div class="footer-bottom-content">
-                        <div class="footer-copyright">
-                            <p>&copy; ${new Date().getFullYear()} NutriTrack. All rights reserved.</p>
-                        </div>
-                        <div class="footer-app-downloads">
-                            <a href="#" class="app-download-link" aria-label="Download on App Store">
-                                <img src="images/app-store-badge.png" alt="Download on App Store" 
-                                     onerror="this.src='https://via.placeholder.com/135x45/1A3C34/FFFFFF?text=App+Store'; this.onerror=null;">
-                            </a>
-                            <a href="#" class="app-download-link" aria-label="Get it on Google Play">
-                                <img src="images/google-play-badge.png" alt="Get it on Google Play"
-                                     onerror="this.src='https://via.placeholder.com/135x45/1A3C34/FFFFFF?text=Google+Play'; this.onerror=null;">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="footer-bottom-extra">
-                        <div class="language-selector">
-                            <i class="fas fa-globe"></i>
-                            <select id="footer-language-selector" aria-label="Select Language">
-                                <option value="en">English</option>
-                                <option value="es">Español</option>
-                                <option value="fr">Français</option>
-                                <option value="de">Deutsch</option>
-                                <option value="zh">中文</option>
-                                <option value="ja">日本語</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scroll to Top Button -->
-                <button class="scroll-to-top" aria-label="Scroll to top">
-                    <div class="scroll-icon-container">
-                        <i class="fas fa-arrow-up"></i>
-                    </div>
-                </button>
-            </footer>
-        `;
+                const logoText = footerLogo.querySelector('span');
+                if (logoText) {
+                    logoText.style.fontFamily = "'Poppins', sans-serif";
+                    logoText.style.fontWeight = '700';
+                    logoText.style.fontSize = '20px';
+                    logoText.style.letterSpacing = '0.5px';
+                    logoText.style.display = 'inline-block';
+                    logoText.style.whiteSpace = 'nowrap';
+                    logoText.style.overflow = 'visible';
+                    logoText.style.color = '#F4EDE4';
+                }
+                
+                const logoSvg = footerLogo.querySelector('svg');
+                if (logoSvg) {
+                    logoSvg.style.flexShrink = '0';
+                    logoSvg.style.display = 'block';
+                    logoSvg.style.width = '40px';
+                    logoSvg.style.height = '40px';
+                    logoSvg.style.minWidth = '40px';
+                    logoSvg.style.maxWidth = '40px';
+                    logoSvg.style.minHeight = '40px';
+                    logoSvg.style.maxHeight = '40px';
+                    logoSvg.style.position = 'relative';
+                    logoSvg.style.zIndex = '5';
+                    
+                    // Ensure SVG colors match the header logo
+                    const circles = logoSvg.querySelectorAll('circle');
+                    if (circles.length > 0) {
+                        circles[0].setAttribute('fill', '#1A3C34'); // Main circle
+                        if (circles.length > 1) {
+                            circles[1].setAttribute('fill', '#FF8C42'); // Accent circle
+                        }
+                    }
+                    
+                    const paths = logoSvg.querySelectorAll('path');
+                    if (paths.length > 0) {
+                        paths.forEach(path => {
+                            path.setAttribute('stroke', '#FF8C42');
+                            path.setAttribute('stroke-width', '3');
+                            path.setAttribute('stroke-linecap', 'round');
+                        });
+                    }
+                }
+            }
+            
+            resolve();
+        });
     }
 
     /**
-     * Setup footer functionality
+     * Setup all interactive elements
      */
-    setupFooterFunctionality() {
+    setupInteractions() {
         this.setupScrollToTop();
         this.setupLanguageSelector();
-        this.setupParticleEffects();
+        this.setupTrustBadges();
+        this.setupLinks();
+        this.setupSocialLinks();
+        this.createParticles();
     }
 
     /**
-     * Setup scroll to top button functionality
+     * Setup scroll to top button
      */
     setupScrollToTop() {
-        const scrollButton = document.querySelector('.scroll-to-top');
+        const scrollButton = document.querySelector('.scroll-top-button');
         if (!scrollButton) return;
 
-        // Show/hide button based on scroll position
+        // Show/hide based on scroll position
         window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
                 scrollButton.classList.add('visible');
@@ -240,9 +370,14 @@ class FooterLoader {
             }
         });
 
-        // Smooth scroll to top when clicked
-        scrollButton.addEventListener('click', (e) => {
-            e.preventDefault();
+        // Smooth scroll to top
+        scrollButton.addEventListener('click', () => {
+            scrollButton.classList.add('pressed');
+            
+            setTimeout(() => {
+                scrollButton.classList.remove('pressed');
+            }, 300);
+            
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
@@ -251,98 +386,194 @@ class FooterLoader {
     }
 
     /**
-     * Setup language selector functionality
+     * Setup language selector
      */
     setupLanguageSelector() {
-        const languageSelector = document.getElementById('footer-language-selector');
-        if (!languageSelector) return;
-
-        // Set initial value from localStorage or default to 'en'
+        const selector = document.getElementById('language-select');
+        if (!selector) return;
+        
+        // Set initial value
         const savedLanguage = localStorage.getItem('preferred-language');
         if (savedLanguage) {
-            languageSelector.value = savedLanguage;
+            selector.value = savedLanguage;
         }
-
-        // Save selection to localStorage
-        languageSelector.addEventListener('change', () => {
-            localStorage.setItem('preferred-language', languageSelector.value);
-            // Here you would typically reload the page or update the UI
-            console.log('Language changed to:', languageSelector.value);
+        
+        // Handle changes
+        selector.addEventListener('change', () => {
+            localStorage.setItem('preferred-language', selector.value);
+            
+            // Add ripple effect to selector
+            const container = selector.closest('.language-selector');
+            if (container) {
+                this.addRippleEffect(container);
+            }
+        });
+    }
+    
+    /**
+     * Setup trust badges
+     */
+    setupTrustBadges() {
+        const badges = document.querySelectorAll('.trust-badge');
+        
+        badges.forEach(badge => {
+            badge.addEventListener('mouseenter', () => {
+                badge.classList.add('hover');
+            });
+            
+            badge.addEventListener('mouseleave', () => {
+                badge.classList.remove('hover');
+            });
+        });
+    }
+    
+    /**
+     * Setup links hover effects
+     */
+    setupLinks() {
+        const links = document.querySelectorAll('.footer-link');
+        
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.classList.add('hover');
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                link.classList.remove('hover');
+            });
+        });
+    }
+    
+    /**
+     * Setup social links hover effects
+     */
+    setupSocialLinks() {
+        const socialLinks = document.querySelectorAll('.social-link');
+        
+        socialLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.classList.add('hover');
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                link.classList.remove('hover');
+            });
         });
     }
 
     /**
-     * Setup scroll reveal animations
+     * Create particle effects
      */
-    setupScrollReveal() {
-        const footerElements = document.querySelectorAll('.footer-info, .footer-links-column, .footer-bottom-content');
+    createParticles() {
+        const container = document.getElementById('footer-particles');
+        if (!container) return;
         
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
+        const particleCount = 40;
         
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('span');
+            particle.className = 'particle';
+            
+            // Random sizing and positioning
+            const size = Math.random() * 3 + 1;
+            const left = Math.random() * 100;
+            const top = Math.random() * 100;
+            const duration = 15 + Math.random() * 45;
+            const delay = Math.random() * 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.top = `${top}%`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            container.appendChild(particle);
+        }
+    }
+    
+    /**
+     * Add ripple effect to elements
+     */
+    addRippleEffect(element) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple-effect';
+        
+        element.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 800);
+    }
+    
+    /**
+     * Setup animations
+     */
+    setupAnimations() {
+        // Setup intersection observer for animation elements
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
+                    // Get animation delay if specified
+                    const delay = entry.target.dataset.delay || 0;
+                    
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, delay);
+                    
                     observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, {
+            root: null,
+            threshold: 0.1
+        });
         
-        footerElements.forEach(element => {
+        // Observe all animation elements
+        document.querySelectorAll('.animate-element').forEach(element => {
             observer.observe(element);
         });
     }
 
     /**
-     * Setup particle effects for an ultra premium look
+     * Reveal the footer with animation
      */
-    setupParticleEffects() {
-        const particlesContainer = document.querySelector('.decoration-particles');
-        if (!particlesContainer) return;
-        
-        // Create particle elements
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // Random position and size
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.top = `${Math.random() * 100}%`;
-            particle.style.width = `${Math.random() * 4 + 1}px`;
-            particle.style.height = particle.style.width;
-            
-            // Random animation delay
-            particle.style.animationDelay = `${Math.random() * 5}s`;
-            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
-            
-            particlesContainer.appendChild(particle);
+    revealFooter() {
+        const footer = document.querySelector('.ultra-premium-footer');
+        if (footer) {
+            setTimeout(() => {
+                footer.classList.add('initialized');
+            }, 100);
         }
+        
+        // After revealing the footer, enforce transparency
+        setTimeout(() => {
+            this.enforceTransparency();
+        }, 100);
     }
-
+    
     /**
-     * Create a minimal footer in case the main footer fails to load
+     * Render a simplified fallback footer if main one fails
      */
-    createMinimalFooter() {
+    renderFallbackFooter() {
+        const currentYear = new Date().getFullYear();
+        
         this.footerContainer.innerHTML = `
-            <footer class="footer footer-minimal">
-                <div class="container">
-                    <div class="footer-minimal-content">
-                        <p>&copy; ${new Date().getFullYear()} NutriTrack. All rights reserved.</p>
-                        <nav class="footer-minimal-links">
-                            <a href="/privacy-policy">Privacy</a>
+            <footer class="fallback-footer">
+                <div class="fallback-container">
+                    <div class="fallback-content">
+                        <p>&copy; ${currentYear} NutriTrack. All rights reserved.</p>
+                        <nav class="fallback-links">
                             <a href="/terms">Terms</a>
+                            <a href="/privacy">Privacy</a>
                             <a href="/contact">Contact</a>
                         </nav>
-                    </div>
                 </div>
+            </div>
             </footer>
         `;
     }
 }
 
-// Initialize the footer loader
-new FooterLoader(); 
+// Initialize the Premium Footer
+new UltraPremiumFooter(); 

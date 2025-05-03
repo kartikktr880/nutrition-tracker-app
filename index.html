@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="styles/premium-steps.css">
     <link rel="stylesheet" href="styles/stay-updated.css">
     <link rel="stylesheet" href="styles/footer-new.css">
+    <link rel="stylesheet" href="styles/footer-override.css">
     <link rel="stylesheet" href="styles/premium-announcement-bar.css">
     <link rel="stylesheet" href="styles/homepage-header.css">
     
@@ -463,6 +464,79 @@
     <script src="scripts/mobile-nav.js"></script>
     <script src="scripts/footer.js"></script>
     <script src="scripts/main.js"></script>
+    
+    <!-- Immediate footer transparency fix -->
+    <script>
+        (function() {
+            // Function to apply transparency to footer
+            function makeFooterTransparent() {
+                // Get footer elements
+                const footerElements = [
+                    document.getElementById('footer-container'),
+                    document.querySelector('.footer'),
+                    document.querySelector('.footer-container'),
+                    ...document.querySelectorAll('.footer-top, .footer-bottom, .footer-links-column')
+                ].filter(el => el); // Filter out nulls
+                
+                // Apply transparency to all found elements
+                footerElements.forEach(el => {
+                    el.style.backgroundColor = 'transparent';
+                    el.style.backgroundImage = 'none';
+                    el.style.position = 'relative';
+                    el.style.zIndex = '5';
+                });
+                
+                // Create and apply overlay to footer
+                const footer = document.querySelector('.footer');
+                if (footer) {
+                    // Check if overlay already exists
+                    if (!footer.querySelector('.footer-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'footer-overlay';
+                        overlay.style.position = 'absolute';
+                        overlay.style.top = '0';
+                        overlay.style.left = '0';
+                        overlay.style.width = '100%';
+                        overlay.style.height = '100%';
+                        overlay.style.background = 'linear-gradient(to bottom, rgba(15, 35, 31, 0.8), rgba(10, 25, 20, 0.95))';
+                        overlay.style.zIndex = '-1';
+                        overlay.style.pointerEvents = 'none';
+                        overlay.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+                        footer.prepend(overlay);
+                    }
+                }
+            }
+            
+            // Run immediately
+            makeFooterTransparent();
+            
+            // Run again after a short delay
+            setTimeout(makeFooterTransparent, 500);
+            
+            // Run when content is loaded
+            document.addEventListener('DOMContentLoaded', makeFooterTransparent);
+            
+            // Run after all resources loaded
+            window.addEventListener('load', makeFooterTransparent);
+            
+            // Create a MutationObserver to watch for changes to footer
+            const observer = new MutationObserver(function(mutations) {
+                makeFooterTransparent();
+            });
+            
+            // Start observing once the footer container exists
+            setTimeout(() => {
+                const footerContainer = document.getElementById('footer-container');
+                if (footerContainer) {
+                    observer.observe(footerContainer, { 
+                        childList: true, 
+                        subtree: true, 
+                        attributes: true 
+                    });
+                }
+            }, 1000);
+        })();
+    </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
             // Initialize the unified auth handler
