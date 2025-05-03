@@ -1,0 +1,27 @@
+/* Premium Announcement Bar Styles */
+.premium-announcement-bar {
+  background: linear-gradient(90deg, #FF8C42, #FFA668);
+  color: #fff;
+  text-align: center;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  font-family: var(--font-ui, 'Montserrat', sans-serif);
+  position: relative;
+  z-index: 3001;
+}
+
+.premium-announcement-bar a {
+  color: #fff;
+  text-decoration: underline;
+  transition: text-shadow 0.2s;
+  margin-left: 5px;
+}
+
+.premium-announcement-bar a:hover {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+html.dark-mode .premium-announcement-bar {
+  background: linear-gradient(90deg, #FF8C42, #E07023);
+} 

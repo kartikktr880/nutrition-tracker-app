@@ -1,13 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-[#0d1e1e]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutrition Tracker | Track Your Nutrition Journey</title>
+    <title>NutriTrack - Premium Nutrition Tracking</title>
+    <meta name="description" content="Track your nutrition, plan your meals, and achieve your health goals with NutriTrack's premium tools">
     
-    <!-- Critical CSS fixes to ensure proper section spacing -->
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.png" type="image/png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- <script>tailwind.config = {...}</script> -->
+    
+    <!-- Base Stylesheets -->
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/main.css">
+    
+    <!-- Component Stylesheets -->
+    <link rel="stylesheet" href="styles/hero-section.css">
+    <link rel="stylesheet" href="styles/step-section.css">
+    <link rel="stylesheet" href="styles/premium-elements.css">
+    <link rel="stylesheet" href="styles/premium-steps.css">
+    <link rel="stylesheet" href="styles/stay-updated.css">
+    <link rel="stylesheet" href="styles/footer-new.css">
+    <link rel="stylesheet" href="styles/premium-announcement-bar.css">
+    <link rel="stylesheet" href="styles/homepage-header.css">
+    
+    <!-- Theme Styles -->
+    <link rel="stylesheet" href="styles/dark-mode.css">
+    <link rel="stylesheet" href="styles/premium-dark-mode.css">
+    
+    <!-- Critical Fixes -->
+    <link rel="stylesheet" href="styles/critical-fixes.css">
+    
+    <!-- Scripts -->
+    <script src="scripts/mobile-nav.js" defer></script>
+    <script src="scripts/step-section.js" defer></script>
+    
+    <!-- Critical section spacing fixes -->
     <style>
-        /* Critical section spacing fixes */
         .how-it-works { padding-bottom: 60px !important; margin-bottom: 0 !important; }
         .cta-section { padding: 80px 0 !important; margin: 0 !important; }
         .stay-updated-section { padding: 80px 0 !important; margin: 0 !important; }
@@ -24,639 +64,270 @@
         }
     </style>
     
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/footer.css">
-    <!-- Fix stylesheets - Load these after base sheets to override problematic styles -->
-    <link rel="stylesheet" href="styles/fix-icons.css">
-    <link rel="stylesheet" href="styles/critical-fixes.css">
-    <link rel="stylesheet" href="styles/premium-steps.css">
-    <link rel="stylesheet" href="styles/stay-updated.css">
-    <link rel="stylesheet" href="styles/footer-new.css">
-    <!-- Premium enhancement stylesheets -->
-    <link rel="stylesheet" href="styles/dark-mode.css">
-    <link rel="stylesheet" href="styles/premium-elements.css">
-    <link rel="stylesheet" href="styles/premium-dark-mode.css">
-    <link rel="stylesheet" href="styles/premium-header.css">
-    <link rel="stylesheet" href="styles/premium-features-showcase.css">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Enhanced Theme Toggle Script with Improved DOM Manipulation -->
+    <!-- Enhanced Theme Toggle Script -->
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
         // Immediately invoke the function to set the correct theme and icons
-    (function() {
-            // Support both dark-mode and dark-theme class names
+        (function() {
             const prefersDarkScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             const storedTheme = localStorage.getItem('darkMode') || localStorage.getItem('dark-theme');
             const isDarkMode = storedTheme === 'true' || (storedTheme === null && prefersDarkScheme);
             
-            // Apply appropriate class to html element, supporting both naming conventions
+            // Set the theme classes on the HTML element
             if (isDarkMode) {
-                document.documentElement.classList.add('dark-mode');
-                document.documentElement.classList.add('dark-theme');
+                document.documentElement.classList.add('dark-mode', 'dark-theme');
                 document.body.classList.add('dark-theme');
             } else {
-                document.documentElement.classList.remove('dark-mode');
-                document.documentElement.classList.remove('dark-theme');
+                document.documentElement.classList.remove('dark-mode', 'dark-theme');
                 document.body.classList.remove('dark-theme');
             }
             
-            // Function to physically remove the incorrect icon from DOM
-            function forceCorrectIcon() {
-                // Select all theme toggle buttons
-                const themeToggles = document.querySelectorAll('.theme-toggle, #theme-toggle-btn');
+            // Find all theme toggle buttons on the page
+            const themeToggles = document.querySelectorAll('.theme-toggle');
+            
+            // Set up click handlers for each toggle
+            themeToggles.forEach(toggle => {
+                if (!toggle) return;
+                toggle.addEventListener('click', function() {
+                    if (document.documentElement && document.body) {
+                        const isDarkMode = document.documentElement.classList.contains('dark-mode');
+                        if (isDarkMode) {
+                            document.documentElement.classList.remove('dark-mode', 'dark-theme');
+                            document.body.classList.remove('dark-theme');
+                            localStorage.setItem('darkMode', 'false');
+                        } else {
+                            document.documentElement.classList.add('dark-mode', 'dark-theme');
+                            document.body.classList.add('dark-theme');
+                            localStorage.setItem('darkMode', 'true');
+                        }
+                    }
+                    updateThemeIcons();
+                });
+            });
+            
+            // Update the visibility of sun/moon icons
+            function updateThemeIcons() {
+                if (!document.documentElement) return;
                 
+                // Check if dark mode is active
+                const isDarkMode = document.documentElement.classList.contains('dark-mode');
+                
+                // Update all theme toggles on the page
                 themeToggles.forEach(toggle => {
                     if (!toggle) return;
-                    
-                    const isDark = document.documentElement.classList.contains('dark-mode') || 
-                                  document.documentElement.classList.contains('dark-theme');
                     const sunIcon = toggle.querySelector('.sun-icon');
                     const moonIcon = toggle.querySelector('.moon-icon');
                     
-                    // Apply styles directly to icons for maximum compatibility
-                    if (isDark) {
-                        // In dark mode: Show moon, hide sun
-                        if (sunIcon) {
-                            sunIcon.style.display = 'none';
-                            sunIcon.style.opacity = '0';
-                            sunIcon.style.visibility = 'hidden';
-                        }
-                        if (moonIcon) {
-                            moonIcon.style.display = 'block';
-                            moonIcon.style.opacity = '1';
-                            moonIcon.style.visibility = 'visible';
-                        }
+                    if (isDarkMode) {
+                        // Dark mode: Show moon, hide sun
+                        if (sunIcon) sunIcon.style.display = 'none';
+                        if (moonIcon) moonIcon.style.display = 'flex';
                     } else {
-                        // In light mode: Show sun, hide moon
-                        if (sunIcon) {
-                            sunIcon.style.display = 'block';
-                            sunIcon.style.opacity = '1';
-                            sunIcon.style.visibility = 'visible';
-                        }
-                        if (moonIcon) {
-                            moonIcon.style.display = 'none';
-                            moonIcon.style.opacity = '0';
-                            moonIcon.style.visibility = 'hidden';
-                        }
+                        // Light mode: Show sun, hide moon
+                        if (sunIcon) sunIcon.style.display = 'flex';
+                        if (moonIcon) moonIcon.style.display = 'none';
                     }
                 });
             }
             
-            // Call immediately to set initial state
-            forceCorrectIcon();
-            
-            // Set up event listeners after DOM is loaded
-            function setupThemeToggle() {
-                const themeToggles = document.querySelectorAll('.theme-toggle, #theme-toggle-btn');
-                
-                themeToggles.forEach(toggle => {
-                    if (toggle) {
-                        // Remove existing event listeners
-                        const newToggle = toggle.cloneNode(true);
-                        if (toggle.parentNode) {
-                            toggle.parentNode.replaceChild(newToggle, toggle);
-                            
-                            // Add fresh event handler
-                            newToggle.addEventListener('click', function() {
-                                // Toggle dark mode class on both html and body for maximum compatibility
-                                const isDarkMode = document.documentElement.classList.contains('dark-mode') || 
-                                                 document.documentElement.classList.contains('dark-theme');
-                                
-                                if (isDarkMode) {
-                                    document.documentElement.classList.remove('dark-mode');
-                                    document.documentElement.classList.remove('dark-theme');
-                                    document.body.classList.remove('dark-theme');
-                                    localStorage.setItem('darkMode', 'false');
-                                    localStorage.setItem('dark-theme', 'false');
-                                } else {
-                                    document.documentElement.classList.add('dark-mode');
-                                    document.documentElement.classList.add('dark-theme');
-                                    document.body.classList.add('dark-theme');
-                                    localStorage.setItem('darkMode', 'true');
-                                    localStorage.setItem('dark-theme', 'true');
-                                }
-                                
-                                // Force a repaint to ensure all styles are applied
-                                document.body.style.display = 'none';
-                                document.body.offsetHeight; // Force reflow
-                                document.body.style.display = '';
-                                
-                                // Update icons
-                                forceCorrectIcon();
-                            });
-                        }
-                    }
-                });
-                
-                // Ensure icons are correct
-                forceCorrectIcon();
-            }
-            
-            // Run when DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', setupThemeToggle);
-            } else {
-                setupThemeToggle();
-            }
-            
-            // Run again after delays to catch any late-loading elements
-            setTimeout(forceCorrectIcon, 100);
-            setTimeout(forceCorrectIcon, 500);
-            setTimeout(forceCorrectIcon, 1000);
-    })();
+            // Initial icon update
+            updateThemeIcons();
+        })();
+    });
     </script>
-    
-    <style>
-        /* Theme toggle container styles */
-        .theme-toggle, #theme-toggle-btn {
-            position: relative !important;
-            width: 40px !important;
-            height: 40px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border-radius: 50% !important;
-            cursor: pointer !important;
-            z-index: 100 !important;
+    <!-- Scroll Behavior Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Variables for scroll behavior
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+      const header = document.querySelector('.homepage-header');
+      
+      // If no header is found, exit early
+      if (!header) return;
+      
+      // Set initial state
+      header.style.transform = 'translateY(0)';
+      
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const currentScrollY = window.scrollY;
+            
+            // Don't hide header if mobile menu is open
+            const mobileNav = document.getElementById('mobile-nav');
+            const isMobileMenuOpen = mobileNav && mobileNav.classList.contains('active');
+            
+            if (!isMobileMenuOpen) {
+              // Scrolling down - hide header
+              if (currentScrollY > lastScrollY && currentScrollY > 80) {
+                header.style.transform = 'translateY(-100%)';
+                header.classList.add('scrolled-down');
+                header.classList.remove('scrolled-up');
+              } 
+              // Scrolling up - show header
+              else if (currentScrollY < lastScrollY) {
+                header.style.transform = 'translateY(0)';
+                header.classList.remove('scrolled-down');
+                header.classList.add('scrolled-up');
+              }
+              
+              // If at the top, remove both classes
+              if (currentScrollY <= 0) {
+                header.classList.remove('scrolled-down', 'scrolled-up');
+                header.style.transform = 'translateY(0)';
+              }
+            }
+            
+            lastScrollY = currentScrollY;
+            ticking = false;
+          });
+          
+          ticking = true;
         }
-        
-        /* Base SVG icon styles for theme toggle */
-        .theme-toggle svg, #theme-toggle-btn svg {
-            width: 20px !important;
-            height: 20px !important;
-            position: absolute !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-        }
-
-        /* Fix for buttons not working */
-        .btn, 
-        button.btn,
-        a.btn,
-        .button,
-        button.button,
-        a.button {
-            cursor: pointer !important;
-            pointer-events: auto !important;
-            position: relative !important;
-            z-index: 10 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            text-decoration: none !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            transition: all 0.3s ease !important;
-            outline: none !important;
-            border: none !important;
-            padding: 12px 24px !important;
-        }
-
-        /* Primary button */
-        .btn-primary, 
-        button.btn-primary,
-        a.btn-primary {
-            background-color: var(--accent-color, #FF8C42) !important;
-            color: white !important;
-            box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3) !important;
-        }
-
-        .btn-primary:hover, 
-        button.btn-primary:hover,
-        a.btn-primary:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 15px rgba(255, 140, 66, 0.4) !important;
-        }
-
-        /* Secondary button */
-        .btn-secondary, 
-        button.btn-secondary,
-        a.btn-secondary {
-            background-color: rgba(var(--primary-rgb, 26, 60, 52), 0.1) !important;
-            color: var(--primary-color, #1A3C34) !important;
-        }
-
-        .btn-secondary:hover, 
-        button.btn-secondary:hover,
-        a.btn-secondary:hover {
-            background-color: rgba(var(--primary-rgb, 26, 60, 52), 0.15) !important;
-            transform: translateY(-2px) !important;
-        }
-    </style>
-    
-    <!-- CRITICAL FIX for header buttons - high specificity -->
-    <style>
-        /* Force critical elements to be visible */
-        body .header .user-actions,
-        body .action-item, 
-        body .quick-add-btn, 
-        body .notification-icon, 
-        body .theme-toggle,
-        body #lang-selector,
-        body #theme-toggle-btn,
-        body #quick-add-btn,
-        body #notification-btn,
-        body #user-profile,
-        [id="lang-selector"],
-        [id="theme-toggle-btn"],
-        [id="quick-add-btn"],
-        [id="notification-btn"],
-        [id="user-profile"] {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            position: relative !important;
-            z-index: 10000 !important;
-        }
-        
-        body .action-item i, 
-        body .quick-add-btn i, 
-        body .notification-icon i, 
-        body .theme-toggle i,
-        body #lang-selector i,
-        body #theme-toggle-btn i,
-        body #quick-add-btn i,
-        body #notification-btn i,
-        body #user-profile i,
-        body svg,
-        body i.fa,
-        body i.fas,
-        body i.far,
-        body i.fab,
-        body .header i,
-        body .icon,
-        body .dropdown-icon {
-            display: inline-block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-        
-        body .mega-dropdown {
-            position: static !important;
-        }
-        
-        body .mega-menu {
-            position: absolute !important;
-            top: 100% !important;
-            right: 0 !important;
-            left: auto !important;
-            display: none !important;
-            z-index: 10000 !important;
-        }
-        
-        body .mega-dropdown.active .mega-menu {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-        
-        body .mobile-dropdown .mobile-submenu {
-            display: none !important;
-        }
-        
-        body .mobile-dropdown.active .mobile-submenu {
-            display: block !important;
-        }
-        
-        /* Remove duplicate chevrons */
-        body .dropdown-toggle .dropdown-icon + .dropdown-icon {
-            display: none !important;
-        }
-
-        /* Fix dropdown menus */
-        body .dropdown-menu {
-            position: absolute !important;
-            top: 100% !important;
-            display: none !important;
-        }
-        
-        body .dropdown.active .dropdown-menu,
-        body .nav-item.active .dropdown-menu {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-
-        /* Fix header containers */
-        body .header-right,
-        body .header .user-actions,
-        body .header-left,
-        body .header-wrapper {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-    </style>
+      }
+      
+      // Add scroll event listener with passive flag for better performance
+      window.addEventListener('scroll', onScroll, { passive: true });
+    });
+    </script>
 </head>
 <body>
     <!-- Premium Announcement Bar -->
     <div class="premium-announcement-bar">
-        <div class="container">
-            <span>🎉 Special offer: 30% off Premium Plan for a limited time! <a href="#" style="color: #FFA668; text-decoration: underline; font-weight: 600;">Upgrade now</a></span>
-        </div>
+        🌟 Get 30% off on our Premium Plan! <a href="#premium">Learn More</a>
     </div>
-    
-    <!-- CRITICAL FIX SCRIPT: Fix header icons and dropdowns immediately -->
-    <script>
-    (function() {
-        // Execute immediately
-        function fixHeaderIssues() {
-            // Fix header buttons
-            var headerButtons = ['#quick-add-btn', '#notification-btn', '#user-profile', '#theme-toggle-btn', '#lang-selector'];
-            headerButtons.forEach(function(selector) {
-                var button = document.querySelector(selector);
-                if (button) {
-                    button.style.display = 'flex';
-                    button.style.visibility = 'visible';
-                    button.style.opacity = '1';
-                    button.style.zIndex = '10000';
-                    
-                    // Fix the icons inside
-                    var icons = button.querySelectorAll('i, .fa, .fas, .far, .notification-badge');
-                    icons.forEach(function(icon) {
-                        icon.style.display = icon.tagName === 'I' || icon.classList.contains('fa') ? 'inline-block' : 'flex';
-                        icon.style.visibility = 'visible';
-                        icon.style.opacity = '1';
-                    });
-                }
-            });
-            
-            // Fix More dropdown menu duplicate icons
-            var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-            dropdownToggles.forEach(function(toggle) {
-                var icons = toggle.querySelectorAll('.dropdown-icon, .fa-chevron-down');
-                if (icons.length > 1) {
-                    for (var i = 1; i < icons.length; i++) {
-                        icons[i].style.display = 'none';
-                    }
-                }
-            });
-            
-            // Ensure the Food Log dropdown works
-            var foodLogItem = document.querySelector('.nav-item.mega-dropdown[data-dropdown="food-log"]');
-            if (foodLogItem) {
-                var foodLogLink = foodLogItem.querySelector('.nav-link');
-                var foodLogMenu = document.getElementById('food-log-menu');
-                
-                if (foodLogLink && foodLogMenu) {
-                    // Remove any existing event listeners
-                    foodLogLink.onclick = null;
-                    
-                    // Add fresh event listener
-                    foodLogLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        foodLogItem.classList.toggle('active');
-                        foodLogMenu.style.display = foodLogItem.classList.contains('active') ? 'block' : 'none';
-                    });
-                }
-            }
-            
-            // Fix mobile submenu toggle
-            var mobileDropdowns = document.querySelectorAll('.mobile-dropdown');
-            mobileDropdowns.forEach(function(dropdown) {
-                var toggle = dropdown.querySelector('.dropdown-toggle');
-                var submenu = dropdown.querySelector('.mobile-submenu');
-                
-                if (toggle && submenu) {
-                    // Remove any existing click handlers
-                    toggle.onclick = null;
-                    
-                    // Add fresh event handler
-                    toggle.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        dropdown.classList.toggle('active');
-                        submenu.style.display = dropdown.classList.contains('active') ? 'block' : 'none';
-                        
-                        // Fix chevron rotation
-                        var chevron = toggle.querySelector('.dropdown-icon, .fa-chevron-down');
-                        if (chevron) {
-                            chevron.style.transform = dropdown.classList.contains('active') ? 'rotate(180deg)' : 'none';
-                        }
-                    });
-                }
-            });
-        }
-        
-        // Run immediately
-        fixHeaderIssues();
-        
-        // Also run after DOM content loaded
-        document.addEventListener('DOMContentLoaded', fixHeaderIssues);
-        
-        // Run multiple times with delays to ensure it works even if page loads slowly
-        setTimeout(fixHeaderIssues, 100);
-        setTimeout(fixHeaderIssues, 500);
-        setTimeout(fixHeaderIssues, 1000);
-    })();
-    </script>
-    
-    <!-- New Header Start -->
-    <header class="site-header">
-        <div class="header-container">
-            <!-- Logo -->
-            <div class="header-logo">
-                <a href="index.html">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="18" fill="#1A3C34"/>
-                        <path d="M14.5 26.5C14.5 26.5 15 15 20 15C25 15 25.5 26.5 25.5 26.5" stroke="#FF8C42" stroke-width="3" stroke-linecap="round"/>
-                        <circle cx="20" cy="12" r="3" fill="#FF8C42"/>
-                    </svg>
-                    <span>NutriTrack</span>
-                </a>
-            </div>
 
-            <!-- Main Navigation -->
-            <nav class="main-nav">
-                    <ul class="nav-list">
-                        <li class="nav-item">
-                            <a href="index.html" class="nav-link">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="features.html" class="nav-link dropdown-toggle">Features</a>
-                            <div class="dropdown-menu">
-                                <a href="meal-planning.html" class="dropdown-item">
-                                    <i class="fas fa-utensils" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Meal Planning
-                                </a>
-                                <a href="nutrition-analytics.html" class="dropdown-item">
-                                    <i class="fas fa-chart-pie" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Nutrition Analytics
-                                </a>
-                                <a href="recipe-finder.html" class="dropdown-item">
-                                    <i class="fas fa-search" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Recipe Finder
-                                </a>
-                                <a href="progress-tracking.html" class="dropdown-item">
-                                    <i class="fas fa-chart-line" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Progress Tracking
-                                </a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="pricing.html" class="nav-link">Pricing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="resources.html" class="nav-link dropdown-toggle">Resources</a>
-                            <div class="dropdown-menu">
-                                <a href="blog.html" class="dropdown-item">
-                                    <i class="fas fa-newspaper" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Blog
-                                </a>
-                                <a href="guides.html" class="dropdown-item">
-                                    <i class="fas fa-book" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Guides
-                                </a>
-                                <a href="calculators.html" class="dropdown-item">
-                                    <i class="fas fa-calculator" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    Calculators
-                                </a>
-                                <a href="faq.html" class="dropdown-item">
-                                    <i class="fas fa-question-circle" style="margin-right: 10px; color: #2A5E50;"></i>
-                                    FAQ
-                                </a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="premium.html" class="nav-link">
-                                Premium
-                                <span class="nav-premium-badge">New</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
-            <!-- User Actions -->
-            <div class="user-actions">
-                <!-- Theme Toggle - Updated structure -->
-                <button class="action-btn theme-toggle" aria-label="Toggle dark mode" id="theme-toggle-btn">
-                    <!-- Ensure both icons are present with correct classes -->
-                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                </button>
-
-                <!-- Notifications -->
-                <button class="action-btn" aria-label="Notifications" id="notification-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span class="badge">3</span>
-                </button>
-
-                <!-- Quick Add -->
-                <button class="action-btn" aria-label="Quick Add" id="quick-add-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                </button>
-                
-                <!-- Login/Sign Up Buttons -->
-                <div class="header-actions">
-                    <a href="login.html" class="header-btn btn-login">Log In</a>
-                    <a href="signup.html" class="header-btn btn-signup">Sign Up</a>
+    <!-- Home Page Header -->
+    <header class="homepage-header">
+      <button class="mobile-menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="homepage-nav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+          </li>
+          <li class="nav-item dropdown" id="food-log-dropdown">
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-utensils"></i> Food Log <i class="fas fa-chevron-down ml-1"></i>
+            </a>
+            <div class="dropdown-menu" role="menu" aria-label="Food Log Menu">
+              <div class="dropdown-columns">
+                <div class="dropdown-col">
+                  <div class="dropdown-col-title">Add</div>
+                  <ul>
+                    <li><i class="fas fa-apple-alt"></i> Apple</li>
+                    <li><i class="fas fa-drumstick-bite"></i> Chicken</li>
+                    <li><i class="fas fa-egg"></i> Eggs</li>
+                    <li><i class="fas fa-leaf"></i> Salad</li>
+                  </ul>
                 </div>
-                    
-                <!-- User Profile -->
-                <div class="user-profile" id="user-profile">
-                    <div class="user-avatar">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="dropdown-menu">
-                        <a href="profile.html" class="dropdown-item">
-                            <i class="fas fa-user" style="margin-right: 10px; color: #2A5E50;"></i>
-                            My Profile
-                        </a>
-                        <a href="dashboard.html" class="dropdown-item">
-                            <i class="fas fa-tachometer-alt" style="margin-right: 10px; color: #2A5E50;"></i>
-                            Dashboard
-                        </a>
-                        <a href="settings.html" class="dropdown-item">
-                            <i class="fas fa-cog" style="margin-right: 10px; color: #2A5E50;"></i>
-                            Settings
-                        </a>
-                        <a href="logout.html" class="dropdown-item">
-                            <i class="fas fa-sign-out-alt" style="margin-right: 10px; color: #2A5E50;"></i>
-                            Logout
-                        </a>
-                    </div>
+                <div class="dropdown-col">
+                  <div class="dropdown-col-title">Recent Foods</div>
+                  <ul>
+                    <li><i class="fas fa-cheese"></i> Greek Yogurt</li>
+                    <li><i class="fas fa-bread-slice"></i> Whole Grain Bread</li>
+                    <li><i class="fas fa-egg"></i> Scrambled Eggs</li>
+                    <li><i class="fas fa-banana"></i> Banana</li>
+                    <li><i class="fas fa-fish"></i> Salmon</li>
+                  </ul>
                 </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <div class="mobile-menu-toggle">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                <div class="dropdown-col">
+                  <div class="dropdown-col-title">Log Options</div>
+                  <ul>
+                    <li><i class="fas fa-plus"></i> Add New Food</li>
+                    <li><i class="fas fa-utensils"></i> Add Meal</li>
+                    <li><i class="fas fa-book-open"></i> Find Recipe</li>
+                    <li><i class="fas fa-barcode"></i> Scan Barcode</li>
+                    <li><i class="fas fa-history"></i> View History</li>
+                  </ul>
                 </div>
+              </div>
             </div>
-        </div>
-        
-        <!-- Mobile Navigation -->
-        <div class="mobile-nav">
-            <ul class="mobile-nav-list">
-                <li class="mobile-nav-item">
-                    <a href="index.html" class="mobile-nav-link">Home</a>
-                </li>
-                <li class="mobile-nav-item mobile-dropdown">
-                    <a href="javascript:void(0);" class="mobile-nav-link">Features</a>
-                    <div class="mobile-dropdown-menu">
-                        <a href="meal-planning.html" class="mobile-dropdown-item">Meal Planning</a>
-                        <a href="nutrition-analytics.html" class="mobile-dropdown-item">Nutrition Analytics</a>
-                        <a href="recipe-finder.html" class="mobile-dropdown-item">Recipe Finder</a>
-                        <a href="progress-tracking.html" class="mobile-dropdown-item">Progress Tracking</a>
-                    </div>
-                </li>
-                <li class="mobile-nav-item">
-                    <a href="pricing.html" class="mobile-nav-link">Pricing</a>
-                </li>
-                <li class="mobile-nav-item mobile-dropdown">
-                    <a href="javascript:void(0);" class="mobile-nav-link">Resources</a>
-                    <div class="mobile-dropdown-menu">
-                        <a href="blog.html" class="mobile-dropdown-item">Blog</a>
-                        <a href="guides.html" class="mobile-dropdown-item">Guides</a>
-                        <a href="calculators.html" class="mobile-dropdown-item">Calculators</a>
-                        <a href="faq.html" class="mobile-dropdown-item">FAQ</a>
-                    </div>
-                </li>
-                <li class="mobile-nav-item">
-                    <a href="premium.html" class="mobile-nav-link">Premium <span class="nav-premium-badge">New</span></a>
-                </li>
-            </ul>
-            
-            <!-- Mobile Actions -->
-            <div class="header-actions mobile-actions">
-                <a href="login.html" class="header-btn btn-login">Log In</a>
-                <a href="signup.html" class="header-btn btn-signup">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Meal Planner</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-book"></i> Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Reports</a>
+          </li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">
+        <span class="sun-icon"><i class="fas fa-sun"></i></span>
+        <span class="moon-icon" style="display: none;"><i class="fas fa-moon"></i></span>
+      </button>
+      <!-- Mobile Nav (hidden by default) -->
+      <nav id="mobile-nav" class="mobile-nav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+          </li>
+          <li class="nav-item dropdown" id="mobile-food-log-dropdown">
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-utensils"></i> Food Log <i class="fas fa-chevron-down ml-1"></i>
+            </a>
+            <div class="dropdown-menu" role="menu" aria-label="Food Log Menu">
+              <div class="dropdown-columns">
+                <div class="dropdown-col">
+                  <div class="dropdown-col-title">Add</div>
+                  <ul>
+                    <li><i class="fas fa-apple-alt"></i> Apple</li>
+                    <li><i class="fas fa-drumstick-bite"></i> Chicken</li>
+                    <li><i class="fas fa-egg"></i> Eggs</li>
+                    <li><i class="fas fa-leaf"></i> Salad</li>
+                  </ul>
+                </div>
+                <div class="dropdown-col">
+                  <div class="dropdown-col-title">Recent Foods</div>
+                  <ul>
+                    <li><i class="fas fa-cheese"></i> Greek Yogurt</li>
+                    <li><i class="fas fa-bread-slice"></i> Whole Grain Bread</li>
+                    <li><i class="fas fa-egg"></i> Scrambled Eggs</li>
+                    <li><i class="fas fa-banana"></i> Banana</li>
+                    <li><i class="fas fa-fish"></i> Salmon</li>
+                  </ul>
+                </div>
+                <div class="dropdown-col">
+                  <div class="dropdown-col-title">Log Options</div>
+                  <ul>
+                    <li><i class="fas fa-plus"></i> Add New Food</li>
+                    <li><i class="fas fa-utensils"></i> Add Meal</li>
+                    <li><i class="fas fa-book-open"></i> Find Recipe</li>
+                    <li><i class="fas fa-barcode"></i> Scan Barcode</li>
+                    <li><i class="fas fa-history"></i> View History</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-        </div>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Meal Planner</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-book"></i> Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Reports</a>
+          </li>
+          <li class="nav-item">
+            <button class="theme-toggle mobile-theme-toggle" aria-label="Toggle dark mode">
+              <span class="sun-icon"><i class="fas fa-sun"></i></span>
+              <span class="moon-icon" style="display: none;"><i class="fas fa-moon"></i></span>
+              <span class="toggle-label">Toggle Dark Mode</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </header>
 
-    <main class="main-content">
+    <main>
         <!-- Hero Section -->
         <section class="hero-section" style="opacity: 1 !important; visibility: visible !important;">
             <div class="hero-gradient" style="opacity: 0.6 !important;"></div>
@@ -691,7 +362,7 @@
                         <img src="images/hero-app.png" 
                              alt="Nutrition Tracker App Interface" 
                              style="max-width: 100%; height: auto; display: block !important; opacity: 1 !important;"
-                             onerror="this.src='https://via.placeholder.com/400x600/2A5E50/FFFFFF?text=Nutrition+Tracker'; this.style.maxWidth='100%'; this.style.height='auto'; this.style.display='block'; this.style.opacity='1'; this.onerror=null;">
+                             onerror="this.src='https://placehold.co/400x600/2A5E50/FFFFFF?text=Nutrition+Tracker'; this.style.maxWidth='100%'; this.style.height='auto'; this.style.display='block'; this.style.opacity='1'; this.onerror=null;">
                         <div class="floating-badge">
                             <i class="fas fa-star"></i>
                             <span>Rated #1 Nutrition App</span>
@@ -720,136 +391,100 @@
                             <i class="fas fa-brain feature-icon"></i>
                         </div>
                         <div class="card-content">
-                            <h3>AI-Powered Analysis</h3>
-                            <p>Our advanced AI analyzes your eating patterns and provides personalized recommendations to optimize your nutrition and health goals.</p>
-                            <a href="#" class="feature-link">
-                                Learn more <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
+                        <h3>AI-Powered Analysis</h3>
+                        <p>Our advanced AI analyzes your eating patterns and provides personalized recommendations to optimize your nutrition and health goals.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
                     </div>
                     <div class="feature-card premium-card">
                         <div class="feature-icon-wrapper">
                             <i class="fas fa-camera feature-icon"></i>
                         </div>
                         <div class="card-content">
-                            <h3>Smart Food Recognition</h3>
-                            <p>Simply take a photo of your meal and our app instantly identifies foods, portions, and nutritional content with remarkable accuracy.</p>
-                            <a href="#" class="feature-link">
-                                Learn more <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
+                        <h3>Smart Food Recognition</h3>
+                        <p>Simply take a photo of your meal and our app instantly identifies foods, portions, and nutritional content with remarkable accuracy.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
                     </div>
                     <div class="feature-card premium-card">
                         <div class="feature-icon-wrapper">
                             <i class="fas fa-chart-line feature-icon"></i>
                         </div>
                         <div class="card-content">
-                            <h3>Progress Tracking</h3>
-                            <p>Visualize your nutrition journey with intuitive charts and insights that help you stay on track and meet your health objectives.</p>
-                            <a href="#" class="feature-link">
-                                Learn more <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
+                        <h3>Progress Tracking</h3>
+                        <p>Visualize your nutrition journey with intuitive charts and insights that help you stay on track and meet your health objectives.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
                     </div>
                     <div class="feature-card premium-card">
                         <div class="feature-icon-wrapper">
                             <i class="fas fa-users feature-icon"></i>
                         </div>
                         <div class="card-content">
-                            <h3>Community Support</h3>
-                            <p>Connect with like-minded individuals, share recipes, and get motivation from our active community of nutrition enthusiasts.</p>
-                            <a href="#" class="feature-link">
-                                Learn more <i class="fas fa-arrow-right"></i>
-                            </a>
+                        <h3>Community Support</h3>
+                        <p>Connect with like-minded individuals, share recipes, and get motivation from our active community of nutrition enthusiasts.</p>
+                        <a href="#" class="feature-link">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- How It Works Section -->
-        <section class="how-it-works in-view" id="how-it-works">
+        <!-- Step Section -->
+        <section class="steps-section">
             <div class="container">
-                <div class="section-tag">
-                    <i class="fas fa-bolt"></i>
-                    <span>Start Now</span>
-                </div>
-                
                 <div class="section-header">
-                    <h2>Track Your Nutrition</h2>
-                    <p>Simple steps to better health</p>
+                    <h2>How NutriTrack Works</h2>
+                    <p>Our simple three-step process makes nutrition tracking effortless and effective</p>
                 </div>
                 
                 <div class="steps-container">
+                    <!-- Step 1 -->
                     <div class="step">
                         <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <h3>Profile</h3>
-                            <p>Quick setup</p>
-                            <ul class="step-features">
-                                <li><i class="fas fa-check"></i>2min</li>
-                                <li><i class="fas fa-check"></i>AI</li>
-                                <li><i class="fas fa-check"></i>Goals</li>
-                            </ul>
+                        <div class="step-icon">
+                            <i class="fas fa-utensils"></i>
                         </div>
+                        <h3 class="step-title">Track Your Meals</h3>
+                        <p class="step-description">Log your daily meals and snacks with our extensive food database for accurate nutrition tracking.</p>
+                        <a href="#" class="step-link">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
                     
+                    <!-- Step 2 -->
                     <div class="step">
                         <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-utensils"></i>
-                            </div>
-                            <h3>Log Food</h3>
-                            <p>Easy tracking</p>
-                            <ul class="step-features">
-                                <li><i class="fas fa-check"></i>Scan</li>
-                                <li><i class="fas fa-check"></i>Photo</li>
-                                <li><i class="fas fa-check"></i>Voice</li>
-                            </ul>
+                        <div class="step-icon">
+                            <i class="fas fa-chart-pie"></i>
                         </div>
+                        <h3 class="step-title">Analyze Nutrients</h3>
+                        <p class="step-description">Get detailed breakdowns of macronutrients, vitamins, and minerals to ensure balanced nutrition.</p>
+                        <a href="#" class="step-link">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
                     
+                    <!-- Step 3 -->
                     <div class="step">
                         <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-chart-bar"></i>
-                            </div>
-                            <h3>Insights</h3>
-                            <p>Smart data</p>
-                            <ul class="step-features">
-                                <li><i class="fas fa-check"></i>AI</li>
-                                <li><i class="fas fa-check"></i>Stats</li>
-                                <li><i class="fas fa-check"></i>Tips</li>
-                            </ul>
+                        <div class="step-icon">
+                            <i class="fas fa-bullseye"></i>
                         </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h3>Success</h3>
-                            <p>Hit goals</p>
-                            <ul class="step-features">
-                                <li><i class="fas fa-check"></i>Track</li>
-                                <li><i class="fas fa-check"></i>Win</li>
-                                <li><i class="fas fa-check"></i>Share</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="cta-button-container">
-                        <a href="signup.html" class="btn btn-glow">Get Started</a>
-                        <p class="step-support-text">Join 5M+ users</p>
+                        <h3 class="step-title">Reach Your Goals</h3>
+                        <p class="step-description">Set personalized goals and track your progress with visual charts and achievement badges.</p>
+                        <a href="#" class="step-link">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
+                
+                <!-- Background decoration -->
+                <div class="steps-bg-shape steps-bg-shape-1"></div>
+                <div class="steps-bg-shape steps-bg-shape-2"></div>
+                <div class="steps-connection"></div>
             </div>
         </section>
         
@@ -875,7 +510,7 @@
                             <p>"I've lost 15 pounds in just 3 months while still enjoying my favorite foods. The AI recommendations are incredibly accurate and helped me understand my eating patterns better."</p>
                         </div>
                         <div class="testimonial-author">
-                            <img src="images/testimonial-1.jpg" alt="Sarah L." onerror="this.src='https://via.placeholder.com/50x50/1A3C34/FFFFFF?text=SL'; this.onerror=null;">
+                            <img src="images/testimonial-1.jpg" alt="Sarah L." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=SL'; this.onerror=null;">
                             <div class="testimonial-author-info">
                                 <div class="testimonial-author-name">Sarah L.</div>
                                 <div class="testimonial-author-title">Lost 15 lbs in 3 months</div>
@@ -897,7 +532,7 @@
                             <p>"As a professional athlete, tracking my nutrition precisely is critical. This app makes it effortless with its smart photo recognition system—I just snap a photo and get detailed macros instantly."</p>
                         </div>
                         <div class="testimonial-author">
-                            <img src="images/testimonial-2.jpg" alt="Mark T." onerror="this.src='https://via.placeholder.com/50x50/1A3C34/FFFFFF?text=MT'; this.onerror=null;">
+                            <img src="images/testimonial-2.jpg" alt="Mark T." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=MT'; this.onerror=null;">
                             <div class="testimonial-author-info">
                                 <div class="testimonial-author-name">Mark T.</div>
                                 <div class="testimonial-author-title">Professional Runner</div>
@@ -919,7 +554,7 @@
                             <p>"The supportive community has been incredible for my journey. I've discovered so many healthy recipes and nutrition tips from other members. Plus, the interface is beautifully designed and intuitive."</p>
                         </div>
                         <div class="testimonial-author">
-                            <img src="images/testimonial-3.jpg" alt="Jennifer K." onerror="this.src='https://via.placeholder.com/50x50/1A3C34/FFFFFF?text=JK'; this.onerror=null;">
+                            <img src="images/testimonial-3.jpg" alt="Jennifer K." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=JK'; this.onerror=null;">
                             <div class="testimonial-author-info">
                                 <div class="testimonial-author-name">Jennifer K.</div>
                                 <div class="testimonial-author-title">Nutrition Coach</div>
@@ -1018,8 +653,8 @@
                         <i class="fas fa-times-circle"></i>
                         <span>Unsubscribe anytime</span>
                     </div>
-                </div>
-            </div>
+                    </div>
+                    </div>
         </section>
     </main>
     
@@ -1027,6 +662,9 @@
     <div id="footer-container"></div>
 
     <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="scripts/firebase-config.js"></script>
     <script src="scripts/unified-auth.js"></script>
     <script src="scripts/mobile-nav.js"></script>
@@ -1040,91 +678,197 @@
             }
         });
     </script>
-    
-    <!-- Header Scroll Effect -->
     <script>
-        // Add scroll effect to header
+    // Home Page Header Dropdown Functionality (with null checks)
         (function() {
-            const header = document.querySelector('.site-header');
-            
-            // Add the 'header' class to the site-header element
-            if (header) {
-                header.classList.add('header');
-                
-                // Function to handle the scroll effect
-                function handleScroll() {
-                    if (window.scrollY > 50) {
-                        header.classList.add('scrolled');
-                    } else {
-                        header.classList.remove('scrolled');
-                    }
-                }
-                
-                // Check initial scroll position
-                handleScroll();
-                
-                // Add scroll event listener
-                window.addEventListener('scroll', handleScroll);
-                
-                // Fix dropdown menus
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(item => {
-                    const link = item.querySelector('.nav-link');
-                    const dropdown = item.querySelector('.dropdown-menu');
-                    
-                    if (link && dropdown) {
-                        link.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            
-                            // Close all other dropdowns
-                            navItems.forEach(otherItem => {
-                                if (otherItem !== item) {
-                                    otherItem.classList.remove('active');
-                                }
-                            });
-                            
-                            // Toggle current dropdown
-                            item.classList.toggle('active');
-                        });
-                    }
-                });
-                
-                // Close dropdowns when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!e.target.closest('.nav-item')) {
-                        navItems.forEach(item => item.classList.remove('active'));
-                    }
-                });
-                
-                // Mobile menu toggle
-                const mobileToggle = document.querySelector('.mobile-menu-toggle');
-                const mobileNav = document.querySelector('.mobile-nav');
-                
-                if (mobileToggle && mobileNav) {
-                    mobileToggle.addEventListener('click', function() {
-                        mobileToggle.classList.toggle('active');
-                        mobileNav.classList.toggle('active');
-                    });
-                }
-                
-                // User profile dropdown
-                const userProfile = document.querySelector('#user-profile');
-                
-                if (userProfile) {
-                    userProfile.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        userProfile.classList.toggle('active');
-                    });
-                    
-                    // Close user profile when clicking outside
-                    document.addEventListener('click', function(e) {
-                        if (!e.target.closest('#user-profile')) {
-                            userProfile.classList.remove('active');
-                        }
-                    });
-                }
-            }
+      const dropdown = document.getElementById('food-log-dropdown');
+      if (!dropdown) return;
+      const toggle = dropdown.querySelector('.dropdown-toggle');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (!toggle || !menu) return;
+
+      // Open/close dropdown on click
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.contains('open');
+        document.querySelectorAll('.nav-item.dropdown.open').forEach(item => {
+          if (item && item !== dropdown) item.classList.remove('open');
+        });
+        dropdown.classList.toggle('open', !isOpen);
+        toggle.setAttribute('aria-expanded', String(!isOpen));
+        if (!isOpen) {
+          // Focus first item in dropdown
+          const firstItem = menu.querySelector('li');
+          if (firstItem) firstItem.focus();
+        }
+      });
+
+      // Close dropdown on click outside
+      document.addEventListener('mousedown', function(e) {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Keyboard navigation
+      toggle.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (!dropdown) return;
+          dropdown.classList.add('open');
+          toggle.setAttribute('aria-expanded', 'true');
+          const firstItem = menu.querySelector('li');
+          if (firstItem) firstItem.focus();
+        }
+      });
+      menu.addEventListener('keydown', function(e) {
+        const items = Array.from(menu.querySelectorAll('li'));
+        const current = document.activeElement;
+        let idx = items.indexOf(current);
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (idx < items.length - 1) items[idx + 1].focus();
+          else items[0].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (idx > 0) items[idx - 1].focus();
+          else items[items.length - 1].focus();
+        } else if (e.key === 'Escape') {
+          if (!dropdown) return;
+          dropdown.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.focus();
+        }
+      });
+      // Make dropdown items focusable
+      menu.querySelectorAll('li').forEach(li => {
+        li.setAttribute('tabindex', '0');
+      });
         })();
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu toggle
+      const mobileToggle = document.querySelector('.mobile-menu-toggle');
+      const mobileNav = document.getElementById('mobile-nav');
+      if (mobileToggle && mobileNav) {
+        mobileToggle.style.display = 'flex';
+        mobileToggle.addEventListener('click', function() {
+          const isOpen = mobileNav.classList.contains('active');
+          mobileNav.classList.toggle('active', !isOpen);
+          mobileToggle.classList.toggle('active', !isOpen);
+          mobileToggle.setAttribute('aria-expanded', String(!isOpen));
+          mobileNav.style.display = !isOpen ? 'block' : 'none';
+        });
+        // Close on click outside
+        document.addEventListener('mousedown', function(e) {
+          if (mobileNav.classList.contains('active') && !mobileNav.contains(e.target) && !mobileToggle.contains(e.target)) {
+            mobileNav.classList.remove('active');
+            mobileToggle.classList.remove('active');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+            mobileNav.style.display = 'none';
+          }
+        });
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+            mobileNav.classList.remove('active');
+            mobileToggle.classList.remove('active');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+            mobileNav.style.display = 'none';
+          }
+        });
+      }
+      // Mobile dropdown
+      const mobileDropdown = document.getElementById('mobile-food-log-dropdown');
+      if (mobileDropdown) {
+        const toggle = mobileDropdown.querySelector('.dropdown-toggle');
+        const menu = mobileDropdown.querySelector('.dropdown-menu');
+        if (toggle && menu) {
+          toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isOpen = mobileDropdown.classList.contains('open');
+            mobileDropdown.classList.toggle('open', !isOpen);
+            toggle.setAttribute('aria-expanded', String(!isOpen));
+          });
+          // Close on click outside
+          document.addEventListener('mousedown', function(e) {
+            if (!mobileDropdown.contains(e.target)) {
+              mobileDropdown.classList.remove('open');
+              toggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+      }
+    });
+    </script>
+    <script>
+    // Hide-on-scroll sticky header
+    (function() {
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+      const header = document.querySelector('.homepage-header');
+      if (!header) return;
+      let isHidden = false;
+      
+      // Apply shadow based on scroll position
+      function updateHeaderShadow() {
+        if (window.scrollY > 10) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      }
+      
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const currentScrollY = window.scrollY;
+            
+            // Update shadow effect
+            updateHeaderShadow();
+            
+            if (currentScrollY > lastScrollY && currentScrollY > 80) {
+              // Scrolling down
+              if (!isHidden) {
+                header.style.transform = 'translateY(-100%)';
+                header.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+                isHidden = true;
+              }
+            } else {
+              // Scrolling up
+              if (isHidden || currentScrollY <= 0) {
+                header.style.transform = 'translateY(0)';
+                header.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+                isHidden = false;
+              }
+            }
+            lastScrollY = currentScrollY;
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }
+      
+      // Initial shadow state
+      updateHeaderShadow();
+      
+      window.addEventListener('scroll', onScroll);
+    })();
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const header = document.querySelector('.homepage-header');
+      if (header) {
+        header.style.transform = 'translateY(0)';
+        header.style.transition = 'none';
+        setTimeout(() => {
+          header.style.transition = '';
+        }, 50);
+      }
+    });
     </script>
 </body>
 </html> 

@@ -1,0 +1,508 @@
+/* Universal box-sizing rule to prevent overflow */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Premium Home Page Header Styles */
+/* Base header styling */
+.homepage-header {
+  background: #1A3C34;
+  box-shadow: 0 6px 24px rgba(26, 60, 52, 0.18);
+  position: fixed; /* Changed to fixed to ensure proper hiding on scroll */
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in width calculation */
+  padding: 0 2rem; /* Single padding declaration */
+  z-index: 2000;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), 
+              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
+              height 0.3s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(0);
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+  max-width: 100vw; /* Ensure it never exceeds viewport width */
+}
+
+/* Ensure proper positioning with announcement bar */
+body:has(.premium-announcement-bar) .homepage-header {
+  top: 41px; /* Height of announcement bar */
+}
+
+body:has(.premium-announcement-bar) main {
+  margin-top: 111px; /* Height of header (70px) + announcement bar (41px) */
+  padding-top: 0; /* Remove any additional padding */
+}
+
+body:not(:has(.premium-announcement-bar)) main {
+  margin-top: 70px; /* Just the height of the header */
+  padding-top: 0; /* Remove any additional padding */
+}
+
+/* Remove any margin or padding from the first child of main */
+main > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Ensure sections inside main don't have excessive spacing */
+main section {
+  margin-top: 0 !important;
+}
+
+/* Scroll behavior - hide header on scroll down */
+.homepage-header.scrolled-down {
+  transform: translateY(-100%);
+}
+
+/* Scroll behavior - show header on scroll up */
+.homepage-header.scrolled-up {
+  transform: translateY(0);
+  box-shadow: 0 8px 30px rgba(26, 60, 52, 0.25);
+  height: 60px;
+}
+
+/* Enhanced shadow for scrolled state */
+.homepage-header.scrolled {
+  box-shadow: 0 8px 30px rgba(26, 60, 52, 0.25);
+}
+
+html.dark-mode .homepage-header.scrolled {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.homepage-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background: rgba(255, 140, 66, 0.18);
+  color: #FF8C42;
+  outline: none;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 260px;
+  background: #223C34;
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(26, 60, 52, 0.18);
+  padding: 1.25rem 1rem;
+  margin-top: 0.5rem;
+  z-index: 200;
+}
+
+.dropdown.open .dropdown-menu {
+  display: block;
+  animation: fadeInDown 0.3s;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-columns {
+  display: flex;
+  gap: 2rem;
+}
+
+.dropdown-col {
+  min-width: 120px;
+}
+
+.dropdown-col-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-col li {
+  font-size: 0.98rem;
+  color: #fff;
+  padding: 0.4rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-col li:hover {
+  background: #F4EDE4;
+  color: #FF8C42;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 15px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.2s;
+  position: relative;
+  z-index: 20; /* Ensure it's above other elements but below mobile navigation */
+  overflow: hidden; /* Ensure icons stay contained */
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle .sun-icon,
+.theme-toggle .moon-icon {
+  font-size: 1.2rem;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+
+html.dark-mode .theme-toggle .sun-icon,
+html.dark-mode .theme-toggle .moon-icon {
+  color: #F4EDE4;
+}
+
+.theme-toggle .sun-icon {
+  opacity: 1;
+}
+
+.theme-toggle .moon-icon {
+  opacity: 1;
+}
+
+/* Mobile Theme Toggle */
+.mobile-theme-toggle {
+  width: 100%;
+  height: auto;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-theme-toggle .sun-icon,
+.mobile-theme-toggle .moon-icon {
+  position: static;
+  transform: none;
+  width: auto;
+  height: auto;
+  margin-right: 12px;
+}
+
+.mobile-theme-toggle .toggle-label {
+  margin-left: 8px;
+  font-weight: 500;
+  color: #fff;
+}
+
+html.dark-mode .mobile-theme-toggle .toggle-label {
+  color: #F4EDE4;
+}
+
+/* Ensure theme toggle icons display correctly in mobile menu */
+.nav-item .mobile-theme-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.mobile-theme-toggle .toggle-label {
+  margin-left: 8px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+/* Fix for z-index issues with mobile menu and toggle */
+.mobile-nav.active {
+  transform: translateX(0);
+  z-index: 2000;
+}
+
+.theme-toggle {
+  z-index: 2001;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  margin: 0 1rem 0 0;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 28px;
+  height: 3px;
+  background: #fff;
+  margin: 4px 0;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+html.dark-mode .mobile-menu-toggle span {
+  background: #F4EDE4;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 70px; /* Match header height */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 70px); /* Subtract header height */
+  background: #223C34;
+  color: #fff;
+  z-index: 10;
+  padding: 0;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* When announcement bar is present, adjust mobile nav position */
+body:has(.premium-announcement-bar) .mobile-nav {
+  top: 111px; /* Header (70px) + announcement (41px) */
+  height: calc(100vh - 111px);
+}
+
+/* Mobile nav when header is hidden on scroll */
+.homepage-header.scrolled-down + .mobile-nav {
+  top: 0;
+  height: 100vh;
+}
+
+/* Mobile nav when active */
+.mobile-nav.active {
+  transform: translateX(0);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Active Mobile Menu Toggle (X shape) */
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  body:has(.premium-announcement-bar) .homepage-header {
+    top: 41px; /* Height of announcement bar */
+  }
+  
+  body:has(.premium-announcement-bar) main {
+    margin-top: 101px; /* Height of header (60px) + announcement bar (41px) */
+    padding-top: 0;
+  }
+  
+  body:not(:has(.premium-announcement-bar)) main {
+    margin-top: 60px; /* Just the height of the header on mobile */
+    padding-top: 0;
+  }
+  
+  .homepage-nav {
+    display: none;
+  }
+  
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+  
+  .homepage-header {
+    padding: 0 1rem;
+    height: 60px;
+  }
+  
+  body:has(.premium-announcement-bar) .mobile-nav {
+    top: 101px; /* Header (60px) + announcement (41px) */
+    height: calc(100vh - 101px);
+  }
+  
+  .mobile-nav {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+  
+  .theme-toggle {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .homepage-header {
+    padding: 0 0.5rem;
+    height: 60px;
+  }
+  
+  body:has(.premium-announcement-bar) .homepage-header {
+    top: 35px; /* Reduced height of announcement bar on mobile */
+  }
+  
+  body:has(.premium-announcement-bar) main {
+    margin-top: 95px; /* Height of header (60px) + announcement bar (35px) */
+    padding-top: 0;
+  }
+  
+  body:not(:has(.premium-announcement-bar)) main {
+    margin-top: 60px;
+    padding-top: 0;
+  }
+  
+  .premium-announcement-bar {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .nav-link {
+    font-size: 1rem;
+    padding: 0.5rem 0.5rem;
+  }
+  
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    margin-right: 5px;
+  }
+  
+  body:has(.premium-announcement-bar) .mobile-nav {
+    top: 95px; /* Header (60px) + announcement (35px) */
+    height: calc(100vh - 95px);
+  }
+}
+
+/* Dark Mode */
+html.dark-mode .homepage-header {
+  background: #1A3C34;
+  box-shadow: 0 2px 12px rgba(244, 237, 228, 0.04);
+}
+html.dark-mode .nav-link {
+  color: #F4EDE4;
+}
+html.dark-mode .nav-link:hover,
+html.dark-mode .nav-link:focus {
+  background: rgba(255, 140, 66, 0.12);
+  color: #FF8C42;
+}
+html.dark-mode .dropdown-menu {
+  background: #223C34;
+  color: #F4EDE4;
+}
+html.dark-mode .dropdown-col-title {
+  color: #F4EDE4;
+}
+html.dark-mode .dropdown-col li {
+  color: #F4EDE4;
+}
+html.dark-mode .dropdown-col li:hover {
+  background: #1A3C34;
+  color: #FF8C42;
+}
+
+.mobile-menu-toggle span {
+  background: #fff;
+}
+
+/* When scrolled down, reduce header height slightly for a sleeker look */
+.homepage-header.scrolled {
+  box-shadow: 0 8px 30px rgba(26, 60, 52, 0.25);
+  height: 60px;
+  transition: box-shadow 0.3s cubic-bezier(0.16,1,0.3,1), 
+              transform 0.4s cubic-bezier(0.16,1,0.3,1),
+              height 0.3s cubic-bezier(0.16,1,0.3,1);
+} 
