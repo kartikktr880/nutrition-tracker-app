@@ -66,6 +66,35 @@
             visibility: visible !important;
             display: block !important;
         }
+        
+        /* Fix gray backgrounds */
+        body, html, main, section, .container, .hero-section, .hero-content, .hero-text, .hero-image, .hero-stats {
+            background-color: transparent !important;
+        }
+        
+        /* Fix stat styling */
+        .hero-stat {
+            background-color: rgba(26, 60, 52, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(5px) !important;
+            border-radius: 8px !important;
+            padding: 12px !important;
+        }
+        
+        .stat-number {
+            color: #FF8C42 !important;
+            font-weight: bold !important;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        /* Ensure hero gradient is transparent */
+        .hero-gradient {
+            opacity: 0.2 !important;
+            background: transparent !important;
+        }
     </style>
     
     <!-- Enhanced Theme Toggle Script (Replaced with Dark Mode Only) -->
@@ -92,26 +121,26 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="hero-section" style="opacity: 1 !important; visibility: visible !important;">
-            <div class="hero-gradient" style="opacity: 0.6 !important;"></div>
-            <div class="container" style="position: relative; z-index: 5;">
-                <div class="hero-content" style="opacity: 1 !important; visibility: visible !important; display: flex !important;">
-                    <div class="hero-text" style="color: white !important;">
+        <section class="hero-section" style="opacity: 1 !important; visibility: visible !important; background: transparent !important;">
+            <div class="hero-gradient" style="opacity: 0.3 !important; background: transparent !important;"></div>
+            <div class="container" style="position: relative; z-index: 5; background: transparent !important;">
+                <div class="hero-content" style="opacity: 1 !important; visibility: visible !important; display: flex !important; background: transparent !important;">
+                    <div class="hero-text" style="color: white !important; background: transparent !important;">
                         <h1 style="color: white !important;">Track Your Nutrition Journey</h1>
                         <p style="color: rgba(255, 255, 255, 0.9) !important;">Achieve your health goals with AI-powered nutrition tracking. Get personalized insights, track progress, and make informed decisions about your diet.</p>
                         
-                        <div class="hero-stats">
-                            <div class="hero-stat">
-                                <div class="stat-number">5M+</div>
-                                <div class="stat-label">Active Users</div>
+                        <div class="hero-stats" style="background: transparent !important;">
+                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px);">
+                                <div class="stat-number" style="color: #FF8C42 !important;">5M+</div>
+                                <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">Active Users</div>
                             </div>
-                            <div class="hero-stat">
-                                <div class="stat-number">98%</div>
-                                <div class="stat-label">Success Rate</div>
+                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px);">
+                                <div class="stat-number" style="color: #FF8C42 !important;">98%</div>
+                                <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">Success Rate</div>
                             </div>
-                            <div class="hero-stat">
-                                <div class="stat-number">4.9</div>
-                                <div class="stat-label">App Rating</div>
+                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px);">
+                                <div class="stat-number" style="color: #FF8C42 !important;">4.9</div>
+                                <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">App Rating</div>
                             </div>
                         </div>
                         
@@ -121,7 +150,7 @@
                         </div>
                     </div>
                     
-                    <div class="hero-image" style="opacity: 1 !important; visibility: visible !important; display: block !important;">
+                    <div class="hero-image" style="opacity: 1 !important; visibility: visible !important; display: block !important; background: transparent !important;">
                         <img src="images/hero-app.png" 
                              alt="Nutrition Tracker App Interface" 
                              style="max-width: 100%; height: auto; display: block !important; opacity: 1 !important;"

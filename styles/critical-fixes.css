@@ -2287,3 +2287,89 @@ body:before {
         #0F231F 100% /* Darkest shade at the bottom */
     ) !important;
 }
+
+/* Fix gray areas by ensuring all containers are transparent or match the gradient */
+.hero-section,
+.features-section,
+.steps-section,
+.testimonials-section,
+.cta-section,
+.newsletter-section,
+.container,
+.hero-content,
+.section-background,
+main,
+main > section,
+.main-content,
+.content-area,
+.hero-gradient {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+/* Specifically target the hero section content */
+.hero-content, 
+.hero-text, 
+.hero-image,
+.hero-stats {
+    background-color: transparent !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Target any dark containers or card backgrounds */
+.dark-container,
+.card-dark,
+.dark-card,
+.dark-bg,
+.stat-card,
+.hero-gradient::before,
+.hero-gradient::after {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+/* Ensure proper coloring for hero section */
+.hero-section::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1 !important;
+    background: linear-gradient(to right, rgba(26, 60, 52, 0.8), rgba(26, 60, 52, 0.5)) !important;
+}
+
+/* Fix hero stats which could be causing gray areas */
+.hero-stat {
+    background-color: rgba(26, 60, 52, 0.6) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ensure all .stats and stat-related components match our theme */
+.stat, 
+.stat-card, 
+.stat-block, 
+.stat-container,
+.hero-stats,
+[class*="stat-"],
+[class*="-stat"] {
+    background-color: rgba(26, 60, 52, 0.6) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fix specific styling for the stat numbers and labels */
+.stat-number, 
+.hero-stat .stat-number {
+    color: #FF8C42 !important; /* Use the accent color */
+    font-weight: bold !important;
+}
+
+.stat-label, 
+.hero-stat .stat-label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}

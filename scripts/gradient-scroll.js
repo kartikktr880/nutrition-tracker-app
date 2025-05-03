@@ -43,18 +43,40 @@
         
         // Calculate gradient stops based on scroll position
         // As user scrolls down, make the gradient darker
-        const topLight = 45 - (scrollPercent * 0.2); // Decrease lightness as scroll increases
-        const bottomDark = 20 - (scrollPercent * 0.15); // Decrease darkness as scroll increases
+        const topLight = 36 - (scrollPercent * 0.15); // Use a darker green at the top
+        const bottomDark = 18 - (scrollPercent * 0.12); // Make it even darker at the bottom
         
-        // Create the gradient CSS
+        // Create the gradient CSS with our #1A3C34 shade
         const css = `
             body:before {
                 background: linear-gradient(to bottom, 
-                    hsl(160, 40%, ${topLight}%) 0%,
-                    hsl(160, 42%, 33%) 50%,
-                    hsl(160, 45%, ${bottomDark}%) 100%
+                    hsl(163, 40%, ${topLight}%) 0%,
+                    hsl(163, 45%, 26%) 40%,
+                    hsl(163, 50%, ${bottomDark}%) 100%
                 ) !important;
                 background-attachment: fixed !important;
+            }
+            
+            /* Override any remaining gray areas */
+            .hero-section, 
+            .hero-content, 
+            .hero-text,
+            .hero-stats,
+            .stat-number,
+            .stat-label,
+            .hero-gradient,
+            .section-background,
+            main > section,
+            .container {
+                background-color: transparent !important;
+                background: transparent !important;
+            }
+            
+            /* Fix stat cards */
+            .hero-stat, .stat-card {
+                background-color: rgba(26, 60, 52, 0.6) !important;
+                backdrop-filter: blur(5px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
             }
         `;
         
@@ -76,7 +98,23 @@
             window.requestAnimationFrame(updateGradient);
         });
         
-        console.log('Gradient scroll effect initialized');
+        // Fix any remaining gray areas immediately
+        const fixGrayAreas = document.createElement('style');
+        fixGrayAreas.innerHTML = `
+            /* Immediate fix for gray areas */
+            .hero-section, .container, .hero-content, .hero-stats, .main, main, section {
+                background-color: transparent !important;
+                background: transparent !important;
+            }
+            
+            /* Force the body background */
+            body {
+                background-color: #1A3C34 !important;
+            }
+        `;
+        document.head.appendChild(fixGrayAreas);
+        
+        console.log('Enhanced gradient scroll effect initialized');
     };
     
     // Run when DOM is loaded
