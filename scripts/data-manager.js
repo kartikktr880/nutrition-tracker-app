@@ -813,4 +813,9 @@ const dataManager = new DataManager();
 window.dataManager = dataManager;
 
 // No longer need to export for modules
-// export default dataManager; 
+// export default dataManager;
+
+console.log('✅ Data Manager initialized successfully. Dashboard data loading can proceed.');
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, checking Data Manager availability:', window.dataManager ? 'Available' : 'Not Available');
+}); 
