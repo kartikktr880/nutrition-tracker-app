@@ -1,112 +1,92 @@
 /**
- * Theme Manager
- * Handles theme switching between light and dark mode
+ * Dark Mode Theme Manager
+ * Forces dark mode across the site
  */
 class ThemeManager {
     constructor() {
-        this.darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         this.init();
     }
 
     /**
-     * Initialize the theme manager
+     * Initialize the theme manager - forces dark mode
      */
     init() {
-        // Check for saved preference or use system preference
-        const savedTheme = localStorage.getItem('darkMode');
+        // Always use dark mode
+        this.setDarkMode();
         
-        if (savedTheme !== null) {
-            // Use saved preference
-            this.setTheme(savedTheme === 'true');
-        } else {
-            // Use system preference
-            this.setTheme(this.darkModeMediaQuery.matches);
-        }
-
-        // Listen for changes in system preference
-        this.darkModeMediaQuery.addEventListener('change', e => {
-            // Only apply if user hasn't set a preference
-            if (localStorage.getItem('darkMode') === null) {
-                this.setTheme(e.matches);
-            }
-        });
-
-        console.log('Theme manager initialized');
+        // Hide all theme toggle buttons
+        this.hideThemeToggles();
+        
+        console.log('Dark Mode Theme manager initialized');
     }
 
     /**
-     * Set the theme to dark or light
-     * @param {boolean} isDark - Whether to use dark mode
+     * Set the theme to dark mode
      */
-    setTheme(isDark) {
-        if (isDark) {
-            document.body.classList.add('dark-mode');
-            this.updateThemeToggleIcons(true);
-        } else {
-            document.body.classList.remove('dark-mode');
-            this.updateThemeToggleIcons(false);
-        }
+    setDarkMode() {
+        document.documentElement.classList.add('dark-mode', 'dark-theme');
+        document.body.classList.add('dark-theme');
         
         // Save preference
-        localStorage.setItem('darkMode', isDark);
+        localStorage.setItem('darkMode', 'true');
         
         // Update meta theme-color
         const metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (metaThemeColor) {
-            metaThemeColor.setAttribute('content', isDark ? '#121212' : '#1A3C34');
+            metaThemeColor.setAttribute('content', '#121212');
         }
         
-        console.log(`Theme set to ${isDark ? 'dark' : 'light'} mode`);
+        console.log('Dark mode enforced');
     }
 
     /**
-     * Toggle between dark and light mode
-     */
-    toggleTheme() {
-        const isDarkMode = document.body.classList.contains('dark-mode');
-        this.setTheme(!isDarkMode);
-        return !isDarkMode;
-    }
-
-    /**
-     * Get the current theme
-     * @returns {string} 'dark' or 'light'
+     * Get the current theme - always returns 'dark'
+     * @returns {string} 'dark'
      */
     getCurrentTheme() {
-        return document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        return 'dark';
     }
     
     /**
-     * Update theme toggle icons across the site
-     * @param {boolean} isDark - Whether dark mode is active
+     * Hide all theme toggle elements
      */
-    updateThemeToggleIcons(isDark) {
-        // Update all theme toggle buttons in the document
-        const themeToggles = document.querySelectorAll('.theme-toggle');
+    hideThemeToggles() {
+        // Find all theme toggle buttons in the document
+        const themeToggles = document.querySelectorAll('.theme-toggle, #theme-toggle-btn');
         
         themeToggles.forEach(toggle => {
-            const moonIcon = toggle.querySelector('.fa-moon');
-            const sunIcon = toggle.querySelector('.fa-sun');
+            if (!toggle) return;
             
-            if (moonIcon && sunIcon) {
-                if (isDark) {
-                    moonIcon.style.display = 'none';
-                    sunIcon.style.display = 'block';
-                } else {
-                    moonIcon.style.display = 'block';
-                    sunIcon.style.display = 'none';
-                }
-            } else if (toggle.querySelector('i')) {
-                // If toggle has a single icon element
-                const icon = toggle.querySelector('i');
-                
-                if (isDark) {
-                    icon.classList.replace('fa-moon', 'fa-sun');
-                } else {
-                    icon.classList.replace('fa-sun', 'fa-moon');
-                }
+            // Hide the toggle button
+            toggle.style.display = 'none';
+            toggle.setAttribute('aria-hidden', 'true');
+            
+            // Find moon icon and ensure it's shown (for any styling that might depend on it)
+            const moonIcon = toggle.querySelector('.moon-icon');
+            if (moonIcon) {
+                Object.assign(moonIcon.style, {
+                    display: 'block',
+                    opacity: '1',
+                    visibility: 'visible',
+                    position: 'absolute',
+                    zIndex: '10'
+                });
+            }
+            
+            // Find sun icon and ensure it's hidden
+            const sunIcon = toggle.querySelector('.sun-icon');
+            if (sunIcon) {
+                Object.assign(sunIcon.style, {
+                    display: 'none',
+                    opacity: '0',
+                    visibility: 'hidden',
+                    position: 'absolute',
+                    zIndex: '-1'
+                });
             }
         });
+        
+        console.log('Theme toggles hidden');
     }
 }
 

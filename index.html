@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#0d1e1e]">
+<html lang="en" class="dark-mode bg-[#0d1e1e]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NutriTrack - Premium Nutrition Tracking</title>
     <meta name="description" content="Track your nutrition, plan your meals, and achieve your health goals with NutriTrack's premium tools">
+    <meta name="theme-color" content="#1a1a1a">
     
     <!-- Favicon -->
     <link rel="icon" href="images/favicon.png" type="image/png">
@@ -20,6 +21,9 @@
     <!-- Tailwind CSS -->
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <!-- <script>tailwind.config = {...}</script> -->
+    
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
     
     <!-- Base Stylesheets -->
     <link rel="stylesheet" href="styles/reset.css">
@@ -64,268 +68,26 @@
         }
     </style>
     
-    <!-- Enhanced Theme Toggle Script -->
+    <!-- Enhanced Theme Toggle Script (Replaced with Dark Mode Only) -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Immediately invoke the function to set the correct theme and icons
-        (function() {
-            const prefersDarkScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const storedTheme = localStorage.getItem('darkMode') || localStorage.getItem('dark-theme');
-            const isDarkMode = storedTheme === 'true' || (storedTheme === null && prefersDarkScheme);
-            
-            // Set the theme classes on the HTML element
-            if (isDarkMode) {
-                document.documentElement.classList.add('dark-mode', 'dark-theme');
-                document.body.classList.add('dark-theme');
-            } else {
-                document.documentElement.classList.remove('dark-mode', 'dark-theme');
-                document.body.classList.remove('dark-theme');
+        // Force dark mode
+        document.documentElement.classList.add('dark-mode', 'dark-theme');
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('darkMode', 'true');
+        
+        // Hide all theme toggles as they're no longer needed
+        const themeToggles = document.querySelectorAll('.theme-toggle');
+        themeToggles.forEach(toggle => {
+            if (toggle) {
+                toggle.style.display = 'none';
             }
-            
-            // Find all theme toggle buttons on the page
-            const themeToggles = document.querySelectorAll('.theme-toggle');
-            
-            // Set up click handlers for each toggle
-            themeToggles.forEach(toggle => {
-                if (!toggle) return;
-                toggle.addEventListener('click', function() {
-                    if (document.documentElement && document.body) {
-                        const isDarkMode = document.documentElement.classList.contains('dark-mode');
-                        if (isDarkMode) {
-                            document.documentElement.classList.remove('dark-mode', 'dark-theme');
-                            document.body.classList.remove('dark-theme');
-                            localStorage.setItem('darkMode', 'false');
-                        } else {
-                            document.documentElement.classList.add('dark-mode', 'dark-theme');
-                            document.body.classList.add('dark-theme');
-                            localStorage.setItem('darkMode', 'true');
-                        }
-                    }
-                    updateThemeIcons();
-                });
-            });
-            
-            // Update the visibility of sun/moon icons
-            function updateThemeIcons() {
-                if (!document.documentElement) return;
-                
-                // Check if dark mode is active
-                const isDarkMode = document.documentElement.classList.contains('dark-mode');
-                
-                // Update all theme toggles on the page
-                themeToggles.forEach(toggle => {
-                    if (!toggle) return;
-                    const sunIcon = toggle.querySelector('.sun-icon');
-                    const moonIcon = toggle.querySelector('.moon-icon');
-                    
-                    if (isDarkMode) {
-                        // Dark mode: Show moon, hide sun
-                        if (sunIcon) sunIcon.style.display = 'none';
-                        if (moonIcon) moonIcon.style.display = 'flex';
-                    } else {
-                        // Light mode: Show sun, hide moon
-                        if (sunIcon) sunIcon.style.display = 'flex';
-                        if (moonIcon) moonIcon.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Initial icon update
-            updateThemeIcons();
-        })();
-    });
-    </script>
-    <!-- Scroll Behavior Script -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Variables for scroll behavior
-      let lastScrollY = window.scrollY;
-      let ticking = false;
-      const header = document.querySelector('.homepage-header');
-      
-      // If no header is found, exit early
-      if (!header) return;
-      
-      // Set initial state
-      header.style.transform = 'translateY(0)';
-      
-      function onScroll() {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY;
-            
-            // Don't hide header if mobile menu is open
-            const mobileNav = document.getElementById('mobile-nav');
-            const isMobileMenuOpen = mobileNav && mobileNav.classList.contains('active');
-            
-            if (!isMobileMenuOpen) {
-              // Scrolling down - hide header
-              if (currentScrollY > lastScrollY && currentScrollY > 80) {
-                header.style.transform = 'translateY(-100%)';
-                header.classList.add('scrolled-down');
-                header.classList.remove('scrolled-up');
-              } 
-              // Scrolling up - show header
-              else if (currentScrollY < lastScrollY) {
-                header.style.transform = 'translateY(0)';
-                header.classList.remove('scrolled-down');
-                header.classList.add('scrolled-up');
-              }
-              
-              // If at the top, remove both classes
-              if (currentScrollY <= 0) {
-                header.classList.remove('scrolled-down', 'scrolled-up');
-                header.style.transform = 'translateY(0)';
-              }
-            }
-            
-            lastScrollY = currentScrollY;
-            ticking = false;
-          });
-          
-          ticking = true;
-        }
-      }
-      
-      // Add scroll event listener with passive flag for better performance
-      window.addEventListener('scroll', onScroll, { passive: true });
+        });
     });
     </script>
 </head>
-<body>
-    <!-- Premium Announcement Bar -->
-    <div class="premium-announcement-bar">
-        🌟 Get 30% off on our Premium Plan! <a href="#premium">Learn More</a>
-    </div>
-
-    <!-- Home Page Header -->
-    <header class="homepage-header">
-      <button class="mobile-menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="homepage-nav">
-        <ul class="nav-list">
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
-          </li>
-          <li class="nav-item dropdown" id="food-log-dropdown">
-            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-utensils"></i> Food Log <i class="fas fa-chevron-down ml-1"></i>
-            </a>
-            <div class="dropdown-menu" role="menu" aria-label="Food Log Menu">
-              <div class="dropdown-columns">
-                <div class="dropdown-col">
-                  <div class="dropdown-col-title">Add</div>
-                  <ul>
-                    <li><i class="fas fa-apple-alt"></i> Apple</li>
-                    <li><i class="fas fa-drumstick-bite"></i> Chicken</li>
-                    <li><i class="fas fa-egg"></i> Eggs</li>
-                    <li><i class="fas fa-leaf"></i> Salad</li>
-                  </ul>
-                </div>
-                <div class="dropdown-col">
-                  <div class="dropdown-col-title">Recent Foods</div>
-                  <ul>
-                    <li><i class="fas fa-cheese"></i> Greek Yogurt</li>
-                    <li><i class="fas fa-bread-slice"></i> Whole Grain Bread</li>
-                    <li><i class="fas fa-egg"></i> Scrambled Eggs</li>
-                    <li><i class="fas fa-banana"></i> Banana</li>
-                    <li><i class="fas fa-fish"></i> Salmon</li>
-                  </ul>
-                </div>
-                <div class="dropdown-col">
-                  <div class="dropdown-col-title">Log Options</div>
-                  <ul>
-                    <li><i class="fas fa-plus"></i> Add New Food</li>
-                    <li><i class="fas fa-utensils"></i> Add Meal</li>
-                    <li><i class="fas fa-book-open"></i> Find Recipe</li>
-                    <li><i class="fas fa-barcode"></i> Scan Barcode</li>
-                    <li><i class="fas fa-history"></i> View History</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Meal Planner</a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-book"></i> Recipes</a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Reports</a>
-          </li>
-        </ul>
-      </nav>
-      <button class="theme-toggle" aria-label="Toggle dark mode">
-        <span class="sun-icon"><i class="fas fa-sun"></i></span>
-        <span class="moon-icon" style="display: none;"><i class="fas fa-moon"></i></span>
-      </button>
-      <!-- Mobile Nav (hidden by default) -->
-      <nav id="mobile-nav" class="mobile-nav">
-        <ul class="nav-list">
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
-          </li>
-          <li class="nav-item dropdown" id="mobile-food-log-dropdown">
-            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-utensils"></i> Food Log <i class="fas fa-chevron-down ml-1"></i>
-            </a>
-            <div class="dropdown-menu" role="menu" aria-label="Food Log Menu">
-              <div class="dropdown-columns">
-                <div class="dropdown-col">
-                  <div class="dropdown-col-title">Add</div>
-                  <ul>
-                    <li><i class="fas fa-apple-alt"></i> Apple</li>
-                    <li><i class="fas fa-drumstick-bite"></i> Chicken</li>
-                    <li><i class="fas fa-egg"></i> Eggs</li>
-                    <li><i class="fas fa-leaf"></i> Salad</li>
-                  </ul>
-                </div>
-                <div class="dropdown-col">
-                  <div class="dropdown-col-title">Recent Foods</div>
-                  <ul>
-                    <li><i class="fas fa-cheese"></i> Greek Yogurt</li>
-                    <li><i class="fas fa-bread-slice"></i> Whole Grain Bread</li>
-                    <li><i class="fas fa-egg"></i> Scrambled Eggs</li>
-                    <li><i class="fas fa-banana"></i> Banana</li>
-                    <li><i class="fas fa-fish"></i> Salmon</li>
-                  </ul>
-                </div>
-                <div class="dropdown-col">
-                  <div class="dropdown-col-title">Log Options</div>
-                  <ul>
-                    <li><i class="fas fa-plus"></i> Add New Food</li>
-                    <li><i class="fas fa-utensils"></i> Add Meal</li>
-                    <li><i class="fas fa-book-open"></i> Find Recipe</li>
-                    <li><i class="fas fa-barcode"></i> Scan Barcode</li>
-                    <li><i class="fas fa-history"></i> View History</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Meal Planner</a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-book"></i> Recipes</a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Reports</a>
-          </li>
-          <li class="nav-item">
-            <button class="theme-toggle mobile-theme-toggle" aria-label="Toggle dark mode">
-              <span class="sun-icon"><i class="fas fa-sun"></i></span>
-              <span class="moon-icon" style="display: none;"><i class="fas fa-moon"></i></span>
-              <span class="toggle-label">Toggle Dark Mode</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </header>
+<body class="dark-theme">
+    <!-- All header-related code removed as requested -->
 
     <main>
         <!-- Hero Section -->
@@ -634,8 +396,8 @@
                 </div>
                 <div class="premium-divider"></div>
                 <form class="newsletter-form">
-                    <input type="email" class="premium-input" placeholder="Enter your email address" required>
-                    <button type="submit" class="btn-primary">
+                    <input type="email" class="premium-input" placeholder="Enter your email address" required id="newsletter-email" name="newsletter-email">
+                    <button type="submit" class="btn-primary" aria-label="Subscribe to newsletter" title="Subscribe">
                         <span>Subscribe</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
@@ -657,6 +419,7 @@
                     </div>
         </section>
     </main>
+    <div style="height: 2000px;"></div>
     
     <!-- Footer Container -->
     <div id="footer-container"></div>
@@ -689,7 +452,7 @@
 
       // Open/close dropdown on click
       toggle.addEventListener('click', function(e) {
-        e.preventDefault();
+                            e.preventDefault();
         if (!dropdown) return;
         const isOpen = dropdown.classList.contains('open');
         document.querySelectorAll('.nav-item.dropdown.open').forEach(item => {
@@ -750,12 +513,12 @@
     </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Mobile menu toggle
-      const mobileToggle = document.querySelector('.mobile-menu-toggle');
+                // Mobile menu toggle
+                const mobileToggle = document.querySelector('.mobile-menu-toggle');
       const mobileNav = document.getElementById('mobile-nav');
-      if (mobileToggle && mobileNav) {
+                if (mobileToggle && mobileNav) {
         mobileToggle.style.display = 'flex';
-        mobileToggle.addEventListener('click', function() {
+                    mobileToggle.addEventListener('click', function() {
           const isOpen = mobileNav.classList.contains('active');
           mobileNav.classList.toggle('active', !isOpen);
           mobileToggle.classList.toggle('active', !isOpen);
@@ -778,9 +541,9 @@
             mobileToggle.classList.remove('active');
             mobileToggle.setAttribute('aria-expanded', 'false');
             mobileNav.style.display = 'none';
-          }
-        });
-      }
+                        }
+                    });
+                }
       // Mobile dropdown
       const mobileDropdown = document.getElementById('mobile-food-log-dropdown');
       if (mobileDropdown) {
@@ -804,71 +567,35 @@
       }
     });
     </script>
-    <script>
-    // Hide-on-scroll sticky header
-    (function() {
-      let lastScrollY = window.scrollY;
-      let ticking = false;
-      const header = document.querySelector('.homepage-header');
-      if (!header) return;
-      let isHidden = false;
-      
-      // Apply shadow based on scroll position
-      function updateHeaderShadow() {
-        if (window.scrollY > 10) {
-          header.classList.add('scrolled');
-        } else {
-          header.classList.remove('scrolled');
-        }
-      }
-      
-      function onScroll() {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY;
-            
-            // Update shadow effect
-            updateHeaderShadow();
-            
-            if (currentScrollY > lastScrollY && currentScrollY > 80) {
-              // Scrolling down
-              if (!isHidden) {
-                header.style.transform = 'translateY(-100%)';
-                header.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
-                isHidden = true;
-              }
-            } else {
-              // Scrolling up
-              if (isHidden || currentScrollY <= 0) {
-                header.style.transform = 'translateY(0)';
-                header.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
-                isHidden = false;
-              }
-            }
-            lastScrollY = currentScrollY;
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }
-      
-      // Initial shadow state
-      updateHeaderShadow();
-      
-      window.addEventListener('scroll', onScroll);
-    })();
-    </script>
+    <!-- Header Hide-on-Scroll Script (minimal version) -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       const header = document.querySelector('.homepage-header');
-      if (header) {
-        header.style.transform = 'translateY(0)';
-        header.style.transition = 'none';
-        setTimeout(() => {
-          header.style.transition = '';
-        }, 50);
+      if (!header) return;
+      let lastScrollY = window.scrollY;
+      let isHidden = false;
+      function onScroll() {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 80) {
+          if (!isHidden) {
+            header.style.transform = 'translateY(-100%)';
+            isHidden = true;
+          }
+        } else {
+          if (isHidden || currentScrollY <= 0) {
+            header.style.transform = 'translateY(0)';
+            isHidden = false;
+          }
+        }
+        lastScrollY = currentScrollY;
       }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      header.style.transform = 'translateY(0)';
+      header.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
     });
+    </script>
+    <script>
+    window.addEventListener('scroll', () => console.log('Global scroll event!'));
     </script>
 </body>
 </html> 
