@@ -23,14 +23,21 @@ class MealTimingOptimizer {
     async initialize() {
         if (this.isInitialized) return;
 
-        // Add timing optimizer button to header
-        const header = document.querySelector('.planner-header');
-        if (header) {
-            const optimizerBtn = document.createElement('button');
-            optimizerBtn.className = 'btn btn-primary timing-btn';
-            optimizerBtn.innerHTML = '<i class="fas fa-clock"></i> Meal Timing';
-            optimizerBtn.addEventListener('click', () => this.showOptimizer());
-            header.appendChild(optimizerBtn);
+        // Add optimizer button to main content area instead of header
+        const optimizerBtn = document.createElement('button');
+        optimizerBtn.className = 'action-button optimizer-button';
+        optimizerBtn.innerHTML = '<i class="fas fa-clock"></i> Optimize Timing';
+
+        // Add to main content area
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            let buttonContainer = document.querySelector('.action-buttons-container');
+            if (!buttonContainer) {
+                buttonContainer = document.createElement('div');
+                buttonContainer.className = 'action-buttons-container';
+                mainContent.insertBefore(buttonContainer, mainContent.firstChild);
+            }
+            buttonContainer.appendChild(optimizerBtn);
         }
 
         this.setupDataListeners();

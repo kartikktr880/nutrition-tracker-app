@@ -558,61 +558,19 @@
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
 <body class="dark-theme gradient-background dark-mode">
-    <!-- Mobile Navigation Toggle Button -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
-    <div class="mobile-nav-overlay" onclick="toggleMobileNav()"></div>
-
-    <div class="mobile-nav">
-        <div class="mobile-nav-header">
-            <h3>Nutrition Tracker</h3>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="dashboard.html" class="active"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
-            <li><a href="meal-planner.html"><i class="fas fa-calendar"></i> Meal Planner</a></li>
-            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Database</a></li>
-            <li><a href="shopping-list.html"><i class="fas fa-shopping-basket"></i> Shopping List</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="#" id="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
-
-    <header>
-        <div class="logo">Nutrition Tracker</div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="dashboard.html" class="active">Dashboard</a></li>
-                <li><a href="food-logger.html">Food Logger</a></li>
-                <li><a href="meal-planner.html">Meal Planner</a></li>
-                <li><a href="food-search.html">Food Database</a></li>
-                <li><a href="shopping-list.html">Shopping List</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <li class="user-menu-container">
-                    <span id="header-username" class="user-name">User</span>
-                    <a href="#" id="logout-btn">Logout</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
+    <div id="sidebar-container"></div>
     <main class="dashboard-container">
+        <div id="error-message" class="error-message" style="display:none;"></div>
         <div class="dashboard-header">
             <h1>Nutrition Dashboard</h1>
             <div class="dashboard-filters">
                 <div class="time-range-filter">
                     <label for="time-range">Time Range:</label>
                     <select id="time-range">
-                        <option value="7">Last 7 days</option>
-                        <option value="14">Last 14 days</option>
-                        <option value="30">Last 30 days</option>
-                        <option value="90">Last 3 months</option>
+                        <option value="7days">Last 7 days</option>
+                        <option value="30days">Last 30 days</option>
+                        <option value="90days">Last 3 months</option>
+                        <option value="year">Last year</option>
                     </select>
                 </div>
                 <button id="refresh-btn" class="action-btn">
@@ -630,7 +588,7 @@
                     </div>
                     <div class="card-content">
                         <h3>Daily Average</h3>
-                        <div class="card-value" id="avg-calories">0</div>
+                        <div class="card-value" id="calories-value">0</div>
                         <div class="card-label">calories</div>
                     </div>
                 </div>
@@ -640,7 +598,7 @@
                     </div>
                     <div class="card-content">
                         <h3>Protein</h3>
-                        <div class="card-value" id="avg-protein">0</div>
+                        <div class="card-value" id="protein-value">0</div>
                         <div class="card-label">g/day</div>
                     </div>
                 </div>
@@ -650,7 +608,7 @@
                     </div>
                     <div class="card-content">
                         <h3>Carbs</h3>
-                        <div class="card-value" id="avg-carbs">0</div>
+                        <div class="card-value" id="carbs-value">0</div>
                         <div class="card-label">g/day</div>
                     </div>
                 </div>
@@ -660,88 +618,8 @@
                     </div>
                     <div class="card-content">
                         <h3>Fat</h3>
-                        <div class="card-value" id="avg-fat">0</div>
+                        <div class="card-value" id="fat-value">0</div>
                         <div class="card-label">g/day</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Calorie Trends Chart -->
-            <section class="dashboard-section trends-chart">
-                <div class="section-header">
-                    <h2>Calorie Intake Trends</h2>
-                    <div class="chart-controls">
-                        <button class="chart-type-btn active" data-type="calories">
-                            Calories
-                        </button>
-                        <button class="chart-type-btn" data-type="macros">
-                            Macros
-                        </button>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="trendsChart"></canvas>
-                </div>
-            </section>
-
-            <!-- Goal Tracker -->
-            <section class="dashboard-section goal-tracker">
-                <h2>Goal Tracker</h2>
-                <div class="goal-progress-container">
-                    <div class="goal-progress">
-                        <div class="goal-progress-header">
-                            <span class="goal-label">Calories</span>
-                            <span class="goal-values">
-                                <span id="current-calories">0</span> / <span id="target-calories">0</span>
-                            </span>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="calories-progress"></div>
-                        </div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-header">
-                            <span class="goal-label">Protein</span>
-                            <span class="goal-values">
-                                <span id="current-protein">0</span> / <span id="target-protein">0</span>
-                            </span>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="protein-progress"></div>
-                        </div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-header">
-                            <span class="goal-label">Carbs</span>
-                            <span class="goal-values">
-                                <span id="current-carbs">0</span> / <span id="target-carbs">0</span>
-                            </span>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="carbs-progress"></div>
-                        </div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-header">
-                            <span class="goal-label">Fat</span>
-                            <span class="goal-values">
-                                <span id="current-fat">0</span> / <span id="target-fat">0</span>
-                            </span>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="fat-progress"></div>
-                        </div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-header">
-                            <span class="goal-label">Water</span>
-                            <span class="goal-values">
-                                <span id="current-water">0</span> / <span id="target-water">0</span>
-                            </span>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="water-progress"></div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -749,43 +627,24 @@
             <!-- Macro Distribution -->
             <section class="dashboard-section macro-distribution">
                 <h2>Macro Distribution</h2>
-                <div class="distribution-charts">
-                    <div class="chart-wrapper">
-                        <canvas id="macroPieChart"></canvas>
-                    </div>
+                <canvas id="macro-chart" height="200"></canvas>
                     <div class="macro-stats">
-                        <div class="macro-stat">
-                            <div class="stat-label">
-                                <span class="color-indicator protein-color"></span>
-                                <span>Protein</span>
-                            </div>
-                            <div class="stat-value" id="protein-percent">0%</div>
-                        </div>
-                        <div class="macro-stat">
-                            <div class="stat-label">
-                                <span class="color-indicator carbs-color"></span>
-                                <span>Carbs</span>
-                            </div>
-                            <div class="stat-value" id="carbs-percent">0%</div>
-                        </div>
-                        <div class="macro-stat">
-                            <div class="stat-label">
-                                <span class="color-indicator fat-color"></span>
-                                <span>Fat</span>
-                            </div>
-                            <div class="stat-value" id="fat-percent">0%</div>
-                        </div>
-                    </div>
+                    <span>Protein: <span id="protein-percentage">0%</span></span>
+                    <span>Carbs: <span id="carbs-percentage">0%</span></span>
+                    <span>Fat: <span id="fat-percentage">0%</span></span>
                 </div>
+            </section>
+
+            <!-- Calorie Trends Chart -->
+            <section class="dashboard-section calorie-trends">
+                <h2>Calorie Trends</h2>
+                <canvas id="trends-chart" height="200"></canvas>
             </section>
 
             <!-- Meal Analysis -->
             <section class="dashboard-section meal-analysis">
                 <h2>Meal Analysis</h2>
-                <div class="meal-breakdown">
-                    <div class="meal-chart-container">
-                        <canvas id="mealBreakdownChart"></canvas>
-                    </div>
+                <canvas id="meal-chart" height="200"></canvas>
                     <div class="meal-stats">
                         <div class="meal-stat" id="breakfast-stat">
                             <h4>Breakfast</h4>
@@ -797,6 +656,7 @@
                                 <span class="stat-label">Top foods:</span>
                                 <span class="stat-value" id="breakfast-foods">None</span>
                             </div>
+                        <div id="breakfast-top-foods"></div>
                         </div>
                         <div class="meal-stat" id="lunch-stat">
                             <h4>Lunch</h4>
@@ -808,6 +668,7 @@
                                 <span class="stat-label">Top foods:</span>
                                 <span class="stat-value" id="lunch-foods">None</span>
                             </div>
+                        <div id="lunch-top-foods"></div>
                         </div>
                         <div class="meal-stat" id="dinner-stat">
                             <h4>Dinner</h4>
@@ -819,6 +680,7 @@
                                 <span class="stat-label">Top foods:</span>
                                 <span class="stat-value" id="dinner-foods">None</span>
                             </div>
+                        <div id="dinner-top-foods"></div>
                         </div>
                         <div class="meal-stat" id="snacks-stat">
                             <h4>Snacks</h4>
@@ -830,7 +692,7 @@
                                 <span class="stat-label">Top foods:</span>
                                 <span class="stat-value" id="snacks-foods">None</span>
                             </div>
-                        </div>
+                        <div id="snacks-top-foods"></div>
                     </div>
                 </div>
             </section>
@@ -981,7 +843,9 @@
     <!-- Status Messages -->
     <div id="status-message" class="status-message"></div>
 
+    <script src="scripts/data-manager.js"></script>
     <script src="scripts/dashboard.js"></script>
     <script src="scripts/mobile-nav.js"></script>
+    <script src="components/inject-sidebar.js"></script>
 </body>
 </html> 

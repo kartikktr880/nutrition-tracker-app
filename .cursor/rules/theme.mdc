@@ -1,14 +1,14 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Your rule content
 
 - You can @ files here
 - You can use markdown but dont have to
-
+always push codes on github while make major changes.
 
 Premium Design Theme for Your Nutrition Tracker Website
 I’ve crafted a high-end design theme that ensures premium aesthetics, user-friendliness, and seamless branding. This theme is structured to enhance usability, engagement, and conversion rates while maintaining a modern, professional, and premium feel.

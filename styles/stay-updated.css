@@ -1,0 +1,326 @@
+/* Stay Updated Section - Premium Design */
+.stay-updated-section {
+    padding: 80px 0;
+    position: relative;
+    background: linear-gradient(135deg, #f0f9f6, #ffffff);
+    overflow: hidden;
+    margin: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+    transform: translateY(0);
+    animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stay-updated-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgba(0,128,128,0.1)"/></svg>');
+    background-size: 20px 20px;
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.stay-updated-section .container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.stay-updated-content {
+    flex: 1;
+    max-width: 600px;
+}
+
+.stay-updated-section .section-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #2A5E50;
+    text-align: left;
+}
+
+.stay-updated-section .section-description {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.newsletter-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.benefit-item i {
+    color: #4CAF50;
+    font-size: 18px;
+}
+
+.benefit-item span {
+    font-size: 16px;
+    color: #444;
+    font-weight: 500;
+}
+
+.home-newsletter-form {
+    margin-bottom: 24px;
+}
+
+.newsletter-input-group {
+    display: flex;
+    max-width: 100%;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 16px 20px;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.newsletter-input:focus {
+    border-color: #2A5E50;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.newsletter-button {
+    padding: 0 24px;
+    background: #2A5E50;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.newsletter-button:hover {
+    background: #1A3C34;
+    transform: translateY(-2px);
+}
+
+.newsletter-privacy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #777;
+}
+
+.newsletter-privacy i {
+    color: #4CAF50;
+}
+
+.trust-badges {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.trust-badges .badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+}
+
+.trust-badges .badge i {
+    color: #4CAF50;
+    font-size: 16px;
+}
+
+.stay-updated-decoration {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.decoration-circle {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4CAF50, #2A5E50);
+    opacity: 0.1;
+    animation: pulse 5s infinite alternate ease-in-out;
+}
+
+.decoration-dots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#2A5E50 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.2;
+}
+
+.floating-envelope {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: #2A5E50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    animation: float 3s infinite ease-in-out;
+    z-index: 2;
+}
+
+.floating-envelope i {
+    font-size: 36px;
+    color: white;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.1;
+    }
+    100% {
+        transform: scale(1.05);
+        opacity: 0.2;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Responsive adaptations */
+@media (max-width: 992px) {
+    .stay-updated-section .container {
+        flex-direction: column;
+    }
+    
+    .stay-updated-content {
+        max-width: 100%;
+    }
+    
+    .stay-updated-decoration {
+        max-width: 300px;
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .stay-updated-section {
+        padding: 60px 0;
+    }
+    
+    .stay-updated-section .section-title {
+        font-size: 28px;
+        text-align: center;
+    }
+    
+    .stay-updated-section .section-description {
+        font-size: 16px;
+        text-align: center;
+    }
+    
+    .newsletter-input-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .newsletter-input {
+        border-radius: 8px;
+    }
+    
+    .newsletter-button {
+        border-radius: 8px;
+        justify-content: center;
+        padding: 12px;
+    }
+    
+    .trust-badges {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .stay-updated-decoration {
+        display: none;
+    }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .stay-updated-section {
+        background: linear-gradient(135deg, rgba(42, 94, 80, 0.2), rgba(26, 60, 52, 0.3));
+    }
+    
+    .stay-updated-section .section-title {
+        color: #ffffff;
+    }
+    
+    .stay-updated-section .section-description {
+        color: #cccccc;
+    }
+    
+    .benefit-item span {
+        color: #dddddd;
+    }
+    
+    .newsletter-input {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+    
+    .newsletter-privacy {
+        color: #cccccc;
+    }
+    
+    .trust-badges .badge {
+        color: #cccccc;
+    }
+} 

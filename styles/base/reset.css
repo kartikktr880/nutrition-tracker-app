@@ -1,0 +1,220 @@
+/* Modern CSS Reset */
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove default margin and padding */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+/* Set core body defaults */
+body {
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+}
+
+/* Remove list styles on ul, ol elements */
+ul[class],
+ol[class] {
+    list-style: none;
+    padding: 0;
+}
+
+/* Make images easier to work with */
+img,
+picture,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Set core root defaults */
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+/* Remove default button styles */
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* Remove outline for non-keyboard focus */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Improve focus styles */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Remove tap highlight on mobile */
+-webkit-tap-highlight-color: transparent;
+
+/* Improve text rendering */
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+
+/* Improve media defaults */
+img {
+    height: auto;
+    vertical-align: middle;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+/* Forms */
+input,
+button,
+select,
+optgroup,
+textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Remove spinners from number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Remove search input styles */
+input[type="search"] {
+    -webkit-appearance: none;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+/* Correct cursor style of increment and decrement buttons in Chrome */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    height: auto;
+}
+
+/* Remove the inheritance of text transform in Edge and Firefox */
+button,
+select {
+    text-transform: none;
+}
+
+/* Correct the inability to style clickable types in iOS and Safari */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+    -webkit-appearance: button;
+}
+
+/* Remove inner border and padding from Firefox */
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+    border-style: none;
+    padding: 0;
+}
+
+/* Restore focus styles unset by previous rule */
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+    outline: 1px dotted ButtonText;
+}
+
+/* Correct padding in Firefox */
+fieldset {
+    padding: 0.35em 0.75em 0.625em;
+}
+
+/* Add correct box sizing and padding */
+[type="checkbox"],
+[type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+/* Fix vertical alignment of progress */
+progress {
+    vertical-align: baseline;
+}
+
+/* Remove default vertical scrollbar in IE 10+ */
+textarea {
+    overflow: auto;
+    resize: vertical;
+}
+
+/* Add correct display in IE 10+ */
+template {
+    display: none;
+}
+
+/* Add correct display in IE 10 */
+[hidden] {
+    display: none !important;
+} 

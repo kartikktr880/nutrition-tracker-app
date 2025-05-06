@@ -116,6 +116,17 @@ class DataManager {
     }
 
     async getMeals(startDate, endDate, options = {}) {
+        if (!this.db) {
+            await new Promise(resolve => {
+                const checkDB = setInterval(() => {
+                    if (this.db) {
+                        clearInterval(checkDB);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+        
         try {
             // Generate cache key based on date range
             const startDateStr = new Date(startDate).toISOString().split('T')[0];
@@ -803,6 +814,28 @@ class DataManager {
             console.error('Error getting favorites:', error);
             return { success: false, error: error.message, data: [] };
         }
+    }
+
+    /**
+     * Get water intake entries between two dates (inclusive).
+     * Returns: [{ date: 'YYYY-MM-DD', amount: Number }]
+     */
+    getWaterIntake(startDate, endDate) {
+        const waterData = JSON.parse(localStorage.getItem('waterData')) || {};
+        const results = [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        for (const dateStr in waterData) {
+            const date = new Date(dateStr);
+            if (date >= start && date <= end) {
+                results.push({
+                    date: dateStr,
+                    amount: waterData[dateStr].totalAmount || 0
+                });
+            }
+        }
+        return Promise.resolve(results);
     }
 }
 

@@ -1,7 +1,7 @@
 /* Analytics Page Styles */
 .analytics-container {
     padding: 20px;
-    margin-left: 240px;
+    margin-left: 0;
 }
 
 /* Header Styles */
@@ -86,9 +86,9 @@
 }
 
 .summary-card {
-    background-color: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: #F4EDE4 !important;
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 12px !important;
     padding: 20px;
     display: flex;
     align-items: center;
@@ -170,9 +170,9 @@
 .macronutrient-breakdown, 
 .nutrient-trends,
 .food-insights {
-    background-color: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: #F4EDE4 !important;
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 12px !important;
     padding: 20px;
     margin-bottom: 30px;
 }
@@ -383,8 +383,9 @@
 }
 
 .insight-card {
-    background-color: var(--bg-light);
-    border-radius: 8px;
+    background-color: #F4EDE4 !important;
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 12px !important;
     padding: 15px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -493,9 +494,9 @@
 
 /* Export Section */
 .export-section {
-    background-color: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: #F4EDE4 !important;
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 12px !important;
     padding: 20px;
     margin-bottom: 30px;
     text-align: center;
@@ -520,21 +521,54 @@
     gap: 15px;
 }
 
-.export-btn {
-    padding: 10px 20px;
-    background-color: var(--bg-light);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.export-btn,
+.date-range-btn.active,
+.chart-type-btn.active,
+.chart-tab.active {
+    background-color: #FF8C42 !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    border: none !important;
+    font-family: 'Montserrat', Arial, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(255, 140, 66, 0.08) !important;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
-.export-btn:hover {
-    background-color: var(--bg-hover);
+.export-btn:hover,
+.export-btn:focus {
+    background-color: #E07023 !important;
+    color: #fff !important;
+    box-shadow: 0 6px 24px rgba(255,140,66,0.18) !important;
+    transform: scale(1.04);
+    z-index: 1;
+}
+
+.date-range-btn {
+    background-color: #fff !important;
+    color: #3D5A80 !important;
+    border: 2px solid #3D5A80 !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat', Arial, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+    box-shadow: none !important;
+}
+
+.date-range-btn:hover:not(.active) {
+    background-color: #e6f0f7 !important;
+    color: #1A3C34 !important;
+    box-shadow: 0 2px 8px rgba(61,90,128,0.10) !important;
+}
+
+.date-range-btn.active,
+.date-range-btn.active:hover {
+    background-color: #FF8C42 !important;
+    color: #fff !important;
+    border-color: #FF8C42 !important;
+    box-shadow: 0 4px 16px rgba(255,140,66,0.15) !important;
 }
 
 /* Responsive Styles */
@@ -551,31 +585,103 @@
     .insights-grid {
         grid-template-columns: 1fr;
     }
+    .side-nav {
+        width: 80vw !important;
+        max-width: 320px !important;
+        min-width: 220px !important;
+        box-shadow: 2px 0 16px rgba(26,60,52,0.12), 0 2px 8px rgba(0,0,0,0.04);
+        border-top-right-radius: 16px;
+        border-bottom-right-radius: 16px;
+        left: 0;
+        right: auto;
+    }
 }
 
 @media (max-width: 768px) {
-    .summary-cards {
-        grid-template-columns: 1fr;
+    .analytics-header {
+        padding: 18px 10px 10px 10px !important;
+        margin-bottom: 18px !important;
     }
-    
+    .nutrition-summary {
+        padding: 16px 10px !important;
+        margin-bottom: 22px !important;
+    }
+    .summary-card {
+        padding: 18px 10px !important;
+        margin-bottom: 16px !important;
+    }
+    .section-header, .nutrition-summary h2, .analytics-header h1 {
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+        margin-bottom: 12px !important;
+    }
+    main.analytics-container {
+        padding-top: 72px !important;
+    }
+    .summary-cards,
+    .insights-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    .summary-card,
+    .calorie-trends,
+    .macronutrient-breakdown,
+    .nutrient-trends,
+    .food-insights,
+    .insight-card,
+    .export-section {
+        padding: 16px !important;
+        min-width: 0 !important;
+    }
+    .export-btn,
+    .date-range-btn,
+    .chart-type-btn,
+    .chart-tab {
+        min-height: 44px !important;
+        width: 100% !important;
+        font-size: 18px !important;
+    }
+    .side-nav {
+        width: 100vw !important;
+        min-width: 0 !important;
+        font-size: 18px !important;
+    }
+    .side-nav a {
+        padding: 18px 24px !important;
+        font-size: 18px !important;
+    }
+    .analytics-header h1,
+    h1 {
+        font-size: 32px !important;
+    }
+    h2, .nutrition-summary h2, .section-header h2, .export-section h2 {
+        font-size: 24px !important;
+    }
+    h3, .chart-item h3, .insight-card h3 {
+        font-size: 20px !important;
+    }
     .date-range-selector {
+        display: flex;
+        flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 5px;
-    }
-    
-    .date-range-btn {
         white-space: nowrap;
+        gap: 8px;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        -webkit-overflow-scrolling: touch;
     }
-    
+    .date-range-btn {
+        min-width: 90px;
+        white-space: nowrap;
+        flex: 0 0 auto;
+    }
     .custom-date-range {
         flex-direction: column;
         align-items: flex-start;
     }
-    
     .chart-legend {
         flex-wrap: wrap;
     }
-    
     .export-buttons {
         flex-direction: column;
         align-items: center;
@@ -596,4 +702,482 @@
     .card-icon {
         margin: 0 auto 10px;
     }
+}
+
+body, .analytics-container, .summary-card, .calorie-trends, .macronutrient-breakdown, .nutrient-trends, .food-insights, .insight-card, .export-section {
+    font-family: 'Inter', Arial, sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+}
+
+h1, .analytics-header h1, .nutrition-summary h2, .section-header h2, .chart-item h3, .insight-card h3, .export-section h2 {
+    font-family: 'Poppins', Arial, sans-serif !important;
+    font-weight: 700 !important;
+}
+
+h1, .analytics-header h1 { font-size: 48px !important; }
+h2, .nutrition-summary h2, .section-header h2, .export-section h2 { font-size: 32px !important; }
+h3, .chart-item h3, .insight-card h3 { font-size: 24px !important; }
+
+.side-nav, .side-nav a, .side-nav span, .side-nav li, .nav-links, .nav-links a, .export-btn, button, .date-range-btn, .chart-type-btn, .chart-tab {
+    font-family: 'Montserrat', Arial, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+/* Sidebar (navbar) premium theme */
+.side-nav {
+    background-color: #F4EDE4 !important;
+    color: #1A3C34 !important;
+    font-family: 'Montserrat', Arial, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s, color 0.2s;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    overflow-y: auto;
+}
+
+.side-nav::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+@media (prefers-color-scheme: dark) {
+  .side-nav {
+    background-color: #1A3C34 !important;
+    color: #fff !important;
+  }
+}
+
+.side-nav a {
+    color: inherit !important;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-left: 4px solid transparent;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    outline: none !important;
+}
+
+.side-nav a i {
+    font-size: 16px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    margin-right: 10px !important;
+    vertical-align: middle !important;
+}
+
+.side-nav li.active a {
+    background-color: #FF8C42 !important;
+    border-left: 4px solid #FF8C42 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(255,140,66,0.10) !important;
+}
+
+.side-nav li.active a i {
+    color: #fff !important;
+    text-shadow: 0 2px 6px rgba(255,140,66,0.25);
+}
+
+.side-nav a:hover {
+    background-color: #3D5A80 !important;
+    color: #fff !important;
+    border-left: 4px solid #3D5A80 !important;
+}
+
+.side-nav a:focus {
+    outline: 2px solid #FF8C42 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px #FF8C4233 !important;
+    border-color: #FF8C42 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .summary-card {
+    background-color: #2C3E4F !important;
+    box-shadow: 0 2px 10px rgba(229, 242, 239, 0.10) !important;
+    border-radius: 12px !important;
+  }
+  .side-nav a i {
+    color: #fff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+  }
+  .side-nav li.active a i {
+    color: #FF8C42 !important;
+    text-shadow: 0 2px 6px rgba(255,140,66,0.25);
+  }
+}
+
+/* Icon and logo styling for premium theme */
+.side-nav .app-logo img,
+.logo img {
+    height: 40px !important;
+    width: 40px !important;
+    margin-right: 12px !important;
+    vertical-align: middle !important;
+    box-shadow: 0 2px 8px rgba(26, 60, 52, 0.08) !important;
+    border-radius: 8px !important;
+}
+
+.side-nav .app-logo,
+.logo {
+    display: flex !important;
+    align-items: center !important;
+    padding: 20px 15px !important;
+}
+
+.side-nav a i,
+.summary-card .card-icon,
+.insight-card i,
+.export-btn i {
+    font-size: 24px !important;
+    color: inherit !important;
+    margin-right: 12px !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure outlined, modern icon style if using icon libraries */
+.fas, .far, .fal, .fab {
+    font-weight: 400 !important;
+    stroke-width: 1.5 !important;
+}
+
+/* Premium button and tab styling for clarity and interactivity */
+.export-btn,
+.date-range-btn,
+.chart-type-btn,
+.chart-tab {
+    color: #1A3C34 !important;
+    background-color: #fff !important;
+    border-color: #3D5A80 !important;
+}
+.export-btn.active,
+.date-range-btn.active,
+.chart-type-btn.active,
+.chart-tab.active {
+    color: #fff !important;
+    background-color: #FF8C42 !important;
+    border-color: #FF8C42 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .calorie-trends,
+  .macronutrient-breakdown,
+  .nutrient-trends,
+  .food-insights {
+    background-color: #22343a !important;
+    box-shadow: 0 2px 10px rgba(229, 242, 239, 0.07) !important;
+    border-radius: 12px !important;
+  }
+  .chart-legend,
+  .bar-label,
+  .bar-value,
+  .stat-label,
+  .stat-value {
+    color: #E5F2EF !important;
+  }
+  .food-insights {
+    background-color: #2C3E4F !important;
+    box-shadow: 0 4px 24px rgba(229, 242, 239, 0.10) !important;
+    border-radius: 12px !important;
+  }
+  .food-insights, .food-insights * {
+    color: #E5F2EF !important;
+  }
+}
+
+/* Unify card and section backgrounds for premium consistency */
+.summary-card,
+.calorie-trends,
+.macronutrient-breakdown,
+.nutrient-trends,
+.food-insights,
+.insight-card,
+.export-section {
+    background-color: #F4EDE4 !important; /* Soft Beige for light mode */
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 12px !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .summary-card,
+  .calorie-trends,
+  .macronutrient-breakdown,
+  .nutrient-trends,
+  .food-insights,
+  .insight-card,
+  .export-section {
+    background-color: #22343a !important; /* Unified dark background */
+    box-shadow: 0 2px 10px rgba(229, 242, 239, 0.10) !important;
+    border-radius: 12px !important;
+  }
+}
+
+/* Consistent spacing and alignment for premium layout */
+.analytics-container,
+.nutrition-summary,
+.summary-cards,
+.calorie-trends,
+.macronutrient-breakdown,
+.nutrient-trends,
+.food-insights,
+.insights-grid,
+.export-section {
+    margin-bottom: 30px;
+    padding: 20px !important;
+}
+
+.summary-cards,
+.insights-grid {
+    gap: 24px !important;
+}
+
+/* Align Refresh Insights and export buttons */
+.export-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.export-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 16px;
+}
+#refresh-insights-btn, .refresh-insights-btn {
+    display: block;
+    margin: 0 auto 16px auto;
+}
+
+/* Improved disabled/inactive Advanced Insights section */
+.advanced-insights-disabled, .advanced-insights-inactive {
+    opacity: 0.7;
+    background: linear-gradient(135deg, #F4EDE4 80%, #fff 100%);
+    color: #3D5A80 !important;
+    filter: grayscale(0.2) blur(0.5px);
+    pointer-events: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(61,90,128,0.07);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+.advanced-insights-disabled strong, .advanced-insights-inactive strong {
+    color: #FF8C42 !important;
+    font-weight: 700;
+}
+.advanced-insights-disabled .export-buttons, .advanced-insights-inactive .export-buttons {
+    opacity: 1;
+    pointer-events: auto;
+    filter: none;
+}
+
+/* Reduce sidebar icon size for a cleaner, premium look */
+.side-nav .nav-links i {
+    font-size: 16px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    margin-right: 10px !important;
+    vertical-align: middle !important;
+}
+
+/* Improve Advanced Insights card text and icon contrast */
+.advanced-insights .insight-card,
+.advanced-insights .insight-card h3,
+.advanced-insights .insight-card i {
+    color: #1A3C34 !important;
+}
+@media (prefers-color-scheme: dark) {
+  .advanced-insights .insight-card,
+  .advanced-insights .insight-card h3,
+  .advanced-insights .insight-card i {
+    color: #E5F2EF !important;
+  }
+}
+
+/* Improve Data Quality section text and label contrast */
+.data-quality,
+.data-quality-details,
+.data-quality-text,
+.metric-label,
+.metric-value {
+    color: #1A3C34 !important;
+}
+@media (prefers-color-scheme: dark) {
+  .data-quality,
+  .data-quality-details,
+  .data-quality-text,
+  .metric-label,
+  .metric-value {
+    color: #E5F2EF !important;
+  }
+}
+
+/* Lighten Advanced Insights card backgrounds for premium look */
+.advanced-insights .insight-card {
+    background-color: #F4EDE4 !important;
+}
+@media (prefers-color-scheme: dark) {
+  .advanced-insights .insight-card {
+    background-color: #22343a !important;
+  }
+}
+
+/* Add vertical spacing and padding between Advanced Insights cards and sections */
+.advanced-insights {
+    margin-bottom: 40px !important;
+    padding-bottom: 32px !important;
+}
+.advanced-insights .insights-cards {
+    gap: 32px !important;
+    margin-bottom: 24px !important;
+}
+.advanced-insights .insight-card {
+    margin-bottom: 0 !important;
+}
+
+/* Enhance section separation for premium clarity */
+.advanced-insights {
+    box-shadow: 0 4px 24px rgba(26, 60, 52, 0.08) !important;
+    border-radius: 16px !important;
+    background: #fff !important;
+}
+@media (prefers-color-scheme: dark) {
+  .advanced-insights {
+    background: #1A3C34 !important;
+    box-shadow: 0 4px 24px rgba(229, 242, 239, 0.10) !important;
+  }
+}
+.data-quality-details {
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    margin-bottom: 32px !important;
+}
+@media (prefers-color-scheme: dark) {
+  .data-quality-details {
+    background: #22343a !important;
+    box-shadow: 0 2px 10px rgba(229, 242, 239, 0.10) !important;
+  }
+}
+.export-section {
+    margin-top: 40px !important;
+    box-shadow: 0 2px 10px rgba(26, 60, 52, 0.07) !important;
+    border-radius: 16px !important;
+}
+
+/* Refine export button and icon styling for premium look */
+.export-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 10px 22px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    background-color: #FF8C42 !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(255, 140, 66, 0.08) !important;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.export-btn i {
+    font-size: 20px !important;
+    margin-right: 6px !important;
+    vertical-align: middle !important;
+}
+.export-btn:hover, .export-btn:focus {
+    background-color: #E07023 !important;
+    color: #fff !important;
+    box-shadow: 0 6px 24px rgba(255,140,66,0.18) !important;
+    transform: scale(1.04);
+    z-index: 1;
+}
+
+/* Final consistency review and polish */
+.analytics-header h1, h1 {
+    font-family: 'Poppins', Arial, sans-serif !important;
+    font-size: 48px !important;
+    font-weight: 700 !important;
+    color: #1A3C34 !important;
+}
+@media (prefers-color-scheme: dark) {
+  .analytics-header h1, h1 {
+    color: #E5F2EF !important;
+  }
+}
+.nutrition-summary h2, .section-header h2, .export-section h2 {
+    font-family: 'Poppins', Arial, sans-serif !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #1A3C34 !important;
+}
+@media (prefers-color-scheme: dark) {
+  .nutrition-summary h2, .section-header h2, .export-section h2 {
+    color: #E5F2EF !important;
+  }
+}
+.summary-card h3, .insight-card h3, .chart-item h3 {
+    font-family: 'Poppins', Arial, sans-serif !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #3D5A80 !important;
+}
+@media (prefers-color-scheme: dark) {
+  .summary-card h3, .insight-card h3, .chart-item h3 {
+    color: #E5F2EF !important;
+  }
+}
+.card-label, .stat-label, .legend-label, .target-label {
+    color: #3D5A80 !important;
+    font-size: 14px !important;
+}
+@media (prefers-color-scheme: dark) {
+  .card-label, .stat-label, .legend-label, .target-label {
+    color: #A3BCB7 !important;
+  }
+}
+/* Accessibility: visible focus outlines for all major interactive elements */
+button:focus, .export-btn:focus, .date-range-btn:focus, .chart-type-btn:focus, .chart-tab:focus {
+    outline: 2px solid #FF8C42 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px #FF8C4233 !important;
+    border-color: #FF8C42 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .advanced-insights .data-quality,
+  .advanced-insights .data-quality-text,
+  .advanced-insights .metric-label,
+  .advanced-insights .metric-value,
+  .advanced-insights #data-quality-text {
+    color: #fff !important;
+  }
+  .advanced-insights .data-quality {
+    background: rgba(255,255,255,0.08) !important;
+  }
+  .advanced-insights .metric-bar-container {
+    background: rgba(255,255,255,0.15) !important;
+  }
+  .advanced-insights .metric-bar {
+    background: #FF8C42 !important;
+  }
+}
+
+/* === DESKTOP SIDEBAR LAYOUT: THIS MUST BE LAST === */
+@media (min-width: 992px) {
+  .side-nav {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    /* border: 3px solid red !important; */
+  }
+  main.analytics-container {
+    margin-left: 250px !important;
+  }
 } 

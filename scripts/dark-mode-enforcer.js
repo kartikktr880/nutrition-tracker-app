@@ -7,17 +7,19 @@
     // Execute as soon as possible during page load
     function forceDarkMode() {
         // Add dark mode classes to html and body
-        document.documentElement.classList.add('dark-mode', 'dark-theme');
-        document.body.classList.add('dark-theme', 'dark-mode', 'gradient-background');
+        if (document.documentElement) {
+            document.documentElement.classList.add('dark-mode', 'dark-theme');
+            document.documentElement.classList.remove('light-mode', 'light-theme');
+        }
+        if (document.body) {
+            document.body.classList.add('dark-theme', 'dark-mode', 'gradient-background');
+            document.body.classList.remove('light-theme', 'light-mode');
+        }
         
         // Store dark mode preference
         localStorage.setItem('darkMode', 'true');
         localStorage.setItem('dark-theme', 'true');
         localStorage.setItem('theme', 'dark');
-        
-        // Remove any light theme related classes
-        document.documentElement.classList.remove('light-mode', 'light-theme');
-        document.body.classList.remove('light-theme', 'light-mode');
         
         // Hide all theme toggle elements
         const themeToggleSelectors = [

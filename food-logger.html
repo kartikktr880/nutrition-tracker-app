@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode dark-theme">
 <head>
+    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Food Logger - Nutrition Tracker</title>
@@ -14,8 +15,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Chart.js for nutrition visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
-<body>
+<body class="dark-theme gradient-background dark-mode">
+    <div id="sidebar-container"></div>
+
     <!-- Mobile Navigation Toggle Button -->
     <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
         <span></span>
@@ -317,6 +328,8 @@
                         <span class="food-amount-col">Amount</span>
                         <span class="food-calories-col">Calories</span>
                         <span class="food-protein-col">Protein</span>
+                        <span class="food-carbs-col">Carbs</span>
+                        <span class="food-fat-col">Fat</span>
                         <span class="food-actions-col"></span>
                     </div>
                     <div id="food-entries" class="food-entries">
@@ -332,6 +345,8 @@
                             <span class="meal-total-amount"></span>
                             <span class="meal-total-calories" id="meal-calories">0 kcal</span>
                             <span class="meal-total-protein" id="meal-protein">0 g</span>
+                            <span class="meal-total-carbs" id="meal-carbs">0 g</span>
+                            <span class="meal-total-fat" id="meal-fat">0 g</span>
                             <span class="meal-total-actions"></span>
                         </div>
                     </div>
@@ -603,6 +618,7 @@
     </script>
     <script src="scripts/chart.js"></script>
     <script src="scripts/food-logger.js"></script>
+    <script src="scripts/test-food-logger.js"></script>
     <script>
         // Simple Mobile Navigation Script
         function toggleMobileNav() {
@@ -617,6 +633,32 @@
                 overlay.classList.add('active');
             }
         }
+
+        // Add test mode toggle in development
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            const testModeToggle = document.createElement('button');
+            testModeToggle.className = 'test-mode-toggle';
+            testModeToggle.innerHTML = '🧪 Run Tests';
+            testModeToggle.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                padding: 10px 15px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: var(--border-radius);
+                cursor: pointer;
+                font-family: var(--font-ui);
+                z-index: 1000;
+            `;
+            testModeToggle.onclick = () => {
+                const tester = new FoodLoggerTester();
+                tester.runTests();
+            };
+            document.body.appendChild(testModeToggle);
+        }
     </script>
+    <script src="components/inject-sidebar.js"></script>
 </body>
 </html> 

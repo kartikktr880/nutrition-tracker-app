@@ -1,0 +1,241 @@
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    padding: 120px 0 80px;
+    background-color: #F4EDE4;
+    overflow: hidden;
+}
+
+.dark-theme .hero-section,
+.dark-mode .hero-section {
+    background-color: #1A3C34;
+}
+
+/* Hero content container */
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+
+/* Hero text container */
+.hero-text {
+    max-width: 550px;
+    flex: 1;
+}
+
+/* Hero image container */
+.hero-image-container {
+    width: 45%;
+    position: relative;
+}
+
+/* Hero image styling */
+.hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Hero heading */
+.hero-text h1 {
+    font-size: 48px;
+    line-height: 1.2;
+    color: #1A3C34;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
+
+.dark-theme .hero-text h1,
+.dark-mode .hero-text h1 {
+    color: #F4EDE4;
+}
+
+/* Hero description */
+.hero-text p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 30px;
+    font-family: 'Inter', sans-serif;
+}
+
+.dark-theme .hero-text p,
+.dark-mode .hero-text p {
+    color: rgba(244, 237, 228, 0.8);
+}
+
+/* Hero CTA buttons */
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* Hero statistics */
+.hero-stats {
+    display: flex;
+    gap: 40px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1A3C34;
+    margin-bottom: 5px;
+}
+
+.dark-theme .stat-number,
+.dark-mode .stat-number {
+    color: #FF8C42;
+}
+
+.stat-label {
+    font-size: 16px;
+    color: #666;
+}
+
+.dark-theme .stat-label,
+.dark-mode .stat-label {
+    color: rgba(244, 237, 228, 0.7);
+}
+
+/* Hero background elements */
+.hero-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(244, 237, 228, 0.6) 0%, rgba(255, 140, 66, 0.1) 100%);
+    z-index: 1;
+    opacity: 0.7;
+}
+
+.dark-theme .hero-gradient,
+.dark-mode .hero-gradient {
+    background: linear-gradient(135deg, rgba(26, 60, 52, 0.8) 0%, rgba(26, 60, 52, 0.4) 100%);
+}
+
+.hero-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-particle {
+    position: absolute;
+    background-color: #FF8C42;
+    border-radius: 50%;
+    opacity: 0.2;
+}
+
+.dark-theme .hero-particle,
+.dark-mode .hero-particle {
+    background-color: #FF8C42;
+    opacity: 0.3;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .hero-section {
+        padding: 100px 0 60px;
+    }
+    
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-text {
+        max-width: 100%;
+        margin-bottom: 40px;
+    }
+    
+    .hero-image-container {
+        width: 80%;
+        margin: 0 auto;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .hero-stats {
+        justify-content: center;
+    }
+    
+    .hero-text h1 {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 80px 0 50px;
+    }
+    
+    .hero-text h1 {
+        font-size: 32px;
+    }
+    
+    .hero-text p {
+        font-size: 16px;
+    }
+    
+    .hero-image-container {
+        width: 90%;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .hero-stats {
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-around;
+    }
+    
+    .stat-item {
+        flex: 0 0 40%;
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 60px 0 40px;
+    }
+    
+    .hero-text h1 {
+        font-size: 28px;
+    }
+    
+    .stat-item {
+        flex: 0 0 100%;
+        margin-bottom: 15px;
+    }
+}
+
+/* .floating-badge { ... } */
+/* @keyframes float { ... } */ 

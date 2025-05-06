@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode dark-theme">
 <head>
+    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login - Nutrition Tracker</title>
@@ -359,37 +360,48 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.9);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            flex-direction: column;
+            z-index: 1000;
         }
 
-        .loading-overlay .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
             border-radius: 50%;
-            border-top-color: var(--accent-color);
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
         }
 
-        /* Error message for social login */
-        #errorMessage {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 15px;
-            font-family: var(--font-body);
-            display: none;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #dc3545;
             text-align: center;
-            padding: 8px;
-            background-color: rgba(231, 76, 60, 0.1);
-            border-radius: var(--border-radius);
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: rgba(220, 53, 69, 0.1);
         }
     </style>
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
-<body>
+<body class="dark-theme gradient-background dark-mode">
     <header>
         <a href="index.html" class="logo">Nutrition Tracker</a>
         <nav>
@@ -400,11 +412,6 @@
             </ul>
         </nav>
     </header>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-    </div>
 
     <main class="auth-container">
         <div class="auth-header">
@@ -440,451 +447,101 @@
         </form>
 
         <div class="social-login">
-            <p>Or login with</p>
+            <p>Or continue with</p>
             <div class="social-buttons">
-                <button class="social-button google" id="googleSignIn">
-                    <i class="fab fa-google"></i> Google
+                <button class="social-button google" onclick="handleGoogleSignIn()">
+                    <i class="fab fa-google"></i>
+                    <span>Google</span>
                 </button>
-                <button class="social-button facebook" id="facebookSignIn">
-                    <i class="fab fa-facebook-f"></i> Facebook
+                <button class="social-button facebook" onclick="handleFacebookSignIn()">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
                 </button>
             </div>
-            <div id="errorMessage"></div>
         </div>
-
-        <div class="auth-footer">
-            Don't have an account? <a href="signup.html">Sign up</a>
-        </div>
+        <div id="error-message" class="error-message" style="display: none;"></div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="about.html">About Us</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-            <a href="contact.html">Contact Us</a>
-        </div>
-    </footer>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Signing you in...</p>
+    </div>
 
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- Scripts -->
     <script src="scripts/firebase-config.js"></script>
     <script src="scripts/unified-auth.js"></script>
     <script>
+        // Initialize auth handler
         document.addEventListener('DOMContentLoaded', function() {
-            try {
-                // Use global auth object instead of import
-                console.log("Authentication module loaded successfully");
-                
-                // Setup password toggle
-                setupPasswordToggle();
-                
-                // Setup form handlers
-                setupFormHandlers(window.auth);
-                
-                // Setup social login buttons
-                setupSocialLogin(window.auth);
-                
-            } catch (error) {
-                console.error("Error initializing:", error);
-                showError('errorMessage', 'Failed to initialize authentication. Please refresh the page and try again.');
-            }
+                    window.auth.initAuthHandler();
         });
-        
-        // Setup password toggle function
-        function setupPasswordToggle() {
-            const togglePassword = document.getElementById('togglePassword');
-            const password = document.getElementById('password');
-            
-            if (togglePassword && password) {
-                togglePassword.addEventListener('click', function(e) {
-                    e.preventDefault(); // Prevent any form submission
-                    
-                    // Toggle password visibility
-                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                    password.setAttribute('type', type);
-                    
-                    // Toggle icon
-                    const icon = this.querySelector('i');
-                    icon.classList.toggle('fa-eye');
-                    icon.classList.toggle('fa-eye-slash');
-                });
-            }
-        }
-        
-        // Setup form handlers
-        function setupFormHandlers(auth) {
-            // Login form submission
-            const loginForm = document.getElementById('loginForm');
-            
-            if (loginForm) {
-                loginForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    clearErrors();
-                    
-                    // Get form values
-                    const email = document.getElementById('email').value.trim();
-                    const password = document.getElementById('password').value;
-                    
-                    // Validate form
-                    let isValid = true;
-                    
-                    // Validate email
-                    if (!email) {
-                        showError('emailError', 'Please enter your email');
-                        isValid = false;
-                    } else if (!validateEmailFormat(email)) {
-                        showError('emailError', 'Please enter a valid email address');
-                        isValid = false;
-                    }
-                    
-                    // Validate password
-                    if (!password) {
-                        showError('passwordError', 'Please enter your password');
-                        isValid = false;
-                    }
-                    
-                    if (!isValid) return;
-                    
-                    // Show loading state
-                    const loginButton = document.getElementById('loginButton');
-                    const loadingSpinner = document.getElementById('loadingSpinner');
-                    loginButton.disabled = true;
-                    loadingSpinner.style.display = 'block';
-                    
-                    try {
-                        // Call login function that checks if user exists
-                        const result = await auth.loginWithEmail(email, password);
-                        
-                        if (result.success) {
-                            // Redirect to dashboard
-                            window.location.href = 'dashboard.html';
-                        } else {
-                            // Check if user doesn't exist
-                            if (!result.userExists) {
-                                // Show popup and redirect to signup
-                                showUserNotExistModal(email);
-                            } else {
-                                // Handle other login errors
-                                handleLoginError(result.error);
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Login error:', error);
-                        handleLoginError(error);
-                    } finally {
-                        // Reset UI
-                        loginButton.disabled = false;
-                        loadingSpinner.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Forgot password link
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            
-            if (forgotPasswordLink) {
-                forgotPasswordLink.addEventListener('click', async function(e) {
-                    e.preventDefault();
-                    clearErrors();
-                    
-                    // Get email
-                    const email = document.getElementById('email').value.trim();
-                    
-                    // Validate email
-                    if (!email) {
-                        showError('emailError', 'Please enter your email to reset password');
-                        return;
-                    } else if (!validateEmailFormat(email)) {
-                        showError('emailError', 'Please enter a valid email address');
-                        return;
-                    }
-                    
-                    // Show loading state
-                    const loginButton = document.getElementById('loginButton');
-                    const loadingSpinner = document.getElementById('loadingSpinner');
-                    loginButton.disabled = true;
-                    loadingSpinner.style.display = 'block';
-                    
-                    try {
-                        // Send password reset email (function now checks if user exists)
-                        const result = await auth.resetPassword(email);
-                        
-                        if (result.success) {
-                            // Show success message
-                            document.getElementById('successMessage').textContent = 'Password reset email sent! Please check your inbox.';
-                            document.getElementById('successMessage').style.display = 'block';
-                        } else {
-                            // Handle error
-                            handleLoginError(result.error, 'reset');
-                        }
-                    } catch (error) {
-                        console.error('Password reset error:', error);
-                        handleLoginError(error, 'reset');
-                    } finally {
-                        // Hide loading state
-                        loginButton.disabled = false;
-                        loadingSpinner.style.display = 'none';
-                    }
-                });
-            }
-        }
-        
-        // Setup social login
-        function setupSocialLogin(auth) {
-            // Google login
-            document.getElementById('googleSignIn').addEventListener('click', async function() {
-                clearErrors();
-                document.getElementById('loadingOverlay').style.display = 'flex';
-                
-                try {
-                    // Login with Google
-                    const result = await auth.signInWithGoogle();
-                    
-                    if (result.success) {
-                        // Redirect to dashboard
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        // Handle error
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                        handleSocialError(result.error, 'Google');
-                    }
-                } catch (error) {
-                    console.error('Google login error:', error);
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    handleSocialError(error, 'Google');
-                }
-            });
-            
-            // Facebook login
-            document.getElementById('facebookSignIn').addEventListener('click', async function() {
-                clearErrors();
-                document.getElementById('loadingOverlay').style.display = 'flex';
-                
-                try {
-                    // Login with Facebook
-                    const result = await auth.signInWithFacebook();
-                    
-                    if (result.success) {
-                        // Redirect to dashboard
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        // Handle error
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                        handleSocialError(result.error, 'Facebook');
-                    }
-                } catch (error) {
-                    console.error('Facebook login error:', error);
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    handleSocialError(error, 'Facebook');
-                }
-            });
-        }
-        
-        // Handle login errors
-        function handleLoginError(error, type = 'login') {
-            let message = '';
-            let target = 'passwordError';
-            
-            if (error.code === 'auth/user-not-found') {
-                message = 'No account found with this email address.';
-                target = 'emailError';
-            } else if (error.code === 'auth/wrong-password') {
-                message = 'Incorrect password. Please try again.';
-            } else if (error.code === 'auth/invalid-email') {
-                message = 'Invalid email format.';
-                target = 'emailError';
-            } else if (error.code === 'auth/too-many-requests') {
-                message = 'Too many failed login attempts. Please try again later.';
-            } else if (error.code === 'auth/network-request-failed') {
-                message = 'Network error. Please check your internet connection.';
-            } else if (type === 'reset') {
-                message = 'Failed to send password reset email. ' + (error.message || 'Please try again.');
-                target = 'emailError';
-            } else {
-                message = 'Login failed. ' + (error.message || 'Please try again.');
-            }
-            
-            showError(target, message);
-        }
-        
-        // Handle social login errors
-        function handleSocialError(error, provider) {
-            let message = `Error signing in with ${provider}: `;
-            
-            if (error.code === 'auth/popup-closed-by-user') {
-                message += 'Sign-in popup was closed.';
-            } else if (error.code === 'auth/popup-blocked') {
-                message += 'Sign-in popup was blocked by your browser. Please enable popups for this site.';
-            } else if (error.code === 'auth/unauthorized-domain') {
-                message += `This domain (${window.location.hostname}) is not authorized for Firebase authentication. Please contact the site administrator.`;
-            } else if (error.code === 'auth/cancelled-popup-request') {
-                message += 'Multiple popup requests were triggered. Please try again.';
-            } else if (error.code === 'auth/network-request-failed') {
-                message += 'Network error. Please check your internet connection.';
-            } else {
-                message += error.message || 'An unknown error occurred.';
-            }
-            
-            const errorElement = document.getElementById('errorMessage');
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
 
-            // Add special instructions for unauthorized domain error
-            if (error.code === 'auth/unauthorized-domain') {
-                // Create detailed instructions
-                const instructions = document.createElement('div');
-                instructions.innerHTML = `
-                    <div style="margin-top: 10px; text-align: left; padding: 15px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
-                        <p><strong>Site Owner Instructions:</strong></p>
-                        <ol style="margin-left: 20px; padding-left: 0;">
-                            <li>Go to <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></li>
-                            <li>Select your project (nutrition-tracking-c98bd)</li>
-                            <li>Click on "Authentication" in the left menu</li>
-                            <li>Go to the "Settings" tab</li>
-                            <li>Scroll to "Authorized domains"</li>
-                            <li>Add: "${window.location.hostname}"</li>
-                        </ol>
-                    </div>
-                `;
-                
-                errorElement.appendChild(instructions);
+        // Social login handlers
+        async function handleGoogleSignIn() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorMessage = document.getElementById('error-message');
+            
+            try {
+                loadingOverlay.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                await window.auth.signInWithGoogle();
+                // Redirect is handled in the signInWithGoogle function
+            } catch (error) {
+                console.error('Google sign-in error:', error);
+                errorMessage.textContent = getErrorMessage(error);
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingOverlay.style.display = 'none';
             }
         }
-        
-        // Function to show user not exist modal and redirect
-        function showUserNotExistModal(email) {
-            // Create modal for user not exist
-            const modal = document.createElement('div');
-            modal.className = 'user-not-exist-modal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <h2>Account Not Found</h2>
-                    <p>We couldn't find an account with the email <strong>${email}</strong></p>
-                    <p>Would you like to create a new account?</p>
-                    <div class="modal-buttons">
-                        <button id="cancelBtn" class="btn-secondary">Cancel</button>
-                        <button id="createAccountBtn" class="btn-primary">Create Account</button>
-                    </div>
-                </div>
-            `;
+
+        async function handleFacebookSignIn() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorMessage = document.getElementById('error-message');
             
-            // Add styles for the modal
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .user-not-exist-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 1000;
-                }
-                
-                .modal-content {
-                    background-color: white;
-                    padding: 30px;
-                    border-radius: var(--border-radius);
-                    max-width: 400px;
-                    width: 90%;
-                    box-shadow: var(--shadow-lg);
-                    text-align: center;
-                }
-                
-                .modal-content h2 {
-                    color: var(--primary-color);
-                    margin-top: 0;
-                    font-family: var(--font-heading);
-                }
-                
-                .modal-content p {
-                    color: var(--text-secondary);
-                    margin-bottom: 20px;
-                    font-family: var(--font-body);
-                }
-                
-                .modal-buttons {
-                    display: flex;
-                    justify-content: space-between;
-                    gap: 15px;
-                }
-                
-                .btn-primary {
-                    background-color: var(--accent-color);
-                    color: white;
-                    border: none;
-                    padding: 12px 20px;
-                    border-radius: var(--border-radius);
-                    cursor: pointer;
-                    flex: 1;
-                    font-family: var(--font-ui);
-                    font-weight: 500;
-                    transition: background-color 0.3s, transform 0.2s;
-                }
-                
-                .btn-primary:hover {
-                    background-color: var(--accent-dark);
-                    transform: translateY(-2px);
-                }
-                
-                .btn-secondary {
-                    background-color: #f5f5f5;
-                    color: var(--text-primary);
-                    border: 1px solid #ddd;
-                    padding: 12px 20px;
-                    border-radius: var(--border-radius);
-                    cursor: pointer;
-                    flex: 1;
-                    font-family: var(--font-ui);
-                    font-weight: 500;
-                    transition: background-color 0.3s, transform 0.2s;
-                }
-                
-                .btn-secondary:hover {
-                    background-color: #e5e5e5;
-                    transform: translateY(-2px);
-                }
-            `;
-            
-            document.head.appendChild(style);
-            document.body.appendChild(modal);
-            
-            // Add event listeners
-            document.getElementById('cancelBtn').addEventListener('click', function() {
-                document.body.removeChild(modal);
-            });
-            
-            document.getElementById('createAccountBtn').addEventListener('click', function() {
-                // Redirect to signup page with email pre-filled
-                window.location.href = `signup.html?email=${encodeURIComponent(email)}`;
-            });
+            try {
+                loadingOverlay.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                await window.auth.signInWithFacebook();
+                // Redirect is handled in the signInWithFacebook function
+                    } catch (error) {
+                console.error('Facebook sign-in error:', error);
+                errorMessage.textContent = getErrorMessage(error);
+                errorMessage.style.display = 'block';
+                    } finally {
+                loadingOverlay.style.display = 'none';
+            }
         }
-        
-        // Validate email format
-        function validateEmailFormat(email) {
-            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(String(email).toLowerCase());
-        }
-        
-        // Show error message
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-        }
-        
-        // Clear all error messages
-        function clearErrors() {
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.style.display = 'none';
-                el.textContent = '';
-            });
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
+
+        function getErrorMessage(error) {
+            switch (error.code) {
+                case 'auth/popup-closed-by-user':
+                    return 'Sign-in was cancelled.';
+                case 'auth/popup-blocked':
+                    return 'Pop-up was blocked by your browser. Please allow pop-ups for this site.';
+                case 'auth/account-exists-with-different-credential':
+                    return 'An account already exists with the same email address but different sign-in credentials.';
+                case 'auth/cancelled-popup-request':
+                    return 'Only one pop-up request is allowed at a time.';
+                case 'auth/operation-not-allowed':
+                    return 'This sign-in method is not enabled. Please contact support.';
+                case 'auth/operation-not-supported-in-this-environment':
+                    return 'This operation is not supported in your current environment.';
+                default:
+                    return 'An error occurred during sign-in. Please try again.';
+            }
         }
     </script>
+    <script src="scripts/mobile-nav.js"></script>
+    <script src="scripts/footer.js"></script>
 </body>
 </html> 

@@ -1,0 +1,214 @@
+/* 
+ * fix-steps.css
+ * Critical fixes for step section visibility issues
+ */
+
+/* Step section with increased specificity */
+.steps-section,
+#steps,
+section.steps,
+[class*="steps-section"],
+[id*="steps"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 80px 0 !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Step grid container */
+.steps-grid,
+.steps-container,
+.step-grid,
+.steps-wrapper,
+.steps .container,
+.steps-section .container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 30px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Individual step */
+.step,
+.step-card,
+.step-item,
+.steps-grid > div,
+.steps-container > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 30px 20px !important;
+    background-color: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    position: relative !important;
+    z-index: 2 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Step number circle */
+.step-number,
+.step .number,
+.step-card .number,
+[class*="step-number"],
+[class*="step"] [class*="number"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    background-color: var(--accent-color, #FF8C42) !important;
+    color: white !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 8px 20px rgba(255, 140, 66, 0.3) !important;
+    position: relative !important;
+    z-index: 5 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Dark mode step card */
+html.dark-mode .step,
+html.dark-mode .step-card,
+html.dark-mode .step-item,
+html.dark-theme .step,
+html.dark-theme .step-card,
+html.dark-theme .step-item {
+    background-color: rgba(26, 60, 52, 0.8) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Step heading */
+.step h3,
+.step-card h3,
+.step-item h3,
+.step .title,
+.step-card .title,
+.step-item .title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: var(--text-color, #333) !important;
+    margin: 0 0 15px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Step content */
+.step p,
+.step-card p,
+.step-item p,
+.step .description,
+.step-card .description,
+.step-item .description {
+    font-size: 1rem !important;
+    color: var(--text-secondary, #666) !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Dark mode text colors */
+html.dark-mode .step h3,
+html.dark-mode .step-card h3,
+html.dark-mode .step-item h3,
+html.dark-theme .step h3,
+html.dark-theme .step-card h3,
+html.dark-theme .step-item h3 {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html.dark-mode .step p,
+html.dark-mode .step-card p,
+html.dark-mode .step-item p,
+html.dark-theme .step p,
+html.dark-theme .step-card p,
+html.dark-theme .step-item p {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Step hover effect */
+.step:hover,
+.step-card:hover,
+.step-item:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.dark-mode .step:hover,
+html.dark-mode .step-card:hover,
+html.dark-mode .step-item:hover,
+html.dark-theme .step:hover, 
+html.dark-theme .step-card:hover,
+html.dark-theme .step-item:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Step icon */
+.step-icon,
+.step .icon,
+.step-card .icon,
+[class*="step-icon"],
+[class*="step"] [class*="icon"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 70px !important;
+    height: 70px !important;
+    margin-bottom: 20px !important;
+    font-size: 2rem !important;
+    color: var(--accent-color, #FF8C42) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Step animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step,
+.step-card,
+.step-item {
+    animation: fadeInUp 0.6s ease forwards !important;
+}
+
+.step:nth-child(1),
+.step-card:nth-child(1),
+.step-item:nth-child(1) {
+    animation-delay: 0.1s !important;
+}
+
+.step:nth-child(2),
+.step-card:nth-child(2),
+.step-item:nth-child(2) {
+    animation-delay: 0.2s !important;
+}
+
+.step:nth-child(3),
+.step-card:nth-child(3),
+.step-item:nth-child(3) {
+    animation-delay: 0.3s !important;
+}
+
+.step:nth-child(4),
+.step-card:nth-child(4),
+.step-item:nth-child(4) {
+    animation-delay: 0.4s !important;
+} 

@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode dark-theme">
 <head>
+    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports & Analytics - Nutrition Tracker</title>
-    <link rel="stylesheet" href="styles/styles.css">
+    <!-- <link rel="stylesheet" href="styles/styles.css"> -->
     <link rel="stylesheet" href="styles/mobile-nav.css">
     <link rel="stylesheet" href="styles/analytics.css">
     <link rel="stylesheet" href="styles/responsive.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .advanced-insights {
             margin-top: 40px;
@@ -257,8 +258,16 @@
             color: var(--text-muted);
         }
     </style>
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
-<body>
+<body class="dark-theme gradient-background dark-mode">
     <!-- Mobile Navigation Bar -->
     <div class="mobile-nav">
         <button id="mobile-menu-toggle">
@@ -268,26 +277,7 @@
     </div>
 
     <!-- Side Navigation -->
-    <nav class="side-nav">
-        <div class="app-logo">
-            <img src="images/logo.png" alt="Nutrition Tracker Logo">
-            <span>Nutrition Tracker</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="food-logger.html"><i class="fas fa-utensils"></i> Food Logger</a></li>
-            <li class="active"><a href="analytics.html"><i class="fas fa-chart-simple"></i> Analytics</a></li>
-            <li><a href="activity-dashboard.html"><i class="fas fa-running"></i> Activity</a></li>
-            <li><a href="meal-planner.html"><i class="fas fa-calendar-days"></i> Meal Planner</a></li>
-            <li><a href="recipes.html"><i class="fas fa-book"></i> Recipes</a></li>
-            <li><a href="recipe-calculator.html"><i class="fas fa-calculator"></i> Recipe Calculator</a></li>
-            <li><a href="water-tracker.html"><i class="fas fa-water"></i> Water Tracker</a></li>
-            <li><a href="goals.html"><i class="fas fa-bullseye"></i> Goals</a></li>
-            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Search</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
-        </ul>
-    </nav>
+    <div id="sidebar-container"></div>
 
     <!-- Main Content -->
     <main class="analytics-container">
@@ -320,53 +310,53 @@
             <div class="summary-cards">
                 <div class="summary-card">
                     <div class="card-icon calories-icon">
-                        <i class="fas fa-fire"></i>
+                        <i class="fa-solid fa-fire"></i>
                     </div>
                     <div class="card-content">
                         <h3>Calories</h3>
                         <div class="card-value" id="avg-calories">0</div>
                         <div class="card-label">daily average</div>
                         <div class="card-trend positive">
-                            <i class="fas fa-arrow-up"></i> 5% from last period
+                            <i class="fa-solid fa-arrow-up"></i> 5% from last period
                         </div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon protein-icon">
-                        <i class="fas fa-drumstick-bite"></i>
+                        <i class="fa-solid fa-drumstick-bite"></i>
                     </div>
                     <div class="card-content">
                         <h3>Protein</h3>
                         <div class="card-value" id="avg-protein">0g</div>
                         <div class="card-label">daily average</div>
                         <div class="card-trend positive">
-                            <i class="fas fa-arrow-up"></i> 12% from last period
+                            <i class="fa-solid fa-arrow-up"></i> 12% from last period
                         </div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon carbs-icon">
-                        <i class="fas fa-bread-slice"></i>
+                        <i class="fa-solid fa-bread-slice"></i>
                     </div>
                     <div class="card-content">
                         <h3>Carbs</h3>
                         <div class="card-value" id="avg-carbs">0g</div>
                         <div class="card-label">daily average</div>
                         <div class="card-trend negative">
-                            <i class="fas fa-arrow-down"></i> 3% from last period
+                            <i class="fa-solid fa-arrow-down"></i> 3% from last period
                         </div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon fat-icon">
-                        <i class="fas fa-cheese"></i>
+                        <i class="fa-solid fa-cheese"></i>
                     </div>
                     <div class="card-content">
                         <h3>Fat</h3>
                         <div class="card-value" id="avg-fat">0g</div>
                         <div class="card-label">daily average</div>
                         <div class="card-trend flat">
-                            <i class="fas fa-minus"></i> No change from last period
+                            <i class="fa-solid fa-minus"></i> No change from last period
                         </div>
                     </div>
                 </div>
@@ -576,17 +566,17 @@
             <div class="insights-header">
                 <h2>Advanced Insights</h2>
                 <button id="refresh-insights" class="btn-primary">
-                    <i class="fas fa-sync-alt"></i> Refresh Insights
+                    <i class="fa-solid fa-rotate-right"></i> Refresh Insights
                 </button>
             </div>
             
             <div id="insights-loading" class="no-data-message" style="display: none;">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
                 <p>Analyzing your nutrition data...</p>
             </div>
             
             <div id="insights-no-data" class="no-data-message" style="display: none;">
-                <i class="fas fa-chart-bar fa-2x"></i>
+                <i class="fa-solid fa-chart-bar fa-2x"></i>
                 <p>Not enough data to generate advanced insights.</p>
                 <p>Please log at least 7 days of meals to see patterns and recommendations.</p>
             </div>
@@ -594,28 +584,28 @@
             <div id="insights-content">
                 <div class="insights-cards">
                     <div class="insight-card">
-                        <h3><i class="fas fa-lightbulb"></i> Personalized Recommendations</h3>
+                        <h3><i class="fa-solid fa-lightbulb"></i> Personalized Recommendations</h3>
                         <div id="recommendations-container">
                             <!-- Will be populated by JavaScript -->
                         </div>
                     </div>
                     
                     <div class="insight-card">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Nutrition Alerts</h3>
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Nutrition Alerts</h3>
                         <div id="alerts-container">
                             <!-- Will be populated by JavaScript -->
                         </div>
                     </div>
                     
                     <div class="insight-card">
-                        <h3><i class="fas fa-utensils"></i> Eating Patterns</h3>
+                        <h3><i class="fa-solid fa-utensils"></i> Eating Patterns</h3>
                         <div id="patterns-container">
                             <!-- Will be populated by JavaScript -->
                         </div>
                     </div>
                     
                     <div class="insight-card">
-                        <h3><i class="fas fa-calendar-day"></i> Day of Week Patterns</h3>
+                        <h3><i class="fa-solid fa-calendar-day"></i> Day of Week Patterns</h3>
                         <div id="weekday-patterns-container">
                             <!-- Will be populated by JavaScript -->
                         </div>
@@ -675,13 +665,13 @@
             <p>Download your nutrition data for further analysis or record keeping.</p>
             <div class="export-buttons">
                 <button class="export-btn" data-format="csv">
-                    <i class="fas fa-file-csv"></i> Export as CSV
+                    <i class="fa-solid fa-file-csv"></i> Export as CSV
                 </button>
                 <button class="export-btn" data-format="pdf">
-                    <i class="fas fa-file-pdf"></i> Export as PDF
+                    <i class="fa-solid fa-file-pdf"></i> Export as PDF
                 </button>
                 <button class="export-btn" data-format="json">
-                    <i class="fas fa-file-code"></i> Export as JSON
+                    <i class="fa-solid fa-file-code"></i> Export as JSON
                 </button>
             </div>
         </section>
@@ -689,8 +679,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="scripts/data-manager.js"></script>
     <script src="scripts/analytics.js"></script>
     <script src="scripts/advanced-analytics.js" type="module"></script>
+    <script src="components/inject-sidebar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize normal analytics (existing code)

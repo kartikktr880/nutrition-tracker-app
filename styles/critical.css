@@ -1,0 +1,100 @@
+/* Critical section spacing fixes */
+.how-it-works { 
+    padding-bottom: 60px !important; 
+    margin-bottom: 0 !important; 
+}
+
+.cta-section { 
+    padding: 80px 0 !important; 
+    margin: 0 !important; 
+}
+
+.stay-updated-section { 
+    padding: 80px 0 !important; 
+    margin: 0 !important; 
+}
+
+.newsletter-section { 
+    padding: 80px 0 !important; 
+    margin: 0 !important; 
+}
+
+.footer { 
+    margin-top: 0 !important; 
+}
+
+section + section { 
+    margin-top: 0 !important; 
+}
+
+main > section:last-of-type { 
+    margin-bottom: 0 !important; 
+}
+
+/* Force visibility of sections */
+.stay-updated-section, 
+.cta-section, 
+.newsletter-section, 
+.footer {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Critical Path CSS */
+
+/* Base Styles */
+:root {
+    /* Colors */
+    --primary-color: #1A3C34;
+    --accent-color: #FF8C42;
+    --text-primary: #1A3C34;
+    --text-color-inverse: #FFFFFF;
+    --background-white: #FFFFFF;
+    
+    /* Fonts */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-ui: 'Montserrat', sans-serif;
+    
+    /* Spacing */
+    --container-max-width: 1200px;
+    --container-padding: 1.5rem;
+    --header-height: 80px;
+}
+
+/* Critical Layout */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--background-white);
+}
+
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+/* Critical Header Styles */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: var(--background-white);
+    z-index: 1000;
+}
+
+/* Critical Hero Styles */
+.hero-section {
+    padding-top: calc(var(--header-height) + 2rem);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+} 

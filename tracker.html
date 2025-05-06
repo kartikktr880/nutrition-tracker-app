@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode dark-theme">
 <head>
+    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Track Your Nutrition - Nutrition Tracker</title>
@@ -37,139 +38,23 @@
         }
 
         header {
-            background-color: white;
-            box-shadow: var(--shadow-md);
-            padding: 15px 20px;
+            display: none;
         }
 
         header .logo {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1.5rem;
-            font-family: var(--font-heading);
+            display: none;
         }
 
         header nav ul li a {
-            color: var(--text-primary);
-            font-weight: 500;
-            transition: color 0.3s;
-            font-family: var(--font-ui);
+            display: none;
         }
 
         header nav ul li a:hover {
-            color: var(--secondary-color);
-        }
-
-        /* Simple Mobile Navigation Styles */
-        .mobile-nav-toggle {
-            position: fixed;
-            top: 10px;
-            right: 15px;
-            z-index: 9999;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            width: 45px;
-            height: 45px;
-            display: none;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s;
-        }
-
-        .mobile-nav-toggle:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .mobile-nav-toggle span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: white;
-            margin: 5px auto;
-            border-radius: 2px;
-            transition: transform 0.3s, opacity 0.3s;
-        }
-
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 280px;
-            height: 100%;
-            background-color: white;
-            z-index: 9998;
-            transition: left 0.3s ease;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-            overflow-y: auto;
-        }
-
-        .mobile-nav.active {
-            left: 0;
-        }
-
-        .mobile-nav-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 25px 20px;
-            font-family: var(--font-heading);
-        }
-
-        .mobile-nav-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .mobile-nav-links li {
-            border-bottom: 1px solid var(--background-light);
-        }
-
-        .mobile-nav-links a {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: background-color 0.2s;
-            font-family: var(--font-ui);
-        }
-
-        .mobile-nav-links a i {
-            margin-right: 15px;
-            width: 20px;
-            text-align: center;
-            color: var(--primary-color);
-        }
-
-        .mobile-nav-links a:hover {
-            background-color: var(--background-light);
-        }
-
-        .mobile-nav-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 9997;
             display: none;
         }
 
-        .mobile-nav-overlay.active {
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-nav-toggle {
-                display: block;
-            }
-
-            header nav {
-                display: none;
-            }
+        header nav {
+            display: none;
         }
 
         /* Tracker-specific updates */
@@ -553,61 +438,17 @@
             }
         }
     </style>
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
-<body>
-    <!-- Mobile Navigation Toggle Button -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
-    <!-- Mobile Navigation Overlay -->
-    <div class="mobile-nav-overlay" onclick="toggleMobileNav()"></div>
-
-    <!-- Mobile Navigation Menu -->
-    <div class="mobile-nav">
-        <div class="mobile-nav-header">
-            <h3>Nutrition Tracker</h3>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-            <li><a href="tracker.html"><i class="fas fa-utensils"></i> Tracker</a></li>
-            <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-            <li><a href="meal-planner.html"><i class="fas fa-calendar"></i> Meal Planner</a></li>
-            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Database</a></li>
-            <li><a href="shopping-list.html"><i class="fas fa-shopping-basket"></i> Shopping List</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-            <li id="login-item"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-            <li id="logout-item" style="display: none;"><a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
-
-    <header>
-        <div class="logo">Nutrition Tracker</div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="tracker.html">Tracker</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="meal-planner.html">Meal Planner</a></li>
-                <li><a href="food-search.html">Food Database</a></li>
-                <li><a href="shopping-list.html">Shopping List</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <li id="nav-login-item"><a href="login.html">Login</a></li>
-                <li id="nav-logout-item" style="display: none;">
-                    <div class="user-menu">
-                        <span id="header-username" class="user-name">User</span>
-                        <a href="#" onclick="logoutUser()">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="tracker-container">
+<body class="dark-theme gradient-background dark-mode">
+    <main class="main-content">
         <h1>Track Your Nutrition</h1>
         
         <div class="search-section">
@@ -679,79 +520,13 @@
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="about.html">About Us</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-            <a href="contact.html">Contact Us</a>
-        </div>
-    </footer>
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
 
-    <script type="module">
-        // Immediately check if user is authenticated
-        const storedUser = localStorage.getItem('currentUser');
-        if (!storedUser) {
-            // Not authenticated - redirect to login
-            window.location.href = 'login.html?redirect=tracker.html';
-            throw new Error('Authentication required');
-        }
-        
-        // Simple Mobile Navigation Script
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-            
-            if (mobileMenuToggle) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    document.body.classList.toggle('mobile-menu-open');
-                });
-            }
-            
-            if (mobileMenuOverlay) {
-                mobileMenuOverlay.addEventListener('click', function() {
-                    document.body.classList.remove('mobile-menu-open');
-                });
-            }
-            
-            // Day selector functionality
-            const dayButtons = document.querySelectorAll('.day-selector button');
-            dayButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    dayButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    // Here you would typically load data for the selected day
-                    console.log('Selected day:', this.textContent.trim());
-                });
-            });
-        });
-
-        // Import the unified auth module
-        import('./scripts/unified-auth.js')
-            .then(module => {
-                console.log('Authentication module loaded successfully');
-            })
-            .catch(error => {
-                console.error('Error loading authentication module:', error);
-            });
-
-        // Food tracking functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add food button functionality
-            const addFoodButtons = document.querySelectorAll('.add-food-btn');
-            addFoodButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const mealType = this.getAttribute('data-meal-type');
-                    console.log(`Add food clicked for ${mealType}`);
-                    // Redirect to food search page with meal type parameter
-                    window.location.href = `food-search.html?meal=${mealType}`;
-                });
-            });
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="scripts/tracker.js"></script>
+    <script src="scripts/footer.js"></script>
+    <div id="sidebar-container"></div>
+    <script src="components/inject-sidebar.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 
 # Your rule content
-
+always push codes on github while make major changes.
 - You can @ files here
 - You can use markdown but dont have to
 

@@ -78,14 +78,21 @@ class MealPrepOptimizer {
     async initialize() {
         if (this.isInitialized) return;
 
-        // Add meal prep optimizer button to meal planner
-        const plannerHeader = document.querySelector('.planner-header');
-        if (plannerHeader) {
-            const optimizerBtn = document.createElement('button');
-            optimizerBtn.className = 'btn btn-primary meal-prep-btn';
-            optimizerBtn.innerHTML = '<i class="fas fa-tasks"></i> Meal Prep Optimizer';
-            optimizerBtn.addEventListener('click', () => this.showOptimizer());
-            plannerHeader.appendChild(optimizerBtn);
+        // Add optimizer button to main content area instead of header
+        const optimizerBtn = document.createElement('button');
+        optimizerBtn.className = 'action-button optimizer-button';
+        optimizerBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Meal Prep';
+
+        // Add to main content area
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            let buttonContainer = document.querySelector('.action-buttons-container');
+            if (!buttonContainer) {
+                buttonContainer = document.createElement('div');
+                buttonContainer.className = 'action-buttons-container';
+                mainContent.insertBefore(buttonContainer, mainContent.firstChild);
+            }
+            buttonContainer.appendChild(optimizerBtn);
         }
 
         this.isInitialized = true;

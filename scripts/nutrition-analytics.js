@@ -18,14 +18,18 @@ class NutritionAnalytics {
     async initialize() {
         if (this.isInitialized) return;
 
-        // Add analytics button to header
-        const header = document.querySelector('.planner-header');
-        if (header) {
-            const analyticsBtn = document.createElement('button');
-            analyticsBtn.className = 'btn btn-primary analytics-btn';
-            analyticsBtn.innerHTML = '<i class="fas fa-chart-line"></i> Smart Analytics';
-            analyticsBtn.addEventListener('click', () => this.showDashboard());
-            header.appendChild(analyticsBtn);
+        // Add analytics button to main content area instead of header
+        const analyticsBtn = document.createElement('button');
+        analyticsBtn.className = 'action-button analytics-button';
+        analyticsBtn.innerHTML = '<i class="fas fa-chart-line"></i> Analytics';
+
+        // Add to main content area
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'action-buttons-container';
+            buttonContainer.appendChild(analyticsBtn);
+            mainContent.insertBefore(buttonContainer, mainContent.firstChild);
         }
 
         // Initialize intersection observer for lazy loading

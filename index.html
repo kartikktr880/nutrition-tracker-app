@@ -27,7 +27,7 @@
     
     <!-- Base Stylesheets -->
     <link rel="stylesheet" href="styles/reset.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main.css?v=1.0.0">
     
     <!-- Component Stylesheets -->
     <link rel="stylesheet" href="styles/hero-section.css">
@@ -76,7 +76,8 @@
         .hero-stat {
             background-color: rgba(26, 60, 52, 0.7) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(5px) !important;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             border-radius: 8px !important;
             padding: 12px !important;
         }
@@ -119,8 +120,7 @@
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
 <body class="dark-theme gradient-background dark-mode">
-    <!-- All header-related code removed as requested -->
-
+    <div id="sidebar-container"></div>
     <main>
         <!-- Hero Section -->
         <section class="hero-section" style="opacity: 1 !important; visibility: visible !important; background: transparent !important;">
@@ -132,15 +132,15 @@
                         <p style="color: rgba(255, 255, 255, 0.9) !important;">Achieve your health goals with AI-powered nutrition tracking. Get personalized insights, track progress, and make informed decisions about your diet.</p>
                         
                         <div class="hero-stats" style="background: transparent !important;">
-                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px);">
+                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
                                 <div class="stat-number" style="color: #FF8C42 !important;">5M+</div>
                                 <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">Active Users</div>
                             </div>
-                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px);">
+                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
                                 <div class="stat-number" style="color: #FF8C42 !important;">98%</div>
                                 <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">Success Rate</div>
                             </div>
-                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px);">
+                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
                                 <div class="stat-number" style="color: #FF8C42 !important;">4.9</div>
                                 <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">App Rating</div>
                             </div>
@@ -365,11 +365,11 @@
                 </div>
                 
                 <div class="testimonials-controls">
-                    <button class="testimonial-control prev-testimonial">
-                        <i class="fas fa-arrow-left"></i>
+                    <button class="testimonial-control prev-testimonial" aria-label="Previous testimonial" title="Previous testimonial">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    <button class="testimonial-control next-testimonial">
-                        <i class="fas fa-arrow-right"></i>
+                    <button class="testimonial-control next-testimonial" aria-label="Next testimonial" title="Next testimonial">
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -484,7 +484,7 @@
     <script src="scripts/unified-auth.js"></script>
     <script src="scripts/mobile-nav.js"></script>
     <script src="scripts/footer.js"></script>
-    <script src="scripts/main.js"></script>
+    <script src="scripts/main.js?v=1.0.0"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
             // Initialize the unified auth handler
@@ -702,10 +702,12 @@
                     
                     // Update URL hash
                     history.pushState(null, null, '#how-it-works');
-                });
+                    });
+                }
             }
-        }
-    })();
+        })();
     </script>
+    <script src="components/inject-sidebar.js"></script>
+    <script src="components/inject-mobile-nav.js"></script>
 </body>
 </html> 

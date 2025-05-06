@@ -20,19 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mobileNav.classList.contains('active')) {
                 header.classList.remove('scrolled-down');
                 header.classList.add('scrolled-up');
-                header.style.transform = 'translateY(0)';
                 body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
             } else {
                 body.style.overflow = ''; // Re-enable scrolling
-                
-                // Reset header position based on scroll position
-                const scrollY = window.scrollY;
-                if (scrollY > 80) {
-                    // User has scrolled down, keep header hidden
-                    header.classList.add('scrolled-down');
-                    header.classList.remove('scrolled-up');
-                    header.style.transform = 'translateY(-100%)';
-                }
             }
         });
     }
@@ -74,15 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileMenuToggle.classList.remove('active');
             mobileNav.classList.remove('active');
             body.style.overflow = '';
-            
-            // Reset header position based on scroll position
-            const scrollY = window.scrollY;
-            if (scrollY > 80) {
-                // User has scrolled down, keep header hidden
-                header.classList.add('scrolled-down');
-                header.classList.remove('scrolled-up');
-                header.style.transform = 'translateY(-100%)';
-            }
         }
         
         // Close any open dropdowns when clicking outside

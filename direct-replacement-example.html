@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode dark-theme">
+<head>
+    <meta name="theme-color" content="#1A3C34">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Replacement Example</title>
+    
+    <!-- STEP 1: Find this section in index.html and add these styles directly after your existing CSS links -->
+    <style>
+        /* Premium Header Styles (Add this to your existing CSS) */
+        .premium-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+        }
+        
+        .header-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 90px;
+        }
+        
+        .header-container.scrolled {
+            background-color: #1A3C34;
+            height: 70px;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 100%;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #1A3C34;
+            font-weight: 700;
+            font-size: 1.8rem;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .header-logo:hover {
+            transform: translateY(-3px);
+        }
+        
+        .header-container.scrolled .header-logo {
+            color: white;
+        }
+        
+        .logo-circle {
+            background-color: #FF8C42;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: #1A3C34;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 1rem;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+        
+        .header-container.scrolled .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .nav-link:hover, 
+        .nav-link.active {
+            color: #FF8C42;
+            transform: translateY(-2px);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: #1A3C34;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-3px);
+        }
+        
+        .header-container.scrolled .theme-toggle {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login {
+            color: #1A3C34;
+            border: 1px solid #1A3C34;
+            background: transparent;
+        }
+        
+        .header-container.scrolled .btn-login {
+            color: white;
+            border-color: white;
+        }
+        
+        .btn-signup {
+            background-color: #FF8C42;
+            color: white;
+            border: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #1A3C34;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .header-container.scrolled .mobile-toggle {
+            color: white;
+        }
+        
+        @media (max-width: 900px) {
+            .nav-menu,
+            .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+        }
+    </style>
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
+</head>
+<body class="dark-theme gradient-background dark-mode">
+    <!-- STEP 2: Replace your existing header with this code -->
+    <header class="premium-header">
+        <div class="header-container" id="headerContainer">
+            <div class="header-content">
+                <!-- Logo -->
+                <a href="index.html" class="header-logo">
+                    <div class="logo-circle">
+                        <img src="images/logo.png" alt="NT" width="32" height="32" style="max-width: 100%;" onerror="this.style.display='none'; this.parentNode.textContent='NT';">
+                    </div>
+                    <span>NutriTrack</span>
+                </a>
+                
+                <!-- Navigation -->
+                <nav>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
+                        <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                        <li class="nav-item"><a href="tracker.html" class="nav-link">Tracker</a></li>
+                        <li class="nav-item"><a href="meal-planner.html" class="nav-link">Meal Plans</a></li>
+                        <li class="nav-item"><a href="recipes.html" class="nav-link">Recipes</a></li>
+                    </ul>
+                </nav>
+                
+                <!-- Actions -->
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="auth-buttons">
+                        <a href="login.html" class="btn btn-login">Login</a>
+                        <a href="signup.html" class="btn btn-signup">Sign Up</a>
+                    </div>
+                    
+                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- STEP 3: Add this script before the closing </body> tag -->
+    <script>
+        // Premium Header Functionality
+        // Scroll effect
+        window.addEventListener('scroll', function() {
+            const headerContainer = document.getElementById('headerContainer');
+            if (window.scrollY > 50) {
+                headerContainer.classList.add('scrolled');
+            } else {
+                headerContainer.classList.remove('scrolled');
+            }
+        });
+        
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                // Update icon
+                const moonIcon = this.querySelector('.fa-moon');
+                const sunIcon = this.querySelector('.fa-sun');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    moonIcon.style.display = 'none';
+                    
+                    // Create sun icon if it doesn't exist
+                    if (!sunIcon) {
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-sun';
+                        this.appendChild(icon);
+                    } else {
+                        sunIcon.style.display = 'block';
+                    }
+                    
+                    localStorage.setItem('dark-theme', 'true');
+                } else {
+                    if (sunIcon) sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                    localStorage.setItem('dark-theme', 'false');
+                }
+            });
+        }
+        
+        // Load saved theme
+        if (localStorage.getItem('dark-theme') === 'true') {
+            document.body.classList.add('dark-mode');
+            
+            // Add sun icon
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const moonIcon = themeToggle.querySelector('.fa-moon');
+                if (moonIcon) moonIcon.style.display = 'none';
+                
+                const sunIcon = themeToggle.querySelector('.fa-sun');
+                if (!sunIcon) {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-sun';
+                    themeToggle.appendChild(icon);
+                } else {
+                    sunIcon.style.display = 'block';
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

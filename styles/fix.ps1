@@ -1,0 +1,1 @@
+Get-Content -Path 'main.css' | Where-Object { -not ($_ -match '\.step:hover \.step-icon \{' -and $_ -match 'animation:' -and -not $_ -match 'transform:' -and -not $_ -match 'filter:') -and -not ($_ -match '\.step:nth-child\(even\):hover \.step-icon \{') } | Set-Content -Path 'main_fixed.css' -Encoding UTF8; Copy-Item -Path 'main_fixed.css' -Destination 'main.css' -Force

@@ -307,7 +307,7 @@ function initSmoothScrolling() {
                     // Update URL hash without causing a jump
                     history.pushState(null, null, targetId);
                     console.log(`Scrolled to ${targetId}`);
-                } else {
+            } else {
                     console.error(`Target element not found: ${targetId}`);
                 }
             });

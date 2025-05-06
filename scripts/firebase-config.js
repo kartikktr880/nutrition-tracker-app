@@ -9,19 +9,24 @@ const firebaseConfig = {
     measurementId: "G-0VB4P3TVFH"
 };
 
-// Apply Firebase config if not already initialized
-if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 // Initialize Firebase services
-const db = firebase.firestore();
-const auth = firebase.auth();
+const firebaseAuth = firebase.auth();
+const firebaseDb = firebase.firestore();
+
+// Export configuration and services
+window.firebaseServices = {
+    auth: firebaseAuth,
+    db: firebaseDb,
+    config: firebaseConfig
+};
 
 // Check if user is authenticated and update UI
 function initializeAuth() {
     return new Promise((resolve) => {
-        auth.onAuthStateChanged((user) => {
+        firebaseAuth.onAuthStateChanged((user) => {
             if (user) {
                 console.log("User is signed in:", user.displayName);
                 // Store minimal user info in localStorage for backward compatibility
@@ -43,11 +48,11 @@ function initializeAuth() {
 // User authentication functions
 async function registerUser(email, password, displayName) {
     try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const userCredential = await firebaseAuth.createUserWithEmailAndPassword(email, password);
         await userCredential.user.updateProfile({ displayName });
         
         // Create user document in Firestore
-        await db.collection("users").doc(userCredential.user.uid).set({
+        await firebaseDb.collection("users").doc(userCredential.user.uid).set({
             email,
             displayName,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -68,7 +73,7 @@ async function registerUser(email, password, displayName) {
 
 async function loginUser(email, password) {
     try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const userCredential = await firebaseAuth.signInWithEmailAndPassword(email, password);
         return { success: true, user: userCredential.user };
     } catch (error) {
         console.error("Error logging in:", error);
@@ -78,7 +83,7 @@ async function loginUser(email, password) {
 
 async function logoutUser() {
     try {
-        await auth.signOut();
+        await firebaseAuth.signOut();
         return { success: true };
     } catch (error) {
         console.error("Error logging out:", error);
@@ -89,7 +94,7 @@ async function logoutUser() {
 // User data functions
 async function getUserProfile(userId) {
     try {
-        const docRef = db.collection("users").doc(userId);
+        const docRef = firebaseDb.collection("users").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {
@@ -105,7 +110,7 @@ async function getUserProfile(userId) {
 
 async function updateUserProfile(userId, profileData) {
     try {
-        const docRef = db.collection("users").doc(userId);
+        const docRef = firebaseDb.collection("users").doc(userId);
         await docRef.update(profileData);
         return { success: true };
     } catch (error) {
@@ -117,7 +122,7 @@ async function updateUserProfile(userId, profileData) {
 // Nutrition tracking functions
 async function saveFoodLog(userId, date, foodLog) {
     try {
-        const docRef = db.collection("foodLogs").doc(userId);
+        const docRef = firebaseDb.collection("foodLogs").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {
@@ -145,7 +150,7 @@ async function saveFoodLog(userId, date, foodLog) {
 
 async function getFoodLog(userId, date) {
     try {
-        const docRef = db.collection("foodLogs").doc(userId);
+        const docRef = firebaseDb.collection("foodLogs").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists && docSnap.data().logs && docSnap.data().logs[date]) {
@@ -178,7 +183,7 @@ async function saveFoodHistory(userId, date, foodLog) {
             });
         }
         
-        const docRef = db.collection("foodHistory").doc(userId);
+        const docRef = firebaseDb.collection("foodHistory").doc(userId);
         const docSnap = await docRef.get();
         
         const historyEntry = { date, totals };
@@ -213,7 +218,7 @@ async function saveFoodHistory(userId, date, foodLog) {
 
 async function getFoodHistory(userId, days = 30) {
     try {
-        const docRef = db.collection("foodHistory").doc(userId);
+        const docRef = firebaseDb.collection("foodHistory").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {
@@ -237,10 +242,10 @@ async function saveFavorite(userId, meal) {
     try {
         // Generate a unique ID for the meal if it doesn't have one
         if (!meal.id) {
-            meal.id = db.collection("temp").doc().id; // Create a new ID
+            meal.id = firebaseDb.collection("temp").doc().id; // Create a new ID
         }
         
-        const docRef = db.collection("favorites").doc(userId);
+        const docRef = firebaseDb.collection("favorites").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {
@@ -272,7 +277,7 @@ async function saveFavorite(userId, meal) {
 
 async function removeFavorite(userId, mealId) {
     try {
-        const docRef = db.collection("favorites").doc(userId);
+        const docRef = firebaseDb.collection("favorites").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {
@@ -291,7 +296,7 @@ async function removeFavorite(userId, mealId) {
 
 async function getFavorites(userId) {
     try {
-        const docRef = db.collection("favorites").doc(userId);
+        const docRef = firebaseDb.collection("favorites").doc(userId);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {

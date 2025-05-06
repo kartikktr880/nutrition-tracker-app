@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode dark-theme">
 <head>
+    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Nutrition Tracker - Track your nutrition journey with our comprehensive tools">
@@ -29,8 +30,16 @@
     <script src="scripts/footer.js" defer></script>
     <script src="scripts/home-page.js" defer></script>
     <script src="scripts/version-checker.js" defer></script>
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
-<body>
+<body class="dark-theme gradient-background dark-mode">
     <!-- Navigation Container -->
     <div id="nav-container"></div>
     

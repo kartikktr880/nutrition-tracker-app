@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "task-master-ai": "^0.12.1"
+  },
+  "name": "nutrition-tracker",
+  "version": "1.0.0",
+  "description": "A modern, responsive web application for tracking nutrition, analyzing food intake, and achieving health goals with AI-powered recommendations.",
+  "main": "service-worker.js",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priyanshukartik/Nutrition-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/priyanshukartik/Nutrition-Tracker/issues"
+  },
+  "homepage": "https://github.com/priyanshukartik/Nutrition-Tracker#readme"
+}

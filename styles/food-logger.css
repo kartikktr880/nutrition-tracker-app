@@ -605,12 +605,12 @@
 
 .food-entries-header {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 0.5fr;
+    gap: 10px;
     padding: 10px 15px;
     background-color: var(--background-light);
-    font-family: var(--font-ui);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
     font-weight: 600;
-    font-size: 0.85rem;
     color: var(--text-primary);
 }
 
@@ -621,11 +621,11 @@
 
 .food-entry {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
-    padding: 12px 15px;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 0.5fr;
+    gap: 10px;
+    padding: 15px;
     border-bottom: 1px solid var(--background-light);
     align-items: center;
-    transition: background-color 0.2s;
 }
 
 .food-entry:hover {
@@ -636,9 +636,13 @@
     border-bottom: none;
 }
 
-.food-name-col {
-    font-weight: 500;
-}
+.food-name-col { grid-column: 1; }
+.food-amount-col { grid-column: 2; }
+.food-calories-col { grid-column: 3; }
+.food-protein-col { grid-column: 4; }
+.food-carbs-col { grid-column: 5; }
+.food-fat-col { grid-column: 6; }
+.food-actions-col { grid-column: 7; }
 
 .food-entry-name {
     font-weight: 500;
@@ -698,9 +702,12 @@
 
 .meal-total-row {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 0.5fr;
+    gap: 10px;
+    padding: 15px;
+    background-color: var(--background-light);
     font-weight: 600;
-    color: var(--primary-color);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 
 /* Quick Add Section */
@@ -1193,7 +1200,8 @@ body.offline .offline-indicator {
         grid-template-columns: 2fr 1fr 1fr 0.5fr;
     }
     
-    .food-protein-col, .meal-total-protein {
+    .food-protein-col, .food-carbs-col, .food-fat-col,
+    .meal-total-protein, .meal-total-carbs, .meal-total-fat {
         display: none;
     }
     
@@ -1217,7 +1225,9 @@ body.offline .offline-indicator {
         grid-template-columns: 2fr 1fr 0.5fr;
     }
     
-    .food-protein-col, .food-calories-col, .meal-total-protein, .meal-total-calories {
+    .food-protein-col, .food-carbs-col, .food-fat-col,
+    .food-calories-col, .meal-total-protein, .meal-total-carbs,
+    .meal-total-fat, .meal-total-calories {
         display: none;
     }
 }

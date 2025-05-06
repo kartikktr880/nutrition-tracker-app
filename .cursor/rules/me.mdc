@@ -1,9 +1,9 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
-
+always push codes on github while make major changes.
 # Your rule content
 
 - You can @ files here

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode dark-theme">
 <head>
+    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shopping List - Nutrition Tracker</title>
@@ -9,35 +10,16 @@
     <link rel="stylesheet" href="styles/print-shopping-list.css" media="print">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Dark Mode Enforcer - Load First -->
+    <script src="scripts/dark-mode-enforcer.js"></script>
+
+    <!-- Gradient Scroll Effect -->
+    <script src="scripts/gradient-scroll.js" defer></script>
+    <link rel="stylesheet" href="styles/complete-fixes.css">
+    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 </head>
-<body>
-    <!-- Mobile Navigation Toggle Button -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
-    <div class="mobile-nav-overlay"></div>
-
-    <div class="mobile-nav">
-        <div class="mobile-nav-header">
-            <h3>Nutrition Tracker</h3>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="tracker.html"><i class="fas fa-utensils"></i> Tracker</a></li>
-            <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-            <li><a href="meal-planner.html"><i class="fas fa-calendar"></i> Meal Planner</a></li>
-            <li><a href="food-search.html"><i class="fas fa-search"></i> Food Database</a></li>
-            <li><a href="recipes.html"><i class="fas fa-book-open"></i> Recipes</a></li>
-            <li><a href="shopping-list.html" class="active"><i class="fas fa-shopping-basket"></i> Shopping List</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-            <li id="login-item"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-            <li id="logout-item" style="display: none;"><a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
-
+<body class="dark-theme gradient-background dark-mode">
     <header>
         <div class="logo">Nutrition Tracker</div>
         <nav>
@@ -192,20 +174,15 @@
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Nutrition Tracker. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="about.html">About Us</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-            <a href="contact.html">Contact Us</a>
-        </div>
-    </footer>
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
 
+    <!-- Scripts -->
     <script src="scripts/firebase-config.js"></script>
     <script src="scripts/unified-auth.js"></script>
-    <script src="scripts/mobile-nav.js"></script>
     <script src="scripts/shopping-list.js"></script>
+    <script src="scripts/footer.js"></script>
+    <script src="components/inject-mobile-nav.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize the unified auth handler
@@ -326,114 +303,16 @@
                 const newItem = document.createElement('div');
                 newItem.className = 'shopping-list-item';
                 newItem.innerHTML = `
-                    <div class="item-details">
-                        <input type="checkbox" class="item-checkbox">
-                        <div>
-                            <div class="item-name">${itemName}</div>
-                            <div class="item-quantity">${itemQuantity}</div>
-                        </div>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn-edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
+  <div class="item-details">
+    <span class="item-name">${itemName}</span>
+    <span class="item-quantity">${itemQuantity}</span>
+    <span class="item-category">${itemCategory}</span>
+  </div>
+  <button class="btn-secondary remove-item-btn"><i class="fas fa-trash"></i></button>
+`;
                 listContainer.appendChild(newItem);
-                
-                // Add checkbox functionality
-                const checkbox = newItem.querySelector('.item-checkbox');
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        newItem.classList.add('purchased');
-                    } else {
-                        newItem.classList.remove('purchased');
-                    }
-                });
-                
-                // Add delete button functionality
-                const deleteBtn = newItem.querySelector('.btn-delete');
-                deleteBtn.addEventListener('click', function() {
-                    newItem.remove();
-                    
-                    // Show empty message if no items left
-                    if (document.querySelectorAll('.shopping-list-item').length === 0) {
-                        emptyMessage.style.display = 'block';
-                    }
-                });
-            });
-            
-            // Clear list button
-            document.getElementById('clearListBtn').addEventListener('click', function() {
-                const confirmationTitle = document.getElementById('confirmationTitle');
-                const confirmationMessage = document.getElementById('confirmationMessage');
-                const confirmActionBtn = document.getElementById('confirmActionBtn');
-                
-                confirmationTitle.textContent = 'Clear Shopping List';
-                confirmationMessage.textContent = 'Are you sure you want to clear your entire shopping list?';
-                
-                confirmActionBtn.onclick = function() {
-                    // Clear the shopping list
-                    document.getElementById('shoppingListItems').innerHTML = `
-                        <div class="empty-list" id="emptyListMessage">
-                            <i class="fas fa-shopping-basket fa-3x"></i>
-                            <p>Your shopping list is empty</p>
-                            <button class="btn-primary" id="startAddingBtn">Start Adding Items</button>
-                        </div>
-                    `;
-                    
-                    // Re-add event listener to the new button
-                    document.getElementById('startAddingBtn').addEventListener('click', () => openModal(addItemModal));
-                    
-                    closeModal(confirmationModal);
-                };
-                
-                openModal(confirmationModal);
-            });
-            
-            // Category filtering
-            document.querySelectorAll('.category-tag').forEach(tag => {
-                tag.addEventListener('click', function() {
-                    // Update active tag
-                    document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // In a real implementation, you would filter the items by category
-                    console.log('Filtering by category:', this.getAttribute('data-category'));
-                });
-            });
-            
-            // Generate list from meal plan
-            document.getElementById('generateListBtn').addEventListener('click', function() {
-                const mealPlanSelect = document.getElementById('mealPlanSelect');
-                const selectedPlan = mealPlanSelect.value;
-                
-                if (!selectedPlan) {
-                    alert('Please select a meal plan first.');
-                    return;
-                }
-                
-                // Call the ShoppingList object's generateFromMealPlan method
-                if (typeof ShoppingList !== 'undefined' && ShoppingList.generateFromMealPlan) {
-                    ShoppingList.generateFromMealPlan(selectedPlan);
-                    
-                    // Switch to the list tab to show the generated list
-                    document.querySelector('.tab-button[data-tab="list"]').click();
-                } else {
-                    console.error('ShoppingList object or generateFromMealPlan method not found');
-                    alert('Unable to generate shopping list. Please try again later.');
-                }
-            });
-            
-            // Print shopping list
-            document.getElementById('printListBtn').addEventListener('click', function() {
-                // Add current date attribute for print stylesheet
-                const currentDate = new Date().toLocaleDateString();
-                document.getElementById('listTab').setAttribute('data-print-date', currentDate);
-                
-                // Print the page
-                window.print();
             });
         });
     </script>
 </body>
-</html> 
+</html>

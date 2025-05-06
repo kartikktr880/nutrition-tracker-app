@@ -1,0 +1,6 @@
+Add a macronutrient tracking feature to the Nutrition Tracker app:
+- Update the food logging form in food-logger.html to include protein, carbs, and fats
+- Add validation for macronutrient inputs in food-logger.html
+- Store macronutrient data in the Firebase database (update firebase.json if needed)
+- Update dashboard.html to display a macronutrient summary
+- Add a chart in analytics.html to visualize macronutrient trends

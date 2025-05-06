@@ -1,0 +1,908 @@
+/* 
+ * fix-icons.css
+ * High-specificity CSS fixes for header icons and dropdown positioning issues
+ * With premium design enhancements and theme toggle fixes - v2.0
+ */
+
+/* Enhanced premium background for header */
+#header, .header {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.dark-theme #header, 
+body.dark-theme .header {
+    background-color: rgba(26, 60, 52, 0.92) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Force all action items and their icons to be visible with premium styling */
+#header .action-items .action-item,
+#header #lang-selector,
+#header #theme-toggle-btn, 
+#header #quick-add-btn, 
+#header #notification-btn, 
+#header #user-profile,
+.header .user-actions .action-item,
+.header .user-actions .quick-add-btn,
+.header .user-actions .notification-icon,
+.header .user-actions .theme-toggle,
+.header .user-actions .user-profile {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 99999 !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Light theme action items */
+body:not(.dark-theme) #header .action-items .action-item,
+body:not(.dark-theme) #header #lang-selector,
+body:not(.dark-theme) #header #theme-toggle-btn, 
+body:not(.dark-theme) #header #quick-add-btn, 
+body:not(.dark-theme) #header #notification-btn,
+body:not(.dark-theme) .header .user-actions .action-item,
+body:not(.dark-theme) .header .user-actions .quick-add-btn,
+body:not(.dark-theme) .header .user-actions .notification-icon,
+body:not(.dark-theme) .header .user-actions .theme-toggle {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(244, 237, 228, 0.6)) !important;
+    box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.08) !important;
+}
+
+/* Dark theme action items */
+body.dark-theme #header .action-items .action-item,
+body.dark-theme #header #lang-selector,
+body.dark-theme #header #theme-toggle-btn, 
+body.dark-theme #header #quick-add-btn, 
+body.dark-theme #header #notification-btn,
+body.dark-theme .header .user-actions .action-item,
+body.dark-theme .header .user-actions .quick-add-btn,
+body.dark-theme .header .user-actions .notification-icon,
+body.dark-theme .header .user-actions .theme-toggle {
+    background: linear-gradient(135deg, rgba(44, 102, 90, 0.6), rgba(26, 60, 52, 0.6)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Enhanced hover state for action items */
+#header .action-items .action-item:hover,
+#header #lang-selector:hover,
+#header #theme-toggle-btn:hover, 
+#header #quick-add-btn:hover, 
+#header #notification-btn:hover,
+.header .user-actions .action-item:hover,
+.header .user-actions .quick-add-btn:hover,
+.header .user-actions .notification-icon:hover,
+.header .user-actions .theme-toggle:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 15px rgba(var(--primary-rgb), 0.15) !important;
+}
+
+/* Enhanced dark theme hover */
+body.dark-theme #header .action-items .action-item:hover,
+body.dark-theme #header #lang-selector:hover,
+body.dark-theme #header #theme-toggle-btn:hover, 
+body.dark-theme #header #quick-add-btn:hover, 
+body.dark-theme #header #notification-btn:hover,
+body.dark-theme .header .user-actions .action-item:hover,
+body.dark-theme .header .user-actions .quick-add-btn:hover,
+body.dark-theme .header .user-actions .notification-icon:hover,
+body.dark-theme .header .user-actions .theme-toggle:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25) !important;
+    background: linear-gradient(135deg, rgba(44, 102, 90, 0.8), rgba(26, 60, 52, 0.8)) !important;
+}
+
+/* CRITICAL FIX: Theme toggle icon styles - Much stronger override */
+/* Theme toggle button needs special handling */
+.theme-toggle,
+#theme-toggle-btn,
+.action-btn.theme-toggle {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Sun icon in light mode - SHOW */
+body:not(.dark-theme) .theme-toggle .sun-icon,
+body:not(.dark-theme) #theme-toggle-btn .sun-icon,
+body:not(.dark-theme) .action-btn.theme-toggle .sun-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    z-index: 10 !important;
+}
+
+/* Moon icon in light mode - HIDE */
+body:not(.dark-theme) .theme-toggle .moon-icon,
+body:not(.dark-theme) #theme-toggle-btn .moon-icon,
+body:not(.dark-theme) .action-btn.theme-toggle .moon-icon {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    display: none !important;
+    transform: translate(-50%, -50%) scale(0) !important;
+    position: absolute !important;
+    top: -50% !important;
+    left: -50% !important;
+    z-index: 5 !important;
+}
+
+/* Sun icon in dark mode - HIDE */
+body.dark-theme .theme-toggle .sun-icon,
+body.dark-theme #theme-toggle-btn .sun-icon,
+body.dark-theme .action-btn.theme-toggle .sun-icon {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    display: none !important;
+    transform: translate(-50%, -50%) scale(0) !important;
+    position: absolute !important;
+    top: -50% !important;
+    left: -50% !important;
+    z-index: 5 !important;
+}
+
+/* Moon icon in dark mode - SHOW */
+body.dark-theme .theme-toggle .moon-icon,
+body.dark-theme #theme-toggle-btn .moon-icon,
+body.dark-theme .action-btn.theme-toggle .moon-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    z-index: 10 !important;
+}
+
+/* Premium badge styling */
+#header #notification-btn .notification-badge,
+.header .notification-badge {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    top: -5px !important;
+    right: -5px !important;
+    background: linear-gradient(135deg, var(--accent-color), #FF6B1A) !important;
+    color: white !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    border-radius: 10px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 5 !important;
+    box-shadow: 0 3px 8px rgba(var(--accent-rgb), 0.4) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.6) !important;
+    animation: pulseBadge 2s infinite !important;
+}
+
+@keyframes pulseBadge {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced dropdown menus */
+#header .mega-menu,
+.header .mega-menu,
+.mega-menu,
+#food-log-menu,
+.dropdown-menu,
+.profile-dropdown {
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+body:not(.dark-theme) #header .mega-menu,
+body:not(.dark-theme) .header .mega-menu,
+body:not(.dark-theme) .mega-menu,
+body:not(.dark-theme) #food-log-menu,
+body:not(.dark-theme) .dropdown-menu,
+body:not(.dark-theme) .profile-dropdown {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.dark-theme #header .mega-menu,
+body.dark-theme .header .mega-menu,
+body.dark-theme .mega-menu,
+body.dark-theme #food-log-menu,
+body.dark-theme .dropdown-menu,
+body.dark-theme .profile-dropdown {
+    background-color: rgba(26, 60, 52, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Enhanced menu animations */
+.mega-dropdown.active .mega-menu,
+.dropdown.active .dropdown-menu,
+.nav-item.active .dropdown-menu,
+.user-profile.active .profile-dropdown {
+    animation: menuReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes menuReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Base styles for header and action items with premium touches */
+#header, .header {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.08) !important;
+}
+
+body.dark-theme #header,
+body.dark-theme .header {
+    background-color: rgba(26, 60, 52, 0.9) !important; /* Dark green with transparency */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Premium styling for all action items */
+#header .action-items .action-item,
+#header #lang-selector,
+#header #theme-toggle-btn, 
+#header #quick-add-btn, 
+#header #notification-btn, 
+#header #user-profile,
+.header .user-actions .action-item,
+.header .user-actions .quick-add-btn,
+.header .user-actions .notification-icon,
+.header .user-actions .theme-toggle,
+.header .user-actions .user-profile {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 99999 !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.05) !important;
+    margin: 0 6px !important;
+}
+
+/* Light mode action items styling */
+body:not(.dark-theme) #header .action-items .action-item,
+body:not(.dark-theme) #header #lang-selector,
+body:not(.dark-theme) #header #theme-toggle-btn, 
+body:not(.dark-theme) #header #quick-add-btn, 
+body:not(.dark-theme) #header #notification-btn,
+body:not(.dark-theme) .header .user-actions .action-item,
+body:not(.dark-theme) .header .user-actions .quick-add-btn,
+body:not(.dark-theme) .header .user-actions .notification-icon,
+body:not(.dark-theme) .header .user-actions .theme-toggle {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(244, 237, 228, 0.85)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Dark mode action items styling */
+body.dark-theme #header .action-items .action-item,
+body.dark-theme #header #lang-selector,
+body.dark-theme #header #theme-toggle-btn, 
+body.dark-theme #header #quick-add-btn, 
+body.dark-theme #header #notification-btn,
+body.dark-theme .header .user-actions .action-item,
+body.dark-theme .header .user-actions .quick-add-btn,
+body.dark-theme .header .user-actions .notification-icon,
+body.dark-theme .header .user-actions .theme-toggle {
+    background: linear-gradient(135deg, rgba(44, 102, 90, 0.6), rgba(26, 60, 52, 0.8)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Premium hover effects for action items */
+#header .action-items .action-item:hover,
+#header #lang-selector:hover,
+#header #theme-toggle-btn:hover, 
+#header #quick-add-btn:hover, 
+#header #notification-btn:hover,
+.header .user-actions .action-item:hover,
+.header .user-actions .quick-add-btn:hover,
+.header .user-actions .notification-icon:hover,
+.header .user-actions .theme-toggle:hover {
+    transform: translateY(-3px) !important;
+    cursor: pointer !important;
+}
+
+/* Light mode hover effect */
+body:not(.dark-theme) #header .action-items .action-item:hover,
+body:not(.dark-theme) #header #lang-selector:hover,
+body:not(.dark-theme) #header #theme-toggle-btn:hover, 
+body:not(.dark-theme) #header #quick-add-btn:hover, 
+body:not(.dark-theme) #header #notification-btn:hover,
+body:not(.dark-theme) .header .user-actions .action-item:hover,
+body:not(.dark-theme) .header .user-actions .quick-add-btn:hover,
+body:not(.dark-theme) .header .user-actions .notification-icon:hover,
+body:not(.dark-theme) .header .user-actions .theme-toggle:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(244, 237, 228, 0.95)) !important;
+    box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.15) !important;
+}
+
+/* Dark mode hover effect */
+body.dark-theme #header .action-items .action-item:hover,
+body.dark-theme #header #lang-selector:hover,
+body.dark-theme #header #theme-toggle-btn:hover, 
+body.dark-theme #header #quick-add-btn:hover, 
+body.dark-theme #header #notification-btn:hover,
+body.dark-theme .header .user-actions .action-item:hover,
+body.dark-theme .header .user-actions .quick-add-btn:hover,
+body.dark-theme .header .user-actions .notification-icon:hover,
+body.dark-theme .header .user-actions .theme-toggle:hover {
+    background: linear-gradient(135deg, rgba(44, 102, 90, 0.9), rgba(26, 60, 52, 0.9)) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Special handling for user profile */
+#header #user-profile,
+.header .user-profile {
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.profile-toggle {
+    padding: 5px 12px 5px 6px !important;
+    border-radius: 30px !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+/* Light theme profile toggle */
+body:not(.dark-theme) .profile-toggle {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(244, 237, 228, 0.85)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.05) !important;
+}
+
+/* Dark theme profile toggle */
+body.dark-theme .profile-toggle {
+    background: linear-gradient(135deg, rgba(44, 102, 90, 0.6), rgba(26, 60, 52, 0.8)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Hover effects for profile toggle */
+.profile-toggle:hover {
+    transform: translateY(-3px) !important;
+}
+
+body:not(.dark-theme) .profile-toggle:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(244, 237, 228, 0.95)) !important;
+    box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.15) !important;
+}
+
+body.dark-theme .profile-toggle:hover {
+    background: linear-gradient(135deg, rgba(44, 102, 90, 0.9), rgba(26, 60, 52, 0.9)) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Profile image styling */
+.profile-image {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    background-color: var(--primary-color) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+body.dark-theme .profile-image {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.profile-name {
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: color 0.3s ease !important;
+}
+
+body:not(.dark-theme) .profile-name {
+    color: var(--primary-color) !important;
+}
+
+body.dark-theme .profile-name {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Enhanced icon styling within action items */
+#header .action-items .action-item i,
+#header .action-items .action-item .fa,
+#header .action-items .action-item .fas,
+#header .action-items .action-item .far,
+#header .action-items .action-item .fab,
+#header #lang-selector i,
+#header #theme-toggle-btn i,
+#header #quick-add-btn i,
+#header #notification-btn i,
+.header .user-actions .action-item i,
+.header .user-actions .quick-add-btn i,
+.header .user-actions .notification-icon i,
+.header .user-actions .theme-toggle i,
+.header .user-actions .user-profile i,
+.header svg,
+#header svg {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 1.1rem !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Icon colors for light theme */
+body:not(.dark-theme) #header .action-items .action-item i,
+body:not(.dark-theme) #header #lang-selector i,
+body:not(.dark-theme) #header #theme-toggle-btn i,
+body:not(.dark-theme) #header #notification-btn i,
+body:not(.dark-theme) .header .user-actions .action-item i,
+body:not(.dark-theme) .header .user-actions .notification-icon i,
+body:not(.dark-theme) .header .user-actions .theme-toggle i,
+body:not(.dark-theme) .header svg,
+body:not(.dark-theme) #header svg {
+    color: var(--primary-color) !important;
+    fill: var(--primary-color) !important;
+}
+
+/* Icon colors for dark theme */
+body.dark-theme #header .action-items .action-item i,
+body.dark-theme #header #lang-selector i,
+body.dark-theme #header #theme-toggle-btn i,
+body.dark-theme #header #notification-btn i,
+body.dark-theme .header .user-actions .action-item i,
+body.dark-theme .header .user-actions .notification-icon i,
+body.dark-theme .header .user-actions .theme-toggle i,
+body.dark-theme .header svg,
+body.dark-theme #header svg {
+    color: rgba(255, 255, 255, 0.9) !important;
+    fill: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Special styling for quick-add button */
+#header #quick-add-btn,
+.header .quick-add-btn {
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.85), rgba(var(--accent-rgb), 0.7)) !important;
+    border: 1px solid rgba(var(--accent-rgb), 0.3) !important;
+}
+
+#header #quick-add-btn:hover,
+.header .quick-add-btn:hover {
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.95), rgba(var(--accent-rgb), 0.85)) !important;
+    box-shadow: 0 8px 15px rgba(var(--accent-rgb), 0.25) !important;
+}
+
+#header #quick-add-btn i,
+.header .quick-add-btn i {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Premium notification badge styling */
+#header #notification-btn .notification-badge,
+.header .notification-badge {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    top: -6px !important;
+    right: -6px !important;
+    background: linear-gradient(135deg, var(--accent-color), #FF6B1A) !important;
+    color: white !important;
+    font-size: 0.65rem !important;
+    font-weight: bold !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    border-radius: 9px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 100 !important;
+    box-shadow: 0 2px 6px rgba(var(--accent-rgb), 0.4) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+    transform: scale(1) !important;
+    animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 2px 6px rgba(var(--accent-rgb), 0.4);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(var(--accent-rgb), 0.6);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 6px rgba(var(--accent-rgb), 0.4);
+    }
+}
+
+/* Mobile-specific enhancements */
+@media (max-width: 991px) {
+    #header, .header {
+        padding: 0 16px !important;
+    }
+    
+    .mobile-menu-toggle {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 5px !important;
+        margin-left: 10px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    body:not(.dark-theme) .mobile-menu-toggle {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(244, 237, 228, 0.85)) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.05) !important;
+    }
+    
+    body.dark-theme .mobile-menu-toggle {
+        background: linear-gradient(135deg, rgba(44, 102, 90, 0.6), rgba(26, 60, 52, 0.8)) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .mobile-menu-toggle span {
+        display: block !important;
+        width: 22px !important;
+        height: 2px !important;
+        transition: all 0.4s ease !important;
+    }
+    
+    body:not(.dark-theme) .mobile-menu-toggle span {
+        background-color: var(--primary-color) !important;
+    }
+    
+    body.dark-theme .mobile-menu-toggle span {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    .mobile-menu-toggle:hover {
+        transform: translateY(-3px) !important;
+    }
+    
+    body:not(.dark-theme) .mobile-menu-toggle:hover {
+        box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.15) !important;
+    }
+    
+    body.dark-theme .mobile-menu-toggle:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+    }
+}
+
+/* Critical theme toggle icon fix - Extremely high priority */
+html:not(.dark-mode):not(.dark-theme) .theme-toggle .sun-icon,
+html:not(.dark-mode):not(.dark-theme) #theme-toggle-btn .sun-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+    position: static !important;
+}
+
+html:not(.dark-mode):not(.dark-theme) .theme-toggle .moon-icon,
+html:not(.dark-mode):not(.dark-theme) #theme-toggle-btn .moon-icon {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: 1 !important;
+    position: absolute !important;
+}
+
+html.dark-mode .theme-toggle .sun-icon,
+html.dark-mode #theme-toggle-btn .sun-icon,
+html.dark-theme .theme-toggle .sun-icon,
+html.dark-theme #theme-toggle-btn .sun-icon {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: 1 !important;
+    position: absolute !important;
+}
+
+html.dark-mode .theme-toggle .moon-icon,
+html.dark-mode #theme-toggle-btn .moon-icon,
+html.dark-theme .theme-toggle .moon-icon,
+html.dark-theme #theme-toggle-btn .moon-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+    position: static !important;
+}
+
+/* Header actions */
+.site-header .action-btn,
+.site-header .theme-toggle,
+#theme-toggle-btn,
+#notification-btn,
+#quick-add-btn,
+.user-profile {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    position: relative !important;
+    border-radius: 50% !important;
+    background-color: rgba(var(--primary-rgb, 26, 60, 52), 0.05) !important;
+    cursor: pointer !important;
+    z-index: 100 !important;
+    margin: 0 5px !important;
+}
+
+/* SVG icons */
+.site-header .action-btn svg,
+.site-header .theme-toggle svg,
+#theme-toggle-btn svg,
+#notification-btn svg,
+#quick-add-btn svg,
+.user-profile svg,
+.theme-toggle svg {
+    width: 20px !important;
+    height: 20px !important;
+    stroke: currentColor !important;
+    stroke-width: 2px !important;
+    fill: none !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 5 !important;
+}
+
+/* Notification badge */
+.site-header .badge,
+#notification-btn .badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -2px !important;
+    background-color: var(--accent-color, #FF8C42) !important;
+    color: white !important;
+    font-size: 0.7rem !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 5 !important;
+}
+
+/* Dropdown menus */
+.site-header .dropdown-menu,
+.site-header .user-profile .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    left: auto !important;
+    background-color: var(--surface-color, white) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
+    min-width: 200px !important;
+    padding: 10px 0 !important;
+    display: none !important;
+    z-index: 1000 !important;
+    margin-top: 10px !important;
+}
+
+.site-header .nav-item.active .dropdown-menu,
+.site-header .user-profile.active .dropdown-menu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Dropdown items */
+.site-header .dropdown-item {
+    display: block !important;
+    padding: 8px 15px !important;
+    color: var(--text-color, #333) !important;
+    text-decoration: none !important;
+    font-size: 0.9rem !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.site-header .dropdown-item:hover {
+    background-color: rgba(var(--primary-rgb, 26, 60, 52), 0.05) !important;
+}
+
+/* Mobile menu toggle */
+.site-header .mobile-menu-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    margin-left: 10px !important;
+    background-color: transparent !important;
+    border: none !important;
+    z-index: 1000 !important;
+}
+
+.site-header .mobile-menu-toggle span {
+    display: block !important;
+    width: 24px !important;
+    height: 2px !important;
+    background-color: var(--text-color, #333) !important;
+    margin: 3px 0 !important;
+    transition: all 0.3s ease !important;
+}
+
+.site-header .mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px) !important;
+}
+
+.site-header .mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0 !important;
+}
+
+.site-header .mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px) !important;
+}
+
+/* Mobile navigation */
+.site-header .mobile-nav {
+    position: fixed !important;
+    top: 70px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: var(--surface-color, white) !important;
+    z-index: 999 !important;
+    padding: 20px !important;
+    display: none !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+}
+
+.site-header .mobile-nav.active {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Mobile nav items */
+.site-header .mobile-nav-item {
+    margin-bottom: 10px !important;
+    list-style: none !important;
+}
+
+.site-header .mobile-nav-link {
+    display: block !important;
+    padding: 12px 0 !important;
+    color: var(--text-color, #333) !important;
+    text-decoration: none !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    position: relative !important;
+}
+
+/* Mobile dropdown */
+.site-header .mobile-dropdown-menu {
+    display: none !important;
+    padding-left: 20px !important;
+    margin-top: 5px !important;
+}
+
+.site-header .mobile-dropdown.active .mobile-dropdown-menu {
+    display: block !important;
+}
+
+.site-header .mobile-dropdown-item {
+    display: block !important;
+    padding: 10px 0 !important;
+    color: var(--text-color, #333) !important;
+    opacity: 0.8 !important;
+    text-decoration: none !important;
+}
+
+/* Dark mode specific fixes */
+html.dark-mode .site-header .mobile-menu-toggle span {
+    background-color: var(--text-light, white) !important;
+}
+
+html.dark-mode .site-header .action-btn,
+html.dark-mode .site-header .theme-toggle,
+html.dark-mode #theme-toggle-btn,
+html.dark-mode #notification-btn,
+html.dark-mode #quick-add-btn,
+html.dark-mode .user-profile {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark-mode .site-header .mobile-nav {
+    background-color: var(--surface-dark, #1A3C34) !important;
+}
+
+html.dark-mode .site-header .mobile-nav-link,
+html.dark-mode .site-header .mobile-dropdown-item {
+    color: var(--text-light, white) !important;
+}
+
+html.dark-mode .site-header .dropdown-menu {
+    background-color: var(--surface-dark, #1A3C34) !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-mode .site-header .dropdown-item {
+    color: var(--text-light, white) !important;
+}
+
+html.dark-mode .site-header .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fix step section numbers visibility */
+.step-number {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background-color: var(--accent-color, #FF8C42) !important;
+    color: white !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 10px rgba(var(--accent-rgb, 255, 140, 66), 0.3) !important;
+    z-index: 5 !important;
+    position: relative !important;
+    margin-bottom: 1rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
