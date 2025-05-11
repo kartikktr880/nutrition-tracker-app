@@ -3,15 +3,49 @@
 // ============================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all components
-    initializeHeader();
-    initializeAnimations();
-    initializeTestimonials();
-    initializeCounters();
-    initializeBackToTop();
-    initializeFormValidation();
-    initializeFooterAnimations();
+    // Check if in screenshot mode from URL parameter
+    const isScreenshotMode = new URLSearchParams(window.location.search).get('screenshot') === 'true';
+    
+    // Initialize all components only if not in screenshot mode
+    if (!isScreenshotMode) {
+        initializeHeader();
+        initializeAnimations();
+        initializeTestimonials();
+        initializeCounters();
+        initializeBackToTop();
+        initializeFormValidation();
+        initializeFooterAnimations();
+    } else {
+        // If in screenshot mode, only initialize essentials
+        initializeHeader();
+        initializeBackToTop();
+        prepareSectionsForScreenshot();
+    }
 });
+
+// Screenshot preparation
+function prepareSectionsForScreenshot() {
+    console.log('Preparing sections for screenshot...');
+    
+    // Make all sections and elements fully visible
+    document.querySelectorAll('section, .container, .footer, .footer-container, .footer-content, .footer-column').forEach(section => {
+        section.style.display = 'block';
+        section.style.visibility = 'visible';
+        section.style.opacity = '1';
+        section.style.height = 'auto';
+        section.style.overflow = 'visible';
+    });
+    
+    // Stop all animations
+    document.querySelectorAll('*').forEach(el => {
+        if (el.style.animation) {
+            el.style.animation = 'none';
+        }
+        if (el.style.transition) {
+            el.style.transition = 'none';
+        }
+    });
+}
 
 // Header interactions
 function initializeHeader() {
@@ -52,6 +86,11 @@ function initializeHeader() {
 
 // Animations and visual effects
 function initializeAnimations() {
+    // Skip animations if in screenshot mode
+    if (document.body.classList.contains('screenshot-mode')) {
+        return;
+    }
+    
     // Animate elements when they enter viewport
     const animatedElements = document.querySelectorAll('.fade-in, .slide-in, .zoom-in');
     
@@ -73,6 +112,11 @@ function initializeAnimations() {
     
     // Add parallax effects to decorative elements
     document.addEventListener('mousemove', function(e) {
+        // Skip parallax if in screenshot mode
+        if (document.body.classList.contains('screenshot-mode')) {
+            return;
+        }
+        
         const parallaxElements = document.querySelectorAll('.parallax-element');
         const mouseX = e.clientX;
         const mouseY = e.clientY;
@@ -136,11 +180,26 @@ function initializeTestimonials() {
         });
     });
     
-    // Auto rotate testimonials every 6 seconds
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % cardCount;
-        updateDisplay();
-    }, 6000);
+    // Auto rotate testimonials every 6 seconds, but only if not in screenshot mode
+    if (!document.body.classList.contains('screenshot-mode')) {
+        setInterval(() => {
+            // Skip auto-rotation if in screenshot mode
+            if (document.body.classList.contains('screenshot-mode')) {
+                return;
+            }
+            currentIndex = (currentIndex + 1) % cardCount;
+            updateDisplay();
+        }, 6000);
+    }
+
+    // For screenshot mode: make all testimonials visible
+    if (document.body.classList.contains('screenshot-mode')) {
+        testimonialCards.forEach(card => {
+            card.style.display = 'block';
+            card.style.opacity = '1';
+            card.style.visibility = 'visible';
+        });
+    }
 }
 
 // Animated counters for statistics
@@ -148,6 +207,17 @@ function initializeCounters() {
     const statElements = document.querySelectorAll('.cta-stat-number');
     
     if (!statElements.length) return;
+    
+    // Skip animations if in screenshot mode
+    if (document.body.classList.contains('screenshot-mode')) {
+        // Set final values immediately
+        statElements.forEach(el => {
+            const targetNumber = parseFloat(el.innerText.replace(/[^\d.-]/g, ''));
+            const suffix = el.innerText.replace(/[\d.-]/g, '');
+            el.innerText = targetNumber + suffix;
+        });
+        return;
+    }
     
     // Observer for starting counter animations
     const observer = new IntersectionObserver((entries) => {
@@ -170,7 +240,7 @@ function initializeCounters() {
                     } else {
                         if (Number.isInteger(targetNumber)) {
                             target.innerText = Math.floor(current) + suffix;
-        } else {
+                        } else {
                             target.innerText = current.toFixed(1) + suffix;
                         }
                     }
@@ -273,6 +343,17 @@ function initializeFooterAnimations() {
     const footer = document.querySelector('.footer');
     
     if (!footer) return;
+    
+    // Skip animations if in screenshot mode
+    if (document.body.classList.contains('screenshot-mode')) {
+        // Simply make all footer elements visible
+        footer.querySelectorAll('.footer-logo-img, .footer-title, .social-icon, .footer-links a, .contact-item').forEach(el => {
+            el.style.opacity = '1';
+            el.style.visibility = 'visible';
+            el.style.transform = 'none';
+        });
+        return;
+    }
     
     // Create intersection observer to animate elements when they come into view
     const observer = new IntersectionObserver((entries) => {
