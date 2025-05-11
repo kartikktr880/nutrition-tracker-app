@@ -68,6 +68,9 @@ section,
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  /* Ultra-compact footer for screenshot */
+  padding: 10px 0 5px !important;
+  margin: 0 !important;
 }
 
 /* Fix footer container and content */
@@ -82,6 +85,51 @@ section,
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* Fix footer column margins to remove yellow-highlighted areas */
+.footer-content {
+  margin-bottom: 5px !important;
+  gap: 10px !important;
+}
+
+.footer-column {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.footer-title {
+  margin-bottom: 3px !important;
+  padding-top: 3px !important;
+  margin-top: 0 !important;
+}
+
+.footer-links {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.footer-links li {
+  margin-bottom: 2px !important;
+  line-height: 1.2 !important;
+}
+
+.contact-info {
+  margin-top: 3px !important;
+}
+
+.contact-item {
+  margin-bottom: 2px !important;
+}
+
+.social-icons {
+  margin-top: 3px !important;
+  gap: 5px !important;
+}
+
+.footer-bottom {
+  padding-top: 5px !important;
+  margin-top: 5px !important;
 }
 
 /* Fix background elements that might break screenshots */

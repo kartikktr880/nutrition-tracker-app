@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(link);
         }
         
+        // Apply specific fixes for yellow-highlighted areas
+        fixYellowHighlightedAreas();
+        
         // Pause any animations or videos
         pauseAnimations();
         
@@ -86,6 +89,76 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
+     * Apply specific fixes for yellow-highlighted spaces in the footer
+     */
+    function fixYellowHighlightedAreas() {
+        // Fix footer spacing issues
+        const footer = document.querySelector('.footer');
+        if (footer) {
+            footer.style.padding = '10px 0 5px';
+        }
+        
+        // Fix footer columns
+        const footerColumns = document.querySelectorAll('.footer-column');
+        footerColumns.forEach(column => {
+            column.style.margin = '0';
+            column.style.padding = '0';
+        });
+        
+        // Reduce spacing between list items
+        const listItems = document.querySelectorAll('.footer-links li');
+        listItems.forEach(item => {
+            item.style.marginBottom = '2px';
+        });
+        
+        // Fix footer bottom
+        const footerBottom = document.querySelector('.footer-bottom');
+        if (footerBottom) {
+            footerBottom.style.paddingTop = '5px';
+            footerBottom.style.marginTop = '5px';
+        }
+        
+        // Add spacing fixes to force close the yellow gaps
+        const css = document.createElement('style');
+        css.id = 'yellow-fix-css';
+        css.textContent = `
+            .screenshot-mode .footer {
+                padding: 10px 0 5px !important;
+            }
+            .screenshot-mode .footer-column {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .screenshot-mode .footer-title {
+                margin-bottom: 3px !important;
+                padding-top: 3px !important;
+            }
+            .screenshot-mode .footer-links li {
+                margin-bottom: 2px !important;
+                line-height: 1.2 !important;
+            }
+            .screenshot-mode .footer-content {
+                margin-bottom: 5px !important;
+                gap: 10px !important;
+            }
+            .screenshot-mode .contact-info {
+                margin-top: 3px !important;
+            }
+            .screenshot-mode .contact-item {
+                margin-bottom: 2px !important;
+            }
+            .screenshot-mode .social-icons {
+                margin-top: 3px !important;
+            }
+            .screenshot-mode .footer-bottom {
+                padding-top: 5px !important;
+                margin-top: 5px !important;
+            }
+        `;
+        document.head.appendChild(css);
+    }
+    
+    /**
      * Disable screenshot mode
      */
     function disableScreenshotMode() {
@@ -96,6 +169,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const screenshotCss = document.getElementById('screenshot-css');
         if (screenshotCss) {
             screenshotCss.disabled = true;
+        }
+        
+        // Remove yellow fix CSS
+        const yellowFixCss = document.getElementById('yellow-fix-css');
+        if (yellowFixCss) {
+            yellowFixCss.remove();
         }
         
         // Resume animations
