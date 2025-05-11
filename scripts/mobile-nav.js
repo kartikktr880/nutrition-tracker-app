@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileNav = document.querySelector('.mobile-nav');
-    const header = document.querySelector('.homepage-header');
     const body = document.body;
 
     // Toggle mobile menu
@@ -16,10 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileMenuToggle.classList.toggle('active');
             mobileNav.classList.toggle('active');
             
-            // Ensure header stays visible when mobile nav is open
             if (mobileNav.classList.contains('active')) {
-                header.classList.remove('scrolled-down');
-                header.classList.add('scrolled-up');
                 body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
             } else {
                 body.style.overflow = ''; // Re-enable scrolling
@@ -125,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 // Calculate position accounting for fixed header
-                const headerHeight = header ? header.offsetHeight : 0;
+                const headerHeight = 0;
                 const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
                 
                 window.scrollTo({ 

@@ -215,7 +215,21 @@ class UltraPremiumFooter {
                 footer.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
                 footer.style.paddingTop = '60px';
                 footer.style.paddingBottom = '30px';
+                footer.style.marginTop = '0';
+                footer.style.width = '100%';
+                footer.style.display = 'block';
+                footer.style.visibility = 'visible';
+                footer.style.opacity = '1';
             }
+            
+            // Force the footer container to be visible and positioned correctly
+            this.footerContainer.style.display = 'block';
+            this.footerContainer.style.width = '100%';
+            this.footerContainer.style.visibility = 'visible';
+            this.footerContainer.style.position = 'relative';
+            this.footerContainer.style.zIndex = '5';
+            this.footerContainer.style.marginTop = '0';
+            this.footerContainer.style.opacity = '1';
             
             // Apply consistent styling to footer logo
             const footerLogo = this.footerContainer.querySelector('.footer-logo a');

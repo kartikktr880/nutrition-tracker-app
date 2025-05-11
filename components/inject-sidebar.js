@@ -2,6 +2,8 @@
 fetch('components/sidebar.html')
   .then(response => response.text())
   .then(html => {
+    // Only inject sidebar for mobile/tablet (≤991px)
+    if (window.innerWidth <= 991) {
     const container = document.getElementById('sidebar-container');
     if (container) {
       container.innerHTML = html;
@@ -54,6 +56,24 @@ fetch('components/sidebar.html')
         });
         document.body.appendChild(hamburger);
 
+        // Create close (cross) button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'sidebar-close-btn';
+        closeBtn.setAttribute('aria-label', 'Close navigation');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.position = 'fixed';
+        closeBtn.style.top = '10px';
+        closeBtn.style.right = '18px';
+        closeBtn.style.zIndex = '3101';
+        closeBtn.style.background = 'none';
+        closeBtn.style.border = 'none';
+        closeBtn.style.color = '#fff3e6';
+        closeBtn.style.fontSize = '2.2rem';
+        closeBtn.style.fontWeight = 'bold';
+        closeBtn.style.display = 'none';
+        closeBtn.style.cursor = 'pointer';
+        document.body.appendChild(closeBtn);
+
         // Create overlay
         const overlay = document.createElement('div');
         overlay.className = 'mobile-nav-overlay';
@@ -75,6 +95,8 @@ fetch('components/sidebar.html')
           sidebar.style.position = 'fixed';
           overlay.style.display = 'block';
           overlay.style.opacity = '1';
+          hamburger.style.display = 'none';
+          closeBtn.style.display = 'block';
           hamburger.classList.add('active');
           document.body.style.overflow = 'hidden';
         }
@@ -82,6 +104,8 @@ fetch('components/sidebar.html')
           sidebar.style.transform = 'translateX(-100%)';
           overlay.style.display = 'none';
           overlay.style.opacity = '0';
+          hamburger.style.display = 'flex';
+          closeBtn.style.display = 'none';
           hamburger.classList.remove('active');
           document.body.style.overflow = '';
         }
@@ -92,8 +116,38 @@ fetch('components/sidebar.html')
             openSidebar();
           }
         }
-        hamburger.onclick = toggleSidebar;
+        hamburger.onclick = openSidebar;
+        closeBtn.onclick = closeSidebar;
         overlay.onclick = closeSidebar;
+
+        // Hide hamburger and close button on scroll down, show on scroll up
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+        function handleScroll() {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              const currentScrollY = window.scrollY;
+              if (currentScrollY > lastScrollY) {
+                // Scrolling down
+                hamburger.style.display = 'none';
+                closeBtn.style.display = 'none';
+              } else {
+                // Scrolling up
+                if (sidebar.style.transform !== 'translateX(0)') {
+                  hamburger.style.display = 'flex';
+                  closeBtn.style.display = 'none';
+                } else {
+                  hamburger.style.display = 'none';
+                  closeBtn.style.display = 'block';
+                }
+              }
+              lastScrollY = currentScrollY;
+              ticking = false;
+            });
+            ticking = true;
+          }
+        }
+        window.addEventListener('scroll', handleScroll);
       } else {
         // On desktop, show sidebar by default
         sidebar.style.transform = 'none';
@@ -103,5 +157,17 @@ fetch('components/sidebar.html')
         sidebar.style.zIndex = '3000';
         // Do not set height, background, outline, or overflow here
       }
+
+      // Highlight the active sidebar link based on current page
+      const currentPath = window.location.pathname.split('/').pop();
+      const sidebarLinks = container.querySelectorAll('.sidebar-link a');
+      sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath || (linkPath === 'index.html' && (currentPath === '' || currentPath === 'index.html'))) {
+          link.classList.add('active');
+        }
+      });
     }
+    }
+    // For desktop (≥992px), do not inject or render the sidebar at all
   }); 

@@ -5,7 +5,17 @@ image.png<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activity Dashboard - Nutrition Tracker</title>
+    <link rel="stylesheet" href="styles/fix-scroll-smoothness.css">
     <link rel="stylesheet" href="styles/main.css">
+    <!-- Fix Scroll Issues - Load Early -->
+    <script src="scripts/fix-header-scroll.js" defer></script>
+    <script src="scripts/fix-scroll-errors.js" defer></script>
+    <script src="scripts/fix-scroll.js" defer></script>
+    <!-- Footer Fix Scripts -->
+    <script src="scripts/fix-footer.js" defer></script>
+    <script src="scripts/remove-spacers.js" defer></script>
+    
+
     <link rel="stylesheet" href="styles/mobile-nav.css">
     <link rel="stylesheet" href="styles/activity-dashboard.css">
     <link rel="stylesheet" href="styles/responsive.css">
@@ -19,8 +29,29 @@ image.png<!DOCTYPE html>
     <script src="scripts/gradient-scroll.js" defer></script>
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
+    <!-- Final header fixes - should be last to take precedence -->
+    <link rel="stylesheet" href="styles/header-fixes.css">
+
+    <!-- Footer Fix Styles -->
+    <link rel="stylesheet" href="styles/footer-elite-luxury.css">
+        <link rel="stylesheet" href="styles/cleanup-scrolling.css">
 </head>
 <body class="dark-theme gradient-background dark-mode">
+    <!-- Premium Desktop Header -->
+    <header class="premium-header" id="premium-header">
+      <div class="premium-header-container">
+        <!-- Logo -->
+        <a href="/" class="premium-header-logo">
+          <img src="images/logo.svg" alt="NutriTrack Logo" class="premium-header-logo-img">
+          <span class="premium-header-logo-text">NutriTrack</span>
+        </a>
+        <!-- Profile Icon -->
+        <div class="premium-header-actions">
+          <a href="profile.html" class="header-icon" title="Profile"><i class="fa-solid fa-user-circle"></i></a>
+        </div>
+      </div>
+    </header>
+    <div id="sidebar-container"></div>
     <!-- Mobile Navigation Bar -->
     <div class="mobile-nav">
         <button class="menu-toggle">
@@ -34,6 +65,23 @@ image.png<!DOCTYPE html>
 
     <!-- Main Content -->
     <main class="activity-dashboard">
+        <!-- Loading Spinner Overlay -->
+        <div id="dashboard-loading" class="dashboard-loading-overlay" style="display: none;">
+            <div class="dashboard-spinner">
+                <div class="spinner-circle"></div>
+                <div class="spinner-text">Loading...</div>
+            </div>
+        </div>
+        <!-- Persistent Error Message -->
+        <div id="dashboard-error" class="dashboard-error-message" style="display: none;">
+            <div class="error-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="error-content">
+                <h3>Unable to Load Activity Data</h3>
+                <p>We couldn't load your activity dashboard. Please check your connection or try again.</p>
+                <button id="retry-dashboard-btn" class="primary-btn"><i class="fas fa-redo"></i> Retry</button>
+            </div>
+        </div>
+
         <!-- Header with date range selector -->
         <div class="dashboard-header">
             <h1>Activity Dashboard</h1>
@@ -81,7 +129,7 @@ image.png<!DOCTYPE html>
         <!-- Activity Summary -->
         <div class="summary-section">
             <h2>Activity Summary</h2>
-            <div class="summary-cards">
+            <div class="summary-cards" id="summary-cards">
                 <div class="summary-card">
                     <div class="summary-icon">
                         <i class="fas fa-shoe-prints"></i>
@@ -138,18 +186,33 @@ image.png<!DOCTYPE html>
                     </div>
                 </div>
             </div>
+            <div class="empty-state" id="summary-empty-state" style="display: none;">
+                <div class="empty-icon"><i class="fas fa-info-circle"></i></div>
+                <h3>No activity data yet</h3>
+                <p>Connect a tracker or log an activity to see your summary here.</p>
+            </div>
         </div>
         
         <!-- Charts Section -->
         <div class="charts-section">
-            <div class="chart-container">
+            <div class="chart-container" id="daily-activity-container">
                 <h2>Daily Activity</h2>
                 <canvas id="daily-activity-chart"></canvas>
+                <div class="empty-state" id="daily-activity-empty" style="display: none;">
+                    <div class="empty-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3>No daily activity data</h3>
+                    <p>Once you log activities, your daily stats will appear here.</p>
+                </div>
             </div>
             
-            <div class="chart-container">
+            <div class="chart-container" id="activity-types-container">
                 <h2>Activity Types</h2>
                 <canvas id="activity-types-chart"></canvas>
+                <div class="empty-state" id="activity-types-empty" style="display: none;">
+                    <div class="empty-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>No activity types data</h3>
+                    <p>Log activities to see a breakdown by type.</p>
+                </div>
             </div>
         </div>
         
@@ -194,8 +257,13 @@ image.png<!DOCTYPE html>
             <h2>Calories In vs. Calories Out</h2>
             <div class="chart-container">
                 <canvas id="calories-chart"></canvas>
+                <div class="empty-state" id="calories-empty" style="display: none;">
+                    <div class="empty-icon"><i class="fas fa-balance-scale"></i></div>
+                    <h3>No calorie data</h3>
+                    <p>Log your meals and activities to see calorie stats.</p>
+                </div>
             </div>
-            <div class="calorie-summary">
+            <div class="calorie-summary" id="calorie-summary">
                 <div class="calorie-item">
                     <h3>Calories Consumed</h3>
                     <div class="calorie-value">0</div>

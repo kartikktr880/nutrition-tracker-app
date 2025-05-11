@@ -14,7 +14,7 @@
         <div class="mobile-nav-header">
             <div class="user-info">
                 <div class="user-avatar">
-                    <img id="mobile-nav-avatar" src="images/default-profile.png" alt="Profile Picture">
+                    <img id="mobile-nav-avatar" src="images/profile-placeholder.jpg" alt="Profile Picture">
                 </div>
                 <div class="user-details">
                     <span id="mobile-nav-username">Guest</span>
@@ -130,7 +130,9 @@
     </div>
 </div>
 
-<script>
+<script src="scripts/fix-header-scroll.js" defer></script>
+    <script src="scripts/fix-scroll-errors.js" defer></script>
+    <script>
     // Initialize the theme toggle in mobile navigation
     document.addEventListener('DOMContentLoaded', function() {
         const mobileThemeToggle = document.getElementById('mobile-theme-toggle-switch');

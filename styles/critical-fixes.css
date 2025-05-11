@@ -2064,9 +2064,9 @@ i.fab,
     }
     
     .main-nav {
-        display: none !important;
-    }
-    
+    display: none !important;
+}
+
     .mobile-menu-toggle {
         display: flex !important;
     }
@@ -2424,7 +2424,7 @@ body:before {
 /* Fix gray areas by ensuring all containers are transparent or match the gradient */
 .hero-section,
 .features-section,
-.steps-section,
+.steps-section, 
 .testimonials-section,
 .cta-section,
 .newsletter-section,
@@ -3241,3 +3241,61 @@ footer .footer-links-column {
     }
 }
 /* END DEFINITIVE FLOATING BADGE */
+
+/* Critical Fixes for Layout and Scrolling Issues */
+
+/* Fix for footer visibility */
+#footer-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  position: relative !important;
+  z-index: 5 !important;
+  margin-top: 0 !important;
+}
+
+#footer-container footer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* Force the footer to be visible and appear after main content */
+main + #footer-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure the footer container is styled properly in the DOM flow */
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+}
+
+main {
+  flex: 1 0 auto !important;
+}
+
+#footer-container {
+  flex-shrink: 0 !important;
+}
+
+/* Remove any unwanted spacers that might be pushing content down */
+main > div[style*="height: 2000px"] {
+  display: none !important;
+  height: 0 !important;
+}
+
+/* Ensure sections are visible */
+section {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}

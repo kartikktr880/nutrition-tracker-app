@@ -2,6 +2,49 @@
    Elegant, sophisticated footer design with premium animations and effects
    ========================================================================== */
 
+/* Fix for footer visibility */
+#footer-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  position: relative !important;
+  z-index: 5 !important;
+  margin-top: 0 !important;
+}
+
+#footer-container footer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* Force the footer to be visible and appear after main content */
+main + #footer-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure the footer container is styled properly in the DOM flow */
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+}
+
+main {
+  flex: 1 0 auto !important;
+}
+
+#footer-container {
+  flex-shrink: 0 !important;
+}
+
 :root {
   /* Core color palette */
   --footer-bg-color: #071610;

@@ -17,7 +17,7 @@ class ThemeManager {
         // Hide all theme toggle buttons
         this.hideThemeToggles();
         
-        console.log('Dark Mode Theme manager initialized');
+        // console.log('Dark Mode Theme manager initialized');
     }
 
     /**
@@ -36,7 +36,7 @@ class ThemeManager {
             metaThemeColor.setAttribute('content', '#121212');
         }
         
-        console.log('Dark mode enforced');
+        // console.log('Dark mode enforced');
     }
 
     /**
@@ -86,7 +86,7 @@ class ThemeManager {
             }
         });
         
-        console.log('Theme toggles hidden');
+        // console.log('Theme toggles hidden');
     }
 }
 

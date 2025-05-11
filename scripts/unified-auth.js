@@ -26,7 +26,7 @@ const PROTECTED_PAGES = [
         const storedUser = localStorage.getItem('currentUser');
         if (!storedUser) {
             // Redirect immediately to prevent page content from loading
-            console.log('Access denied: Authentication required');
+            // console.log('Access denied: Authentication required');
             window.location.href = 'login.html?redirect=' + encodeURIComponent(currentPage);
             // Stop further execution
             throw new Error('Authentication required');
@@ -38,7 +38,7 @@ const PROTECTED_PAGES = [
             if (!user) {
                 // Clear any potentially incorrect local storage
                 localStorage.removeItem('currentUser');
-                console.log('Access denied: Firebase authentication required');
+                // console.log('Access denied: Firebase authentication required');
                 window.location.href = 'login.html?redirect=' + encodeURIComponent(currentPage);
             }
         });
@@ -59,7 +59,7 @@ auth.onAuthStateChanged((user) => {
         db.collection('users').doc(user.uid).update({
             lastLogin: firebase.firestore.FieldValue.serverTimestamp()
         }).catch(error => {
-            console.error('Error updating last login time:', error);
+            // console.error('Error updating last login time:', error);
         });
     } else {
         // User is signed out
@@ -91,7 +91,7 @@ function initAuthHandler() {
     auth.onAuthStateChanged((user) => {
         if (user) {
             // User is signed in
-            console.log('User signed in:', user.displayName || user.email);
+            // console.log('User signed in:', user.displayName || user.email);
             
             // Store minimal user info in localStorage for backward compatibility
             localStorage.setItem('currentUser', JSON.stringify({
@@ -117,7 +117,7 @@ function initAuthHandler() {
             }
         } else {
             // User is signed out
-            console.log('User signed out');
+            // console.log('User signed out');
             
             // Clear user from localStorage
             localStorage.removeItem('currentUser');
@@ -127,7 +127,7 @@ function initAuthHandler() {
             
             // If on a protected page and not authenticated, redirect to login
             if (isProtectedPage) {
-                console.log('Protected page access denied: redirecting to login');
+                // console.log('Protected page access denied: redirecting to login');
                 window.location.href = 'login.html?redirect=' + encodeURIComponent(currentPage);
             }
         }
@@ -168,7 +168,7 @@ async function checkIfEmailExists(email) {
             methods: signInMethods
         };
     } catch (error) {
-        console.error('Error checking email:', error);
+        // console.error('Error checking email:', error);
         return {
             exists: false,
             error: error.message
@@ -204,7 +204,7 @@ async function loginWithEmail(email, password) {
             user: user
         };
     } catch (error) {
-        console.error('Login error:', error);
+        // console.error('Login error:', error);
         return {
             success: false,
             userExists: true,
@@ -259,7 +259,7 @@ async function registerWithEmail(name, email, password) {
             user: user
         };
     } catch (error) {
-        console.error('Registration error:', error);
+        // console.error('Registration error:', error);
         return {
             success: false,
             error: error.message
@@ -305,7 +305,7 @@ async function signInWithGoogle() {
             return result.user;
         }
     } catch (error) {
-        console.error('Google sign in error:', error);
+        // console.error('Google sign in error:', error);
         throw error;
     }
 }
@@ -347,7 +347,7 @@ async function signInWithFacebook() {
             return result.user;
         }
     } catch (error) {
-        console.error('Facebook sign in error:', error);
+        // console.error('Facebook sign in error:', error);
         throw error;
     }
 }
@@ -373,7 +373,7 @@ async function resetPassword(email) {
             success: true
         };
     } catch (error) {
-        console.error('Password reset error:', error);
+        // console.error('Password reset error:', error);
         return {
             success: false,
             userExists: true,
@@ -388,7 +388,7 @@ async function logoutUser() {
         await auth.signOut();
         return { success: true };
     } catch (error) {
-        console.error('Logout error:', error);
+        // console.error('Logout error:', error);
         return {
             success: false,
             error: error.message

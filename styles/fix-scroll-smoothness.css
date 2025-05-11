@@ -1,0 +1,163 @@
+/**
+ * Fix Scroll Smoothness
+ * Dedicated styles to improve scrolling performance and fix header behavior
+ */
+
+/* ===== Scroll Performance Optimizations ===== */
+html {
+  scroll-behavior: smooth !important;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  -webkit-text-size-adjust: 100% !important;
+  -moz-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-right: 0 !important;
+  -webkit-overflow-scrolling: touch !important;
+  overflow-y: auto !important;
+  overscroll-behavior-x: none !important;
+}
+
+/* Force hardware acceleration for smoother scrolling */
+html, 
+body, 
+.premium-header, 
+main, 
+section {
+  -webkit-backface-visibility: hidden !important;
+  -webkit-perspective: 1000 !important;
+  backface-visibility: hidden !important;
+  perspective: 1000 !important;
+  transform: translate3d(0,0,0) !important;
+  -webkit-transform: translate3d(0,0,0) !important;
+}
+
+/* Specific header scroll fixes */
+.premium-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 80px !important;
+  transition: transform 0.3s ease !important;
+  will-change: transform !important;
+  -webkit-transform: translateZ(0) !important;
+  transform: translateZ(0) !important;
+  z-index: 99999 !important;
+}
+
+.premium-header.header-hidden {
+  transform: translateY(-100%) !important;
+  -webkit-transform: translateY(-100%) !important;
+}
+
+/* Ensure content doesn't affect scroll performance */
+main, 
+section, 
+.container,
+.hero-section,
+.features-section,
+.steps-section,
+.testimonials-section,
+.cta-section,
+.newsletter-section,
+.footer,
+#footer-container {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  contain: content !important;
+  content-visibility: auto !important;
+}
+
+/* Remove expensive rendering operations during scroll */
+body.is-scrolling * {
+  transition: none !important;
+  animation: none !important;
+  will-change: auto !important;
+}
+
+/* Fix content jumping */
+body {
+  padding-top: 80px !important; /* Match header height */
+}
+
+/* Optimized image loading */
+img {
+  content-visibility: auto !important;
+  contain: content !important;
+}
+
+/* Prevent layout shifts */
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+/* Clean up potential causes of scroll jank */
+[style*="position: fixed"],
+[style*="position:fixed"] {
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+  will-change: transform !important;
+}
+
+/* Ensure header container follows parent */
+.premium-header-container {
+  transition: transform 0.3s ease !important;
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+  will-change: transform !important;
+}
+
+/* Fix specific section margins to prevent "sticking" */
+section {
+  scroll-margin-top: 90px !important; /* Larger than header height */
+  scroll-snap-margin-top: 90px !important; /* For older browsers */
+}
+
+/* Optimize scrolling for touch devices */
+@media (pointer: coarse) {
+  html, body {
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .premium-header {
+    transition: transform 0.2s ease !important; /* Faster on mobile */
+  }
+}
+
+/* Fix for the container width during scroll */
+.container,
+.content-wrapper,
+.section-container {
+  width: 100% !important;
+  max-width: 1200px !important; /* Match site max-width */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Force visibility on header elements */
+.premium-header,
+.premium-header-container,
+.premium-header-logo,
+.premium-header-actions,
+.header-icon {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Prevent interference from other scripts */
+html, body, .premium-header {
+  transform-style: flat !important;
+} 

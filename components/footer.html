@@ -6,7 +6,7 @@
             <!-- Brand Info -->
             <div class="footer-info">
                 <a href="/" class="footer-logo">
-                    <img src="images/logo-light.png" alt="Nutrition Tracker">
+                    <img src="images/logo.png" alt="Nutrition Tracker">
                     <span class="footer-logo-text">Nutrition Tracker</span>
                 </a>
                 <p class="footer-description">Your personal companion for maintaining a healthy lifestyle through smart nutrition tracking and personalized insights.</p>
@@ -137,7 +137,9 @@
     <i class="fas fa-arrow-up"></i>
 </button>
 
-<script>
+<script src="scripts/fix-header-scroll.js" defer></script>
+    <script src="scripts/fix-scroll-errors.js" defer></script>
+    <script>
     // Set current year
     document.querySelectorAll('[data-current-year]').forEach(el => {
         el.textContent = new Date().getFullYear();

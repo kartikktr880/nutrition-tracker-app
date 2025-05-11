@@ -29,6 +29,10 @@
 html, body {
     background-color: transparent !important;
     color: #f0f0f0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    min-height: 100vh !important;
 }
 
 html.dark-mode, 
@@ -84,6 +88,8 @@ section,
     background-color: transparent !important;
     position: relative !important;
     z-index: 2 !important;
+    margin: 0 !important;
+    padding: 80px 0 !important;
 }
 
 /* Make background elements transparent */
@@ -91,6 +97,54 @@ section,
 .hero-gradient {
     opacity: 0.3 !important;
     background: transparent !important;
+}
+
+/* ---- HEADER FIXES ---- */
+/* Ensure proper header spacing */
+body {
+    padding-top: 80px !important; /* Match header height */
+    margin-top: 0 !important;
+}
+
+/* Hide all non-premium headers */
+header:not(.premium-header),
+.site-header,
+.main-header,
+.header:not(.premium-header),
+nav.desktop-nav,
+nav.main-nav,
+.navbar:not(.premium-header-links),
+.navigation:not(.premium-header-links),
+.nav-menu:not(.premium-header-links),
+.nav-list:not(.premium-header-links),
+.menu-list:not(.premium-header-links) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    pointer-events: none !important;
+    clip: rect(0 0 0 0) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Ensure proper stacking context */
+.premium-header {
+    z-index: 2000 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+}
+
+main {
+    position: relative !important;
+    z-index: 1 !important;
 }
 
 /* ---- FOOTER STYLING FIXES ---- */
@@ -109,6 +163,7 @@ footer,
     z-index: 5 !important;
     border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
     margin-top: 0 !important;
+    padding: 4rem 0 !important;
 }
 
 /* Footer Column Background Fixes */

@@ -1,0 +1,158 @@
+/* Premium Desktop Header Styles */
+@media (min-width: 768px) {
+  /* Force show header and its elements */
+  #premium-header,
+  #premium-header *,
+  .premium-header,
+  .premium-header * {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Basic header structure */
+  .premium-header {
+    background: linear-gradient(
+      90deg,
+      #1A3C34 0%,
+      #1A3C34 60%,
+      #2A5E50 85%,
+      #3D5A80 100%
+    ) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 99999 !important;
+    height: 80px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    transition: transform 0.3s ease-in-out !important;
+    will-change: transform !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Header scroll behavior */
+  .premium-header.header-hidden {
+    transform: translateY(-100%) !important;
+    -webkit-transform: translateY(-100%) !important;
+  }
+
+  /* Header container */
+  .premium-header-container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Logo styles */
+  .premium-header-logo {
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    color: white !important;
+  }
+
+  .premium-header-logo-img {
+    height: 40px !important;
+    width: auto !important;
+    margin-right: 12px !important;
+  }
+
+  .premium-header-logo-text {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    white-space: nowrap !important;
+  }
+
+  /* Profile icon */
+  .premium-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+
+  .header-icon {
+    color: white !important;
+    font-size: 24px !important;
+    text-decoration: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .header-icon:hover {
+    opacity: 0.8 !important;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  .premium-header {
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .premium-header-logo-text {
+    font-size: 20px !important;
+  }
+
+  .premium-header-logo-img {
+    height: 32px !important;
+  }
+}
+
+/* Ensure proper body spacing and scrolling */
+:root {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+html {
+  height: 100% !important;
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+body {
+  height: 100% !important;
+  margin: 0 !important;
+  padding-top: 80px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  position: relative !important;
+  -webkit-overflow-scrolling: touch !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Hide any old headers */
+header:not(.premium-header),
+.site-header,
+.main-header,
+.header:not(.premium-header),
+nav.desktop-nav,
+nav.main-nav {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  clip: rect(0 0 0 0) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+} 

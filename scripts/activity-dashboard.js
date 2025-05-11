@@ -40,11 +40,13 @@ class ActivityDashboard {
      * Initialize the dashboard
      */
     async init() {
+        this.showLoading(true);
         this.setupEventListeners();
         await this.loadConnectedTrackers();
         await this.loadActivityData();
         this.initializeCharts();
         this.updateCalorieSummary();
+        this.showLoading(false);
     }
     
     /**
@@ -174,9 +176,10 @@ class ActivityDashboard {
      * Load activity data based on the current date range
      */
     async loadActivityData() {
+        this.showLoading(true);
+        let loadSuccess = true;
         const startDate = this.getDateRangeStart();
         const endDate = new Date();
-        
         try {
             this.activityData = await this.fitnessIntegration.getActivityData(startDate, endDate);
             this.updateActivitySummary();
@@ -184,6 +187,10 @@ class ActivityDashboard {
         } catch (error) {
             console.error('Error loading activity data:', error);
             this.showToast('Failed to load activity data.', 'error');
+            loadSuccess = false;
+        } finally {
+            this.showLoading(false);
+            this.showError(!loadSuccess);
         }
     }
     
@@ -192,8 +199,17 @@ class ActivityDashboard {
      */
     updateActivitySummary() {
         if (!this.activityData) return;
-        
         const { summary } = this.activityData;
+        const isEmpty = !summary || (summary.steps === 0 && summary.caloriesBurned === 0 && summary.activeMinutes === 0 && summary.distance === 0);
+        const summaryCards = document.getElementById('summary-cards');
+        const emptyState = document.getElementById('summary-empty-state');
+        if (isEmpty) {
+            if (summaryCards) summaryCards.style.display = 'none';
+            if (emptyState) emptyState.style.display = 'flex';
+        } else {
+            if (summaryCards) summaryCards.style.display = 'grid';
+            if (emptyState) emptyState.style.display = 'none';
+        }
         
         // Update summary elements if they exist
         if (this.elements.stepsCount) {
@@ -302,6 +318,26 @@ class ActivityDashboard {
     initializeCharts() {
         this.initializeActivityChart();
         this.initializeStepsChart();
+        // Daily Activity Empty State
+        const dailyActivityEmpty = document.getElementById('daily-activity-empty');
+        const dailyActivityChart = document.getElementById('daily-activity-chart');
+        if (this.activityData && this.activityData.dailyStats && this.activityData.dailyStats.length > 0) {
+            if (dailyActivityEmpty) dailyActivityEmpty.style.display = 'none';
+            if (dailyActivityChart) dailyActivityChart.style.display = 'block';
+        } else {
+            if (dailyActivityEmpty) dailyActivityEmpty.style.display = 'flex';
+            if (dailyActivityChart) dailyActivityChart.style.display = 'none';
+        }
+        // Activity Types Empty State
+        const activityTypesEmpty = document.getElementById('activity-types-empty');
+        const activityTypesChart = document.getElementById('activity-types-chart');
+        if (this.activityData && this.activityData.activities && this.activityData.activities.length > 0) {
+            if (activityTypesEmpty) activityTypesEmpty.style.display = 'none';
+            if (activityTypesChart) activityTypesChart.style.display = 'block';
+        } else {
+            if (activityTypesEmpty) activityTypesEmpty.style.display = 'flex';
+            if (activityTypesChart) activityTypesChart.style.display = 'none';
+        }
     }
     
     /**
@@ -465,10 +501,10 @@ class ActivityDashboard {
      */
     async updateCalorieSummary() {
         if (!this.elements.caloriesIn || !this.elements.caloriesOut || !this.elements.caloriesNet) return;
-        
         const startDate = this.getDateRangeStart();
         const endDate = new Date();
-        
+        const caloriesEmpty = document.getElementById('calories-empty');
+        const calorieSummary = document.getElementById('calorie-summary');
         try {
             // Get calories consumed from food logs
             const foodLogs = await this.getFoodLogsForDateRange(startDate, endDate);
@@ -487,6 +523,14 @@ class ActivityDashboard {
             
             // Set color for net calories
             this.elements.caloriesNet.style.color = netCalories > 0 ? '#FF5722' : '#4CAF50';
+            // Show/hide empty state
+            if (caloriesIn === 0 && caloriesOut === 0) {
+                if (caloriesEmpty) caloriesEmpty.style.display = 'flex';
+                if (calorieSummary) calorieSummary.style.display = 'none';
+            } else {
+                if (caloriesEmpty) caloriesEmpty.style.display = 'none';
+                if (calorieSummary) calorieSummary.style.display = 'flex';
+            }
         } catch (error) {
             console.error('Error updating calorie summary:', error);
         }
@@ -561,9 +605,11 @@ class ActivityDashboard {
      * Update the entire dashboard with new data
      */
     async updateDashboard() {
+        this.showLoading(true);
         await this.loadActivityData();
         this.updateCharts();
         this.updateCalorieSummary();
+        this.showLoading(false);
     }
     
     /**
@@ -812,9 +858,37 @@ class ActivityDashboard {
     capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
+    
+    showLoading(isLoading) {
+        const loadingOverlay = document.getElementById('dashboard-loading');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = isLoading ? 'flex' : 'none';
+        }
+    }
+    
+    showError(show) {
+        const errorBox = document.getElementById('dashboard-error');
+        const mainContent = document.querySelector('.activity-dashboard');
+        if (errorBox && mainContent) {
+            errorBox.style.display = show ? 'flex' : 'none';
+            // Optionally hide main dashboard sections if error is shown
+            Array.from(mainContent.children).forEach(child => {
+                if (!child.classList.contains('dashboard-error-message') && !child.classList.contains('dashboard-loading-overlay')) {
+                    child.style.display = show ? 'none' : '';
+                }
+            });
+        }
+    }
 }
 
 // Initialize the dashboard when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     const dashboard = new ActivityDashboard();
+    const retryBtn = document.getElementById('retry-dashboard-btn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+            dashboard.showError(false);
+            dashboard.updateDashboard();
+        });
+    }
 }); 

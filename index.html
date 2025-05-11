@@ -29,6 +29,14 @@
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/main.css?v=1.0.0">
     
+    <!-- Fix Scroll Issues - Load Early -->
+    <link rel="stylesheet" href="styles/fix-scroll-smoothness.css">
+    <script src="scripts/fix-scroll.js" defer></script>
+    <script src="scripts/fix-header-scroll.js" defer></script>
+    <script src="scripts/fix-scroll-errors.js" defer></script>
+    <script src="scripts/fix-footer.js" defer></script>
+    <script src="scripts/remove-spacers.js" defer></script>
+    
     <!-- Component Stylesheets -->
     <link rel="stylesheet" href="styles/hero-section.css">
     <link rel="stylesheet" href="styles/step-section.css">
@@ -37,7 +45,8 @@
     <link rel="stylesheet" href="styles/stay-updated.css">
     <link rel="stylesheet" href="styles/footer-new.css">
     <link rel="stylesheet" href="styles/premium-announcement-bar.css">
-    <link rel="stylesheet" href="styles/homepage-header.css">
+    <!-- <link rel="stylesheet" href="styles/homepage-header.css"> -->
+    <link rel="stylesheet" href="styles/premium-header.css">
     
     <!-- Theme Styles -->
     <link rel="stylesheet" href="styles/dark-mode.css">
@@ -52,6 +61,62 @@
     
     <!-- Critical section spacing fixes -->
     <style>
+        /* Root level stacking context and scrollbar fixes */
+        :root {
+            overflow-x: hidden !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        html {
+            height: 100% !important;
+            overflow-x: hidden !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding-top: 80px !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            position: relative !important;
+            -webkit-overflow-scrolling: touch !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Create proper stacking context */
+        .premium-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 99999 !important;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
+            background-clip: padding-box !important;
+            will-change: transform !important;
+            box-sizing: border-box !important;
+            transition: transform 0.3s ease !important;
+        }
+        
+        /* Ensure main content is below header */
+        main {
+            position: relative !important;
+            z-index: 1 !important;
+            min-height: calc(100% - 80px) !important;
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Section spacing fixes */
         .how-it-works { padding-bottom: 60px !important; margin-bottom: 0 !important; }
         .cta-section { padding: 80px 0 !important; margin: 0 !important; }
         .stay-updated-section { padding: 80px 0 !important; margin: 0 !important; }
@@ -64,7 +129,6 @@
         .stay-updated-section, .cta-section, .newsletter-section, .footer {
             opacity: 1 !important;
             visibility: visible !important;
-            display: block !important;
         }
         
         /* Fix gray backgrounds */
@@ -90,12 +154,6 @@
         .stat-label {
             color: rgba(255, 255, 255, 0.9) !important;
         }
-        
-        /* Ensure hero gradient is transparent */
-        .hero-gradient {
-            opacity: 0.2 !important;
-            background: transparent !important;
-        }
     </style>
     
     <!-- Enhanced Theme Toggle Script (Replaced with Dark Mode Only) -->
@@ -118,8 +176,25 @@
     <script src="scripts/gradient-scroll.js" defer></script>
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
+    <!-- Final header fixes - should be last to take precedence -->
+    <link rel="stylesheet" href="styles/header-fixes.css">
+    <link rel="stylesheet" href="styles/cleanup-scrolling.css">
 </head>
 <body class="dark-theme gradient-background dark-mode">
+    <!-- Premium Desktop Header -->
+    <header class="premium-header" id="premium-header">
+      <div class="premium-header-container">
+        <!-- Logo -->
+        <a href="/" class="premium-header-logo">
+          <img src="images/logo.svg" alt="NutriTrack Logo" class="premium-header-logo-img">
+          <span class="premium-header-logo-text">NutriTrack</span>
+        </a>
+        <!-- Profile Icon -->
+        <div class="premium-header-actions">
+          <a href="profile.html" class="header-icon" title="Profile"><i class="fa-solid fa-user-circle"></i></a>
+        </div>
+      </div>
+    </header>
     <div id="sidebar-container"></div>
     <main>
         <!-- Hero Section -->
@@ -451,7 +526,6 @@
                     </div>
         </section>
     </main>
-    <div style="height: 2000px;"></div>
     
     <!-- Footer Container -->
     <div id="footer-container"></div>
@@ -487,167 +561,137 @@
     <script src="scripts/main.js?v=1.0.0"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the unified auth handler
-            if (window.auth) {
-                window.auth.initAuthHandler();
-            }
-        });
+        // Initialize the unified auth handler
+        if (window.auth) {
+            window.auth.initAuthHandler();
+        }
+    });
     </script>
     <script>
     // Home Page Header Dropdown Functionality (with null checks)
-        (function() {
-      const dropdown = document.getElementById('food-log-dropdown');
-      if (!dropdown) return;
-      const toggle = dropdown.querySelector('.dropdown-toggle');
-      const menu = dropdown.querySelector('.dropdown-menu');
-      if (!toggle || !menu) return;
-
-      // Open/close dropdown on click
-      toggle.addEventListener('click', function(e) {
-                            e.preventDefault();
+    (function() {
+        const dropdown = document.getElementById('food-log-dropdown');
         if (!dropdown) return;
-        const isOpen = dropdown.classList.contains('open');
-        document.querySelectorAll('.nav-item.dropdown.open').forEach(item => {
-          if (item && item !== dropdown) item.classList.remove('open');
-        });
-        dropdown.classList.toggle('open', !isOpen);
-        toggle.setAttribute('aria-expanded', String(!isOpen));
-        if (!isOpen) {
-          // Focus first item in dropdown
-          const firstItem = menu.querySelector('li');
-          if (firstItem) firstItem.focus();
-        }
-      });
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        if (!toggle || !menu) return;
 
-      // Close dropdown on click outside
-      document.addEventListener('mousedown', function(e) {
-        if (!dropdown.contains(e.target)) {
-          dropdown.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // Keyboard navigation
-      toggle.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          if (!dropdown) return;
-          dropdown.classList.add('open');
-          toggle.setAttribute('aria-expanded', 'true');
-          const firstItem = menu.querySelector('li');
-          if (firstItem) firstItem.focus();
-        }
-      });
-      menu.addEventListener('keydown', function(e) {
-        const items = Array.from(menu.querySelectorAll('li'));
-        const current = document.activeElement;
-        let idx = items.indexOf(current);
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          if (idx < items.length - 1) items[idx + 1].focus();
-          else items[0].focus();
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          if (idx > 0) items[idx - 1].focus();
-          else items[items.length - 1].focus();
-        } else if (e.key === 'Escape') {
-          if (!dropdown) return;
-          dropdown.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          toggle.focus();
-        }
-      });
-      // Make dropdown items focusable
-      menu.querySelectorAll('li').forEach(li => {
-        li.setAttribute('tabindex', '0');
-      });
-        })();
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-                // Mobile menu toggle
-                const mobileToggle = document.querySelector('.mobile-menu-toggle');
-      const mobileNav = document.getElementById('mobile-nav');
-                if (mobileToggle && mobileNav) {
-        mobileToggle.style.display = 'flex';
-                    mobileToggle.addEventListener('click', function() {
-          const isOpen = mobileNav.classList.contains('active');
-          mobileNav.classList.toggle('active', !isOpen);
-          mobileToggle.classList.toggle('active', !isOpen);
-          mobileToggle.setAttribute('aria-expanded', String(!isOpen));
-          mobileNav.style.display = !isOpen ? 'block' : 'none';
-        });
-        // Close on click outside
-        document.addEventListener('mousedown', function(e) {
-          if (mobileNav.classList.contains('active') && !mobileNav.contains(e.target) && !mobileToggle.contains(e.target)) {
-            mobileNav.classList.remove('active');
-            mobileToggle.classList.remove('active');
-            mobileToggle.setAttribute('aria-expanded', 'false');
-            mobileNav.style.display = 'none';
-          }
-        });
-        // Close on Escape
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
-            mobileNav.classList.remove('active');
-            mobileToggle.classList.remove('active');
-            mobileToggle.setAttribute('aria-expanded', 'false');
-            mobileNav.style.display = 'none';
-                        }
-                    });
-                }
-      // Mobile dropdown
-      const mobileDropdown = document.getElementById('mobile-food-log-dropdown');
-      if (mobileDropdown) {
-        const toggle = mobileDropdown.querySelector('.dropdown-toggle');
-        const menu = mobileDropdown.querySelector('.dropdown-menu');
-        if (toggle && menu) {
-          toggle.addEventListener('click', function(e) {
+        // Open/close dropdown on click
+        toggle.addEventListener('click', function(e) {
             e.preventDefault();
-            const isOpen = mobileDropdown.classList.contains('open');
-            mobileDropdown.classList.toggle('open', !isOpen);
+            if (!dropdown) return;
+            const isOpen = dropdown.classList.contains('open');
+            document.querySelectorAll('.nav-item.dropdown.open').forEach(item => {
+                if (item && item !== dropdown) item.classList.remove('open');
+            });
+            dropdown.classList.toggle('open', !isOpen);
             toggle.setAttribute('aria-expanded', String(!isOpen));
-          });
-          // Close on click outside
-          document.addEventListener('mousedown', function(e) {
-            if (!mobileDropdown.contains(e.target)) {
-              mobileDropdown.classList.remove('open');
-              toggle.setAttribute('aria-expanded', 'false');
+            if (!isOpen) {
+                // Focus first item in dropdown
+                const firstItem = menu.querySelector('li');
+                if (firstItem) firstItem.focus();
             }
-          });
-        }
-      }
-    });
+        });
+
+        // Close dropdown on click outside
+        document.addEventListener('mousedown', function(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Keyboard navigation
+        toggle.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (!dropdown) return;
+                dropdown.classList.add('open');
+                toggle.setAttribute('aria-expanded', 'true');
+                const firstItem = menu.querySelector('li');
+                if (firstItem) firstItem.focus();
+            }
+        });
+        menu.addEventListener('keydown', function(e) {
+            const items = Array.from(menu.querySelectorAll('li'));
+            const current = document.activeElement;
+            let idx = items.indexOf(current);
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (idx < items.length - 1) items[idx + 1].focus();
+                else items[0].focus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (idx > 0) items[idx - 1].focus();
+                else items[items.length - 1].focus();
+            } else if (e.key === 'Escape') {
+                if (!dropdown) return;
+                dropdown.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.focus();
+            }
+        });
+        // Make dropdown items focusable
+        menu.querySelectorAll('li').forEach(li => {
+            li.setAttribute('tabindex', '0');
+        });
+    })();
     </script>
-    <!-- Header Hide-on-Scroll Script (minimal version) -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const header = document.querySelector('.homepage-header');
-      if (!header) return;
-      let lastScrollY = window.scrollY;
-      let isHidden = false;
-      function onScroll() {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > lastScrollY && currentScrollY > 80) {
-          if (!isHidden) {
-            header.style.transform = 'translateY(-100%)';
-            isHidden = true;
-          }
-        } else {
-          if (isHidden || currentScrollY <= 0) {
-            header.style.transform = 'translateY(0)';
-            isHidden = false;
-          }
+        // Mobile menu toggle
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        if (mobileToggle && mobileNav) {
+            mobileToggle.style.display = 'flex';
+            mobileToggle.addEventListener('click', function() {
+                const isOpen = mobileNav.classList.contains('active');
+                mobileNav.classList.toggle('active', !isOpen);
+                mobileToggle.classList.toggle('active', !isOpen);
+                mobileToggle.setAttribute('aria-expanded', String(!isOpen));
+                mobileNav.style.display = !isOpen ? 'block' : 'none';
+            });
+            // Close on click outside
+            document.addEventListener('mousedown', function(e) {
+                if (mobileNav.classList.contains('active') && !mobileNav.contains(e.target) && !mobileToggle.contains(e.target)) {
+                    mobileNav.classList.remove('active');
+                    mobileToggle.classList.remove('active');
+                    mobileToggle.setAttribute('aria-expanded', 'false');
+                    mobileNav.style.display = 'none';
+                }
+            });
+            // Close on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+                    mobileNav.classList.remove('active');
+                    mobileToggle.classList.remove('active');
+                    mobileToggle.setAttribute('aria-expanded', 'false');
+                    mobileNav.style.display = 'none';
+                }
+            });
         }
-        lastScrollY = currentScrollY;
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      header.style.transform = 'translateY(0)';
-      header.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+        // Mobile dropdown
+        const mobileDropdown = document.getElementById('mobile-food-log-dropdown');
+        if (mobileDropdown) {
+            const toggle = mobileDropdown.querySelector('.dropdown-toggle');
+            const menu = mobileDropdown.querySelector('.dropdown-menu');
+            if (toggle && menu) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isOpen = mobileDropdown.classList.contains('open');
+                    mobileDropdown.classList.toggle('open', !isOpen);
+                    toggle.setAttribute('aria-expanded', String(!isOpen));
+                });
+                // Close on click outside
+                document.addEventListener('mousedown', function(e) {
+                    if (!mobileDropdown.contains(e.target)) {
+                        mobileDropdown.classList.remove('open');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        }
     });
-    </script>
-    <script>
-    window.addEventListener('scroll', () => console.log('Global scroll event!'));
     </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -702,10 +746,10 @@
                     
                     // Update URL hash
                     history.pushState(null, null, '#how-it-works');
-                    });
-                }
+                });
             }
-        })();
+        }
+    })();
     </script>
     <script src="components/inject-sidebar.js"></script>
     <script src="components/inject-mobile-nav.js"></script>
