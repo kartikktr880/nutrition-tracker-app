@@ -11,7 +11,8 @@
         fixScrollJank: true, // Fix common causes of scroll jank
         fixScrollLag: true, // Fix scroll lag issues
         throttleScrollEvents: true, // Throttle scroll events for better performance
-        detectBrowser: true // Apply browser-specific fixes
+        detectBrowser: true, // Apply browser-specific fixes
+        removeHorizontalScrollbar: true // Force remove horizontal scrollbars
     };
     
     // State variables
@@ -21,6 +22,7 @@
     let scrollDirection = null; // 'up' or 'down'
     let ticking = false;
     let browserInfo = {};
+    let isInitialized = false;
     
     /**
      * Apply smooth scroll to document
@@ -35,13 +37,20 @@
                 -webkit-overflow-scrolling: touch !important;
                 height: 100% !important;
                 overflow-y: auto !important;
+                overflow-x: hidden !important;
+                max-width: 100vw !important;
+                width: 100vw !important;
             }
             
             body {
                 overflow-x: hidden !important;
                 -webkit-overflow-scrolling: touch !important;
-                height: 100% !important;
+                min-height: 100% !important;
                 position: relative !important;
+                max-width: 100vw !important;
+                width: 100vw !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
             }
             
             /* Enhanced smooth scrolling */
@@ -54,6 +63,34 @@
             /* Force smooth scroll even for browsers that don't support it well */
             .js-smooth-scroll {
                 transition: scroll-behavior 0.5s ease !important;
+            }
+            
+            /* Force main content to take full width properly */
+            main {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+                display: block !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Hide scrollbar but keep functionality */
+            ::-webkit-scrollbar {
+                width: 0px !important;
+                background: transparent !important; 
+            }
+            
+            /* Firefox */
+            html, body {
+                scrollbar-width: none !important;
+            }
+            
+            /* Force all sections to not exceed window width */
+            section, .section, .container {
+                max-width: 100vw !important;
+                width: 100% !important;
+                overflow-x: hidden !important;
+                box-sizing: border-box !important;
             }
         `;
         document.head.appendChild(styleEl);
@@ -119,7 +156,59 @@
     }
     
     /**
-     * Fix scroll lag by removing event listeners that might be slowing down scrolling
+     * Remove horizontal scrollbars completely
+     */
+    function removeHorizontalScrollbars() {
+        const styleEl = document.createElement('style');
+        styleEl.id = 'remove-horizontal-scrollbar-styles';
+        styleEl.innerHTML = `
+            /* Global horizontal overflow prevention */
+            html, body, main, section, div, header, footer, nav, aside, article {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Fix width calculation issues that cause overflow */
+            html, body {
+                width: 100vw !important;
+                min-width: auto !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
+                position: relative !important;
+            }
+            
+            /* Prevent Windows scrollbar space issue */
+            @supports (-ms-ime-align:auto) {
+                html {
+                    overflow-x: hidden !important;
+                    width: 100vw !important;
+                }
+                
+                body {
+                    overflow-x: hidden !important;
+                    width: 100vw !important;
+                }
+            }
+            
+            /* Content overflow handling */
+            img, video, iframe, canvas, svg, table {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+        `;
+        document.head.appendChild(styleEl);
+        
+        // Force calculation of layout to trigger fixes
+        window.addEventListener('load', function() {
+            document.body.style.width = '100vw';
+            document.body.style.maxWidth = '100vw';
+            document.body.style.overflowX = 'hidden';
+        });
+    }
+    
+    /**
+     * Fix scroll lag by making scroll events passive
      */
     function fixScrollLag() {
         // Store the native addEventListener
@@ -157,10 +246,11 @@
         browserInfo.isFirefox = ua.indexOf('Firefox') > -1;
         browserInfo.isChrome = ua.indexOf('Chrome') > -1 && ua.indexOf('Edge') === -1;
         browserInfo.isSafari = ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') === -1;
-        browserInfo.isEdge = ua.indexOf('Edge') > -1;
+        browserInfo.isEdge = ua.indexOf('Edge') > -1 || ua.indexOf('Edg/') > -1;
         browserInfo.isIE = ua.indexOf('Trident/') > -1;
         browserInfo.isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
         browserInfo.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+        browserInfo.isWindows = ua.indexOf('Windows') > -1;
         
         // Apply browser-specific fixes
         const styleEl = document.createElement('style');
@@ -181,6 +271,46 @@
                     position: fixed !important;
                     transform: translateZ(0) !important;
                 }
+                
+                /* Firefox width calculation fix */
+                main, section, .container {
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                }
+            `;
+        }
+        
+        // Edge/IE specific fixes
+        if (browserInfo.isEdge || browserInfo.isIE) {
+            css += `
+                /* Edge/IE specific fixes */
+                html, body {
+                    -ms-overflow-style: none !important;
+                    overflow-x: hidden !important;
+                    width: 100vw !important;
+                }
+                
+                /* Fix scrollbar space issue in Edge */
+                body {
+                    margin-right: 0 !important;
+                }
+            `;
+        }
+        
+        // Windows specific scrollbar fixes
+        if (browserInfo.isWindows) {
+            css += `
+                /* Windows scrollbar fixes */
+                html {
+                    overflow-y: auto !important;
+                    overflow-x: hidden !important;
+                    width: 100vw !important;
+                }
+                
+                body {
+                    overflow-x: hidden !important;
+                    width: 100vw !important;
+                }
             `;
         }
         
@@ -190,6 +320,7 @@
                 /* Safari/iOS specific scroll fixes */
                 html, body {
                     -webkit-overflow-scrolling: touch !important;
+                    overflow-x: hidden !important;
                 }
                 
                 .premium-header {
@@ -197,13 +328,16 @@
                     transform: translateZ(0) !important;
                 }
                 
-                /* Fix for Safari/iOS momentum scrolling */
-                body {
-                    position: fixed;
-                    width: 100%;
-                    height: 100%;
-                    overflow: auto;
-                    -webkit-overflow-scrolling: touch;
+                /* Fix for Safari momentum scrolling */
+                @supports (-webkit-overflow-scrolling: touch) {
+                    body {
+                        position: relative !important;
+                        width: 100% !important;
+                        height: auto !important;
+                        overflow-x: hidden !important;
+                        overflow-y: auto !important;
+                        -webkit-overflow-scrolling: touch !important;
+                    }
                 }
             `;
         }
@@ -216,11 +350,18 @@
                     overflow-x: hidden !important;
                     max-width: 100vw !important;
                     width: 100vw !important;
+                    touch-action: pan-y !important;
                 }
                 
                 /* Prevent pull-to-refresh and overscroll */
                 body {
                     overscroll-behavior-y: none !important;
+                }
+                
+                /* Fix content sizing on mobile */
+                main, section, .container, div {
+                    max-width: 100% !important;
+                    box-sizing: border-box !important;
                 }
             `;
         }
@@ -229,6 +370,24 @@
         if (css) {
             styleEl.innerHTML = css;
             document.head.appendChild(styleEl);
+        }
+        
+        // Apply explicit horizontal overflow fixes
+        if (browserInfo.isWindows || browserInfo.isEdge || browserInfo.isIE) {
+            // Fix Windows and Edge scrollbar issues
+            setTimeout(() => {
+                document.documentElement.style.overflowX = 'hidden';
+                document.documentElement.style.width = '100vw';
+                document.documentElement.style.maxWidth = '100vw';
+                document.body.style.overflowX = 'hidden';
+                document.body.style.width = '100vw';
+                document.body.style.maxWidth = '100vw';
+                
+                if (document.querySelector('main')) {
+                    document.querySelector('main').style.maxWidth = '100%';
+                    document.querySelector('main').style.overflowX = 'hidden';
+                }
+            }, 100);
         }
     }
     
@@ -302,14 +461,59 @@
             // Get browser info
             getBrowserInfo: function() {
                 return { ...browserInfo };
+            },
+            
+            // Force remove horizontal scrollbars
+            forceHideHorizontalScrollbars: function() {
+                document.documentElement.style.overflowX = 'hidden';
+                document.documentElement.style.maxWidth = '100vw';
+                document.body.style.overflowX = 'hidden';
+                document.body.style.maxWidth = '100vw';
             }
         };
+    }
+    
+    /**
+     * Fix extra wide elements that cause overflow
+     */
+    function fixOverflowingElements() {
+        // Run on document load and resize
+        function findAndFixOverflowingElements() {
+            const viewportWidth = window.innerWidth;
+            
+            // Fix any elements wider than viewport
+            const allElements = document.querySelectorAll('*');
+            for (let i = 0; i < allElements.length; i++) {
+                const element = allElements[i];
+                if (element.offsetWidth > viewportWidth) {
+                    element.style.maxWidth = '100%';
+                    element.style.width = '100%';
+                    element.style.boxSizing = 'border-box';
+                    element.style.overflowX = 'hidden';
+                }
+            }
+        }
+        
+        // Run on load
+        window.addEventListener('load', findAndFixOverflowingElements);
+        
+        // And on resize
+        window.addEventListener('resize', function() {
+            // Throttle
+            if (!ticking) {
+                window.requestAnimationFrame(findAndFixOverflowingElements);
+                ticking = true;
+                setTimeout(() => { ticking = false; }, 100);
+            }
+        }, { passive: true });
     }
     
     /**
      * Initialize everything
      */
     function init() {
+        if (isInitialized) return;
+        
         // Apply fixes based on configuration
         if (config.enableSmoothScroll) {
             applySmoothScroll();
@@ -323,6 +527,10 @@
             fixScrollLag();
         }
         
+        if (config.removeHorizontalScrollbar) {
+            removeHorizontalScrollbars();
+        }
+        
         if (config.throttleScrollEvents) {
             setupScrollThrottling();
         }
@@ -331,14 +539,23 @@
             detectBrowserAndApplyFixes();
         }
         
+        // Apply additional fixes
+        fixOverflowingElements();
+        
         // Register helper methods
         registerScrollHelpers();
         
         // Add class to signal initialization
         document.documentElement.classList.add('smooth-scroll-initialized');
         
-        // Log initialization
+        isInitialized = true;
         console.log('✅ Smooth scroll fixes initialized');
+        
+        // Additional initializations after small delay
+        setTimeout(() => {
+            // Force horizontal scrollbar check
+            window.scrollHelper.forceHideHorizontalScrollbars();
+        }, 500);
     }
     
     // Run when DOM is loaded
@@ -347,4 +564,14 @@
     } else {
         init();
     }
+    
+    // Re-initialize on load to ensure everything is fixed
+    window.addEventListener('load', () => {
+        if (!isInitialized) {
+            init();
+        } else {
+            // Just force the horizontal scrollbar check
+            window.scrollHelper.forceHideHorizontalScrollbars();
+        }
+    });
 })(); 

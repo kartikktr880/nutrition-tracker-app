@@ -9,11 +9,11 @@
     const config = {
         headerSelector: '.premium-header',
         headerHiddenClass: 'header-hidden',
-        scrollThreshold: 15, // Balance between responsiveness and stability
+        scrollThreshold: 10, // Lower threshold for more responsive behavior
         topOffset: 10, // Always show header when within this many pixels from top
         headerHeight: 80, // Match the CSS header height
-        debounceTime: 10, // Milliseconds to wait between scroll events (for performance)
-        checkDelay: 100 // Milliseconds to wait before checking header after scroll stops
+        debounceTime: 5, // Reduced for better responsiveness
+        checkDelay: 50 // Faster check after scroll stops
     };
     
     // State variables
@@ -23,6 +23,8 @@
     let headerCheckTimeout;
     let premiumHeader = null;
     let isInitialized = false;
+    let lastDirection = null;
+    let directionChangeCounter = 0;
     
     /**
      * Get the header element
@@ -53,14 +55,25 @@
         
         // Handle significant scroll events
         const scrollDelta = Math.abs(lastScrollTop - scrollTop);
+        const currentDirection = scrollTop > lastScrollTop ? 'down' : 'up';
         
-        if (scrollDelta > config.scrollThreshold) {
+        // Detect direction change
+        if (lastDirection !== currentDirection) {
+            directionChangeCounter++;
+            lastDirection = currentDirection;
+        } else {
+            // Reset counter if continuing in same direction
+            directionChangeCounter = 0;
+        }
+        
+        // Only process if we have meaningful scroll or consistent direction
+        if (scrollDelta > config.scrollThreshold || directionChangeCounter > 1) {
             // Priority 2: Hide header when scrolling down significantly
-            if (scrollTop > lastScrollTop && isHeaderVisible && scrollTop > config.headerHeight) {
+            if (currentDirection === 'down' && isHeaderVisible && scrollTop > config.headerHeight) {
                 hideHeader(header);
             } 
             // Priority 3: Show header when scrolling up significantly
-            else if (scrollTop < lastScrollTop && !isHeaderVisible) {
+            else if (currentDirection === 'up' && !isHeaderVisible) {
                 showHeader(header);
             }
             
@@ -74,6 +87,11 @@
             if (window.pageYOffset <= config.topOffset) {
                 showHeader(header);
             }
+            
+            // Ensure header is visible when scrolling up
+            if (lastDirection === 'up' && !isHeaderVisible) {
+                showHeader(header);
+            }
         }, config.checkDelay);
     }
     
@@ -85,6 +103,10 @@
         if (!isHeaderVisible) {
             header.classList.remove(config.headerHiddenClass);
             isHeaderVisible = true;
+            
+            // Force hardware acceleration
+            header.style.transform = 'translateZ(0)';
+            header.style.webkitTransform = 'translateZ(0)';
         }
     }
     
@@ -96,6 +118,10 @@
         if (isHeaderVisible) {
             header.classList.add(config.headerHiddenClass);
             isHeaderVisible = false;
+            
+            // Force hardware acceleration
+            header.style.transform = 'translateY(-100%) translateZ(0)';
+            header.style.webkitTransform = 'translateY(-100%) translateZ(0)';
         }
     }
     
@@ -188,7 +214,7 @@
     function forceHeaderCheck() {
         setTimeout(() => {
             handleHeaderScroll();
-        }, 50);
+        }, 20);
     }
     
     /**
@@ -217,8 +243,15 @@
         // Add resize listener to recheck header state
         window.addEventListener('resize', forceHeaderCheck, { passive: true });
         
+        // Add scroll direction detection
+        lastDirection = 'up'; // Start assuming scrolling up
+        
         // Initial header check
         forceHeaderCheck();
+        
+        // Additional check after content loads
+        setTimeout(forceHeaderCheck, 500);
+        setTimeout(forceHeaderCheck, 1000);
         
         // Add class to track initialization
         document.documentElement.classList.add('enhanced-header-scroll-initialized');
@@ -235,7 +268,12 @@
     }
     
     // If page has been loaded for a while, force a check
-    window.addEventListener('load', forceHeaderCheck);
+    window.addEventListener('load', () => {
+        forceHeaderCheck();
+        // Additional checks after load to ensure proper state
+        setTimeout(forceHeaderCheck, 100);
+        setTimeout(forceHeaderCheck, 500);
+    });
     
     // Expose API for other scripts to use
     window.enhancedHeaderScroll = {
@@ -247,6 +285,12 @@
         hideHeader: () => {
             const header = getHeader();
             if (header) hideHeader(header);
+        },
+        reset: () => {
+            lastScrollTop = 0;
+            isHeaderVisible = true;
+            const header = getHeader();
+            if (header) showHeader(header);
         }
     };
 })(); 
