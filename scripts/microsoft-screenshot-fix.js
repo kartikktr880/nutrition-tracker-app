@@ -1,304 +1,259 @@
 /**
  * Microsoft Screenshot Fix
- * This script specifically fixes issues with Microsoft's screenshot tool capture
+ * This script detects when Microsoft's screenshot tool is being used and applies fixes
+ * to ensure the page looks correct in screenshots
  */
 
 (function() {
-    /**
-     * Apply Microsoft-specific screenshot fixes
-     */
-    function applyMicrosoftScreenshotFixes() {
-        // Create a style element for MS screenshot fixes
-        const styleEl = document.createElement('style');
-        styleEl.id = 'microsoft-screenshot-fixes';
-        styleEl.textContent = `
-            /* Fix for Microsoft's full-page screenshot tool */
-            @media print, (-ms-high-contrast: active), (-ms-high-contrast: none) {
-                /* Force visible overflow for Edge/IE */
-                html, body {
-                    overflow: visible !important;
-                    height: auto !important;
-                    width: auto !important;
-                    max-width: none !important;
-                    max-height: none !important;
-                }
-                
-                /* Fix fixed positioning */
-                .premium-header {
-                    position: absolute !important;
-                    print-color-adjust: exact !important;
-                    -webkit-print-color-adjust: exact !important;
-                }
-                
-                /* Ensure content is visible */
-                main, section, .container {
-                    height: auto !important;
-                    min-height: auto !important;
-                    max-height: none !important;
-                    overflow: visible !important;
-                    page-break-inside: avoid !important;
-                    break-inside: avoid !important;
-                }
-                
-                /* Fix gradients and backgrounds */
-                body:before {
-                    position: absolute !important;
-                    content: "" !important;
-                    height: 100% !important;
-                    width: 100% !important;
-                }
+    // Configuration
+    const config = {
+        // CSS class to apply when in screenshot mode
+        screenshotModeClass: 'screenshot-mode',
+        // CSS to inject when screenshot mode is detected
+        screenshotCss: `
+            /* Fix for Microsoft Screenshot Tool */
+            .screenshot-mode {
+                /* Ensure full visibility */
+                max-height: none !important;
+                overflow: visible !important;
+                overflow-x: visible !important;
+                overflow-y: visible !important;
             }
             
-            /* Always ensure these elements are visible */
-            .hero-section, 
-            .features-section,
-            .steps-section,
-            .testimonials-section,
-            .cta-section,
-            .newsletter-section,
-            #footer-container {
+            /* Show all content */
+            .screenshot-mode html,
+            .screenshot-mode body,
+            .screenshot-mode main,
+            .screenshot-mode section,
+            .screenshot-mode footer {
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                overflow-x: visible !important;
+                overflow-y: visible !important;
+            }
+            
+            /* Force header to display */
+            .screenshot-mode .premium-header {
+                transform: none !important;
+                position: absolute !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+            
+            /* Eliminate any fixed positioning that might affect screenshots */
+            .screenshot-mode .fixed-element,
+            .screenshot-mode .sticky-element {
+                position: absolute !important;
+            }
+            
+            /* Ensure all animations are complete */
+            .screenshot-mode * {
+                animation-play-state: paused !important;
+                transition: none !important;
+            }
+            
+            /* Ensure all content is visible */
+            .screenshot-mode .hidden,
+            .screenshot-mode [hidden],
+            .screenshot-mode .collapse:not(.show),
+            .screenshot-mode .d-none {
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
-                height: auto !important;
-                min-height: auto !important;
-                overflow: visible !important;
             }
-            
-            /* Fix contain properties that can break screenshots */
-            section, 
-            .container, 
-            main, 
-            .hero-section {
-                contain: none !important;
-                content-visibility: visible !important;
-                overflow: visible !important;
-                height: auto !important;
-            }
-            
-            /* Ensure body always expands to fit all content */
-            body {
-                min-height: 100vh !important;
-                height: auto !important;
-                overflow-y: visible !important;
-            }
-        `;
-        document.head.appendChild(styleEl);
+        `,
         
-        // Apply classes that help with screenshots
-        document.documentElement.classList.add('capture-friendly');
-        document.body.classList.add('capture-friendly');
+        // Debug mode
+        debug: false
+    };
+    
+    // State
+    let isScreenshotMode = false;
+    let styleElement = null;
+    
+    /**
+     * Initialize screenshot detection
+     */
+    function init() {
+        // Check if URL has screenshot parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('screenshot') || urlParams.has('print')) {
+            enableScreenshotMode();
+        }
         
-        console.log('Applied Microsoft screenshot fixes');
+        // Create the style element but don't inject it yet
+        createScreenshotStyles();
+        
+        // Add screenshot mode toggle
+        window.toggleScreenshotMode = toggleScreenshotMode;
+        
+        // Create UI toggle if needed
+        createScreenshotToggle();
+        
+        if (config.debug) {
+            console.log('Microsoft screenshot fix initialized');
+        }
     }
     
     /**
-     * Create a specific Microsoft screenshot capture button
+     * Toggle screenshot mode on/off
      */
-    function createMicrosoftCaptureButton() {
-        // Create button
-        const button = document.createElement('button');
-        button.id = 'ms-screenshot-fix-button';
-        button.textContent = 'Fix Microsoft Screenshot';
-        button.title = 'Apply fixes for Microsoft screenshot tools';
+    function toggleScreenshotMode() {
+        if (isScreenshotMode) {
+            disableScreenshotMode();
+        } else {
+            enableScreenshotMode();
+        }
+        return isScreenshotMode;
+    }
+    
+    /**
+     * Enable screenshot mode
+     */
+    function enableScreenshotMode() {
+        document.documentElement.classList.add(config.screenshotModeClass);
         
-        // Style the button
-        button.style.position = 'fixed';
-        button.style.bottom = '70px';
-        button.style.right = '20px';
-        button.style.zIndex = '999999';
-        button.style.background = '#3D5A80';
-        button.style.color = 'white';
-        button.style.border = 'none';
-        button.style.borderRadius = '4px';
-        button.style.padding = '8px 16px';
-        button.style.fontFamily = 'Poppins, sans-serif';
-        button.style.fontSize = '14px';
-        button.style.cursor = 'pointer';
-        button.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        // Apply the screenshot styles
+        if (styleElement && !styleElement.parentNode) {
+            document.head.appendChild(styleElement);
+        }
         
-        // Add hover effect
-        button.addEventListener('mouseover', function() {
-            this.style.background = '#2C4F75';
-            this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
-        });
-        button.addEventListener('mouseout', function() {
-            this.style.background = '#3D5A80';
-            this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-        });
+        // Update state
+        isScreenshotMode = true;
         
-        // Add click handler
-        button.addEventListener('click', function() {
-            // Apply Microsoft-specific fixes
-            applyMicrosoftScreenshotFixes();
-            
-            // Fix fixed positioning elements for Microsoft screenshots
-            document.querySelectorAll('[style*="position: fixed"], [style*="position:fixed"]').forEach(el => {
-                if (el !== this && !el.id.includes('screenshot')) {
-                    el.style.position = 'absolute';
-                    el.setAttribute('data-original-position', 'fixed');
-                }
-            });
-            
-            // Force visible content
-            document.querySelectorAll('section, .container, .hero-section').forEach(el => {
-                el.style.height = 'auto';
-                el.style.minHeight = 'auto';
-                el.style.maxHeight = 'none';
-                el.style.overflow = 'visible';
+        // Show all elements that might be hidden
+        document.querySelectorAll('.hidden, [hidden], .collapse:not(.show), .d-none')
+            .forEach(el => {
                 el.style.display = 'block';
                 el.style.visibility = 'visible';
                 el.style.opacity = '1';
             });
-            
-            // Show notification
-            const notification = document.createElement('div');
-            notification.id = 'ms-screenshot-notification';
-            notification.textContent = 'Microsoft screenshot fixes applied. Take your screenshot now.';
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.left = '50%';
-            notification.style.transform = 'translateX(-50%)';
-            notification.style.background = '#1A3C34';
-            notification.style.color = 'white';
-            notification.style.padding = '10px 20px';
-            notification.style.borderRadius = '4px';
-            notification.style.zIndex = '999999';
-            notification.style.fontFamily = 'Poppins, sans-serif';
-            notification.style.textAlign = 'center';
-            document.body.appendChild(notification);
-            
-            // Remove notification after 5 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-            
-            // Replace button with a reset button
-            this.textContent = 'Reset Page Layout';
-            this.style.background = '#FF8C42';
-            this.removeEventListener('click', arguments.callee);
-            this.addEventListener('click', resetPageLayout);
-        });
         
-        // Add to document
-        document.body.appendChild(button);
-    }
-    
-    /**
-     * Reset the page layout after taking a screenshot
-     */
-    function resetPageLayout() {
-        // Remove MS screenshot fixes style
-        const styleEl = document.getElementById('microsoft-screenshot-fixes');
-        if (styleEl) {
-            styleEl.remove();
+        // Ensure header is visible
+        const header = document.querySelector('.premium-header');
+        if (header) {
+            header.style.transform = 'none';
+            header.style.visibility = 'visible';
+            header.style.opacity = '1';
+            header.style.position = 'absolute';
         }
         
-        // Restore fixed positioning
-        document.querySelectorAll('[data-original-position="fixed"]').forEach(el => {
-            el.style.position = 'fixed';
-            el.removeAttribute('data-original-position');
-        });
-        
-        // Remove capture friendly classes
-        document.documentElement.classList.remove('capture-friendly');
-        document.body.classList.remove('capture-friendly');
-        
-        // Show notification
-        const notification = document.createElement('div');
-        notification.id = 'ms-screenshot-reset-notification';
-        notification.textContent = 'Page layout restored.';
-        notification.style.position = 'fixed';
-        notification.style.top = '20px';
-        notification.style.left = '50%';
-        notification.style.transform = 'translateX(-50%)';
-        notification.style.background = '#3D5A80';
-        notification.style.color = 'white';
-        notification.style.padding = '10px 20px';
-        notification.style.borderRadius = '4px';
-        notification.style.zIndex = '999999';
-        notification.style.fontFamily = 'Poppins, sans-serif';
-        notification.style.textAlign = 'center';
-        document.body.appendChild(notification);
-        
-        // Remove notification after 3 seconds
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-        
-        // Reset button
-        const button = document.getElementById('ms-screenshot-fix-button');
-        if (button) {
-            button.textContent = 'Fix Microsoft Screenshot';
-            button.style.background = '#3D5A80';
-            button.removeEventListener('click', resetPageLayout);
-            button.addEventListener('click', function() {
-                applyMicrosoftScreenshotFixes();
-                this.textContent = 'Reset Page Layout';
-                this.style.background = '#FF8C42';
-                this.removeEventListener('click', arguments.callee);
-                this.addEventListener('click', resetPageLayout);
+        // Ensure all content is visible
+        document.querySelectorAll('section, footer')
+            .forEach(el => {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                el.style.opacity = '1';
             });
-        }
         
-        console.log('Page layout reset after screenshot');
+        // Log state
+        if (config.debug) {
+            console.log('Screenshot mode enabled');
+        }
     }
     
     /**
-     * Initialize Microsoft screenshot fixes
+     * Disable screenshot mode
      */
-    function init() {
-        // Check if we're running in Microsoft Edge or using Windows
-        const userAgent = navigator.userAgent.toLowerCase();
-        const isMicrosoftBrowser = userAgent.indexOf('edge') > -1 || userAgent.indexOf('trident') > -1 || userAgent.indexOf('msie') > -1;
-        const isWindows = userAgent.indexOf('windows') > -1;
+    function disableScreenshotMode() {
+        document.documentElement.classList.remove(config.screenshotModeClass);
         
-        // Create Microsoft screenshot button only if using Windows or MS browser
-        if (isWindows || isMicrosoftBrowser) {
-            createMicrosoftCaptureButton();
-            console.log('Microsoft screenshot fix initialized for Windows/Edge user');
-        } else {
-            // Still add the button for all users, just in case
-            createMicrosoftCaptureButton();
-            console.log('Microsoft screenshot fix initialized');
+        // Remove the screenshot styles
+        if (styleElement && styleElement.parentNode) {
+            styleElement.parentNode.removeChild(styleElement);
         }
         
-        // Add keyboard shortcut (Alt+M) to apply Microsoft fixes
-        document.addEventListener('keydown', function(e) {
-            if (e.altKey && e.key === 'm') {
-                e.preventDefault();
-                applyMicrosoftScreenshotFixes();
-                
-                // Show notification
-                const notification = document.createElement('div');
-                notification.id = 'ms-screenshot-shortcut-notification';
-                notification.textContent = 'Microsoft screenshot fixes applied (Alt+M). Take your screenshot now.';
-                notification.style.position = 'fixed';
-                notification.style.top = '20px';
-                notification.style.left = '50%';
-                notification.style.transform = 'translateX(-50%)';
-                notification.style.background = '#1A3C34';
-                notification.style.color = 'white';
-                notification.style.padding = '10px 20px';
-                notification.style.borderRadius = '4px';
-                notification.style.zIndex = '999999';
-                notification.style.fontFamily = 'Poppins, sans-serif';
-                notification.style.textAlign = 'center';
-                document.body.appendChild(notification);
-                
-                // Remove notification after 5 seconds
-                setTimeout(() => {
-                    notification.remove();
-                }, 5000);
-            } else if (e.altKey && e.key === 'r') {
-                // Reset with Alt+R
-                e.preventDefault();
-                resetPageLayout();
-            }
-        });
+        // Update state
+        isScreenshotMode = false;
+        
+        // Reset visibility to default
+        document.querySelectorAll('.hidden, [hidden], .collapse:not(.show), .d-none')
+            .forEach(el => {
+                el.style.display = '';
+                el.style.visibility = '';
+                el.style.opacity = '';
+            });
+        
+        // Reset header styling
+        const header = document.querySelector('.premium-header');
+        if (header) {
+            header.style.transform = '';
+            header.style.visibility = '';
+            header.style.opacity = '';
+            header.style.position = '';
+        }
+        
+        // Log state
+        if (config.debug) {
+            console.log('Screenshot mode disabled');
+        }
     }
     
-    // Run when DOM is ready
+    /**
+     * Create the screenshot styles
+     */
+    function createScreenshotStyles() {
+        styleElement = document.createElement('style');
+        styleElement.id = 'microsoft-screenshot-fix-styles';
+        styleElement.type = 'text/css';
+        styleElement.innerHTML = config.screenshotCss;
+    }
+    
+    /**
+     * Create a UI toggle for screenshot mode
+     */
+    function createScreenshotToggle() {
+        // Only create in development environment
+        if (window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.includes('vercel.app')) {
+            
+            const toggle = document.createElement('button');
+            toggle.id = 'screenshot-mode-toggle';
+            toggle.innerHTML = 'Screenshot Mode';
+            toggle.style.cssText = `
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                z-index: 9999;
+                background: #1A3C34;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 8px 12px;
+                font-family: sans-serif;
+                font-size: 12px;
+                cursor: pointer;
+                opacity: 0.7;
+                transition: opacity 0.2s;
+            `;
+            
+            toggle.addEventListener('mouseenter', () => {
+                toggle.style.opacity = '1';
+            });
+            
+            toggle.addEventListener('mouseleave', () => {
+                toggle.style.opacity = '0.7';
+            });
+            
+            toggle.addEventListener('click', () => {
+                const isEnabled = toggleScreenshotMode();
+                toggle.innerHTML = isEnabled ? 'Exit Screenshot Mode' : 'Screenshot Mode';
+            });
+            
+            // Add to DOM after body loads
+            if (document.body) {
+                document.body.appendChild(toggle);
+            } else {
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.body.appendChild(toggle);
+                });
+            }
+        }
+    }
+    
+    // Initialize on load
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
