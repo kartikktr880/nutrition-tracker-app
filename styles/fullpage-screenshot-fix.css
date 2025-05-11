@@ -299,4 +299,31 @@ section,
     flex: 1 !important;
     min-width: 0 !important;
   }
+}
+
+/* Updated Forced Colors Mode support (replacing -ms-high-contrast) */
+@media (forced-colors: active) {
+  /* Ensure high contrast visibility */
+  html, body, main, section, .container {
+    background-color: Canvas !important;
+    color: CanvasText !important;
+  }
+  
+  /* Ensure buttons and interactive elements have proper contrast */
+  button, a, .btn, .cta-button, .social-icon {
+    forced-color-adjust: none !important;
+    color: ButtonText !important;
+    background-color: ButtonFace !important;
+    border: 1px solid ButtonText !important;
+  }
+  
+  /* Ensure focus states are visible */
+  button:focus, a:focus, .btn:focus, input:focus {
+    outline: 2px solid Highlight !important;
+  }
+  
+  /* Maintain visibility of important content */
+  h1, h2, h3, p, li, .footer-title, .copyright, .contact-text {
+    color: CanvasText !important;
+  }
 } 

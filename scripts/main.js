@@ -21,6 +21,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFormValidation();
     initializeFooterAnimations();
     
+    // Fix for CONT.getUniqueSelector error
+    if (window.CONT && typeof window.CONT.getUniqueSelector !== 'function') {
+        // Define the function if it doesn't exist to prevent errors
+        window.CONT.getUniqueSelector = function(element) {
+            // Simple implementation that returns a basic selector
+            if (!element) return '';
+            if (element.id) return '#' + element.id;
+            if (element.className) {
+                const classes = element.className.split(' ').filter(c => c.trim().length > 0);
+                if (classes.length > 0) return '.' + classes[0];
+            }
+            return element.tagName.toLowerCase();
+        };
+        console.log('Added missing CONT.getUniqueSelector function');
+    }
+    
     // Function to apply all screenshot-specific fixes
     function applyScreenshotFixes() {
         console.log('Applying screenshot fixes...');
@@ -342,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             return;
         }
-
+    
         // Create intersection observer to animate elements when they come into view
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
