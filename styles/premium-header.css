@@ -13,13 +13,11 @@
 
   /* Basic header structure */
   .premium-header {
-    background: linear-gradient(
-      90deg,
-      #1A3C34 0%,
-      #1A3C34 60%,
-      #2A5E50 85%,
-      #3D5A80 100%
-    ) !important;
+    background-color: rgba(14, 41, 34, 0.9) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -35,8 +33,6 @@
     -webkit-backface-visibility: hidden !important;
     transition: transform 0.3s ease-in-out !important;
     will-change: transform !important;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
-    box-sizing: border-box !important;
   }
 
   /* Header scroll behavior */
@@ -47,10 +43,10 @@
 
   /* Header container */
   .premium-header-container {
+    padding: 15px var(--container-padding);
     width: 100% !important;
     max-width: 1200px !important;
     margin: 0 auto !important;
-    padding: 0 20px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -62,20 +58,25 @@
     display: flex !important;
     align-items: center !important;
     text-decoration: none !important;
-    color: white !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .premium-header-logo:hover {
+    transform: translateY(-2px) !important;
   }
 
   .premium-header-logo-img {
-    height: 40px !important;
+    height: 36px !important;
     width: auto !important;
     margin-right: 12px !important;
   }
 
   .premium-header-logo-text {
-    font-family: 'Poppins', sans-serif !important;
-    font-size: 24px !important;
-    font-weight: 600 !important;
+    font-family: var(--font-heading, 'Poppins', sans-serif) !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
     color: white !important;
+    letter-spacing: -0.5px !important;
     white-space: nowrap !important;
   }
 
@@ -87,14 +88,22 @@
   }
 
   .header-icon {
-    color: white !important;
-    font-size: 24px !important;
-    text-decoration: none !important;
-    transition: opacity 0.2s ease !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 20px !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
   }
 
   .header-icon:hover {
-    opacity: 0.8 !important;
+    background-color: rgba(255, 140, 66, 0.2) !important;
+    color: #FF8C42 !important;
+    transform: translateY(-2px) !important;
   }
 }
 

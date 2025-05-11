@@ -30,6 +30,7 @@
     
     <!-- Base Stylesheets -->
     <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/variables.css">
     <link rel="stylesheet" href="styles/main.css?v=1.0.0">
     
     <!-- Critical Scroll & Header Fixes - Must Load First -->
@@ -125,16 +126,15 @@
         }
         
         /* Section spacing fixes */
-        .how-it-works { padding-bottom: 60px !important; margin-bottom: 0 !important; }
+        .steps-section { padding-bottom: 60px !important; margin-bottom: 0 !important; }
         .cta-section { padding: 80px 0 !important; margin: 0 !important; }
-        .stay-updated-section { padding: 80px 0 !important; margin: 0 !important; }
         .newsletter-section { padding: 80px 0 !important; margin: 0 !important; }
         .footer { margin-top: 0 !important; }
         section + section { margin-top: 0 !important; }
         main > section:last-of-type { margin-bottom: 0 !important; }
         
         /* Force visibility of sections */
-        .stay-updated-section, .cta-section, .newsletter-section, .footer {
+        .newsletter-section, .cta-section, .footer {
             opacity: 1 !important;
             visibility: visible !important;
         }
@@ -187,13 +187,15 @@
     <!-- Final header fixes - should be last to take precedence -->
     <link rel="stylesheet" href="styles/header-fixes.css">
     <link rel="stylesheet" href="styles/cleanup-scrolling.css">
-
-    <!-- Additional Visual Enhancements -->
-    <link rel="stylesheet" href="styles/section-spacing-fix.css">
-    <link rel="stylesheet" href="styles/button-enhancement.css">
-    <link rel="stylesheet" href="styles/images-and-cards-fix.css">
-    <script src="scripts/footer-improver.js" defer></script>
-    </head>
+    <!-- Include all our CSS files -->
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/home-page.css">
+    <link rel="stylesheet" href="styles/hero-section.css">
+    <link rel="stylesheet" href="styles/features.css">
+    <link rel="stylesheet" href="styles/step-section.css">
+    <link rel="stylesheet" href="styles/newsletter.css">
+    <link rel="stylesheet" href="styles/footer-new.css">
+</head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Premium Desktop Header -->
     <header class="premium-header" id="premium-header">
@@ -321,16 +323,17 @@
             </div>
         </section>
         
-        <!-- Step Section -->
-        <section id="how-it-works" class="steps-section">
+        <!-- Steps Section -->
+        <section class="steps-section">
             <div class="container">
                 <div class="section-header">
-                    <h2>How NutriTrack Works</h2>
-                    <p>Our simple three-step process makes nutrition tracking effortless and effective</p>
+                    <h2>How <span class="premium-text-accent">NutriTrack</span> Works</h2>
+                    <p>Follow these simple steps to start your nutrition journey</p>
                 </div>
                 
                 <div class="steps-container">
-                    <!-- Step 1 -->
+                    <div class="steps-connection"></div>
+                    
                     <div class="step">
                         <div class="step-number">1</div>
                         <div class="step-icon">
@@ -341,7 +344,6 @@
                         <a href="#" class="step-link">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
                     
-                    <!-- Step 2 -->
                     <div class="step">
                         <div class="step-number">2</div>
                         <div class="step-icon">
@@ -352,7 +354,6 @@
                         <a href="#" class="step-link">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
                     
-                    <!-- Step 3 -->
                     <div class="step">
                         <div class="step-number">3</div>
                         <div class="step-icon">
@@ -367,7 +368,6 @@
                 <!-- Background decoration -->
                 <div class="steps-bg-shape steps-bg-shape-1"></div>
                 <div class="steps-bg-shape steps-bg-shape-2"></div>
-                <div class="steps-connection"></div>
             </div>
         </section>
         
@@ -388,12 +388,16 @@
                 <div class="testimonials-grid">
                     <!-- Testimonial 1 -->
                     <div class="testimonial-card premium-card">
-                        <i class="fas fa-quote-left quote-icon"></i>
+                        <div class="quote-icon-wrapper">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                        </div>
                         <div class="testimonial-content card-content">
                             <p>"I've lost 15 pounds in just 3 months while still enjoying my favorite foods. The AI recommendations are incredibly accurate and helped me understand my eating patterns better."</p>
                         </div>
                         <div class="testimonial-author">
-                            <img src="images/testimonial-1.jpg" alt="Sarah L." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=SL'; this.onerror=null;">
+                            <div class="testimonial-author-img">
+                                <img src="images/testimonial-1.jpg" alt="Sarah L." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=SL'; this.onerror=null;">
+                            </div>
                             <div class="testimonial-author-info">
                                 <div class="testimonial-author-name">Sarah L.</div>
                                 <div class="testimonial-author-title">Lost 15 lbs in 3 months</div>
@@ -410,12 +414,16 @@
                     
                     <!-- Testimonial 2 -->
                     <div class="testimonial-card premium-card">
-                        <i class="fas fa-quote-left quote-icon"></i>
+                        <div class="quote-icon-wrapper">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                        </div>
                         <div class="testimonial-content card-content">
                             <p>"As a professional athlete, tracking my nutrition precisely is critical. This app makes it effortless with its smart photo recognition system—I just snap a photo and get detailed macros instantly."</p>
                         </div>
                         <div class="testimonial-author">
-                            <img src="images/testimonial-2.jpg" alt="Mark T." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=MT'; this.onerror=null;">
+                            <div class="testimonial-author-img">
+                                <img src="images/testimonial-2.jpg" alt="Mark T." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=MT'; this.onerror=null;">
+                            </div>
                             <div class="testimonial-author-info">
                                 <div class="testimonial-author-name">Mark T.</div>
                                 <div class="testimonial-author-title">Professional Runner</div>
@@ -432,12 +440,16 @@
                     
                     <!-- Testimonial 3 -->
                     <div class="testimonial-card premium-card">
-                        <i class="fas fa-quote-left quote-icon"></i>
+                        <div class="quote-icon-wrapper">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                        </div>
                         <div class="testimonial-content card-content">
                             <p>"The supportive community has been incredible for my journey. I've discovered so many healthy recipes and nutrition tips from other members. Plus, the interface is beautifully designed and intuitive."</p>
                         </div>
                         <div class="testimonial-author">
-                            <img src="images/testimonial-3.jpg" alt="Jennifer K." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=JK'; this.onerror=null;">
+                            <div class="testimonial-author-img">
+                                <img src="images/testimonial-3.jpg" alt="Jennifer K." onerror="this.src='https://placehold.co/50x50/1A3C34/FFFFFF?text=JK'; this.onerror=null;">
+                            </div>
                             <div class="testimonial-author-info">
                                 <div class="testimonial-author-name">Jennifer K.</div>
                                 <div class="testimonial-author-title">Nutrition Coach</div>
@@ -454,95 +466,210 @@
                 </div>
                 
                 <div class="testimonials-controls">
-                    <button class="testimonial-control prev-testimonial" aria-label="Previous testimonial" title="Previous testimonial">
-                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    </button>
-                    <button class="testimonial-control next-testimonial" aria-label="Next testimonial" title="Next testimonial">
-                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                    </button>
+                    <div class="testimonial-pagination">
+                        <span class="pagination-dot active"></span>
+                        <span class="pagination-dot"></span>
+                        <span class="pagination-dot"></span>
+                    </div>
+                    <div class="testimonial-buttons">
+                        <button class="testimonial-control prev-testimonial" aria-label="Previous testimonial" title="Previous testimonial">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        </button>
+                        <button class="testimonial-control next-testimonial" aria-label="Next testimonial" title="Next testimonial">
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
         
-        <!-- Call to Action Section -->
+        <!-- CTA Section -->
         <section class="cta-section">
             <div class="section-background"></div>
             <div class="container">
-                <div class="premium-badge">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started Now</span>
-                </div>
-                <div class="section-header">
-                    <h2>Take Control of Your <span class="premium-text-accent">Nutrition Today</span></h2>
-                    <p>Join thousands of users who have transformed their health with our intelligent nutrition platform</p>
-                </div>
-                <div class="cta-buttons">
-                    <a href="signup.html?trial=true" class="cta-primary-btn">
+                <div class="cta-content">
+                    <div class="premium-badge">
                         <i class="fas fa-rocket"></i>
-                        Start Free Trial
-                    </a>
-                    <a href="#" class="cta-secondary-btn" id="watch-demo-btn">
-                        <i class="fas fa-play-circle"></i>
-                        Watch Demo
-                    </a>
+                        <span>Get Started Now</span>
+                    </div>
+                    <h2>Take Control of Your <span class="premium-text-accent">Nutrition Today</span></h2>
+                    <p>Join thousands of users who have transformed their health with our intelligent nutrition platform. Your journey to better health starts here.</p>
+                    
+                    <div class="cta-buttons">
+                        <a href="#" class="btn-primary">
+                            Start Free Trial <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#" class="btn-secondary">
+                            Learn More <i class="fas fa-info-circle"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="cta-stats">
+                        <div class="cta-stat">
+                            <div class="cta-stat-number">10k+</div>
+                            <div class="cta-stat-label">Active Users</div>
+                        </div>
+                        <div class="cta-stat">
+                            <div class="cta-stat-number">98%</div>
+                            <div class="cta-stat-label">Satisfaction</div>
+                        </div>
+                        <div class="cta-stat">
+                            <div class="cta-stat-number">4.9</div>
+                            <div class="cta-stat-label">App Rating</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="cta-features">
-                    <div class="cta-feature premium-card">
-                        <i class="fas fa-check-circle"></i>
-                        <span>No credit card required</span>
-                    </div>
-                    <div class="cta-feature premium-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>14-day free trial</span>
-                    </div>
-                    <div class="cta-feature premium-card">
-                        <i class="fas fa-unlock-alt"></i>
-                        <span>Cancel anytime</span>
-                    </div>
+                
+                <div class="cta-image">
+                    <img src="assets/app-screenshot-2.png" alt="Nutrition Tracker App Dashboard">
+                    <div class="cta-shape cta-shape-1"></div>
+                    <div class="cta-shape cta-shape-2"></div>
                 </div>
             </div>
         </section>
 
         <!-- Newsletter Section -->
         <section class="newsletter-section">
-            <div class="section-background"></div>
             <div class="container">
-                <div class="section-tag">
-                    <i class="fas fa-envelope-open-text"></i>
-                    <span>Stay Updated</span>
+                <div class="newsletter-content">
+                    <div class="newsletter-tag">
+                        <i class="fas fa-envelope"></i>
+                        <span>Stay Updated</span>
+                    </div>
+                    <h2 class="section-title">Get <span class="premium-text">Exclusive</span> Nutrition Tips</h2>
+                    <p class="section-description">Join our newsletter and receive personalized nutrition advice, healthy recipes, and special offers delivered to your inbox.</p>
+                    
+                    <div class="newsletter-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Weekly meal plans</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Expert nutrition advice</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Exclusive discounts</span>
+                        </div>
+                    </div>
+                    
+                    <form class="newsletter-form">
+                        <div class="form-group">
+                            <input type="email" placeholder="Enter your email address" required>
+                            <button type="submit" class="newsletter-button">
+                                Subscribe <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="form-note">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>We respect your privacy. Unsubscribe at any time.</span>
+                        </div>
+                    </form>
                 </div>
-                <div class="section-header">
-                    <h2>Nutrition Tips in Your <span class="premium-text">Inbox</span></h2>
-                    <p>Join our community and receive personalized nutrition advice, healthy recipes, and exclusive content to support your health journey</p>
+                
+                <div class="newsletter-image">
+                    <img src="assets/newsletter-image.png" alt="Nutrition Tips Newsletter" onerror="this.src='https://placehold.co/400x500/F4EDE4/1A3C34?text=Newsletter'; this.onerror=null;">
+                    <div class="floating-element floating-element-1">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <div class="floating-element floating-element-2">
+                        <i class="fas fa-carrot"></i>
+                    </div>
                 </div>
-                <div class="premium-divider"></div>
-                <form class="newsletter-form">
-                    <input type="email" class="premium-input" placeholder="Enter your email address" required id="newsletter-email" name="newsletter-email">
-                    <button type="submit" class="btn-primary" aria-label="Subscribe to newsletter" title="Subscribe">
-                        <span>Subscribe</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </form>
-                <div class="newsletter-benefits">
-                    <div class="newsletter-benefit premium-card">
-                        <i class="fas fa-lock"></i>
-                        <span>Your data is secure</span>
-                    </div>
-                    <div class="newsletter-benefit premium-card">
-                        <i class="fas fa-paper-plane"></i>
-                        <span>Weekly insights</span>
-                    </div>
-                    <div class="newsletter-benefit premium-card">
-                        <i class="fas fa-times-circle"></i>
-                        <span>Unsubscribe anytime</span>
-                    </div>
-                    </div>
-                    </div>
+            </div>
         </section>
     </main>
     
-    <!-- Footer Container -->
-    <div id="footer-container"></div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-column">
+                    <a href="#" class="footer-logo">
+                        <img src="assets/logo-white.png" alt="Nutrition Tracker Logo" onerror="this.src='https://placehold.co/160x60/1A3C34/FFFFFF?text=NutriTrack'; this.onerror=null;">
+                    </a>
+                    <p class="footer-description">Your personalized nutrition tracking solution for a healthier lifestyle. Monitor meals, track macros, and achieve your health goals.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Home</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Features</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> How It Works</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Meal Plans</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Testimonials</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Pricing</a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Nutrition Blog</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Recipe Database</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Workout Plans</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Calorie Calculator</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Educational Videos</a>
+                        <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Community Forum</a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact Us</h4>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-content">
+                            123 Nutrition Street, Healthy City, HC 12345
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-content">
+                            +1 (555) 123-4567
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-content">
+                            support@nutritrack.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-divider"></div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2023 NutriTrack. All rights reserved.
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="#" class="footer-bottom-link">Privacy Policy</a>
+                    <a href="#" class="footer-bottom-link">Terms of Service</a>
+                    <a href="#" class="footer-bottom-link">Sitemap</a>
+                    <a href="#" class="footer-bottom-link">Accessibility</a>
+                </div>
+            </div>
+        </div>
+        
+        <button class="back-to-top" id="backToTop">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </footer>
 
     <!-- Demo Video Modal -->
     <div id="demo-video-modal" class="modal">
