@@ -29,11 +29,13 @@
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/main.css?v=1.0.0">
     
-    <!-- Fix Scroll Issues - Load Early -->
-    <link rel="stylesheet" href="styles/fix-scroll-smoothness.css">
+    <!-- Critical Scroll & Header Fixes - Must Load First -->
+    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css">
+    <script src="scripts/smooth-scroll-fix.js" defer></script>
+    <script src="scripts/enhanced-header-scroll.js" defer></script>
+    
+    <!-- Legacy Fix Scripts - Keeping for compatibility -->
     <script src="scripts/fix-scroll.js" defer></script>
-    <script src="scripts/fix-header-scroll.js" defer></script>
-    <script src="scripts/fix-scroll-errors.js" defer></script>
     <script src="scripts/fix-footer.js" defer></script>
     <script src="scripts/remove-spacers.js" defer></script>
     

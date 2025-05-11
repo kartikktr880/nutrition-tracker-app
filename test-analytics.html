@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+
+    <!-- Legacy Fix Scripts - Keeping for compatibility -->
+    <script src="scripts/fix-scroll.js" defer></script>
+    <script src="scripts/fix-footer.js" defer></script>
+    <script src="scripts/remove-spacers.js" defer></script><!DOCTYPE html>
 <html lang="en" class="dark-mode dark-theme">
 <head>
     <meta name="theme-color" content="#1A3C34">
@@ -65,8 +69,8 @@
     </style>
 
     <!-- Dark Mode Enforcer - Load First -->
-    <script src="scripts/fix-header-scroll.js" defer></script>
-    <script src="scripts/fix-scroll-errors.js" defer></script>
+    </script>
+    </script>
     <script src="scripts/dark-mode-enforcer.js"></script>
 
     <!-- Gradient Scroll Effect -->
@@ -75,7 +79,6 @@
     <!-- Footer Fix Scripts -->
     <script src="scripts/fix-footer.js" defer></script>
     <script src="scripts/remove-spacers.js" defer></script>
-    <link rel="stylesheet" href="styles/fix-scroll-smoothness.css">
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 
@@ -86,7 +89,7 @@
 </head>
 <body class="dark-theme gradient-background dark-mode">
     <div class="container">
-        <header>
+        <header class="premium-header" id="premium-header">
             <h1>Advanced Analytics Test</h1>
             <p>This page tests the functionality of the advanced-analytics.js module.</p>
         </header>

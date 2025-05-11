@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+
+    <!-- Legacy Fix Scripts - Keeping for compatibility -->
+    <script src="scripts/fix-scroll.js" defer></script>
+    <script src="scripts/fix-footer.js" defer></script>
+    <script src="scripts/remove-spacers.js" defer></script><!DOCTYPE html>
 <html lang="en" class="dark-mode dark-theme">
 <head>
     <meta name="theme-color" content="#1A3C34">
@@ -7,12 +11,16 @@
     <title>Shopping List - Nutrition Tracker</title>
     
     <!-- Footer Fix Scripts -->
-    <script src="scripts/fix-header-scroll.js" defer></script>
-    <script src="scripts/fix-scroll-errors.js" defer></script>
+    </script>
+    </script>
     <script src="scripts/fix-footer.js" defer></script>
     <script src="scripts/remove-spacers.js" defer></script>
-    <link rel="stylesheet" href="styles/fix-scroll-smoothness.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main.css$1
+    
+    <!-- Critical Scroll & Header Fixes - Must Load First -->
+    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css"">
+    <script src="scripts/smooth-scroll-fix.js" defer>
+    <script src="scripts/enhanced-header-scroll.js" defer></script></script>
     <link rel="stylesheet" href="styles/shopping-list.css">
     <link rel="stylesheet" href="styles/print-shopping-list.css" media="print">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
@@ -32,7 +40,7 @@
     <link rel="stylesheet" href="styles/screenshot-fix.css">
 </head>
 <body class="dark-theme gradient-background dark-mode">
-    <header>
+    <header class="premium-header" id="premium-header">
         <div class="logo">Nutrition Tracker</div>
         <nav>
             <ul>
