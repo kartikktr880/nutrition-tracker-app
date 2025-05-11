@@ -167,6 +167,22 @@
         .stat-label {
             color: rgba(255, 255, 255, 0.9) !important;
         }
+        
+        /* Footer extreme compression for screenshot mode */
+        .screenshot-mode .footer * {
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 0.9 !important;
+        }
+        
+        .screenshot-mode .footer {
+            padding: 0 !important;
+            border: none !important;
+        }
+        
+        .screenshot-mode .footer-bottom {
+            border: none !important;
+        }
     </style>
     
     <!-- Enhanced Theme Toggle Script (Replaced with Dark Mode Only) -->
@@ -184,6 +200,19 @@
                 toggle.style.display = 'none';
             }
         });
+        
+        // Check for screenshot mode from URL
+        const isScreenshotMode = new URLSearchParams(window.location.search).get('screenshot') === 'true';
+        if (isScreenshotMode) {
+            document.body.classList.add('screenshot-mode');
+            document.documentElement.classList.add('screenshot-mode');
+            // Load extreme compression CSS
+            const link = document.createElement('link');
+            link.id = 'extreme-compression-css';
+            link.rel = 'stylesheet';
+            link.href = 'styles/compact-footer.css';
+            document.head.appendChild(link);
+        }
     });
     </script>
     <script src="scripts/gradient-scroll.js" defer></script>

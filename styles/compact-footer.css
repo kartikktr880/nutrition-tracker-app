@@ -311,4 +311,133 @@
   .footer-links-bottom {
     justify-content: center;
   }
+}
+
+/* EMERGENCY SPACING FIX - Absolute zero-spacing approach */
+.screenshot-mode .footer {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+.screenshot-mode .footer-content {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.screenshot-mode .footer-column {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0.9 !important;
+  min-height: 0 !important;
+}
+
+.screenshot-mode .footer-title {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  line-height: 0.9 !important;
+}
+
+.screenshot-mode .footer-title::before {
+  display: none !important;
+}
+
+.screenshot-mode .footer-links {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.screenshot-mode .footer-links li {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0.9 !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.screenshot-mode .footer-links li::before {
+  display: none !important;
+}
+
+.screenshot-mode .footer-links a {
+  font-size: 9px !important;
+  line-height: 0.9 !important;
+}
+
+.screenshot-mode .contact-info {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.screenshot-mode .contact-item {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0.9 !important;
+}
+
+.screenshot-mode .contact-icon {
+  font-size: 9px !important;
+}
+
+.screenshot-mode .contact-text {
+  font-size: 9px !important;
+  line-height: 0.9 !important;
+}
+
+.screenshot-mode .social-icons {
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 2px !important;
+}
+
+.screenshot-mode .social-icon {
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 8px !important;
+}
+
+.screenshot-mode .footer-bottom {
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.screenshot-mode .copyright {
+  font-size: 8px !important;
+}
+
+.screenshot-mode .footer-links-bottom {
+  gap: 3px !important;
+}
+
+.screenshot-mode .footer-link-bottom {
+  font-size: 8px !important;
+}
+
+/* Remove space between newsletter section and footer */
+.screenshot-mode .newsletter-section {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Force compact layout for mobile view too */
+@media (max-width: 767px) {
+  .screenshot-mode .footer-content {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  .screenshot-mode .footer-column {
+    flex: 1 !important;
+  }
+  
+  .screenshot-mode .footer-bottom {
+    flex-direction: row !important;
+  }
 } 
