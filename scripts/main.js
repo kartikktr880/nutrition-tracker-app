@@ -278,6 +278,13 @@ function initializeFooterAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                // Animate the logo
+                const logoImg = footer.querySelector('.footer-logo-img');
+                if (logoImg) {
+                    logoImg.style.animation = 'fadeInUp 0.5s ease forwards';
+                    logoImg.style.opacity = '1';
+                }
+                
                 // Immediately show footer titles with staggered delay
                 const titles = footer.querySelectorAll('.footer-title');
                 titles.forEach((title, index) => {
