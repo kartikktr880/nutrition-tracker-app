@@ -32,6 +32,15 @@
     text-align: center;
 }
 
+.cta-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Premium badge */
 .premium-badge {
     display: inline-flex;
@@ -70,7 +79,7 @@
     position: relative;
 }
 
-.cta-section .section-header h2 {
+.cta-section h2 {
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 24px;
@@ -83,7 +92,7 @@
     line-height: 1.2;
 }
 
-.cta-section .section-header h2::after {
+.cta-section h2::after {
     content: '';
     position: absolute;
     bottom: -10px;
@@ -119,13 +128,52 @@
     background-color: rgba(255, 140, 66, 0.15);
 }
 
-.cta-section .section-header p {
+.cta-section p {
     font-size: 1.4rem;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.9);
     font-family: var(--font-body, 'Inter', sans-serif);
     max-width: 800px;
-    margin: 0 auto;
+    margin: 0 auto 40px;
+}
+
+/* CTA stats */
+.cta-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 50px;
+}
+
+.cta-stat {
+    background-color: rgba(26, 60, 52, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 20px 30px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.cta-stat:hover {
+    transform: translateY(-8px);
+    background-color: rgba(26, 60, 52, 0.7);
+    border-color: rgba(255, 140, 66, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cta-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #FF8C42;
+    margin-bottom: 10px;
+    font-family: var(--font-heading, 'Poppins', sans-serif);
+}
+
+.cta-stat-label {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: var(--font-body, 'Inter', sans-serif);
 }
 
 /* Buttons styling */
@@ -139,7 +187,7 @@
 }
 
 /* Primary button */
-.cta-primary-btn {
+.cta-primary-btn, .btn-primary {
     padding: 20px 40px;
     background: linear-gradient(135deg, #FF8C42, #e67e3a);
     color: white;
@@ -161,13 +209,15 @@
     z-index: 2;
 }
 
-.cta-primary-btn:hover {
+.cta-primary-btn:hover, .btn-primary:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 20px 40px rgba(255, 140, 66, 0.5),
                 0 0 0 1px rgba(255, 140, 66, 0.4);
+    color: white;
+    text-decoration: none;
 }
 
-.cta-primary-btn::after {
+.cta-primary-btn::after, .btn-primary::after {
     content: '';
     position: absolute;
     width: 30%;
@@ -179,21 +229,21 @@
     transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.cta-primary-btn:hover::after {
+.cta-primary-btn:hover::after, .btn-primary:hover::after {
     left: 150%;
 }
 
-.cta-primary-btn i {
+.cta-primary-btn i, .btn-primary i {
     font-size: 1.25rem;
     transition: transform 0.3s ease;
 }
 
-.cta-primary-btn:hover i {
+.cta-primary-btn:hover i, .btn-primary:hover i {
     transform: translateX(5px);
 }
 
 /* Secondary button */
-.cta-secondary-btn {
+.cta-secondary-btn, .btn-secondary {
     padding: 19px 38px;
     background: rgba(255, 255, 255, 0.08);
     color: white;
@@ -215,18 +265,20 @@
     z-index: 2;
 }
 
-.cta-secondary-btn:hover {
+.cta-secondary-btn:hover, .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.12);
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
     border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
 }
 
-.cta-secondary-btn i {
+.cta-secondary-btn i, .btn-secondary i {
     transition: transform 0.3s ease;
 }
 
-.cta-secondary-btn:hover i {
+.cta-secondary-btn:hover i, .btn-secondary:hover i {
     transform: scale(1.2);
 }
 
@@ -279,6 +331,48 @@
     color: rgba(255, 255, 255, 0.95);
     font-family: var(--font-body, 'Inter', sans-serif);
     letter-spacing: 0.3px;
+}
+
+/* CTA Image section */
+.cta-image {
+    margin-top: 50px;
+    position: relative;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 2;
+}
+
+.cta-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 140, 66, 0.15);
+    z-index: 1;
+    filter: blur(40px);
+}
+
+.cta-shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -100px;
+}
+
+.cta-shape-2 {
+    width: 250px;
+    height: 250px;
+    bottom: -80px;
+    left: -80px;
+    background: rgba(61, 90, 128, 0.2);
 }
 
 /* Decorative elements */
@@ -369,16 +463,21 @@
         padding: 120px 0;
     }
     
-    .cta-section .section-header h2 {
+    .cta-section h2 {
         font-size: 3rem;
     }
     
-    .cta-section .section-header p {
+    .cta-section p {
         font-size: 1.25rem;
     }
     
     .cta-buttons {
         margin-bottom: 50px;
+    }
+    
+    .cta-stats {
+        flex-wrap: wrap;
+        gap: 20px;
     }
 }
 
@@ -387,11 +486,11 @@
         padding: 100px 0;
     }
     
-    .cta-section .section-header h2 {
+    .cta-section h2 {
         font-size: 2.5rem;
     }
     
-    .cta-section .section-header p {
+    .cta-section p {
         font-size: 1.15rem;
     }
     
@@ -402,7 +501,7 @@
         margin-bottom: 40px;
     }
     
-    .cta-primary-btn, .cta-secondary-btn {
+    .cta-primary-btn, .cta-secondary-btn, .btn-primary, .btn-secondary {
         width: 100%;
         justify-content: center;
         padding: 18px 30px;
@@ -418,6 +517,16 @@
         max-width: 300px;
         justify-content: center;
     }
+    
+    .cta-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-stat {
+        width: 100%;
+        max-width: 250px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -425,15 +534,19 @@
         padding: 80px 0;
     }
     
-    .cta-section .section-header h2 {
+    .cta-section h2 {
         font-size: 2.2rem;
     }
     
-    .cta-section .section-header p {
+    .cta-section p {
         font-size: 1.05rem;
     }
     
     .premium-badge {
         padding: 10px 20px;
+    }
+    
+    .cta-stat-number {
+        font-size: 2rem;
     }
 } 

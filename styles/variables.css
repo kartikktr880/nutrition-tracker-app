@@ -1,30 +1,45 @@
 /* Premium Design System - Global Variables */
 :root {
-    /* Color Palette */
-    --primary: #1A3C34; /* Dark Green - main brand color */
-    --primary-light: #2A5E50; /* Lighter green for hover states */
-    --primary-dark: #0E2922; /* Darker green for sections */
+    /* Primary Colors */
+    --primary-color: #1A3C34;
+    --primary-color-dark: #0E2922;
+    --primary-color-light: #2A5E50;
+    --primary-rgb: 26, 60, 52;
+    --primary-light-rgb: 42, 94, 80;
     
-    --accent: #FF8C42; /* Vibrant Orange - CTA and accents */
-    --accent-hover: #e67e3a; /* Darker orange for hover states */
-    --accent-light: rgba(255, 140, 66, 0.2); /* Light orange for backgrounds */
+    /* Accent Colors */
+    --accent-color: #FF8C42;
+    --accent-color-dark: #E67E3A;
+    --accent-color-light: #FFA76B;
+    --accent-rgb: 255, 140, 66;
     
-    --secondary: #3D5A80; /* Deep Teal - secondary buttons, links */
-    --secondary-hover: #324b6d; /* Darker teal for hover states */
+    /* Neutral Colors */
+    --background-light: #F4EDE4;
+    --background-dark: #0E2922;
+    --background-white: #FFFFFF;
+    --text-primary: #1A3C34;
+    --text-secondary: rgba(26, 60, 52, 0.8);
+    --text-tertiary: rgba(26, 60, 52, 0.6);
+    --text-color-inverse: #FFFFFF;
     
-    --neutral-light: #F4EDE4; /* Soft Beige - light backgrounds */
-    --neutral-lighter: #FFFFFF; /* White - content backgrounds */
-    --neutral-gray: #F5F5F5; /* Cool Gray - alternate backgrounds */
-    
-    --text-primary: #1A3C34; /* Dark Green - headings, important text */
-    --text-secondary: rgba(26, 60, 52, 0.8); /* Slightly transparent dark green - body text */
-    --text-light: rgba(255, 255, 255, 0.9); /* White text for dark backgrounds */
-    --text-light-muted: rgba(255, 255, 255, 0.7); /* Muted white for footer, less important text */
+    /* UI Elements */
+    --border-radius: 8px;
+    --border-radius-lg: 16px;
+    --container-max-width: 1200px;
+    --container-padding: 24px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.16);
     
     /* Typography */
-    --font-heading: 'Poppins', sans-serif; /* Modern, elegant heading font */
-    --font-body: 'Inter', sans-serif; /* Clean, readable body font */
-    --font-ui: 'Montserrat', sans-serif; /* Clear, distinct UI font */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-ui: 'Inter', sans-serif;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.3s ease;
+    --transition-slow: 0.5s ease;
     
     /* Spacing */
     --space-xs: 4px;
@@ -52,11 +67,6 @@
     --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.15);
     
-    /* Transitions */
-    --transition-fast: 0.2s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
-    
     /* Z-index layers */
     --z-base: 1;
     --z-menu: 100;
@@ -67,15 +77,22 @@
 /* Dark Mode Overrides */
 @media (prefers-color-scheme: dark) {
     :root {
-        --primary: #2A5E50; /* Lighter green for dark mode */
-        --primary-light: #3b7d6b; /* Even lighter green for hover */
-        --primary-dark: #1A3C34; /* Use regular green as dark in dark mode */
+        --primary-color: #2A5E50; /* Lighter green for dark mode */
+        --primary-color-dark: #1A3C34; /* Use regular green as dark in dark mode */
+        --primary-color-light: #3b7d6b; /* Even lighter green for hover */
         
-        --neutral-light: #1E272E; /* Dark background */
-        --neutral-lighter: #2D3A42; /* Slightly lighter dark background */
-        --neutral-gray: #344046; /* Gray for dark mode */
-        
+        --background-light: #1E272E; /* Dark background */
+        --background-dark: #2D3A42; /* Slightly lighter dark background */
         --text-primary: #FFFFFF;
         --text-secondary: rgba(255, 255, 255, 0.8);
+        --text-tertiary: rgba(255, 255, 255, 0.6);
     }
+}
+
+/* Dark mode overrides */
+.dark-theme, .dark-mode {
+    --background-light: #0E2922;
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-tertiary: rgba(255, 255, 255, 0.6);
 } 
