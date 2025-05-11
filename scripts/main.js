@@ -268,49 +268,69 @@ function initializeFormValidation() {
     }
 }
 
-// Add subtle animations to footer elements when they come into view
+// Initialize footer animations
 function initializeFooterAnimations() {
-    const footerSection = document.querySelector('.footer');
+    const footer = document.querySelector('.footer');
     
-    if (!footerSection) return;
+    if (!footer) return;
     
+    // Create intersection observer to animate elements when they come into view
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                animateFooterElements();
-                observer.unobserve(entry.target);
+                // Immediately show footer titles with staggered delay
+                const titles = footer.querySelectorAll('.footer-title');
+                titles.forEach((title, index) => {
+                    setTimeout(() => {
+                        title.style.opacity = '1';
+                        title.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+                
+                // Reveal social icons (animation is handled by CSS)
+                const socialIcons = footer.querySelectorAll('.social-icon');
+                socialIcons.forEach(icon => {
+                    icon.style.visibility = 'visible';
+                });
+                
+                // No need to remove observer as we want this to happen each time footer is in view
             }
         });
     }, { threshold: 0.2 });
     
-    observer.observe(footerSection);
+    // Start observing the footer
+    observer.observe(footer);
     
-    function animateFooterElements() {
-        // Animate footer headings with delay
-        const headings = document.querySelectorAll('.footer-heading');
-        headings.forEach((heading, index) => {
-            setTimeout(() => {
-                heading.style.opacity = '1';
-                heading.style.transform = 'translateY(0)';
-            }, 100 * index);
+    // Add hover effects to the footer links
+    const footerLinks = document.querySelectorAll('.footer-links a, .footer-link-bottom');
+    footerLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s ease';
+            this.style.color = '#FF8C42';
+            
+            // Find before element if exists
+            const beforeEls = document.querySelectorAll('.footer-links a::before');
+            if (beforeEls.length) {
+                beforeEls.forEach(before => {
+                    before.style.opacity = '1';
+                    before.style.transform = 'scale(1.2)';
+                });
+            }
         });
         
-        // Animate links with delay
-        const links = document.querySelectorAll('.footer-link');
-        links.forEach((link, index) => {
-            setTimeout(() => {
-                link.style.opacity = '1';
-                link.style.transform = 'translateX(0)';
-            }, 50 * index);
+        link.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.color = '';
+            }
+            
+            // Reset before elements
+            const beforeEls = document.querySelectorAll('.footer-links a::before');
+            if (beforeEls.length) {
+                beforeEls.forEach(before => {
+                    before.style.opacity = '';
+                    before.style.transform = '';
+                });
+            }
         });
-        
-        // Animate social icons with delay
-        const socialIcons = document.querySelectorAll('.social-icon');
-        socialIcons.forEach((icon, index) => {
-            setTimeout(() => {
-                icon.style.opacity = '1';
-                icon.style.transform = 'translateY(0)';
-            }, 100 * index);
-        });
-    }
+    });
 }
