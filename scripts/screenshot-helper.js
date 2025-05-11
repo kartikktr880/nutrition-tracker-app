@@ -95,7 +95,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Fix footer spacing issues
         const footer = document.querySelector('.footer');
         if (footer) {
-            footer.style.padding = '10px 0 5px';
+            footer.style.padding = '5px 0 3px';
+            footer.style.marginTop = '0';
+            footer.style.lineHeight = '1';
+        }
+        
+        // Fix section gap between newsletter and footer
+        const newsletterSection = document.querySelector('.newsletter-section');
+        if (newsletterSection) {
+            newsletterSection.style.paddingBottom = '0';
+            newsletterSection.style.marginBottom = '0';
         }
         
         // Fix footer columns
@@ -103,56 +112,239 @@ document.addEventListener('DOMContentLoaded', function() {
         footerColumns.forEach(column => {
             column.style.margin = '0';
             column.style.padding = '0';
+            column.style.lineHeight = '1';
         });
         
         // Reduce spacing between list items
         const listItems = document.querySelectorAll('.footer-links li');
         listItems.forEach(item => {
-            item.style.marginBottom = '2px';
+            item.style.marginBottom = '1px';
+            item.style.lineHeight = '1';
+            item.style.height = 'auto';
+            item.style.minHeight = 'auto';
         });
         
         // Fix footer bottom
         const footerBottom = document.querySelector('.footer-bottom');
         if (footerBottom) {
-            footerBottom.style.paddingTop = '5px';
-            footerBottom.style.marginTop = '5px';
+            footerBottom.style.paddingTop = '3px';
+            footerBottom.style.marginTop = '2px';
+            footerBottom.style.lineHeight = '1';
         }
         
-        // Add spacing fixes to force close the yellow gaps
+        // Fix section headers
+        const sectionTitles = document.querySelectorAll('.footer-title');
+        sectionTitles.forEach(title => {
+            title.style.marginBottom = '2px';
+            title.style.paddingTop = '2px';
+            title.style.lineHeight = '1';
+        });
+        
+        // Ensure the footer content has proper display
+        const footerContent = document.querySelector('.footer-content');
+        if (footerContent) {
+            // Override with flexbox for better spacing control
+            footerContent.style.display = 'flex';
+            footerContent.style.flexWrap = 'wrap';
+            footerContent.style.justifyContent = 'space-between';
+            footerContent.style.gap = '5px';
+            footerContent.style.marginBottom = '3px';
+        }
+        
+        // Fix contact info spacing
+        const contactInfo = document.querySelector('.contact-info');
+        if (contactInfo) {
+            contactInfo.style.marginTop = '2px';
+            contactInfo.style.lineHeight = '1';
+        }
+        
+        // Fix contact items spacing
+        const contactItems = document.querySelectorAll('.contact-item');
+        contactItems.forEach(item => {
+            item.style.marginBottom = '1px';
+            item.style.lineHeight = '1';
+        });
+        
+        // Fix social icons spacing
+        const socialIcons = document.querySelector('.social-icons');
+        if (socialIcons) {
+            socialIcons.style.marginTop = '2px';
+            socialIcons.style.gap = '3px';
+        }
+        
+        // Fix copyright and links in footer bottom
+        const copyright = document.querySelector('.copyright');
+        if (copyright) {
+            copyright.style.fontSize = '9px';
+            copyright.style.lineHeight = '1';
+        }
+        
+        const footerLinksBottom = document.querySelector('.footer-links-bottom');
+        if (footerLinksBottom) {
+            footerLinksBottom.style.gap = '5px';
+            footerLinksBottom.style.lineHeight = '1';
+        }
+        
+        // Fix link components
+        const footerLinks = document.querySelectorAll('.footer-links');
+        footerLinks.forEach(links => {
+            links.style.margin = '0';
+            links.style.padding = '0';
+        });
+        
+        // Add extreme compression CSS
         const css = document.createElement('style');
         css.id = 'yellow-fix-css';
         css.textContent = `
             .screenshot-mode .footer {
-                padding: 10px 0 5px !important;
+                padding: 5px 0 3px !important;
+                margin: 0 !important;
+                line-height: 1 !important;
             }
+            
+            .screenshot-mode .newsletter-section {
+                padding-bottom: 0 !important;
+                margin-bottom: 0 !important;
+            }
+            
             .screenshot-mode .footer-column {
                 margin: 0 !important;
                 padding: 0 !important;
+                line-height: 1 !important;
             }
+            
             .screenshot-mode .footer-title {
-                margin-bottom: 3px !important;
-                padding-top: 3px !important;
+                margin-top: 0 !important;
+                margin-bottom: 2px !important;
+                padding-top: 2px !important;
+                line-height: 1 !important;
+                font-size: 12px !important;
             }
+            
+            .screenshot-mode .footer-links {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
             .screenshot-mode .footer-links li {
-                margin-bottom: 2px !important;
-                line-height: 1.2 !important;
+                margin-bottom: 1px !important;
+                line-height: 1 !important;
+                height: auto !important;
+                min-height: 0 !important;
             }
+            
+            .screenshot-mode .footer-links a {
+                font-size: 10px !important;
+                line-height: 1 !important;
+            }
+            
             .screenshot-mode .footer-content {
-                margin-bottom: 5px !important;
-                gap: 10px !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                justify-content: space-between !important;
+                gap: 5px !important;
+                margin-bottom: 3px !important;
             }
+            
             .screenshot-mode .contact-info {
-                margin-top: 3px !important;
+                margin-top: 2px !important;
+                line-height: 1 !important;
             }
+            
             .screenshot-mode .contact-item {
+                margin-bottom: 1px !important;
+                line-height: 1 !important;
+            }
+            
+            .screenshot-mode .contact-icon {
+                font-size: 10px !important;
+            }
+            
+            .screenshot-mode .contact-text {
+                font-size: 10px !important;
+                line-height: 1 !important;
+            }
+            
+            .screenshot-mode .social-icons {
+                margin-top: 2px !important;
+                gap: 3px !important;
+            }
+            
+            .screenshot-mode .social-icon {
+                width: 18px !important;
+                height: 18px !important;
+                font-size: 9px !important;
+            }
+            
+            .screenshot-mode .footer-bottom {
+                padding-top: 3px !important;
+                margin-top: 2px !important;
+                line-height: 1 !important;
+            }
+            
+            .screenshot-mode .copyright {
+                font-size: 9px !important;
+                line-height: 1 !important;
+            }
+            
+            .screenshot-mode .footer-links-bottom {
+                gap: 5px !important;
+                line-height: 1 !important;
+            }
+            
+            .screenshot-mode .footer-link-bottom {
+                font-size: 9px !important;
+                line-height: 1 !important;
+            }
+            
+            /* Fix the spacing between sections */
+            .screenshot-mode section + section {
+                margin-top: 0 !important;
+            }
+            
+            .screenshot-mode .footer-logo-img {
+                width: 18px !important;
+                height: 18px !important;
+                font-size: 10px !important;
                 margin-bottom: 2px !important;
             }
-            .screenshot-mode .social-icons {
-                margin-top: 3px !important;
+            
+            .screenshot-mode .footer-title::before {
+                top: 0 !important;
+                width: 20px !important;
+                height: 1px !important;
             }
+            
+            /* Extreme gap-closing */
+            .screenshot-mode * {
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            
+            .screenshot-mode .footer * {
+                line-height: 1 !important;
+                min-height: 0 !important;
+            }
+            
+            /* Reset specific elements that need margins/padding */
+            .screenshot-mode .footer {
+                padding: 5px 0 3px !important;
+            }
+            
+            .screenshot-mode .footer-title {
+                margin-bottom: 2px !important;
+                padding-top: 2px !important;
+            }
+            
+            .screenshot-mode .footer-links li {
+                margin-bottom: 1px !important;
+            }
+            
             .screenshot-mode .footer-bottom {
-                padding-top: 5px !important;
-                margin-top: 5px !important;
+                margin-top: 2px !important;
+                padding-top: 3px !important;
             }
         `;
         document.head.appendChild(css);

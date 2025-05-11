@@ -56,6 +56,12 @@ section,
   content-visibility: visible !important;
 }
 
+/* Fix gap between newsletter and footer */
+.newsletter-section {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
 /* Ensure footer renders properly */
 .footer {
   position: relative !important;
@@ -69,8 +75,9 @@ section,
   visibility: visible !important;
   opacity: 1 !important;
   /* Ultra-compact footer for screenshot */
-  padding: 10px 0 5px !important;
+  padding: 5px 0 3px !important;
   margin: 0 !important;
+  line-height: 1 !important;
 }
 
 /* Fix footer container and content */
@@ -89,19 +96,33 @@ section,
 
 /* Fix footer column margins to remove yellow-highlighted areas */
 .footer-content {
-  margin-bottom: 5px !important;
-  gap: 10px !important;
+  margin-bottom: 3px !important;
+  gap: 5px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
 }
 
 .footer-column {
   margin: 0 !important;
   padding: 0 !important;
+  line-height: 1 !important;
+  flex: 1 !important;
+  min-height: 0 !important;
 }
 
 .footer-title {
-  margin-bottom: 3px !important;
-  padding-top: 3px !important;
+  margin-bottom: 2px !important;
+  padding-top: 2px !important;
   margin-top: 0 !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+}
+
+.footer-title::before {
+  top: 0 !important;
+  width: 20px !important;
+  height: 1px !important;
 }
 
 .footer-links {
@@ -110,26 +131,67 @@ section,
 }
 
 .footer-links li {
-  margin-bottom: 2px !important;
-  line-height: 1.2 !important;
+  margin-bottom: 1px !important;
+  line-height: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.footer-links a {
+  line-height: 1 !important;
+  font-size: 10px !important;
 }
 
 .contact-info {
-  margin-top: 3px !important;
+  margin-top: 2px !important;
+  line-height: 1 !important;
 }
 
 .contact-item {
-  margin-bottom: 2px !important;
+  margin-bottom: 1px !important;
+  line-height: 1 !important;
+}
+
+.contact-icon {
+  font-size: 10px !important;
+}
+
+.contact-text {
+  font-size: 10px !important;
+  line-height: 1 !important;
 }
 
 .social-icons {
-  margin-top: 3px !important;
-  gap: 5px !important;
+  margin-top: 2px !important;
+  gap: 3px !important;
+}
+
+.social-icon {
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 9px !important;
 }
 
 .footer-bottom {
-  padding-top: 5px !important;
-  margin-top: 5px !important;
+  padding-top: 3px !important;
+  margin-top: 2px !important;
+  line-height: 1 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.copyright {
+  font-size: 9px !important;
+  line-height: 1 !important;
+}
+
+.footer-links-bottom {
+  gap: 5px !important;
+  line-height: 1 !important;
+}
+
+.footer-link-bottom {
+  font-size: 9px !important;
+  line-height: 1 !important;
 }
 
 /* Fix background elements that might break screenshots */
@@ -186,4 +248,55 @@ section,
 * {
   page-break-inside: auto !important;
   break-inside: auto !important;
+}
+
+/* Extreme space elimination for the screenshot mode */
+.screenshot-mode * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Reset specific elements that need minimal margins/padding */
+.screenshot-mode .footer {
+  padding: 5px 0 3px !important;
+  margin: 0 !important;
+}
+
+.screenshot-mode .footer-title {
+  margin-bottom: 2px !important;
+  padding-top: 2px !important;
+}
+
+.screenshot-mode .footer-links li {
+  margin-bottom: 1px !important;
+}
+
+.screenshot-mode .footer-bottom {
+  margin-top: 2px !important;
+  padding-top: 3px !important;
+}
+
+.screenshot-mode .footer-logo-img {
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 10px !important;
+  margin-bottom: 2px !important;
+}
+
+/* Fix for inconsistent spacing in footer columns */
+@media (min-width: 768px) {
+  .screenshot-mode .footer-content {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    gap: 5px !important;
+  }
+  
+  .screenshot-mode .footer-column {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
 } 
