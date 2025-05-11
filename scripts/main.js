@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCounters();
     initializeBackToTop();
     initializeFormValidation();
+    initializeFooterAnimations();
 });
 
 // Header interactions
@@ -264,5 +265,52 @@ function initializeFormValidation() {
     function isValidEmail(email) {
         const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regex.test(email);
+    }
+}
+
+// Add subtle animations to footer elements when they come into view
+function initializeFooterAnimations() {
+    const footerSection = document.querySelector('.footer');
+    
+    if (!footerSection) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateFooterElements();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+    
+    observer.observe(footerSection);
+    
+    function animateFooterElements() {
+        // Animate footer headings with delay
+        const headings = document.querySelectorAll('.footer-heading');
+        headings.forEach((heading, index) => {
+            setTimeout(() => {
+                heading.style.opacity = '1';
+                heading.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+        
+        // Animate links with delay
+        const links = document.querySelectorAll('.footer-link');
+        links.forEach((link, index) => {
+            setTimeout(() => {
+                link.style.opacity = '1';
+                link.style.transform = 'translateX(0)';
+            }, 50 * index);
+        });
+        
+        // Animate social icons with delay
+        const socialIcons = document.querySelectorAll('.social-icon');
+        socialIcons.forEach((icon, index) => {
+            setTimeout(() => {
+                icon.style.opacity = '1';
+                icon.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
     }
 }
