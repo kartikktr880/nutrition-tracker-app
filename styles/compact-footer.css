@@ -9,7 +9,7 @@
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding: 15px 0 10px; /* Reduced padding */
+  padding: 8px 0 5px; /* Further reduced padding */
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -53,8 +53,8 @@
 .footer-content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 15px; /* Reduced gap */
-  margin-bottom: 10px; /* Reduced margin */
+  gap: 10px; /* Further reduced gap */
+  margin-bottom: 5px; /* Further reduced margin */
 }
 
 /* Footer columns with minimal spacing */
@@ -63,6 +63,7 @@
   flex-direction: column;
   margin: 0; /* Remove any margin */
   padding: 0; /* Remove any padding */
+  line-height: 1; /* Tighter line height for all footer content */
 }
 
 /* First column (Features) with circular logo */
@@ -72,16 +73,16 @@
 
 /* Compact circular logo styling */
 .footer-logo-img {
-  width: 25px; /* Slightly smaller */
-  height: 25px; /* Slightly smaller */
+  width: 22px; /* Even smaller */
+  height: 22px; /* Even smaller */
   background-color: #FF8C42;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 14px; /* Slightly smaller */
-  margin-bottom: 5px; /* Reduced margin */
+  font-size: 12px; /* Even smaller */
+  margin-bottom: 3px; /* Further reduced margin */
   transition: transform 0.3s ease;
 }
 
@@ -92,15 +93,16 @@
 /* Section titles with minimal spacing */
 .footer-title {
   color: #ffffff;
-  font-size: 15px; /* Slightly smaller */
+  font-size: 14px; /* Even smaller */
   font-weight: 600;
   margin-top: 0;
-  margin-bottom: 5px; /* Reduced margin */
+  margin-bottom: 3px; /* Further reduced margin */
   position: relative;
-  padding-top: 5px; /* Reduced padding */
+  padding-top: 3px; /* Further reduced padding */
   display: inline-block;
   font-family: 'Poppins', sans-serif;
   letter-spacing: 0.5px;
+  line-height: 1.1; /* Tighter line height */
 }
 
 .footer-title::before {
@@ -108,7 +110,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
+  width: 25px; /* Slightly shorter line */
   height: 2px;
   background-color: #FF8C42;
 }
@@ -121,27 +123,28 @@
 }
 
 .footer-links li {
-  margin-bottom: 3px; /* Reduced margin */
+  margin-bottom: 2px; /* Further reduced margin */
   display: flex;
   align-items: center;
+  line-height: 1; /* Tighter line height */
 }
 
 .footer-links li::before {
   content: '';
   display: inline-block;
-  width: 4px; /* Slightly smaller */
-  height: 4px; /* Slightly smaller */
+  width: 3px; /* Even smaller */
+  height: 3px; /* Even smaller */
   border-radius: 50%;
   background-color: #FF8C42;
-  margin-right: 6px; /* Reduced margin */
+  margin-right: 5px; /* Further reduced margin */
 }
 
 .footer-links a {
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  font-size: 13px; /* Slightly smaller */
+  font-size: 12px; /* Even smaller */
   transition: all 0.2s ease;
-  line-height: 1.2; /* Tighter line height */
+  line-height: 1; /* Tighter line height */
 }
 
 .footer-links a:hover {
@@ -150,44 +153,45 @@
 
 /* Compact contact information section */
 .contact-info {
-  margin-top: 5px; /* Reduced margin */
+  margin-top: 3px; /* Further reduced margin */
 }
 
 .contact-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 3px; /* Reduced margin */
+  margin-bottom: 2px; /* Further reduced margin */
+  line-height: 1; /* Tighter line height */
 }
 
 .contact-icon {
-  margin-right: 6px; /* Reduced margin */
-  font-size: 13px; /* Slightly smaller */
+  margin-right: 5px; /* Further reduced margin */
+  font-size: 12px; /* Even smaller */
   color: #FF8C42;
 }
 
 .contact-text {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 12px; /* Slightly smaller */
-  line-height: 1.3; /* Tighter line height */
+  font-size: 11px; /* Even smaller */
+  line-height: 1.1; /* Tighter line height */
 }
 
 /* Compact social media icons */
 .social-icons {
   display: flex;
-  gap: 6px; /* Reduced gap */
-  margin-top: 5px; /* Reduced margin */
+  gap: 5px; /* Further reduced gap */
+  margin-top: 3px; /* Further reduced margin */
 }
 
 .social-icon {
-  width: 25px; /* Slightly smaller */
-  height: 25px; /* Slightly smaller */
+  width: 22px; /* Even smaller */
+  height: 22px; /* Even smaller */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.9);
-  font-size: 12px; /* Slightly smaller */
+  font-size: 11px; /* Even smaller */
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -201,31 +205,34 @@
 /* Compact footer bottom section */
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 8px; /* Reduced padding */
-  margin-top: 5px; /* Added small margin */
+  padding-top: 5px; /* Further reduced padding */
+  margin-top: 3px; /* Further reduced margin */
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px; /* Reduced gap */
+  gap: 5px; /* Further reduced gap */
 }
 
 .copyright {
   color: rgba(255, 255, 255, 0.5);
-  font-size: 11px; /* Slightly smaller */
+  font-size: 10px; /* Even smaller */
+  line-height: 1; /* Tighter line height */
 }
 
 .footer-links-bottom {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px; /* Reduced gap */
+  gap: 8px; /* Further reduced gap */
+  line-height: 1; /* Tighter line height */
 }
 
 .footer-link-bottom {
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
-  font-size: 11px; /* Slightly smaller */
+  font-size: 10px; /* Even smaller */
   transition: color 0.2s ease;
+  line-height: 1; /* Tighter line height */
 }
 
 .footer-link-bottom:hover {
@@ -267,6 +274,19 @@
   transform: translateY(-3px);
 }
 
+/* Fix for yellow highlighted spacing - make footer grid a flex layout instead */
+@media (min-width: 768px) {
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .footer-column {
+    flex: 1;
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 992px) {
   .footer-content {
@@ -280,7 +300,7 @@
   }
   
   .footer-column {
-    margin-bottom: 10px; /* Reduced margin */
+    margin-bottom: 5px; /* Further reduced margin */
   }
   
   .footer-bottom {
