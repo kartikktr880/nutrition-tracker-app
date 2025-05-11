@@ -169,7 +169,7 @@ function initializeCounters() {
                     } else {
                         if (Number.isInteger(targetNumber)) {
                             target.innerText = Math.floor(current) + suffix;
-                        } else {
+        } else {
                             target.innerText = current.toFixed(1) + suffix;
                         }
                     }
@@ -209,6 +209,11 @@ function initializeBackToTop() {
             behavior: 'smooth'
         });
     });
+
+    // Check initial scroll position
+    if (window.scrollY > 300) {
+        backToTopButton.classList.add('visible');
+    }
 }
 
 // Form validation
