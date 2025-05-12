@@ -1,0 +1,72 @@
+/* Browser Compatibility CSS
+ * Fixes various browser compatibility issues and console warnings
+ */
+
+/* Replace deprecated -ms-high-contrast with modern forced-colors */
+@media (forced-colors: active) {
+  /* Elements that need special treatment in high contrast mode */
+  button,
+  a,
+  input,
+  .hero-stat,
+  .premium-header,
+  .newsletter-form input,
+  .newsletter-button,
+  .cta-primary-btn,
+  .cta-secondary-btn,
+  .footer-links a,
+  .footer-legal a {
+    forced-color-adjust: none;
+  }
+  
+  /* Footer elements */
+  .clean-footer,
+  .footer-container,
+  .footer-grid,
+  .footer-column h3,
+  .footer-bottom {
+    forced-color-adjust: none;
+  }
+  
+  /* Ensure text remains visible during webfont load */
+  body {
+    font-display: swap;
+  }
+}
+
+/* Fix for Safari specific issues */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific fixes */
+  body, html {
+    height: -webkit-fill-available;
+  }
+  
+  .clean-footer {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Fix for Firefox specific issues */
+@-moz-document url-prefix() {
+  .clean-footer {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* IE11 fallbacks - providing alternatives to modern features */
+@media all and (min-width: 0\0) and (min-resolution: 0.001dpcm) {
+  .clean-footer {
+    display: block;
+    width: 100%;
+  }
+  
+  body {
+    display: block;
+  }
+  
+  main {
+    display: block;
+  }
+} 

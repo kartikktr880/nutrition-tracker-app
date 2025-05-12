@@ -231,17 +231,31 @@
     <link rel="stylesheet" href="styles/features.css">
     <link rel="stylesheet" href="styles/step-section.css">
     <link rel="stylesheet" href="styles/newsletter.css">
-    <link rel="stylesheet" href="styles/footer-new.css">
-    <!-- Replace improved footer with compact footer -->
-    <link rel="stylesheet" href="styles/compact-footer.css">
+    <!-- We only need our clean footer implementation -->
+    <!-- <link rel="stylesheet" href="styles/footer-new.css"> -->
+    <!-- <link rel="stylesheet" href="styles/compact-footer.css"> -->
     
     <!-- Preload the screenshot fix CSS but don't apply it yet -->
-    <link rel="preload" href="styles/fullpage-screenshot-fix.css" as="style" onload="if(new URLSearchParams(window.location.search).get('screenshot')==='true'){this.rel='stylesheet'}"
+    <link rel="preload" href="styles/fullpage-screenshot-fix.css" as="style" fetchpriority="low" 
+        onload="if(new URLSearchParams(window.location.search).get('screenshot')==='true'){this.rel='stylesheet'; this.onload=null;}"
         onerror="console.warn('Failed to load screenshot CSS')">
-    <link rel="stylesheet" href="styles/footer-new.css">
-    <link rel="stylesheet" href="styles/premium-footer-enhancements.css">
-    <link rel="stylesheet" href="styles/premium-simple-footer.css">
-    <link rel="stylesheet" href="styles/premium-announcement-bar.css">
+    
+    <!-- Browser compatibility fixes -->
+    <link rel="stylesheet" href="styles/browser-compatibility.css">
+    
+    <!-- Component Stylesheets -->
+    <link rel="stylesheet" href="styles/hero-section.css">
+    <link rel="stylesheet" href="styles/step-section.css">
+    <link rel="stylesheet" href="styles/premium-elements.css">
+    <link rel="stylesheet" href="styles/premium-steps.css">
+    <link rel="stylesheet" href="styles/stay-updated.css">
+    <link rel="stylesheet" href="styles/clean-footer.css">
+    <link rel="stylesheet" href="styles/layout-fix.css">
+    <!-- <link rel="stylesheet" href="styles/homepage-header.css"> -->
+    <link rel="stylesheet" href="styles/premium-header.css">
+    <!-- <link rel="stylesheet" href="styles/premium-footer-enhancements.css"> -->
+    <!-- <link rel="stylesheet" href="styles/premium-simple-footer.css"> -->
+    <!-- <link rel="stylesheet" href="styles/premium-announcement-bar.css"> -->
 </head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Premium Desktop Header -->
