@@ -9,6 +9,9 @@
     <!-- Add viewport-fit meta tag for better rendering -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
+    <!-- Our critical footer fixes must come before other CSS -->
+    <link rel="stylesheet" href="styles/footer-hard-reset.css">
+    
     <!-- Immediate Scroll Fix - Applied First -->
     <script src="scripts/immediate-scroll-fix.js"></script>
     
@@ -63,9 +66,11 @@
     <!-- <link rel="stylesheet" href="styles/homepage-header.css"> -->
     <link rel="stylesheet" href="styles/premium-header.css">
     
-    <!-- Footer Spacing Fixes -->
+    <!-- Footer spacing fixes - CRITICAL ORDER -->
     <link rel="stylesheet" href="styles/footer-spacing-fix.css">
     <link rel="stylesheet" href="styles/clean-footer-fix.css">
+    <link rel="stylesheet" href="styles/newsletter-footer-fix.css">
+    <link rel="stylesheet" href="styles/universal-footer-fix.css">
     
     <!-- Theme Styles -->
     <link rel="stylesheet" href="styles/dark-mode.css">
@@ -264,6 +269,12 @@
     <!-- <link rel="stylesheet" href="styles/premium-footer-enhancements.css"> -->
     <!-- <link rel="stylesheet" href="styles/premium-simple-footer.css"> -->
     <!-- <link rel="stylesheet" href="styles/premium-announcement-bar.css"> -->
+    
+    <!-- Footer spacing fix script -->
+    <script src="scripts/footer-spacing-fix.js" defer></script>
+    
+    <!-- Ultimate footer fix script - must come late in loading -->
+    <script src="scripts/ultimate-footer-fix.js" defer></script>
 </head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Premium Desktop Header -->

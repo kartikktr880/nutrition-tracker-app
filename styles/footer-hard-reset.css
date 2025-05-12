@@ -1,0 +1,210 @@
+/**
+ * Footer Hard Reset CSS
+ * This file forcefully resets any conflicting styles that might affect the footer
+ * Uses !important on everything to override any existing styles
+ */
+
+/* Clear any margin/padding on structural elements */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Force proper flex layout regardless of other styles */
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  position: relative !important;
+}
+
+/* Reset main content to grow properly */
+main {
+  flex: 1 0 auto !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 0 !important; /* This prevents min-height conflicts */
+  max-height: none !important;
+  height: auto !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+}
+
+/* Reset all section spacing to prevent overflow */
+section {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Reset common section margin/padding that may be set elsewhere */
+section + section {
+  margin-top: 0 !important;
+}
+
+/* Special fix for newsletter section */
+.newsletter-section {
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 20px 0 !important; /* Only preserve minimal vertical padding */
+  padding-bottom: 20px !important;
+  border: none !important;
+  border-bottom: none !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Allow proper screenshot mode overrides */
+.screenshot-mode .newsletter-section {
+  padding-bottom: 0 !important;
+}
+
+/* Completely reset footer styling */
+.clean-footer, footer, .footer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  border: none !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  position: relative !important;
+  z-index: 10 !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 20px 0 15px !important;
+  background-color: #0A1916 !important;
+}
+
+/* Reset any broken floating elements */
+.float-left, .float-right, .pull-left, .pull-right,
+[style*="float: left"], [style*="float:left"],
+[style*="float: right"], [style*="float:right"] {
+  float: none !important;
+  display: block !important;
+  width: auto !important;
+}
+
+/* Clear any position:fixed elements (except intentional ones) */
+[style*="position: fixed"]:not(.back-to-top):not(#scroll-to-top):not(.premium-header):not(#screenshot-helper),
+[style*="position:fixed"]:not(.back-to-top):not(#scroll-to-top):not(.premium-header):not(#screenshot-helper) {
+  position: static !important;
+}
+
+/* Reset any negative margins */
+[style*="margin-bottom: -"], [style*="margin-bottom:-"],
+[style*="margin-top: -"], [style*="margin-top:-"] {
+  margin: 0 !important;
+}
+
+/* Ensure clean footer container is positioned properly */
+.footer-container {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 20px !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix grid display */
+.footer-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 20px !important;
+  margin-bottom: 15px !important;
+  width: 100% !important;
+}
+
+/* Reset column spacing */
+.footer-column {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix column headings */
+.footer-column h3 {
+  margin: 0 0 10px 0 !important;
+  padding: 0 !important;
+}
+
+/* Fix footer lists */
+.footer-links {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.footer-links li {
+  margin: 0 0 6px 0 !important;
+  padding: 0 !important;
+}
+
+/* Fix footer bottom */
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding-top: 10px !important;
+  margin-top: 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+/* Force font sizes */
+.footer-column h3 {
+  font-size: 16px !important;
+}
+
+.footer-links a,
+.contact-item {
+  font-size: 14px !important;
+}
+
+.footer-copyright,
+.footer-legal a {
+  font-size: 13px !important;
+}
+
+/* Adjust responsive layouts */
+@media (max-width: 992px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .footer-bottom {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+  
+  .footer-legal {
+    justify-content: center !important;
+  }
+} 
