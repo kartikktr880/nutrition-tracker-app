@@ -239,6 +239,10 @@
     <!-- Preload the screenshot fix CSS but don't apply it yet -->
     <link rel="preload" href="styles/fullpage-screenshot-fix.css" as="style" onload="if(new URLSearchParams(window.location.search).get('screenshot')==='true'){this.rel='stylesheet'}"
         onerror="console.warn('Failed to load screenshot CSS')">
+    <link rel="stylesheet" href="styles/footer-new.css">
+    <link rel="stylesheet" href="styles/premium-footer-enhancements.css">
+    <link rel="stylesheet" href="styles/premium-simple-footer.css">
+    <link rel="stylesheet" href="styles/premium-announcement-bar.css">
 </head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Premium Desktop Header -->
@@ -661,17 +665,20 @@
         </section>
     </main>
     
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <!-- Features Column with Logo -->
-                <div class="footer-column">
-                    <div class="footer-logo-img">
-                        <i class="fas fa-leaf"></i>
+    <!-- Premium Simple Footer -->
+    <footer class="premium-simple-footer">
+        <div class="premium-footer-container">
+            <div class="premium-footer-grid">
+                <!-- Features Section -->
+                <div class="premium-footer-section">
+                    <div class="premium-footer-logo">
+                        <div class="premium-footer-logo-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="premium-footer-logo-text">NutriTrack</div>
                     </div>
-                    <h3 class="footer-title">Features</h3>
-                    <ul class="footer-links">
+                    <h3 class="premium-footer-title">Features</h3>
+                    <ul class="premium-footer-links">
                         <li><a href="#">Meal Planning</a></li>
                         <li><a href="#">Nutrition Analytics</a></li>
                         <li><a href="#">Recipe Finder</a></li>
@@ -679,10 +686,10 @@
                     </ul>
                 </div>
                 
-                <!-- Company Column -->
-                <div class="footer-column">
-                    <h3 class="footer-title">Company</h3>
-                    <ul class="footer-links">
+                <!-- Company Section -->
+                <div class="premium-footer-section">
+                    <h3 class="premium-footer-title">Company</h3>
+                    <ul class="premium-footer-links">
                         <li><a href="#">About Us</a></li>
                         <li><a href="#">Careers</a></li>
                         <li><a href="#">Press</a></li>
@@ -690,10 +697,10 @@
                     </ul>
                 </div>
                 
-                <!-- Resources Column -->
-                <div class="footer-column">
-                    <h3 class="footer-title">Resources</h3>
-                    <ul class="footer-links">
+                <!-- Resources Section -->
+                <div class="premium-footer-section">
+                    <h3 class="premium-footer-title">Resources</h3>
+                    <ul class="premium-footer-links">
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Guides</a></li>
                         <li><a href="#">Calculators</a></li>
@@ -701,44 +708,40 @@
                     </ul>
                 </div>
                 
-                <!-- Legal Column -->
-                <div class="footer-column">
-                    <h3 class="footer-title">Legal</h3>
-                    <ul class="footer-links">
+                <!-- Legal Section -->
+                <div class="premium-footer-section">
+                    <h3 class="premium-footer-title">Legal</h3>
+                    <ul class="premium-footer-links">
                         <li><a href="#">Privacy Policy</a></li>
                         <li><a href="#">Terms of Service</a></li>
                         <li><a href="#">Cookie Policy</a></li>
                         <li><a href="#">GDPR</a></li>
                     </ul>
                     
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <div class="contact-icon">
+                    <div class="premium-contact-info">
+                        <div class="premium-contact-item">
+                            <div class="premium-contact-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
-                            <div class="contact-text">
-                                support@nutritrack.com
-                            </div>
+                            <div class="premium-contact-text">support@nutritrack.com</div>
                         </div>
-                        <div class="contact-item">
-                            <div class="contact-icon">
+                        <div class="premium-contact-item">
+                            <div class="premium-contact-icon">
                                 <i class="fas fa-phone-alt"></i>
                             </div>
-                            <div class="contact-text">
-                                +1 (555) 123-4567
-                            </div>
+                            <div class="premium-contact-text">+1 (555) 123-4567</div>
                         </div>
-                        <div class="social-icons">
-                            <a href="#" class="social-icon" aria-label="Facebook">
+                        <div class="premium-social-icons">
+                            <a href="#" class="premium-social-icon" aria-label="Facebook">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#" class="social-icon" aria-label="Twitter">
+                            <a href="#" class="premium-social-icon" aria-label="Twitter">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a href="#" class="social-icon" aria-label="Instagram">
+                            <a href="#" class="premium-social-icon" aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" class="social-icon" aria-label="LinkedIn">
+                            <a href="#" class="premium-social-icon" aria-label="LinkedIn">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                         </div>
@@ -747,26 +750,27 @@
             </div>
             
             <!-- Footer Bottom -->
-            <div class="footer-bottom">
-                <div class="copyright">
+            <div class="premium-footer-bottom">
+                <div class="premium-footer-copyright">
                     © 2023 NutriTrack. All rights reserved.
                 </div>
-                <div class="footer-links-bottom">
-                    <a href="#" class="footer-link-bottom">Privacy Policy</a>
-                    <a href="#" class="footer-link-bottom">Terms of Service</a>
-                    <a href="#" class="footer-link-bottom">Cookie Policy</a>
-                    <a href="#" class="footer-link-bottom">GDPR</a>
+                <div class="premium-footer-bottom-links">
+                    <a href="#" class="premium-footer-bottom-link">Privacy Policy</a>
+                    <a href="#" class="premium-footer-bottom-link">Terms of Service</a>
+                    <a href="#" class="premium-footer-bottom-link">Cookie Policy</a>
+                    <a href="#" class="premium-footer-bottom-link">GDPR</a>
                 </div>
             </div>
         </div>
         
         <!-- Back to Top Button -->
-        <button class="back-to-top" aria-label="Back to top">
+        <button class="premium-back-to-top" aria-label="Back to top">
             <i class="fas fa-arrow-up"></i>
         </button>
     </footer>
 
     <!-- JavaScript -->
     <script src="scripts/main.js"></script>
+    <script src="scripts/premium-simple-footer.js"></script>
 </body>
 </html> 
