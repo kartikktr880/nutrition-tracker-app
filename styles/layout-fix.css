@@ -1,0 +1,50 @@
+/* Layout Fix CSS */
+
+/* Global resets for precise layout control */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px !important; /* Preserve header space */
+}
+
+main {
+  flex: 1;
+  display: block;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+section {
+  margin-bottom: 0 !important;
+  position: relative;
+}
+
+section:last-of-type {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Fix newsletter spacing */
+.newsletter-section {
+  margin-bottom: 0 !important;
+  padding-bottom: 60px !important;
+}
+
+/* Ensure footer visibility */
+.clean-footer {
+  visibility: visible !important;
+  display: block !important;
+  margin-top: 0 !important;
+  z-index: 10 !important;
+} 
