@@ -21,7 +21,7 @@ main {
   padding-bottom: 0 !important;
 }
 
-.premium-simple-footer {
+.clean-footer {
   flex-shrink: 0 !important;
   margin-top: 0 !important;
   display: block !important;
@@ -40,8 +40,9 @@ section:last-of-type {
 }
 
 /* Fix for any hidden overflow that might be hiding the footer */
-.premium-simple-footer {
+.clean-footer {
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 100 !important;
+  position: relative !important;
 } 

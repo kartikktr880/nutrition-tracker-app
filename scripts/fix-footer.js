@@ -8,30 +8,17 @@
      * Ensure footer is visible and properly positioned
      */
     function fixFooterVisibility() {
-        const footerContainer = document.getElementById('footer-container');
-        if (!footerContainer) return;
+        const footer = document.querySelector('.clean-footer');
+        if (!footer) return;
         
-        // Ensure footer container is visible
-        footerContainer.style.display = 'block';
-        footerContainer.style.visibility = 'visible';
-        footerContainer.style.opacity = '1';
-        footerContainer.style.width = '100%';
-        footerContainer.style.position = 'relative';
-        footerContainer.style.zIndex = '5';
-        footerContainer.style.marginTop = '0';
-        
-        // Check if footer is already loaded
-        const footer = footerContainer.querySelector('footer');
-        if (footer) {
-            // Ensure the footer itself is visible
-            footer.style.display = 'block';
-            footer.style.visibility = 'visible';
-            footer.style.opacity = '1';
-            footer.style.width = '100%';
-            footer.style.marginTop = '0';
-            footer.style.position = 'relative';
-            footer.style.zIndex = '5';
-        }
+        // Ensure footer is visible
+        footer.style.display = 'block';
+        footer.style.visibility = 'visible';
+        footer.style.opacity = '1';
+        footer.style.width = '100%';
+        footer.style.position = 'relative';
+        footer.style.zIndex = '5';
+        footer.style.marginTop = '0';
         
         // Fix body and main layout to ensure footer is properly positioned
         document.body.style.display = 'flex';
@@ -43,34 +30,20 @@
             main.style.flex = '1 0 auto';
         }
         
-        footerContainer.style.flexShrink = '0';
-    }
-    
-    /**
-     * Check if footer is fully loaded and retry if not
-     */
-    function ensureFooterIsLoaded() {
-        const footerContainer = document.getElementById('footer-container');
-        if (!footerContainer) return;
+        // Ensure the footer container is properly styled
+        const footerContainer = footer.querySelector('.footer-container');
+        if (footerContainer) {
+            footerContainer.style.width = '100%';
+            footerContainer.style.maxWidth = '1200px';
+            footerContainer.style.margin = '0 auto';
+            footerContainer.style.padding = '0 20px';
+        }
         
-        // Check if footer content exists
-        const footerContent = footerContainer.querySelector('footer');
-        if (!footerContent || footerContent.offsetHeight < 10) {
-            console.log('Footer not fully loaded, retrying...');
-            
-            // If footer.js didn't initialize properly, manually initialize it
-            if (window.UltraPremiumFooter && typeof window.UltraPremiumFooter.prototype.init === 'function') {
-                const footerInstance = new window.UltraPremiumFooter();
-                if (typeof footerInstance.init === 'function') {
-                    footerInstance.init();
-                }
-            }
-            
-            // Retry after a short delay
-            setTimeout(ensureFooterIsLoaded, 500);
-        } else {
-            console.log('Footer loaded successfully');
-            fixFooterVisibility();
+        // Fix spacing between sections and footer
+        const newsletterSection = document.querySelector('.newsletter-section');
+        if (newsletterSection) {
+            newsletterSection.style.marginBottom = '0';
+            newsletterSection.style.paddingBottom = '80px';
         }
     }
     
@@ -81,30 +54,20 @@
         // Apply fixes immediately
         fixFooterVisibility();
         
-        // Check if footer has loaded correctly
-        setTimeout(ensureFooterIsLoaded, 500);
-        
         // Also run on resize and load events
         window.addEventListener('resize', fixFooterVisibility, { passive: true });
-        window.addEventListener('load', function() {
-            fixFooterVisibility();
-            ensureFooterIsLoaded();
-        });
+        window.addEventListener('load', fixFooterVisibility);
         
-        // Use MutationObserver to detect when the footer might be added or modified
+        // Use MutationObserver to detect when the footer might be modified
         const observer = new MutationObserver(function(mutations) {
-            for (const mutation of mutations) {
-                if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                    fixFooterVisibility();
-                }
-            }
+            fixFooterVisibility();
         });
         
-        const footerContainer = document.getElementById('footer-container');
-        if (footerContainer) {
-            observer.observe(footerContainer, {
-                childList: true,
+        const footer = document.querySelector('.clean-footer');
+        if (footer) {
+            observer.observe(footer, {
                 attributes: true,
+                childList: true,
                 subtree: true
             });
         }
