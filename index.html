@@ -45,6 +45,10 @@
     
     <!-- Legacy Fix Scripts - Keeping for compatibility -->
     <script src="scripts/fix-scroll.js" defer></script>
+    
+    <!-- Footer spacing fix script -->
+    <script src="scripts/footer-spacing-fix.js" defer></script>
+    
     <script src="scripts/fix-footer.js" defer></script>
     <script src="scripts/remove-spacers.js" defer></script>
     
@@ -59,8 +63,9 @@
     <!-- <link rel="stylesheet" href="styles/homepage-header.css"> -->
     <link rel="stylesheet" href="styles/premium-header.css">
     
-    <!-- Footer Spacing Fix - Consolidated fix for all spacing issues -->
+    <!-- Footer Spacing Fixes -->
     <link rel="stylesheet" href="styles/footer-spacing-fix.css">
+    <link rel="stylesheet" href="styles/clean-footer-fix.css">
     
     <!-- Theme Styles -->
     <link rel="stylesheet" href="styles/dark-mode.css">
@@ -205,6 +210,19 @@
             themeToggles.forEach(toggle => {
                 toggle.style.display = 'none';
             });
+        }
+        
+        // Check for screenshot mode from URL
+        const isScreenshotMode = new URLSearchParams(window.location.search).get('screenshot') === 'true';
+        if (isScreenshotMode) {
+            document.body.classList.add('screenshot-mode');
+            document.documentElement.classList.add('screenshot-mode');
+            // Load extreme compression CSS
+            const link = document.createElement('link');
+            link.id = 'extreme-compression-css';
+            link.rel = 'stylesheet';
+            link.href = 'styles/compact-footer.css';
+            document.head.appendChild(link);
         }
     });
     </script>
