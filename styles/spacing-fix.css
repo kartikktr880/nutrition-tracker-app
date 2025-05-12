@@ -1,0 +1,46 @@
+/* Spacing Fix CSS
+ * Fixes spacing issues between main content and footer
+ */
+
+/* Fix extra space above footer */
+main {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Ensure newsletter section connects properly with footer */
+.newsletter-section {
+  margin-bottom: 0;
+  padding-bottom: 100px;
+}
+
+/* Ensure body has no extra margin/padding */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+/* Make footer visible and remove extra spacing */
+.premium-simple-footer {
+  margin-top: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Fix any possible overlapping elements */
+section:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Remove any possible negative margins */
+* {
+  margin-bottom: 0;
+}
+
+/* Debug highlight for screenshot mode */
+.screenshot-mode .premium-simple-footer {
+  outline: 2px solid red;
+} 

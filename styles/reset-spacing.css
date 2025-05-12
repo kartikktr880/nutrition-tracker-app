@@ -1,0 +1,47 @@
+/* Reset Spacing CSS 
+ * Targeted reset to fix spacing issues between main content and footer
+ * Higher specificity to override conflicting styles
+ */
+
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  min-height: 100vh !important;
+}
+
+body {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+main {
+  flex: 1 0 auto !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.premium-simple-footer {
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Fix specific space between newsletter and footer */
+.newsletter-section {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+section:last-of-type {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Fix for any hidden overflow that might be hiding the footer */
+.premium-simple-footer {
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 100 !important;
+} 

@@ -8,6 +8,10 @@
   padding: 60px 0 30px;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  display: block; /* Ensure footer is visible */
 }
 
 /* Subtle background pattern */
