@@ -2,32 +2,36 @@
 
 /* Global resets for precise layout control */
 * {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
 }
 
 body {
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
   padding-top: 80px !important; /* Preserve header space */
+  min-height: 100vh !important;
 }
 
 main {
-  flex: 1;
-  display: block;
+  flex: 1 0 auto !important;
+  display: block !important;
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+  width: 100% !important;
+  position: relative !important;
 }
 
 section {
   margin-bottom: 0 !important;
-  position: relative;
+  position: relative !important;
+  width: 100% !important;
 }
 
 section:last-of-type {
@@ -35,10 +39,11 @@ section:last-of-type {
   padding-bottom: 0 !important;
 }
 
-/* Fix newsletter spacing */
+/* Fix newsletter spacing - this is the last section before footer */
 .newsletter-section {
   margin-bottom: 0 !important;
   padding-bottom: 60px !important;
+  border-bottom: none !important;
 }
 
 /* Ensure footer visibility */
@@ -47,4 +52,15 @@ section:last-of-type {
   display: block !important;
   margin-top: 0 !important;
   z-index: 10 !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  opacity: 1 !important;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  html, body {
+    height: -webkit-fill-available !important;
+  }
 } 

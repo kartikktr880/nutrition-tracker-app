@@ -3,40 +3,53 @@
  * Higher specificity to override conflicting styles
  */
 
+/* Essential page structure resets */
 html, body {
   margin: 0 !important;
   padding: 0 !important;
   overflow-x: hidden !important;
   min-height: 100vh !important;
+  height: auto !important;
 }
 
+/* Force flexbox layout */
 body {
   display: flex !important;
   flex-direction: column !important;
+  min-height: 100vh !important;
 }
 
+/* Ensure main content expands properly */
 main {
   flex: 1 0 auto !important;
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+  display: block !important;
+  width: 100% !important;
 }
 
+/* Footer should not flex or grow */
 .clean-footer {
   flex-shrink: 0 !important;
   margin-top: 0 !important;
   display: block !important;
   width: 100% !important;
+  position: relative !important;
+  bottom: 0 !important;
 }
 
 /* Fix specific space between newsletter and footer */
 .newsletter-section {
-  padding-bottom: 0 !important;
+  padding-bottom: 60px !important;
   margin-bottom: 0 !important;
+  border-bottom: none !important;
 }
 
+/* Ensure last section doesn't have extra spacing */
 section:last-of-type {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+  border-bottom: none !important;
 }
 
 /* Fix for any hidden overflow that might be hiding the footer */
@@ -45,4 +58,11 @@ section:last-of-type {
   opacity: 1 !important;
   z-index: 100 !important;
   position: relative !important;
+}
+
+/* iOS height fix */
+@supports (-webkit-touch-callout: none) {
+  html, body {
+    height: -webkit-fill-available !important;
+  }
 } 
