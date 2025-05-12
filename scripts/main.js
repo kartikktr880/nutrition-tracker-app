@@ -1,429 +1,397 @@
-// ============================
-// Premium Nutrition Tracker JavaScript
-// ============================
+/**
+ * Main JavaScript for NutriTrack
+ * Handles theme toggling, animations, and other interactive elements
+ */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if in screenshot mode from URL parameter
-    const isScreenshotMode = new URLSearchParams(window.location.search).get('screenshot') === 'true';
+    // Initialize theme
+    initTheme();
     
-    // Apply screenshot mode if URL parameter is set
-    if (isScreenshotMode) {
-        document.body.classList.add('screenshot-mode');
-        document.documentElement.classList.add('screenshot-mode');
-        applyScreenshotFixes();
-    }
-
-    // Initialize all components
-    initializeMenuToggle();
-    initializeTestimonials();
-    initializeCounters();
-    initializeBackToTop();
-    initializeFormValidation();
-    initializeFooterAnimations();
+    // Initialize animations
+    initAnimations();
     
-    // Fix for CONT.getUniqueSelector error
-    if (window.CONT && typeof window.CONT.getUniqueSelector !== 'function') {
-        // Define the function if it doesn't exist to prevent errors
-        window.CONT.getUniqueSelector = function(element) {
-            // Simple implementation that returns a basic selector
-            if (!element) return '';
-            if (element.id) return '#' + element.id;
-            if (element.className) {
-                const classes = element.className.split(' ').filter(c => c.trim().length > 0);
-                if (classes.length > 0) return '.' + classes[0];
-            }
-            return element.tagName.toLowerCase();
-        };
-        console.log('Added missing CONT.getUniqueSelector function');
-    }
+    // Initialize interactive elements
+    initInteractiveElements();
     
-    // Function to apply all screenshot-specific fixes
-    function applyScreenshotFixes() {
-        console.log('Applying screenshot fixes...');
-        
-        // Disable all animations and transitions
-        document.documentElement.style.setProperty('--animation-duration', '0s', 'important');
-        document.documentElement.style.setProperty('--transition-duration', '0s', 'important');
-        
-        // Fix section spacing
-        const sections = document.querySelectorAll('section');
-        sections.forEach(section => {
-            section.style.marginBottom = '0';
-            section.style.paddingBottom = '0';
-            section.style.opacity = '1';
-            section.style.visibility = 'visible';
-        });
-        
-        // Fix newsletter section spacing
-        const newsletter = document.querySelector('.newsletter-section');
-        if (newsletter) {
-            newsletter.style.marginBottom = '0';
-            newsletter.style.paddingBottom = '0';
-        }
-        
-        // Fix footer spacing issues
-        const footer = document.querySelector('.footer');
-        if (footer) {
-            footer.style.padding = '5px 0 3px';
-            footer.style.marginTop = '0';
-            footer.style.lineHeight = '1';
-        }
-        
-        // Fix footer columns
-        const footerColumns = document.querySelectorAll('.footer-column');
-        footerColumns.forEach(column => {
-            column.style.margin = '0';
-            column.style.padding = '0';
-            column.style.lineHeight = '1';
-        });
-        
-        // Fix footer content layout
-        const footerContent = document.querySelector('.footer-content');
-        if (footerContent) {
-            footerContent.style.display = 'flex';
-            footerContent.style.flexWrap = 'wrap';
-            footerContent.style.justifyContent = 'space-between';
-            footerContent.style.gap = '5px';
-            footerContent.style.marginBottom = '3px';
-        }
-        
-        // Fix section headers
-        const sectionTitles = document.querySelectorAll('.footer-title');
-        sectionTitles.forEach(title => {
-            title.style.marginBottom = '2px';
-            title.style.paddingTop = '2px';
-            title.style.lineHeight = '1';
-        });
-        
-        // Reduce spacing between list items
-        const listItems = document.querySelectorAll('.footer-links li');
-        listItems.forEach(item => {
-            item.style.marginBottom = '1px';
-            item.style.lineHeight = '1';
-        });
-        
-        // Fix footer bottom
-        const footerBottom = document.querySelector('.footer-bottom');
-        if (footerBottom) {
-            footerBottom.style.paddingTop = '3px';
-            footerBottom.style.marginTop = '2px';
-        }
-        
-        // Make all elements visible
-        document.querySelectorAll('.footer *, .newsletter-section *').forEach(el => {
-            el.style.opacity = '1';
-            el.style.visibility = 'visible';
-        });
-    }
-            
-    // Toggle menu for mobile
-    function initializeMenuToggle() {
-        // Menu toggle implementation
-    }
-
-    // Testimonial carousel functionality
-    function initializeTestimonials() {
-        const testimonials = document.querySelectorAll('.testimonial-card');
-        const paginationDots = document.querySelectorAll('.pagination-dot');
-        const prevButton = document.querySelector('.testimonial-control:first-child');
-        const nextButton = document.querySelector('.testimonial-control:last-child');
-        let currentIndex = 0;
-
-        if (!testimonials.length) return;
-
-        // Show only the current testimonial
-        function updateDisplay() {
-            testimonials.forEach((card, index) => {
-                if (index === currentIndex) {
-                    card.style.display = 'block';
-                    card.style.opacity = '1';
-                    card.style.visibility = 'visible';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Update pagination dots
-            paginationDots.forEach((dot, index) => {
-                if (index === currentIndex) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
-        }
-
-        // Initial display
-        updateDisplay();
-
-        // Next button click
-        if (nextButton) {
-            nextButton.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % testimonials.length;
-                updateDisplay();
-            });
-        }
-
-        // Previous button click
-        if (prevButton) {
-            prevButton.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
-                updateDisplay();
-            });
-        }
-
-        // Pagination dot clicks
-        paginationDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                currentIndex = index;
-                updateDisplay();
-            });
-        });
-
-        // Auto rotate testimonials every 6 seconds, but only if not in screenshot mode
-        if (!document.body.classList.contains('screenshot-mode')) {
-            setInterval(() => {
-                // Skip auto-rotation if in screenshot mode
-                if (document.body.classList.contains('screenshot-mode')) {
-                    return;
-                }
-                currentIndex = (currentIndex + 1) % testimonials.length;
-                updateDisplay();
-            }, 6000);
-        }
-        
-        // In screenshot mode, make all testimonials visible
-        if (document.body.classList.contains('screenshot-mode')) {
-            testimonials.forEach(card => {
-                card.style.display = 'block';
-                card.style.opacity = '1';
-                card.style.visibility = 'visible';
-            });
-        }
-    }
-
-    // Animated counters for statistics
-    function initializeCounters() {
-        const statElements = document.querySelectorAll('.cta-stat-number');
-        if (!statElements.length) return;
-        
-        // Skip animations if in screenshot mode
-        if (document.body.classList.contains('screenshot-mode')) {
-            // Set final values immediately
-            statElements.forEach(el => {
-                const targetNumber = parseFloat(el.innerText.replace(/[^\d.-]/g, ''));
-                const suffix = el.innerText.replace(/[\d.-]/g, '');
-                el.innerText = targetNumber + suffix;
-            });
-            return;
-        }
-
-        // Observer for starting counter animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const target = entry.target;
-                    const targetNumber = parseFloat(target.innerText.replace(/[^\d.-]/g, ''));
-                    const duration = 2000; // ms
-                    const steps = 60;
-                    const stepDuration = duration / steps;
-                    const increment = targetNumber / steps;
-                    let current = 0;
-                    let suffix = target.innerText.replace(/[\d.-]/g, '');
-
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= targetNumber) {
-                            target.innerText = targetNumber + suffix;
-                            clearInterval(timer);
-                        } else {
-                            if (Number.isInteger(targetNumber)) {
-                                target.innerText = Math.floor(current) + suffix;
-                            } else {
-                                target.innerText = current.toFixed(1) + suffix;
-                            }
-                        }
-                    }, stepDuration);
-
-                    // Stop observing after counter is triggered
-                    observer.unobserve(target);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        // Observe all stat elements
-        statElements.forEach(el => {
-            observer.observe(el);
-        });
-    }
-
-    // Back to top button
-    function initializeBackToTop() {
-        const backToTopButton = document.querySelector('.back-to-top');
-
-        if (!backToTopButton) return;
-
-        // Show or hide button based on scroll position
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
-
-        // Scroll to top when clicked
-        backToTopButton.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Check initial scroll position
-        if (window.scrollY > 300) {
-            backToTopButton.classList.add('visible');
-        }
-    }
-
-    // Form validation
-    function initializeFormValidation() {
-        const newsletterForm = document.querySelector('.newsletter-form');
-
-        if (!newsletterForm) return;
-
-        newsletterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const emailInput = this.querySelector('input[type="email"]');
-            const emailValue = emailInput.value.trim();
-
-            if (!emailValue) {
-                emailInput.classList.add('error');
-                return false;
-            }
-
-            if (!isValidEmail(emailValue)) {
-                emailInput.classList.add('error');
-
-                // Add error message if it doesn't exist
-                if (!this.querySelector('.error-message')) {
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'error-message';
-                    errorMessage.innerText = 'Please enter a valid email address';
-                    emailInput.parentNode.appendChild(errorMessage);
-                }
-
-                return false;
-            }
-
-            // Remove error states
-            emailInput.classList.remove('error');
-            const errorMessage = this.querySelector('.error-message');
-            if (errorMessage) errorMessage.remove();
-
-            // Show success message
-            const successMessage = document.createElement('div');
-            successMessage.className = 'success-message';
-            successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Thank you for subscribing!';
-
-            // Replace form with success message
-            this.innerHTML = '';
-            this.appendChild(successMessage);
-
-            // Here you would typically submit the form via AJAX
-            console.log('Form submitted with email:', emailValue);
-        });
-
-        // Email validation helper
-        function isValidEmail(email) {
-            const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return regex.test(email);
-        }
-    }
-
-    // Initialize footer animations
-    function initializeFooterAnimations() {
-        const footer = document.querySelector('.footer');
-
-        if (!footer) return;
-
-        // Skip animations if in screenshot mode
-        if (document.body.classList.contains('screenshot-mode')) {
-            // Simply make all footer elements visible
-            footer.querySelectorAll('.footer-logo-img, .footer-title, .social-icon, .footer-links a, .contact-item').forEach(el => {
-                el.style.opacity = '1';
-                el.style.visibility = 'visible';
-                el.style.transform = 'none';
-            });
-            return;
-        }
+    // Initialize responsive handlers
+    initResponsiveHandlers();
     
-        // Create intersection observer to animate elements when they come into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Animate the logo
-                    const logoImg = footer.querySelector('.footer-logo-img');
-                    if (logoImg) {
-                        logoImg.style.animation = 'fadeInUp 0.5s ease forwards';
-                        logoImg.style.opacity = '1';
-                    }
+    // Initialize smooth scrolling for anchor links
+    initSmoothScrolling();
 
-                    // Immediately show footer titles with staggered delay
-                    const titles = footer.querySelectorAll('.footer-title');
-                    titles.forEach((title, index) => {
-                        setTimeout(() => {
-                            title.style.opacity = '1';
-                            title.style.transform = 'translateY(0)';
-                        }, index * 100);
-                    });
-
-                    // Reveal social icons (animation is handled by CSS)
-                    const socialIcons = footer.querySelectorAll('.social-icon');
-                    socialIcons.forEach(icon => {
-                        icon.style.visibility = 'visible';
-                    });
-
-                    // No need to remove observer as we want this to happen each time footer is in view
-                }
-            });
-        }, { threshold: 0.2 });
-
-        // Start observing the footer
-        observer.observe(footer);
-
-        // Add hover effects to the footer links
-        const footerLinks = document.querySelectorAll('.footer-links a, .footer-link-bottom');
-        footerLinks.forEach(link => {
-            link.addEventListener('mouseenter', function() {
-                this.style.transition = 'all 0.3s ease';
-                this.style.color = '#FF8C42';
-
-                // Find before element if exists
-                const beforeEls = document.querySelectorAll('.footer-links a::before');
-                if (beforeEls.length) {
-                    beforeEls.forEach(before => {
-                        before.style.opacity = '1';
-                        before.style.transform = 'scale(1.2)';
-                    });
-                }
-            });
-
-            link.addEventListener('mouseleave', function() {
-                if (!this.classList.contains('active')) {
-                    this.style.color = '';
-                }
-
-                // Reset before elements
-                const beforeEls = document.querySelectorAll('.footer-links a::before');
-                if (beforeEls.length) {
-                    beforeEls.forEach(before => {
-                        before.style.opacity = '';
-                        before.style.transform = '';
-                    });
-                }
-            });
-        });
-    }
+    // Initialize demo video modal
+    initDemoVideoModal();
+    
+    // Add direct click handler for 'See How It Works' button
+    initSeeHowItWorksButton();
+    
+    console.log('✨ NutriTrack premium experience initialized');
 });
+
+/**
+ * Initialize theme preferences
+ */
+function initTheme() {
+    // Get all theme toggle buttons
+    const themeToggles = document.querySelectorAll('.theme-toggle, #theme-toggle-btn');
+    
+    // Function to set the correct icon visibility with enhanced positioning
+    function updateThemeIcons() {
+        const isDarkTheme = document.documentElement.classList.contains('dark-mode') || 
+                           document.documentElement.classList.contains('dark-theme');
+        
+        themeToggles.forEach(toggle => {
+            if (!toggle) return;
+            
+            const sunIcon = toggle.querySelector('.sun-icon');
+            const moonIcon = toggle.querySelector('.moon-icon');
+            
+            if (!sunIcon || !moonIcon) return;
+            
+            // Enhanced icon visibility with absolute positioning and z-index
+            if (isDarkTheme) {
+                // Show moon icon in dark mode
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                // Show sun icon in light mode
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        });
+    }
+    
+    // Add click handlers to theme toggles
+    themeToggles.forEach(toggle => {
+        if (!toggle) return;
+        
+        // Remove existing event listeners to prevent duplicates
+        const newToggle = toggle.cloneNode(true);
+        if (toggle.parentNode) {
+            toggle.parentNode.replaceChild(newToggle, toggle);
+            
+            newToggle.addEventListener('click', function() {
+                // Toggle dark mode classes
+                const isDarkMode = document.documentElement.classList.contains('dark-mode') || 
+                                  document.documentElement.classList.contains('dark-theme');
+                
+                if (isDarkMode) {
+                    document.documentElement.classList.remove('dark-mode', 'dark-theme');
+                    document.body.classList.remove('dark-theme');
+                    localStorage.setItem('darkMode', 'false');
+                    localStorage.setItem('dark-theme', 'false');
+                } else {
+                    document.documentElement.classList.add('dark-mode', 'dark-theme');
+                    document.body.classList.add('dark-theme');
+                    localStorage.setItem('darkMode', 'true');
+                    localStorage.setItem('dark-theme', 'true');
+                }
+                
+                // Update icons immediately
+                updateThemeIcons();
+            });
+        }
+    });
+    
+    // Initialize icons on page load
+    updateThemeIcons();
+    
+    // Re-check icons after delays to handle any late DOM updates
+    setTimeout(updateThemeIcons, 100);
+    setTimeout(updateThemeIcons, 500);
+}
+
+/**
+ * Initialize animations
+ */
+function initAnimations() {
+    // Observe elements for scroll-based animations
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    
+    if (animatedElements.length === 0) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+/**
+ * Initialize interactive elements
+ */
+function initInteractiveElements() {
+    // Handle dropdowns
+    initDropdowns();
+    
+    // Handle testimonial sliders
+    initTestimonialSlider();
+}
+
+/**
+ * Initialize dropdown menus
+ */
+function initDropdowns() {
+    // Get all dropdown toggles
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const parentItem = this.closest('.dropdown');
+            if (!parentItem) return;
+            
+            // Toggle active class
+            parentItem.classList.toggle('active');
+            
+            // Close other dropdowns
+            dropdownToggles.forEach(otherToggle => {
+                if (otherToggle !== toggle) {
+                    const otherParent = otherToggle.closest('.dropdown');
+                    if (otherParent) {
+                        otherParent.classList.remove('active');
+                    }
+                }
+            });
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown.active').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+    });
+}
+
+/**
+ * Initialize testimonial slider
+ */
+function initTestimonialSlider() {
+    const slider = document.querySelector('.testimonial-slider');
+    if (!slider) return;
+    
+    const slides = slider.querySelectorAll('.testimonial-slide');
+    if (slides.length === 0) return;
+    
+    let currentSlide = 0;
+    
+    function updateVisibility() {
+        slides.forEach((slide, index) => {
+            slide.style.display = index === currentSlide ? 'block' : 'none';
+        });
+    }
+    
+    // Initialize first slide
+        updateVisibility();
+    
+    // Auto-advance slides
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateVisibility();
+    }, 5000);
+}
+
+/**
+ * Initialize responsive handlers
+ */
+function initResponsiveHandlers() {
+    // Handle responsive spacing
+    fixSectionSpacing();
+    window.addEventListener('resize', fixSectionSpacing);
+    
+    // Handle network status
+    updateNetworkStatus();
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+}
+
+/**
+ * Fix section spacing for responsive design
+ */
+function fixSectionSpacing() {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        const computedStyle = window.getComputedStyle(section);
+        const marginTop = parseInt(computedStyle.marginTop);
+        const marginBottom = parseInt(computedStyle.marginBottom);
+        
+        // Adjust spacing based on viewport width
+        if (window.innerWidth < 768) {
+            if (marginTop > 40) section.style.marginTop = '40px';
+            if (marginBottom > 40) section.style.marginBottom = '40px';
+        } else {
+            section.style.marginTop = '';
+            section.style.marginBottom = '';
+        }
+    });
+}
+
+/**
+ * Update network status indicator
+ */
+function updateNetworkStatus() {
+    const isOnline = navigator.onLine;
+    showNotification(isOnline ? 'Back online' : 'Connection lost');
+}
+
+/**
+ * Show notification message
+ */
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+/**
+ * Initialize smooth scrolling for anchor links
+ */
+function initSmoothScrolling() {
+    // Get all links with hash (#) in href
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
+    
+    if (anchorLinks.length === 0) {
+        console.warn('No anchor links found for smooth scrolling');
+        return;
+    }
+    
+    console.log(`Found ${anchorLinks.length} anchor links for smooth scrolling`);
+    
+    anchorLinks.forEach(link => {
+        // Remove any existing event listeners to prevent duplicates
+        const newLink = link.cloneNode(true);
+        if (link.parentNode) {
+            link.parentNode.replaceChild(newLink, link);
+            
+            newLink.addEventListener('click', function(e) {
+                // Prevent default anchor click behavior
+                e.preventDefault();
+                
+                // Get the target element
+                const targetId = this.getAttribute('href');
+                console.log(`Smooth scrolling to target: ${targetId}`);
+                
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // First ensure the element is visible
+                    targetElement.style.display = 'block';
+                    targetElement.style.visibility = 'visible';
+                    targetElement.style.opacity = '1';
+                    
+                    // Use scrollIntoView for better browser compatibility
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Update URL hash without causing a jump
+                    history.pushState(null, null, targetId);
+                    console.log(`Scrolled to ${targetId}`);
+            } else {
+                    console.error(`Target element not found: ${targetId}`);
+                }
+            });
+        }
+    });
+    
+    console.log('Smooth scrolling initialized successfully');
+}
+
+/**
+ * Initialize demo video modal
+ */
+function initDemoVideoModal() {
+    const modal = document.getElementById('demo-video-modal');
+    const btn = document.getElementById('watch-demo-btn');
+    const closeBtn = modal.querySelector('.close-modal');
+    
+    if (!modal || !btn || !closeBtn) return;
+    
+    // Open modal when button is clicked
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+    
+    // Close modal when close button is clicked
+    closeBtn.addEventListener('click', function() {
+        closeModal();
+    });
+    
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    // Close modal when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeModal();
+        }
+    });
+    
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+        
+        // Pause video if it's playing
+        const iframe = modal.querySelector('iframe');
+        if (iframe) {
+            const iframeSrc = iframe.src;
+            iframe.src = iframeSrc; // Reset iframe to stop video
+        }
+    }
+}
+
+/**
+ * Initialize direct handling for the 'See How It Works' button
+ * This ensures the button works even if the general smooth scrolling has issues
+ */
+function initSeeHowItWorksButton() {
+    const seeHowItWorksBtn = document.getElementById('see-how-it-works-btn');
+    const howItWorksSection = document.getElementById('how-it-works');
+    
+    if (!seeHowItWorksBtn || !howItWorksSection) {
+        console.error('See How It Works button or target section not found');
+        return;
+    }
+    
+    seeHowItWorksBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('See How It Works button clicked');
+        
+        // Smooth scroll to the How It Works section
+        howItWorksSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+        
+        // Update URL hash without causing a jump
+        history.pushState(null, null, '#how-it-works');
+    });
+    
+    console.log('See How It Works button handler initialized');
+}

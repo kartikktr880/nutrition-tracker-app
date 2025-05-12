@@ -8,55 +8,69 @@
      * Ensure footer is visible and properly positioned
      */
     function fixFooterVisibility() {
-        const footer = document.querySelector('.clean-footer');
-        if (!footer) return;
+        const footerContainer = document.getElementById('footer-container');
+        if (!footerContainer) return;
         
-        // Ensure footer is visible
-        footer.style.display = 'block';
-        footer.style.visibility = 'visible';
-        footer.style.opacity = '1';
-        footer.style.width = '100%';
-        footer.style.position = 'relative';
-        footer.style.zIndex = '10';
-        footer.style.marginTop = '0';
+        // Ensure footer container is visible
+        footerContainer.style.display = 'block';
+        footerContainer.style.visibility = 'visible';
+        footerContainer.style.opacity = '1';
+        footerContainer.style.width = '100%';
+        footerContainer.style.position = 'relative';
+        footerContainer.style.zIndex = '5';
+        footerContainer.style.marginTop = '0';
+        
+        // Check if footer is already loaded
+        const footer = footerContainer.querySelector('footer');
+        if (footer) {
+            // Ensure the footer itself is visible
+            footer.style.display = 'block';
+            footer.style.visibility = 'visible';
+            footer.style.opacity = '1';
+            footer.style.width = '100%';
+            footer.style.marginTop = '0';
+            footer.style.position = 'relative';
+            footer.style.zIndex = '5';
+        }
         
         // Fix body and main layout to ensure footer is properly positioned
         document.body.style.display = 'flex';
         document.body.style.flexDirection = 'column';
         document.body.style.minHeight = '100vh';
-        document.documentElement.style.minHeight = '100vh';
         
         const main = document.querySelector('main');
         if (main) {
             main.style.flex = '1 0 auto';
-            main.style.marginBottom = '0';
-            main.style.paddingBottom = '0';
-            main.style.display = 'block';
         }
         
-        // Fix spacing between sections and footer
-        const newsletterSection = document.querySelector('.newsletter-section');
-        if (newsletterSection) {
-            newsletterSection.style.marginBottom = '0';
-            newsletterSection.style.paddingBottom = '60px';
-            newsletterSection.style.borderBottom = 'none';
-        }
+        footerContainer.style.flexShrink = '0';
+    }
+    
+    /**
+     * Check if footer is fully loaded and retry if not
+     */
+    function ensureFooterIsLoaded() {
+        const footerContainer = document.getElementById('footer-container');
+        if (!footerContainer) return;
         
-        // Ensure all sections have proper visibility
-        const sections = document.querySelectorAll('section');
-        if (sections.length > 0) {
-            const lastSection = sections[sections.length - 1];
-            if (lastSection) {
-                lastSection.style.marginBottom = '0';
-                lastSection.style.paddingBottom = '0';
-                lastSection.style.borderBottom = 'none';
+        // Check if footer content exists
+        const footerContent = footerContainer.querySelector('footer');
+        if (!footerContent || footerContent.offsetHeight < 10) {
+            console.log('Footer not fully loaded, retrying...');
+            
+            // If footer.js didn't initialize properly, manually initialize it
+            if (window.UltraPremiumFooter && typeof window.UltraPremiumFooter.prototype.init === 'function') {
+                const footerInstance = new window.UltraPremiumFooter();
+                if (typeof footerInstance.init === 'function') {
+                    footerInstance.init();
+                }
             }
-        }
-        
-        // Fix for iOS devices
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            document.documentElement.style.height = 'fill-available';
-            document.body.style.height = 'fill-available';
+            
+            // Retry after a short delay
+            setTimeout(ensureFooterIsLoaded, 500);
+        } else {
+            console.log('Footer loaded successfully');
+            fixFooterVisibility();
         }
     }
     
@@ -64,40 +78,36 @@
      * Initialize the fixes
      */
     function init() {
-        // Check if page is loaded in an iframe
-        const isInIframe = window.self !== window.top;
-        if (isInIframe) {
-            // Special handling for iframe context
-            document.body.classList.add('iframe-context');
-        }
-        
         // Apply fixes immediately
         fixFooterVisibility();
         
+        // Check if footer has loaded correctly
+        setTimeout(ensureFooterIsLoaded, 500);
+        
         // Also run on resize and load events
         window.addEventListener('resize', fixFooterVisibility, { passive: true });
-        window.addEventListener('load', fixFooterVisibility);
-        window.addEventListener('scroll', fixFooterVisibility, { passive: true });
+        window.addEventListener('load', function() {
+            fixFooterVisibility();
+            ensureFooterIsLoaded();
+        });
         
-        // Check for changes to the DOM that might affect layout
+        // Use MutationObserver to detect when the footer might be added or modified
         const observer = new MutationObserver(function(mutations) {
-            // Debounce multiple rapid changes
-            if (window.footerFixTimeout) {
-                clearTimeout(window.footerFixTimeout);
+            for (const mutation of mutations) {
+                if (mutation.type === 'childList' || mutation.type === 'attributes') {
+                    fixFooterVisibility();
+                }
             }
-            
-            window.footerFixTimeout = setTimeout(function() {
-                fixFooterVisibility();
-            }, 100);
         });
         
-        // Observe the entire document for changes
-        observer.observe(document.body, {
-            attributes: true,
-            childList: true,
-            subtree: true,
-            characterData: false
-        });
+        const footerContainer = document.getElementById('footer-container');
+        if (footerContainer) {
+            observer.observe(footerContainer, {
+                childList: true,
+                attributes: true,
+                subtree: true
+            });
+        }
     }
     
     // Run when DOM is ready
@@ -106,7 +116,4 @@
     } else {
         init();
     }
-    
-    // Also run on page load to catch any late-loading resources
-    window.addEventListener('load', fixFooterVisibility);
 })(); 

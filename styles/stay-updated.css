@@ -1,9 +1,26 @@
-/* Stay Updated Section Styles */
+/* Stay Updated Section - Premium Design */
 .stay-updated-section {
-    padding: 100px 0;
-    background-color: #F4EDE4;
+    padding: 80px 0;
     position: relative;
+    background: linear-gradient(135deg, #f0f9f6, #ffffff);
     overflow: hidden;
+    margin: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+    transform: translateY(0);
+    animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .stay-updated-section::before {
@@ -13,187 +30,236 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><path d="M15 1L29 29L1 29Z" fill="rgba(26, 60, 52, 0.03)"/></svg>');
-    background-size: 150px 150px;
-    opacity: 0.6;
-    pointer-events: none;
+    background-image: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgba(0,128,128,0.1)"/></svg>');
+    background-size: 20px 20px;
+    opacity: 0.5;
+    z-index: 1;
 }
 
 .stay-updated-section .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 60px;
     position: relative;
     z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
 }
 
 .stay-updated-content {
-    max-width: 550px;
+    flex: 1;
+    max-width: 600px;
 }
 
-.newsletter-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background-color: rgba(26, 60, 52, 0.1);
-    padding: 8px 16px;
-    border-radius: 50px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(26, 60, 52, 0.15);
-}
-
-.newsletter-tag i {
-    color: #1A3C34;
-    font-size: 14px;
-}
-
-.newsletter-tag span {
-    color: #1A3C34;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.section-title {
-    font-size: 2.5rem;
+.stay-updated-section .section-title {
+    font-size: 32px;
     font-weight: 700;
-    color: #1A3C34;
     margin-bottom: 16px;
-    line-height: 1.2;
+    color: #2A5E50;
+    text-align: left;
 }
 
-.premium-text {
-    position: relative;
-    color: #FF8C42;
-}
-
-.premium-text::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 8px;
-    background-color: rgba(255, 140, 66, 0.2);
-    z-index: -1;
-    transform: translateY(3px);
-}
-
-.section-description {
+.stay-updated-section .section-description {
     font-size: 18px;
-    line-height: 1.6;
-    color: rgba(26, 60, 52, 0.8);
     margin-bottom: 30px;
+    color: #555;
+    line-height: 1.6;
 }
 
 .newsletter-benefits {
     display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    margin-bottom: 40px;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .benefit-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    width: calc(50% - 12px);
+    gap: 10px;
 }
 
-.benefit-icon {
+.benefit-item i {
+    color: #4CAF50;
+    font-size: 18px;
+}
+
+.benefit-item span {
+    font-size: 16px;
+    color: #444;
+    font-weight: 500;
+}
+
+.home-newsletter-form {
+    margin-bottom: 24px;
+}
+
+.newsletter-input-group {
+    display: flex;
+    max-width: 100%;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.newsletter-input,
+.premium-input {
+    flex: 1;
+    padding: 16px 20px;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    background: white;
+    color: #333;
+}
+
+.dark-theme .newsletter-input,
+.dark-theme .premium-input,
+.dark-mode .newsletter-input,
+.dark-mode .premium-input {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.newsletter-input:focus,
+.premium-input:focus {
+    border-color: #FF8C42;
+    box-shadow: 0 4px 15px rgba(255, 140, 66, 0.2);
+}
+
+.newsletter-button,
+.btn-primary {
+    padding: 0 24px;
+    background: #FF8C42;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2);
+}
+
+.newsletter-button:hover,
+.btn-primary:hover {
+    background: #e67e3a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 140, 66, 0.3);
+}
+
+.newsletter-privacy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+}
+
+.dark-theme .newsletter-privacy,
+.dark-mode .newsletter-privacy {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.newsletter-privacy i {
+    color: #4CAF50;
+}
+
+.trust-badges {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.trust-badges .badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+}
+
+.trust-badges .badge i {
+    color: #4CAF50;
+    font-size: 16px;
+}
+
+.stay-updated-decoration {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.decoration-circle {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4CAF50, #2A5E50);
+    opacity: 0.1;
+    animation: pulse 5s infinite alternate ease-in-out;
+}
+
+.decoration-dots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#2A5E50 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.2;
+}
+
+.floating-envelope {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: #2A5E50;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: rgba(26, 60, 52, 0.1);
-    color: #1A3C34;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    animation: float 3s infinite ease-in-out;
+    z-index: 2;
 }
 
-.benefit-text {
-    font-size: 16px;
-    font-weight: 500;
-    color: #1A3C34;
-}
-
-.newsletter-form {
-    position: relative;
-}
-
-.newsletter-input {
-    width: 100%;
-    padding: 18px 180px 18px 20px;
-    border-radius: 12px;
-    border: 2px solid rgba(26, 60, 52, 0.15);
-    background-color: white;
-    font-size: 16px;
-    color: #1A3C34;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.newsletter-input:focus {
-    outline: none;
-    border-color: #3D5A80;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.newsletter-input::placeholder {
-    color: rgba(26, 60, 52, 0.5);
-}
-
-.newsletter-button {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    padding: 13px 28px;
-    background-color: #FF8C42;
+.floating-envelope i {
+    font-size: 36px;
     color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.newsletter-button:hover {
-    background-color: #e67e3a;
-    transform: translateY(-2px);
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.1;
+    }
+    100% {
+        transform: scale(1.05);
+        opacity: 0.2;
+    }
 }
 
-.newsletter-image {
-    flex: 0 0 45%;
-    position: relative;
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
 }
 
-.newsletter-image img {
-    width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-.newsletter-decoration {
-    position: absolute;
-    top: -30px;
-    right: -30px;
-    width: 120px;
-    height: 120px;
-    background-color: rgba(255, 140, 66, 0.1);
-    border-radius: 50%;
-    z-index: -1;
-}
-
-.privacy-note {
-    margin-top: 16px;
-    font-size: 14px;
-    color: rgba(26, 60, 52, 0.6);
-}
-
-@media (max-width: 991px) {
+/* Responsive adaptations */
+@media (max-width: 992px) {
     .stay-updated-section .container {
         flex-direction: column;
     }
@@ -202,33 +268,68 @@
         max-width: 100%;
     }
     
-    .newsletter-image {
-        width: 100%;
-        margin-top: 40px;
+    .stay-updated-decoration {
+        max-width: 300px;
+        height: 300px;
     }
 }
 
-@media (max-width: 767px) {
-    .benefit-item {
-        width: 100%;
+@media (max-width: 768px) {
+    .stay-updated-section {
+        padding: 60px 0;
+    }
+    
+    .stay-updated-section .section-title {
+        font-size: 28px;
+        text-align: center;
+    }
+    
+    .stay-updated-section .section-description {
+        font-size: 16px;
+        text-align: center;
+    }
+    
+    .newsletter-input-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .newsletter-input {
+        border-radius: 8px;
+    }
+    
+    .newsletter-button {
+        border-radius: 8px;
+        justify-content: center;
+        padding: 12px;
+    }
+    
+    .trust-badges {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .stay-updated-decoration {
+        display: none;
     }
 }
 
 /* Dark theme support */
 @media (prefers-color-scheme: dark) {
     .stay-updated-section {
-        background-color: #2A5E50;
+        background: linear-gradient(135deg, rgba(42, 94, 80, 0.2), rgba(26, 60, 52, 0.3));
     }
     
-    .section-title {
+    .stay-updated-section .section-title {
         color: #ffffff;
     }
     
-    .section-description {
+    .stay-updated-section .section-description {
         color: #cccccc;
     }
     
-    .benefit-text {
+    .benefit-item span {
         color: #dddddd;
     }
     
@@ -238,15 +339,11 @@
         color: #ffffff;
     }
     
-    .newsletter-input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+    .newsletter-privacy {
+        color: #cccccc;
     }
     
-    .newsletter-button {
-        background-color: #FF8C42;
-    }
-    
-    .newsletter-button:hover {
-        background-color: #e67e3a;
+    .trust-badges .badge {
+        color: #cccccc;
     }
 } 
