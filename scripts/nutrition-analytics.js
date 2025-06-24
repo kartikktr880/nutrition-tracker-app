@@ -1,3 +1,5 @@
+import StringFormatter from './string-formatter.js';
+
 class NutritionAnalytics {
     constructor() {
         this.cache = new Map();
@@ -443,10 +445,7 @@ class NutritionAnalytics {
     }
 
     formatPrepMetric(metric) {
-        return metric
-            .split(/(?=[A-Z])/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+        return StringFormatter.formatPrepMetric(metric);
     }
 
     generatePrepRecommendations() {

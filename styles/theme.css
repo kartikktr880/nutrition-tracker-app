@@ -1,0 +1,337 @@
+/* Theme System for Nutrition Tracker */
+
+:root {
+    /* Base colors */
+    --color-primary: 59 130 246; /* blue-500 */
+    --color-secondary: 107 114 128; /* gray-500 */
+    --color-success: 34 197 94; /* green-500 */
+    --color-warning: 234 179 8; /* yellow-500 */
+    --color-error: 239 68 68; /* red-500 */
+
+    /* Light theme */
+    --color-bg-primary: 255 255 255;
+    --color-bg-secondary: 249 250 251;
+    --color-text-primary: 17 24 39;
+    --color-text-secondary: 107 114 128;
+    --color-border: 229 231 235;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+    /* Light Theme Variables */
+    --light-primary: #1A3C34;
+    --light-primary-dark: #0F2A24;
+    --light-primary-light: #2A5F52;
+    --light-secondary: #2A5F52;
+    --light-secondary-dark: #4A5F7A;
+    --light-secondary-light: #7A94B3;
+    --light-background: #FFFFFF;
+    --light-background-alt: #FFFFFF;
+    --light-surface: #F5F5F5;
+    --light-surface-hover: #F8F8F8;
+    --light-text-primary: #333333;
+    --light-text-secondary: #666666;
+    --light-text-disabled: #9E9E9E;
+    --light-border: #E0E0E0;
+    --light-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --light-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --light-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+    --light-accent: #4CAF50;
+    --light-accent-dark: #E67E3A;
+    --light-accent-light: #FFA366;
+    --light-success: #4CAF50;
+    --light-error: #F44336;
+    --light-warning: #FFC107;
+    --light-info: #2196F3;
+
+    /* Dark Theme Variables */
+    --dark-primary: #2A5F52;
+    --dark-primary-dark: #1A3C34;
+    --dark-primary-light: #3A7F72;
+    --dark-secondary: #1A3C34;
+    --dark-secondary-dark: #5D7799;
+    --dark-secondary-light: #9DB3CC;
+    --dark-background: #121212;
+    --dark-background-alt: #1E1E1E;
+    --dark-surface: #1E1E1E;
+    --dark-surface-hover: #2D2D2D;
+    --dark-text-primary: #FFFFFF;
+    --dark-text-secondary: #B0B0B0;
+    --dark-text-disabled: #757575;
+    --dark-border: #333333;
+    --dark-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --dark-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --dark-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+    --dark-accent: #66BB6A;
+    --dark-accent-dark: #E67E3A;
+    --dark-accent-light: #FFA366;
+    --dark-success: #66BB6A;
+    --dark-error: #EF5350;
+    --dark-warning: #FFCA28;
+    --dark-info: #42A5F5;
+
+    /* Default to Light Theme */
+    --primary: var(--light-primary);
+    --primary-dark: var(--light-primary-dark);
+    --primary-light: var(--light-primary-light);
+    --secondary: var(--light-secondary);
+    --secondary-dark: var(--light-secondary-dark);
+    --secondary-light: var(--light-secondary-light);
+    --background: var(--light-background);
+    --background-alt: var(--light-background-alt);
+    --surface: var(--light-surface);
+    --surface-hover: var(--light-surface-hover);
+    --text-primary: var(--light-text-primary);
+    --text-secondary: var(--light-text-secondary);
+    --text-disabled: var(--light-text-disabled);
+    --border: var(--light-border);
+    --shadow-sm: var(--light-shadow-sm);
+    --shadow-md: var(--light-shadow-md);
+    --shadow-lg: var(--light-shadow-lg);
+    --accent: var(--light-accent);
+    --accent-dark: var(--light-accent-dark);
+    --accent-light: var(--light-accent-light);
+    --success: var(--light-success);
+    --error: var(--light-error);
+    --warning: var(--light-warning);
+    --info: var(--light-info);
+
+    /* Theme Transition Properties */
+    --transition-duration: 300ms;
+    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Focus Styles */
+    --focus-ring-color: var(--accent);
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+}
+
+/* Dark Theme */
+[data-theme="dark"],
+.dark-mode,
+.dark-theme {
+    --primary: var(--dark-primary);
+    --primary-dark: var(--dark-primary-dark);
+    --primary-light: var(--dark-primary-light);
+    --secondary: var(--dark-secondary);
+    --secondary-dark: var(--dark-secondary-dark);
+    --secondary-light: var(--dark-secondary-light);
+    --background: var(--dark-background);
+    --background-alt: var(--dark-background-alt);
+    --surface: var(--dark-surface);
+    --surface-hover: var(--dark-surface-hover);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --text-disabled: var(--dark-text-disabled);
+    --border: var(--dark-border);
+    --shadow-sm: var(--dark-shadow-sm);
+    --shadow-md: var(--dark-shadow-md);
+    --shadow-lg: var(--dark-shadow-lg);
+    --accent: var(--dark-accent);
+    --accent-dark: var(--dark-accent-dark);
+    --accent-light: var(--dark-accent-light);
+    --success: var(--dark-success);
+    --error: var(--dark-error);
+    --warning: var(--dark-warning);
+    --info: var(--dark-info);
+}
+
+/* Theme Transition */
+.theme-transitioning {
+    transition: background-color var(--transition-duration) var(--transition-timing),
+                color var(--transition-duration) var(--transition-timing),
+                border-color var(--transition-duration) var(--transition-timing),
+                box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-duration) var(--transition-timing);
+    will-change: transform, background-color;
+}
+
+.theme-toggle:hover {
+    background-color: var(--surface);
+}
+
+.theme-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+.theme-toggle .icon-container {
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+.theme-toggle .sun-icon,
+.theme-toggle .moon-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform var(--transition-duration) var(--transition-timing),
+                opacity var(--transition-duration) var(--transition-timing);
+    pointer-events: none;
+}
+
+/* Light Theme */
+:root[class="light"] {
+    --primary: var(--light-primary);
+    --secondary: var(--light-secondary);
+    --background: var(--light-background);
+    --surface: var(--light-surface);
+    --text-primary: var(--light-text-primary);
+    --text-secondary: var(--light-text-secondary);
+    --border: var(--light-border);
+    --accent: var(--light-accent);
+}
+
+:root[class="light"] .theme-toggle .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+:root[class="light"] .theme-toggle .moon-icon {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+/* Dark Theme */
+:root[class="dark"] {
+    --primary: var(--dark-primary);
+    --secondary: var(--dark-secondary);
+    --background: var(--dark-background);
+    --surface: var(--dark-surface);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --border: var(--dark-border);
+    --accent: var(--dark-accent);
+}
+
+:root[class="dark"] .theme-toggle .sun-icon {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+:root[class="dark"] .theme-toggle .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+    }
+    
+    .theme-toggle .icon-container {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+    .theme-toggle {
+        border: 1px solid CanvasText;
+    }
+    
+    .theme-toggle:focus {
+        outline: 2px solid CanvasText;
+        outline-offset: 2px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .theme-transitioning {
+        transition: none;
+    }
+    
+    .theme-toggle .sun-icon,
+    .theme-toggle .moon-icon {
+        transition: none;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+    .theme-toggle:hover {
+        background-color: transparent;
+    }
+    
+    .theme-toggle:active {
+        background-color: var(--surface);
+    }
+}
+
+/* Transitions */
+.theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Utility classes */
+.bg-primary {
+    background-color: rgb(var(--color-bg-primary));
+}
+
+.bg-secondary {
+    background-color: rgb(var(--color-bg-secondary));
+}
+
+.text-primary {
+    color: rgb(var(--color-text-primary));
+}
+
+.text-secondary {
+    color: rgb(var(--color-text-secondary));
+}
+
+.border-color {
+    border-color: rgb(var(--color-border));
+}
+
+/* Component-specific theme classes */
+.card {
+    @apply bg-primary border-color rounded-lg shadow-sm;
+}
+
+.button-primary {
+    @apply bg-blue-500 text-white hover:bg-blue-600;
+}
+
+.button-secondary {
+    @apply bg-gray-500 text-white hover:bg-gray-600;
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+} 

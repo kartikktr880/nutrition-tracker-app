@@ -3,7 +3,8 @@
  * Provides advanced goal tracking and visualization
  */
 
-import { initializeAuth, getUserProfile, updateUserProfile } from './firebase-config.js';
+import { auth, db } from './auth-core.js';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { calculateTDEE, calculateBMI, calculateMacroTargets } from './nutrition-analytics.js';
 
 class GoalTracker {
@@ -57,14 +58,14 @@ class GoalTracker {
   async initialize() {
     try {
       // Check if user is authenticated
-      const user = await initializeAuth();
+      const user = auth.currentUser;
       if (!user) return false;
       
       // Get user profile data
-      const result = await getUserProfile(user.uid);
-      if (!result.success) throw new Error('Failed to load user profile');
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) throw new Error('Failed to load user profile');
       
-      this.userData = result.data;
+      this.userData = userDoc.data();
       this.userGoals = this.userData.goals || [];
       
       // Initialize goal dashboard
@@ -593,7 +594,7 @@ class GoalTracker {
     e.preventDefault();
     
     const form = e.target;
-    const user = await initializeAuth();
+    const user = auth.currentUser;
     if (!user) return;
     
     const goalId = form.querySelector('#goalId').value || `goal_${Date.now()}`;
@@ -629,7 +630,7 @@ class GoalTracker {
       }
       
       // Save to user profile
-      await updateUserProfile(user.uid, { goals: this.userGoals });
+      await updateDoc(doc(db, "users", user.uid, "goals", goalId));
       
       // Add initial progress entry if it's a new goal
       if (existingGoalIndex < 0) {
@@ -702,7 +703,7 @@ class GoalTracker {
    * @param {string} goalId - ID of the goal to delete
    */
   async deleteGoal(goalId) {
-    const user = await initializeAuth();
+    const user = auth.currentUser;
     if (!user) return;
     
     try {
@@ -712,7 +713,7 @@ class GoalTracker {
         this.userGoals.splice(goalIndex, 1);
         
         // Update user profile
-        await updateUserProfile(user.uid, { goals: this.userGoals });
+        await updateDoc(doc(db, "users", user.uid, "goals", goalId));
         
         // Refresh dashboard
         this.renderGoalDashboard();
@@ -743,7 +744,7 @@ class GoalTracker {
    * @param {number} value - Current value
    */
   async logGoalProgress(goalId, value) {
-    const user = await initializeAuth();
+    const user = auth.currentUser;
     if (!user) return;
     
     try {
@@ -760,9 +761,7 @@ class GoalTracker {
       this.progressData[goalId].push(entry);
       
       // Save progress data
-      await updateUserProfile(user.uid, { 
-        progressData: this.progressData 
-      });
+      await updateDoc(doc(db, "users", user.uid, "progressData", goalId, "entries", entry.date));
       
       // Refresh dashboard
       this.renderGoalDashboard();
@@ -784,13 +783,13 @@ class GoalTracker {
    * Load progress data from user profile
    */
   async loadProgressData() {
-    const user = await initializeAuth();
+    const user = auth.currentUser;
     if (!user) return;
     
     try {
-      const result = await getUserProfile(user.uid);
-      if (result.success && result.data.progressData) {
-        this.progressData = result.data.progressData;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists() && userDoc.data().progressData) {
+        this.progressData = userDoc.data().progressData;
       }
     } catch (error) {
       console.error('Error loading progress data:', error);

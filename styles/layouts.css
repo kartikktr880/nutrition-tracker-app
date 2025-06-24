@@ -1,0 +1,1131 @@
+/* Nutrition Tracker - Layout Styles */
+
+/* ==================
+   Grid System
+   ================== */
+.grid {
+    display: grid;
+    gap: var(--grid-gap, 1.5rem);
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(var(--min-column-width, 250px), 1fr));
+}
+
+.grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(var(--min-column-width, 250px), 1fr));
+}
+
+/* ==================
+   Flexbox Layouts
+   ================== */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-auto {
+    flex: auto;
+}
+
+.flex-initial {
+    flex: initial;
+}
+
+.flex-none {
+    flex: none;
+}
+
+/* ==================
+   Alignment
+   ================== */
+.items-start {
+    align-items: flex-start;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.items-end {
+    align-items: flex-end;
+}
+
+.items-stretch {
+    align-items: stretch;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.justify-around {
+    justify-content: space-around;
+}
+
+.justify-evenly {
+    justify-content: space-evenly;
+}
+
+/* ==================
+   Spacing
+   ================== */
+.gap-0 { gap: 0; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+.gap-10 { gap: 2.5rem; }
+.gap-12 { gap: 3rem; }
+.gap-16 { gap: 4rem; }
+
+/* ==================
+   Container
+   ================== */
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+}
+
+.container-sm {
+    max-width: 640px;
+}
+
+.container-md {
+    max-width: 768px;
+}
+
+.container-lg {
+    max-width: 1024px;
+}
+
+.container-xl {
+    max-width: 1280px;
+}
+
+.container-2xl {
+    max-width: 1536px;
+}
+
+/* ==================
+   Section
+   ================== */
+.section {
+    padding: var(--section-spacing) 0;
+}
+
+.section-sm {
+    padding: calc(var(--section-spacing) * 0.5) 0;
+}
+
+.section-lg {
+    padding: calc(var(--section-spacing) * 1.5) 0;
+}
+
+.section-xl {
+    padding: calc(var(--section-spacing) * 2) 0;
+}
+
+/* ==================
+   Stack
+   ================== */
+.stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.stack-0 > * + * { margin-top: 0; }
+.stack-1 > * + * { margin-top: 0.25rem; }
+.stack-2 > * + * { margin-top: 0.5rem; }
+.stack-3 > * + * { margin-top: 0.75rem; }
+.stack-4 > * + * { margin-top: 1rem; }
+.stack-5 > * + * { margin-top: 1.25rem; }
+.stack-6 > * + * { margin-top: 1.5rem; }
+.stack-8 > * + * { margin-top: 2rem; }
+.stack-10 > * + * { margin-top: 2.5rem; }
+.stack-12 > * + * { margin-top: 3rem; }
+.stack-16 > * + * { margin-top: 4rem; }
+
+/* ==================
+   Cluster
+   ================== */
+.cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cluster-gap, 1rem);
+}
+
+/* ==================
+   Sidebar
+   ================== */
+.sidebar {
+    display: grid;
+    gap: var(--sidebar-gap, 1.5rem);
+}
+
+.sidebar-left {
+    grid-template-columns: var(--sidebar-width, 250px) 1fr;
+}
+
+.sidebar-right {
+    grid-template-columns: 1fr var(--sidebar-width, 250px);
+}
+
+@media (max-width: 768px) {
+    .sidebar-left,
+    .sidebar-right {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==================
+   Switcher
+   ================== */
+.switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--switcher-gap, 1rem);
+}
+
+.switcher > * {
+    flex-grow: 1;
+    flex-basis: calc((var(--switcher-threshold, 30rem) - 100%) * 999);
+}
+
+/* ==================
+   Center
+   ================== */
+.center {
+    display: grid;
+    place-items: center;
+    min-height: var(--center-min-height, 100vh);
+}
+
+/* ==================
+   Cover
+   ================== */
+.cover {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: var(--cover-min-height, 100vh);
+}
+
+.cover > * {
+    margin-block: var(--cover-space, 1rem);
+}
+
+.cover > :first-child:not(h1) {
+    margin-block-start: 0;
+}
+
+.cover > :last-child:not(h1) {
+    margin-block-end: 0;
+}
+
+.cover > h1 {
+    margin-block: auto;
+}
+
+/* ==================
+   Box
+   ================== */
+.box {
+    padding: var(--box-padding, 1rem);
+    border-radius: var(--box-radius, var(--border-radius));
+    background-color: var(--box-bg, var(--background-white));
+    box-shadow: var(--box-shadow, var(--shadow-sm));
+}
+
+/* ==================
+   Responsive Layouts
+   ================== */
+@media (max-width: 640px) {
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ==================
+   Aspect Ratio
+   ================== */
+.aspect-ratio {
+    position: relative;
+    width: 100%;
+}
+
+.aspect-ratio::before {
+    content: "";
+    display: block;
+    padding-bottom: var(--aspect-ratio);
+}
+
+.aspect-ratio > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.aspect-square { --aspect-ratio: 100%; }
+.aspect-video { --aspect-ratio: 56.25%; }
+.aspect-portrait { --aspect-ratio: 133.33%; }
+
+/* ==================
+   Reel
+   ================== */
+.reel {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.reel::-webkit-scrollbar {
+    display: none;
+}
+
+.reel > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+}
+
+/* ==================
+   Imposter
+   ================== */
+.imposter {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: var(--imposter-z-index, 1000);
+}
+
+/* ==================
+   Frame
+   ================== */
+.frame {
+    aspect-ratio: var(--frame-aspect-ratio, 16/9);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.frame > img,
+.frame > video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+}
+
+/* ==================
+   Grid Areas
+   ================== */
+.grid-areas {
+    display: grid;
+    grid-template-areas: var(--grid-areas);
+    gap: var(--grid-gap, 1rem);
+}
+
+.grid-areas > * {
+    grid-area: var(--grid-area);
+}
+
+/* ==================
+   Masonry
+   ================== */
+.masonry {
+    columns: var(--masonry-columns, 3);
+    column-gap: var(--masonry-gap, 1rem);
+}
+
+.masonry > * {
+    break-inside: avoid;
+    margin-bottom: var(--masonry-gap, 1rem);
+}
+
+/* ==================
+   Split
+   ================== */
+.split {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--split-gap, 1rem);
+}
+
+.split > * {
+    flex-grow: 1;
+    flex-basis: calc((var(--split-threshold, 30rem) - 100%) * 999);
+}
+
+/* ==================
+   Auto Grid
+   ================== */
+.auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--auto-grid-min-size, 16rem)), 1fr));
+    gap: var(--auto-grid-gap, 1rem);
+}
+
+/* ==================
+   Responsive Container
+   ================== */
+.responsive-container {
+    width: min(var(--container-max-width), 100% - 2rem);
+    margin-inline: auto;
+}
+
+/* ==================
+   Full Bleed
+   ================== */
+.full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+/* ==================
+   Sticky Footer
+   ================== */
+.sticky-footer {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+/* ==================
+   Holy Grail
+   ================== */
+.holy-grail {
+    display: grid;
+    grid-template-areas:
+        "header header header"
+        "nav main aside"
+        "footer footer footer";
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+.holy-grail > header { grid-area: header; }
+.holy-grail > nav { grid-area: nav; }
+.holy-grail > main { grid-area: main; }
+.holy-grail > aside { grid-area: aside; }
+.holy-grail > footer { grid-area: footer; }
+
+@media (max-width: 768px) {
+    .holy-grail {
+        grid-template-areas:
+            "header"
+            "nav"
+            "main"
+            "aside"
+            "footer";
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==================
+   Responsive Images
+   ================== */
+.responsive-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.responsive-img-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.responsive-img-contain {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ==================
+   Responsive Video
+   ================== */
+.responsive-video {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+
+.responsive-video iframe,
+.responsive-video object,
+.responsive-video embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==================
+   Responsive Table
+   ================== */
+.responsive-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.responsive-table table {
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+/* ==================
+   Responsive Text
+   ================== */
+.responsive-text {
+    font-size: clamp(
+        var(--min-font-size, 1rem),
+        calc(1rem + ((1vw - 0.2rem) * var(--font-size-multiplier, 1))),
+        var(--max-font-size, 1.5rem)
+    );
+}
+
+/* ==================
+   Responsive Spacing
+   ================== */
+.responsive-spacing {
+    padding: clamp(
+        var(--min-padding, 1rem),
+        calc(1rem + ((1vw - 0.2rem) * var(--padding-multiplier, 1))),
+        var(--max-padding, 2rem)
+    );
+}
+
+/* ==================
+   Responsive Grid
+   ================== */
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(
+            clamp(
+                var(--min-column-width, 250px),
+                calc(100% / var(--columns, 3) - var(--gap, 1rem)),
+                var(--max-column-width, 1fr)
+            ),
+            1fr
+        )
+    );
+    gap: var(--gap, 1rem);
+}
+
+/* ==================
+   Responsive Flex
+   ================== */
+.responsive-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap, 1rem);
+}
+
+.responsive-flex > * {
+    flex: 1 1 clamp(
+        var(--min-width, 250px),
+        calc(100% / var(--items, 3) - var(--gap, 1rem)),
+        var(--max-width, 1fr)
+    );
+}
+
+/* ==================
+   Responsive Container
+   ================== */
+.responsive-container {
+    width: min(
+        var(--container-max-width, 1200px),
+        100% - var(--container-padding, 2rem)
+    );
+    margin-inline: auto;
+}
+
+/* ==================
+   Responsive Section
+   ================== */
+.responsive-section {
+    padding: clamp(
+        var(--min-padding, 2rem),
+        calc(2rem + ((1vw - 0.2rem) * var(--padding-multiplier, 1))),
+        var(--max-padding, 4rem)
+    ) 0;
+}
+
+/* ==================
+   Responsive Gap
+   ================== */
+.responsive-gap {
+    gap: clamp(
+        var(--min-gap, 1rem),
+        calc(1rem + ((1vw - 0.2rem) * var(--gap-multiplier, 1))),
+        var(--max-gap, 2rem)
+    );
+}
+
+/* ==================
+   Responsive Margin
+   ================== */
+.responsive-margin {
+    margin: clamp(
+        var(--min-margin, 1rem),
+        calc(1rem + ((1vw - 0.2rem) * var(--margin-multiplier, 1))),
+        var(--max-margin, 2rem)
+    );
+}
+
+/* ==================
+   Responsive Border Radius
+   ================== */
+.responsive-radius {
+    border-radius: clamp(
+        var(--min-radius, 0.25rem),
+        calc(0.25rem + ((1vw - 0.2rem) * var(--radius-multiplier, 1))),
+        var(--max-radius, 0.5rem)
+    );
+}
+
+/* ==================
+   Responsive Shadow
+   ================== */
+.responsive-shadow {
+    box-shadow: 0 clamp(
+        var(--min-shadow, 0.25rem),
+        calc(0.25rem + ((1vw - 0.2rem) * var(--shadow-multiplier, 1))),
+        var(--max-shadow, 0.5rem)
+    ) rgba(0, 0, 0, 0.1);
+}
+
+/* ==================
+   Responsive Line Height
+   ================== */
+.responsive-line-height {
+    line-height: clamp(
+        var(--min-line-height, 1.5),
+        calc(1.5 + ((1vw - 0.2rem) * var(--line-height-multiplier, 1))),
+        var(--max-line-height, 2)
+    );
+}
+
+/* ==================
+   Responsive Letter Spacing
+   ================== */
+.responsive-letter-spacing {
+    letter-spacing: clamp(
+        var(--min-letter-spacing, 0),
+        calc(0 + ((1vw - 0.2rem) * var(--letter-spacing-multiplier, 1))),
+        var(--max-letter-spacing, 0.1em)
+    );
+}
+
+/* ==================
+   Responsive Font Weight
+   ================== */
+.responsive-font-weight {
+    font-weight: clamp(
+        var(--min-font-weight, 400),
+        calc(400 + ((1vw - 0.2rem) * var(--font-weight-multiplier, 1))),
+        var(--max-font-weight, 700)
+    );
+}
+
+/* ==================
+   Responsive Opacity
+   ================== */
+.responsive-opacity {
+    opacity: clamp(
+        var(--min-opacity, 0.5),
+        calc(0.5 + ((1vw - 0.2rem) * var(--opacity-multiplier, 1))),
+        var(--max-opacity, 1)
+    );
+}
+
+/* ==================
+   Responsive Transform
+   ================== */
+.responsive-transform {
+    transform: scale(clamp(
+        var(--min-scale, 0.9),
+        calc(0.9 + ((1vw - 0.2rem) * var(--scale-multiplier, 1))),
+        var(--max-scale, 1)
+    ));
+}
+
+/* ==================
+   Responsive Filter
+   ================== */
+.responsive-filter {
+    filter: blur(clamp(
+        var(--min-blur, 0),
+        calc(0 + ((1vw - 0.2rem) * var(--blur-multiplier, 1))),
+        var(--max-blur, 5px)
+    ));
+}
+
+/* ==================
+   Responsive Animation
+   ================== */
+.responsive-animation {
+    animation-duration: clamp(
+        var(--min-duration, 0.5s),
+        calc(0.5s + ((1vw - 0.2rem) * var(--duration-multiplier, 1))),
+        var(--max-duration, 1s)
+    );
+}
+
+/* ==================
+   Responsive Transition
+   ================== */
+.responsive-transition {
+    transition-duration: clamp(
+        var(--min-duration, 0.2s),
+        calc(0.2s + ((1vw - 0.2rem) * var(--duration-multiplier, 1))),
+        var(--max-duration, 0.5s)
+    );
+}
+
+/* ==================
+   Responsive Z-Index
+   ================== */
+.responsive-z-index {
+    z-index: clamp(
+        var(--min-z-index, 1),
+        calc(1 + ((1vw - 0.2rem) * var(--z-index-multiplier, 1))),
+        var(--max-z-index, 10)
+    );
+}
+
+/* ==================
+   Responsive Position
+   ================== */
+.responsive-position {
+    position: absolute;
+    top: clamp(
+        var(--min-top, 0),
+        calc(0 + ((1vw - 0.2rem) * var(--top-multiplier, 1))),
+        var(--max-top, 1rem)
+    );
+    left: clamp(
+        var(--min-left, 0),
+        calc(0 + ((1vw - 0.2rem) * var(--left-multiplier, 1))),
+        var(--max-left, 1rem)
+    );
+}
+
+/* ==================
+   Responsive Overflow
+   ================== */
+.responsive-overflow {
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb, #888) var(--scrollbar-track, #f1f1f1);
+}
+
+.responsive-overflow::-webkit-scrollbar {
+    width: clamp(
+        var(--min-scrollbar-width, 6px),
+        calc(6px + ((1vw - 0.2rem) * var(--scrollbar-width-multiplier, 1))),
+        var(--max-scrollbar-width, 12px)
+    );
+}
+
+.responsive-overflow::-webkit-scrollbar-track {
+    background: var(--scrollbar-track, #f1f1f1);
+}
+
+.responsive-overflow::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, #888);
+    border-radius: var(--scrollbar-radius, 3px);
+}
+
+/* ==================
+   Responsive Cursor
+   ================== */
+.responsive-cursor {
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .responsive-cursor:hover {
+        cursor: pointer;
+    }
+}
+
+/* ==================
+   Responsive Selection
+   ================== */
+.responsive-selection {
+    user-select: none;
+}
+
+@media (hover: hover) {
+    .responsive-selection:hover {
+        user-select: text;
+    }
+}
+
+/* ==================
+   Responsive Focus
+   ================== */
+.responsive-focus {
+    outline: none;
+}
+
+@media (hover: hover) {
+    .responsive-focus:focus {
+        outline: 2px solid var(--focus-color, var(--primary-color));
+        outline-offset: 2px;
+    }
+}
+
+/* ==================
+   Responsive Hover
+   ================== */
+.responsive-hover {
+    transition: transform var(--transition-fast);
+}
+
+@media (hover: hover) {
+    .responsive-hover:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* ==================
+   Responsive Active
+   ================== */
+.responsive-active {
+    transition: transform var(--transition-fast);
+}
+
+.responsive-active:active {
+    transform: scale(0.98);
+}
+
+/* ==================
+   Responsive Disabled
+   ================== */
+.responsive-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* ==================
+   Responsive Loading
+   ================== */
+.responsive-loading {
+    position: relative;
+}
+
+.responsive-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==================
+   Responsive Error
+   ================== */
+.responsive-error {
+    border-color: var(--error-color, #dc3545);
+}
+
+.responsive-error:focus {
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+/* ==================
+   Responsive Success
+   ================== */
+.responsive-success {
+    border-color: var(--success-color, #28a745);
+}
+
+.responsive-success:focus {
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25);
+}
+
+/* ==================
+   Responsive Warning
+   ================== */
+.responsive-warning {
+    border-color: var(--warning-color, #ffc107);
+}
+
+.responsive-warning:focus {
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.25);
+}
+
+/* ==================
+   Responsive Info
+   ================== */
+.responsive-info {
+    border-color: var(--info-color, #17a2b8);
+}
+
+.responsive-info:focus {
+    box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.25);
+}
+
+/* ==================
+   Responsive Print
+   ================== */
+@media print {
+    .responsive-print {
+        display: none;
+    }
+}
+
+/* ==================
+   Responsive Screen Reader
+   ================== */
+.responsive-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ==================
+   Responsive Touch
+   ================== */
+@media (hover: none) {
+    .responsive-touch {
+        cursor: pointer;
+    }
+}
+
+/* ==================
+   Responsive Mouse
+   ================== */
+@media (hover: hover) {
+    .responsive-mouse {
+        cursor: pointer;
+    }
+}
+
+/* ==================
+   Responsive Keyboard
+   ================== */
+@media (hover: hover) {
+    .responsive-keyboard:focus {
+        outline: 2px solid var(--focus-color, var(--primary-color));
+        outline-offset: 2px;
+    }
+}
+
+/* ==================
+   Responsive Reduced Motion
+   ================== */
+@media (prefers-reduced-motion: reduce) {
+    .responsive-motion {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ==================
+   Responsive Dark Mode
+   ================== */
+@media (prefers-color-scheme: dark) {
+    .responsive-dark {
+        background-color: var(--dark-bg, #1a1a1a);
+        color: var(--dark-text, #ffffff);
+    }
+}
+
+/* ==================
+   Responsive Light Mode
+   ================== */
+@media (prefers-color-scheme: light) {
+    .responsive-light {
+        background-color: var(--light-bg, #ffffff);
+        color: var(--light-text, #000000);
+    }
+}
+
+/* ==================
+   Responsive High Contrast
+   ================== */
+@media (prefers-contrast: high) {
+    .responsive-contrast {
+        background-color: var(--contrast-bg, #000000);
+        color: var(--contrast-text, #ffffff);
+    }
+}
+
+/* ==================
+   Responsive Reduced Data
+   ================== */
+@media (prefers-reduced-data: reduce) {
+    .responsive-data {
+        background-image: none;
+    }
+}
+
+/* ==================
+   Responsive Reduced Transparency
+   ================== */
+@media (prefers-reduced-transparency: reduce) {
+    .responsive-transparency {
+        opacity: 1;
+    }
+}
+
+/* ==================
+   Responsive Reduced Data Usage
+   ================== */
+@media (prefers-reduced-data: reduce) {
+    .responsive-data-usage {
+        background-image: none;
+        video {
+            display: none;
+        }
+    }
+}
+
+/* ==================
+   Responsive Reduced Motion
+   ================== */
+@media (prefers-reduced-motion: reduce) {
+    .responsive-motion {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ==================
+   Responsive Reduced Transparency
+   ================== */
+@media (prefers-reduced-transparency: reduce) {
+    .responsive-transparency {
+        opacity: 1;
+    }
+}
+
+/* ==================
+   Responsive Reduced Data Usage
+   ================== */
+@media (prefers-reduced-data: reduce) {
+    .responsive-data-usage {
+        background-image: none;
+        video {
+            display: none;
+        }
+    }
+}
+
+/* ==================
+   Responsive Reduced Motion
+   ================== */
+@media (prefers-reduced-motion: reduce) {
+    .responsive-motion {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ==================
+   Responsive Reduced Transparency
+   ================== */
+@media (prefers-reduced-transparency: reduce) {
+    .responsive-transparency {
+        opacity: 1;
+    }
+}
+
+/* ==================
+   Responsive Reduced Data Usage
+   ================== */
+@media (prefers-reduced-data: reduce) {
+    .responsive-data-usage {
+        background-image: none;
+        video {
+            display: none;
+        }
+    }
+} 

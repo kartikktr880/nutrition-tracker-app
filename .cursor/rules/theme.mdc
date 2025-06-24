@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Your rule content
@@ -108,3 +108,4 @@ Custom illustrations for a premium, unique feel.
 ✅ Responsiveness: Ensure layouts adjust seamlessly for mobile (375px) and tablet (768px) users.
 ✅ Accessibility: Use WCAG-compliant contrast ratios for readability.
 ✅ Smooth Animations: Subtle hover effects and micro-interactions for a modern feel.
+

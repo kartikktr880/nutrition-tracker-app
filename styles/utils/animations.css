@@ -1,151 +1,299 @@
+/* Animation System
+ * A unified system for managing animations across the application
+ * Includes performance optimizations and accessibility support
+ */
+
+/* ==================
+   Animation Variables
+   ================== */
+:root {
+    /* Timing */
+    --transition-base: 0.3s;
+    --transition-fast: 0.15s;
+    --transition-slow: 0.5s;
+    --transition-bounce: 1s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    
+    /* Easing */
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-bounce: cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* ==================
+   Base Animations
+   ================== */
+
 /* Fade */
 @keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes fade-out {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
-
-.fade-in {
-    animation: fade-in var(--transition-base);
-}
-
-.fade-out {
-    animation: fade-out var(--transition-base);
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 /* Slide */
 @keyframes slide-in-up {
     from {
-        transform: translateY(1rem);
+        transform: translate3d(0, 1rem, 0);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
         opacity: 1;
     }
 }
 
 @keyframes slide-in-down {
     from {
-        transform: translateY(-1rem);
+        transform: translate3d(0, -1rem, 0);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
         opacity: 1;
     }
 }
 
 @keyframes slide-in-left {
     from {
-        transform: translateX(-1rem);
+        transform: translate3d(-1rem, 0, 0);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: translate3d(0, 0, 0);
         opacity: 1;
     }
 }
 
 @keyframes slide-in-right {
     from {
-        transform: translateX(1rem);
+        transform: translate3d(1rem, 0, 0);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: translate3d(0, 0, 0);
         opacity: 1;
     }
-}
-
-.slide-in-up {
-    animation: slide-in-up var(--transition-base);
-}
-
-.slide-in-down {
-    animation: slide-in-down var(--transition-base);
-}
-
-.slide-in-left {
-    animation: slide-in-left var(--transition-base);
-}
-
-.slide-in-right {
-    animation: slide-in-right var(--transition-base);
 }
 
 /* Scale */
 @keyframes scale-in {
     from {
-        transform: scale(0.9);
+        transform: scale3d(0.9, 0.9, 1);
         opacity: 0;
     }
     to {
-        transform: scale(1);
+        transform: scale3d(1, 1, 1);
         opacity: 1;
     }
 }
 
 @keyframes scale-out {
     from {
-        transform: scale(1);
+        transform: scale3d(1, 1, 1);
         opacity: 1;
     }
     to {
-        transform: scale(0.9);
+        transform: scale3d(0.9, 0.9, 1);
         opacity: 0;
     }
-}
-
-.scale-in {
-    animation: scale-in var(--transition-base);
-}
-
-.scale-out {
-    animation: scale-out var(--transition-base);
 }
 
 /* Rotate */
 @keyframes rotate-in {
     from {
-        transform: rotate(-180deg);
+        transform: rotate3d(0, 0, 1, -180deg);
         opacity: 0;
     }
     to {
-        transform: rotate(0);
+        transform: rotate3d(0, 0, 1, 0);
         opacity: 1;
     }
 }
 
 @keyframes rotate-out {
     from {
-        transform: rotate(0);
+        transform: rotate3d(0, 0, 1, 0);
         opacity: 1;
     }
     to {
-        transform: rotate(180deg);
+        transform: rotate3d(0, 0, 1, 180deg);
         opacity: 0;
     }
 }
 
+/* ==================
+   Utility Classes
+   ================== */
+
+/* Fade */
+.fade-in {
+    animation: fade-in var(--transition-base) var(--ease-out);
+    will-change: opacity;
+}
+
+.fade-out {
+    animation: fade-out var(--transition-base) var(--ease-in);
+    will-change: opacity;
+}
+
+/* Slide */
+.slide-in-up {
+    animation: slide-in-up var(--transition-base) var(--ease-out);
+    will-change: transform, opacity;
+}
+
+.slide-in-down {
+    animation: slide-in-down var(--transition-base) var(--ease-out);
+    will-change: transform, opacity;
+}
+
+.slide-in-left {
+    animation: slide-in-left var(--transition-base) var(--ease-out);
+    will-change: transform, opacity;
+}
+
+.slide-in-right {
+    animation: slide-in-right var(--transition-base) var(--ease-out);
+    will-change: transform, opacity;
+}
+
+/* Scale */
+.scale-in {
+    animation: scale-in var(--transition-base) var(--ease-out);
+    will-change: transform, opacity;
+}
+
+.scale-out {
+    animation: scale-out var(--transition-base) var(--ease-in);
+    will-change: transform, opacity;
+}
+
+/* Rotate */
 .rotate-in {
-    animation: rotate-in var(--transition-base);
+    animation: rotate-in var(--transition-base) var(--ease-out);
+    will-change: transform, opacity;
 }
 
 .rotate-out {
-    animation: rotate-out var(--transition-base);
+    animation: rotate-out var(--transition-base) var(--ease-in);
+    will-change: transform, opacity;
+}
+
+/* ==================
+   Animation Modifiers
+   ================== */
+
+/* Duration */
+.animate-fast {
+    animation-duration: var(--transition-fast) !important;
+}
+
+.animate-slow {
+    animation-duration: var(--transition-slow) !important;
+}
+
+/* Timing */
+.animate-ease-in {
+    animation-timing-function: var(--ease-in) !important;
+}
+
+.animate-ease-out {
+    animation-timing-function: var(--ease-out) !important;
+}
+
+.animate-ease-in-out {
+    animation-timing-function: var(--ease-in-out) !important;
+}
+
+.animate-bounce {
+    animation-timing-function: var(--ease-bounce) !important;
+}
+
+/* Fill Mode */
+.animate-fill-forwards {
+    animation-fill-mode: forwards !important;
+}
+
+.animate-fill-backwards {
+    animation-fill-mode: backwards !important;
+}
+
+.animate-fill-both {
+    animation-fill-mode: both !important;
+}
+
+/* Play State */
+.animate-paused {
+    animation-play-state: paused !important;
+}
+
+.animate-running {
+    animation-play-state: running !important;
+}
+
+/* ==================
+   Reduced Motion
+   ================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .animate-on-scroll,
+    .animate-on-hover,
+    .animate-on-focus {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ==================
+   Performance Optimizations
+   ================== */
+
+/* Hardware Acceleration */
+.hardware-accelerated {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Animation Containment */
+.animate-contained {
+    contain: strict;
+}
+
+/* Animation Queue */
+.animate-queued {
+    animation-play-state: paused;
+}
+
+.animate-queued.animate-ready {
+    animation-play-state: running;
+}
+
+/* ==================
+   Debug Mode
+   ================== */
+.debug-animations * {
+    animation-duration: 0.5s !important;
+    transition-duration: 0.5s !important;
+}
+
+.debug-animations *::before,
+.debug-animations *::after {
+    animation-duration: 0.5s !important;
+    transition-duration: 0.5s !important;
 }
 
 /* Bounce */
@@ -218,14 +366,6 @@
     animation: none !important;
 }
 
-.animate-fast {
-    animation-duration: 0.2s !important;
-}
-
-.animate-slow {
-    animation-duration: 1s !important;
-}
-
 .animate-slower {
     animation-duration: 2s !important;
 }
@@ -244,38 +384,6 @@
 
 .animate-linear {
     animation-timing-function: linear !important;
-}
-
-.animate-ease-in {
-    animation-timing-function: ease-in !important;
-}
-
-.animate-ease-out {
-    animation-timing-function: ease-out !important;
-}
-
-.animate-ease-in-out {
-    animation-timing-function: ease-in-out !important;
-}
-
-.animate-fill-forwards {
-    animation-fill-mode: forwards !important;
-}
-
-.animate-fill-backwards {
-    animation-fill-mode: backwards !important;
-}
-
-.animate-fill-both {
-    animation-fill-mode: both !important;
-}
-
-.animate-paused {
-    animation-play-state: paused !important;
-}
-
-.animate-running {
-    animation-play-state: running !important;
 }
 
 /* Animation Delay Utilities */
@@ -305,16 +413,4 @@
 
 .delay-1000 {
     animation-delay: 1s !important;
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
 } 

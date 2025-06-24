@@ -1,0 +1,28 @@
+{
+  "project": {
+    "name": "Nutrition Tracker",
+    "version": "1.0.0",
+    "description": "A comprehensive nutrition tracking application"
+  },
+  "mcp": {
+    "enabled": true,
+    "configFile": "mcp.config.json",
+    "autoStart": true,
+    "debug": true,
+    "transport": "stdio",
+    "protocol": "json"
+  },
+  "tasks": {
+    "directory": ".tasks",
+    "format": "json",
+    "autoLoad": true
+  },
+  "logging": {
+    "level": "debug",
+    "format": "json",
+    "file": "task-master.log"
+  },
+  "node": {
+    "version": "22.15.0"
+  }
+} 

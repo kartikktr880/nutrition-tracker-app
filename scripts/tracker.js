@@ -1,4 +1,7 @@
-import { initializeAuth, saveFoodLog, getFoodLog } from './firebase-config.js';
+// Remove Firebase imports
+// import { auth, db } from './auth-core.js';
+// import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+// import { initializeAuth, saveFoodLog, getFoodLog } from './firebase-config.js';
 
 // Sample food database (in a real app, this would come from a server)
 const foodDatabase = [
@@ -14,11 +17,12 @@ const foodDatabase = [
 
 // Initialize the tracker
 document.addEventListener('DOMContentLoaded', async function() {
-    // Initialize Firebase Auth
-    const user = await initializeAuth();
-    
-    // If no user is logged in, redirect is handled by auth.js
-    if (!user) return;
+    // Check if user is logged in
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
     
     // Get DOM elements
     const searchInput = document.getElementById('food-search');
@@ -198,51 +202,39 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Function to save food log to Firestore
     async function saveFoodLogToFirestore() {
-        // Get the date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Get current user
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) return;
-        
-        // Save to Firestore
-        await saveFoodLog(currentUser.uid, today, foodLog);
-        
-        // For backward compatibility, also save to localStorage
-        saveFoodLogToLocalStorage();
-    }
-    
-    // Function to save food log to localStorage (for backward compatibility)
-    function saveFoodLogToLocalStorage() {
-        // Get the date in YYYY-MM-DD format for the key
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Get existing food logs or initialize empty object
-        const allFoodLogs = JSON.parse(localStorage.getItem('foodLog')) || {};
-        
-        // Update today's entry
-        allFoodLogs[today] = foodLog;
-        
-        // Save back to localStorage
-        localStorage.setItem('foodLog', JSON.stringify(allFoodLogs));
+        try {
+            // Get the date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Save using API service
+            const result = await window.apiService.saveFoodLog(currentUser.uid, today, foodLog);
+            
+            if (!result.success) {
+                console.error('Failed to save food log:', result.error);
+            }
+        } catch (error) {
+            console.error('Error saving food log:', error);
+        }
     }
     
     // Function to load today's food log from Firestore
     async function loadTodaysFoodLog() {
-        // Get the date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Get current user
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) return;
-        
-        // Load from Firestore
-        const result = await getFoodLog(currentUser.uid, today);
-        
-        if (result.success) {
-            foodLog = result.data;
-            updateFoodEntries();
-            updateNutritionTotals();
+        try {
+            // Get the date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Load using API service
+            const result = await window.apiService.getFoodLog(currentUser.uid, today);
+            
+            if (result.success) {
+                foodLog = result.data;
+                updateFoodEntries();
+                updateNutritionTotals();
+            } else {
+                console.error('Failed to load food log:', result.error);
+            }
+        } catch (error) {
+            console.error('Error loading food log:', error);
         }
     }
     

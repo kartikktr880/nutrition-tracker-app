@@ -1,0 +1,45 @@
+{
+    "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.nutrition-tracker.com;",
+    "hsts": "max-age=31536000; includeSubDomains; preload",
+    "xss": "1; mode=block",
+    "frame": "SAMEORIGIN",
+    "content": "nosniff",
+    "referrer": "strict-origin-when-cross-origin",
+    "permissions": {
+        "camera": "none",
+        "microphone": "none",
+        "geolocation": "none",
+        "notifications": "none"
+    },
+    "cors": {
+        "allowedOrigins": [
+            "https://nutrition-tracker.com",
+            "https://api.nutrition-tracker.com"
+        ],
+        "allowedMethods": ["GET", "POST", "PUT", "DELETE"],
+        "allowedHeaders": ["Content-Type", "Authorization"],
+        "maxAge": 86400
+    },
+    "session": {
+        "maxAge": 3600,
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "strict"
+    },
+    "password": {
+        "minLength": 12,
+        "requireUppercase": true,
+        "requireLowercase": true,
+        "requireNumbers": true,
+        "requireSpecialChars": true,
+        "maxAge": 90
+    },
+    "rateLimit": {
+        "window": 900,
+        "max": 100
+    },
+    "logging": {
+        "level": "warn",
+        "retention": 30
+    }
+} 

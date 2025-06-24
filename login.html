@@ -1,8 +1,8 @@
 
     <!-- Legacy Fix Scripts - Keeping for compatibility -->
-    <script src="scripts/fix-scroll.js" defer></script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script><!DOCTYPE html>
+    </script>
+    </script>
+    </script><!DOCTYPE html>
 <html lang="en" class="dark-mode dark-theme">
 <head>
     <meta name="theme-color" content="#1A3C34">
@@ -13,14 +13,14 @@
     <!-- Footer Fix Scripts -->
     </script>
     </script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script>
+    </script>
+    </script>
     <link rel="stylesheet" href="styles/main.css$1
     
     <!-- Critical Scroll & Header Fixes - Must Load First -->
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css"">
-    <script src="scripts/smooth-scroll-fix.js" defer>
-    <script src="scripts/enhanced-header-scroll.js" defer></script></script>
+    
+    
+    </script></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -412,7 +412,7 @@
     <script src="scripts/dark-mode-enforcer.js"></script>
 
     <!-- Gradient Scroll Effect -->
-    <script src="scripts/gradient-scroll.js" defer></script>
+    </script>
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 
@@ -422,19 +422,59 @@
     <link rel="stylesheet" href="styles/screenshot-fix.css">
 
     <!-- Enhanced Fix Scripts -->
-    <script src="scripts/immediate-scroll-fix.js"></script>
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css">
-    <script src="scripts/enhanced-header-scroll.js" defer></script>
-    <script src="scripts/smooth-scroll-fix.js" defer></script>
-    <script src="scripts/apply-enhanced-fixes.js" defer></script>
+    
+    
+    </script>
+    </script>
+    </script>
     <script src="scripts/microsoft-screenshot-fix.js" defer></script>
     
     <!-- Additional Visual Enhancements -->
-    <link rel="stylesheet" href="styles/section-spacing-fix.css">
-    <link rel="stylesheet" href="styles/button-enhancement.css">
-    <link rel="stylesheet" href="styles/images-and-cards-fix.css">
+    
+    
+    
     <script src="scripts/footer-improver.js" defer></script>
-    </head>
+        <script src="scripts/script-loader.js"></script>
+    <script src="scripts/error-handler.js"></script>
+    </script>
+    <script src="scripts/css-consolidator.js"></script>
+<script type="module" src="scripts/performance-manager.js"></script>
+<script type="module" src="scripts/animation-system.js"></script>
+<script type="module" src="scripts/scroll-manager.js"></script>
+<script type="module" src="scripts/fix-manager.js"></script>
+
+<script type="module">
+    import performanceManager from './scripts/performance-manager.js';
+    import animationSystem from './scripts/animation-system.js';
+    import scrollManager from './scripts/scroll-manager.js';
+    import fixManager from './scripts/fix-manager.js';
+
+    // Initialize managers
+    document.addEventListener('DOMContentLoaded', function() {
+        performanceManager.startMonitoring();
+        animationSystem.enableDebug();
+        scrollManager.init();
+        fixManager.init();
+    });
+</script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- Core Services -->
+    <script src="scripts/firebase-config.js"></script>
+    <script src="scripts/offline-support.js"></script>
+    <script src="scripts/api-service.js"></script>
+    
+    <!-- UI Scripts -->
+    <script src="scripts/theme-manager.js" defer></script>
+    <script src="scripts/i18n.js" defer></script>
+    <script src="scripts/nav.js" defer></script>
+    <script src="scripts/footer.js" defer></script>
+
+</head>
 <body class="dark-theme gradient-background dark-mode">
     <header class="premium-header" id="premium-header">
         <a href="index.html" class="logo">Nutrition Tracker</a>
@@ -506,29 +546,32 @@
     <div id="footer-container"></div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script type="module">
+        import { 
+            initAuthHandler, 
+            signInWithGoogle, 
+            signInWithFacebook,
+            loginWithEmail,
+            resetPassword
+        } from './scripts/auth-core.js';
 
-    <!-- Scripts -->
-    <script src="scripts/firebase-config.js"></script>
-    <script src="scripts/unified-auth.js"></script>
-    <script>
         // Initialize auth handler
         document.addEventListener('DOMContentLoaded', function() {
-                    window.auth.initAuthHandler();
+            initAuthHandler();
         });
 
-        // Social login handlers
-        async function handleGoogleSignIn() {
+        // Make functions available globally
+        window.handleGoogleSignIn = async function() {
             const loadingOverlay = document.getElementById('loadingOverlay');
             const errorMessage = document.getElementById('error-message');
             
             try {
                 loadingOverlay.style.display = 'flex';
                 errorMessage.style.display = 'none';
-                await window.auth.signInWithGoogle();
-                // Redirect is handled in the signInWithGoogle function
+                const result = await signInWithGoogle();
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
             } catch (error) {
                 console.error('Google sign-in error:', error);
                 errorMessage.textContent = getErrorMessage(error);
@@ -536,25 +579,82 @@
             } finally {
                 loadingOverlay.style.display = 'none';
             }
-        }
+        };
 
-        async function handleFacebookSignIn() {
+        window.handleFacebookSignIn = async function() {
             const loadingOverlay = document.getElementById('loadingOverlay');
             const errorMessage = document.getElementById('error-message');
             
             try {
                 loadingOverlay.style.display = 'flex';
                 errorMessage.style.display = 'none';
-                await window.auth.signInWithFacebook();
-                // Redirect is handled in the signInWithFacebook function
-                    } catch (error) {
+                const result = await signInWithFacebook();
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
                 console.error('Facebook sign-in error:', error);
                 errorMessage.textContent = getErrorMessage(error);
                 errorMessage.style.display = 'block';
-                    } finally {
+            } finally {
                 loadingOverlay.style.display = 'none';
             }
-        }
+        };
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorMessage = document.getElementById('error-message');
+            
+            try {
+                loadingOverlay.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                const result = await loginWithEmail(email, password);
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = getErrorMessage(error);
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        });
+
+        // Handle forgot password
+        document.getElementById('forgotPasswordLink').addEventListener('click', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            if (!email) {
+                errorMessage.textContent = 'Please enter your email address first.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            try {
+                errorMessage.style.display = 'none';
+                const result = await resetPassword(email);
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+                errorMessage.textContent = 'Password reset email sent! Please check your inbox.';
+                errorMessage.style.display = 'block';
+                errorMessage.style.color = '#28a745';
+                errorMessage.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+            } catch (error) {
+                console.error('Password reset error:', error);
+                errorMessage.textContent = getErrorMessage(error);
+                errorMessage.style.display = 'block';
+                errorMessage.style.color = '#dc3545';
+                errorMessage.style.backgroundColor = 'rgba(220, 53, 69, 0.1)';
+            }
+        });
 
         function getErrorMessage(error) {
             switch (error.code) {
@@ -570,8 +670,15 @@
                     return 'This sign-in method is not enabled. Please contact support.';
                 case 'auth/operation-not-supported-in-this-environment':
                     return 'This operation is not supported in your current environment.';
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    return 'Invalid email or password.';
+                case 'auth/invalid-email':
+                    return 'Invalid email address.';
+                case 'auth/too-many-requests':
+                    return 'Too many failed attempts. Please try again later.';
                 default:
-                    return 'An error occurred during sign-in. Please try again.';
+                    return error.message || 'An error occurred. Please try again.';
             }
         }
     </script>

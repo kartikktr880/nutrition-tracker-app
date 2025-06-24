@@ -1,0 +1,316 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  region        String         @default("north")
+  climateZone   String         @default("continental")
+  goals         Goals?
+  preferences   Preferences?
+  nutritionLogs NutritionLog[]
+  meals         Meal[]
+  userPreferences UserPreferences?
+  nutritionalGoals NutritionalGoals?
+}
+
+model Goals {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  calories    Int
+  protein     Int
+  carbs       Int
+  fat         Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Preferences {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
+  dietaryRestrictions String   // Comma-separated values
+  favoriteFoods       String   // Comma-separated values
+  dislikedFoods       String   // Comma-separated values
+  allergies           String   // Comma-separated values
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model NutritionLog {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  date              DateTime
+  mealType          String
+  calories          Int
+  protein           Int
+  carbs             Int
+  fat               Int
+  satisfactionRating Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model MealPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  meals     Meal[]
+  preferences Json
+  goals     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  groceryList GroceryList?
+  mealPrepPlan MealPrepPlan?
+
+  @@index([userId])
+  @@index([startDate, endDate])
+}
+
+model Meal {
+  id        String   @id @default(cuid())
+  name      String
+  calories  Int
+  protein   Float
+  carbs     Float
+  fat       Float
+  ingredients Json
+  instructions Json
+  prepTime  Int
+  cookTime  Int
+  servings  Int
+  tags      String[]
+  imageUrl  String?
+  nutritionalScore Float
+  mealPlanId String
+  mealPlan  MealPlan @relation(fields: [mealPlanId], references: [id])
+  mealPrepPlan MealPrepPlan? @relation(fields: [mealPrepPlanId], references: [id])
+  mealPrepPlanId String?
+
+  @@index([mealPlanId])
+  @@index([mealPrepPlanId])
+}
+
+model GroceryList {
+  id        String   @id @default(cuid())
+  userId    String
+  items     GroceryItem[]
+  totalEstimatedCost Float
+  storeCategories Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  mealPlan  MealPlan @relation(fields: [mealPlanId], references: [id])
+  mealPlanId String  @unique
+
+  @@index([userId])
+}
+
+model GroceryItem {
+  id        String   @id @default(cuid())
+  name      String
+  amount    Float
+  unit      String
+  category  String
+  estimatedCost Float
+  storeSection String
+  priority  String
+  notes     String?
+  groceryListId String
+  groceryList GroceryList @relation(fields: [groceryListId], references: [id])
+
+  @@index([groceryListId])
+}
+
+model MealPrepPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  meals     Meal[]
+  prepSchedule Json
+  totalPrepTime Int
+  storageInstructions Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  mealPlan  MealPlan @relation(fields: [mealPlanId], references: [id])
+  mealPlanId String  @unique
+
+  @@index([userId])
+}
+
+model ExerciseSession {
+  id            String   @id @default(cuid())
+  userId        String
+  startTime     DateTime
+  endTime       DateTime
+  exercises     Json     // Stores the exercises array
+  totalDuration Int      // in minutes
+  caloriesBurned Float
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model ExerciseProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  exerciseId String
+  date      DateTime
+  sets      Int
+  reps      Int
+  weight    Float
+  duration  Int      // in minutes
+  intensity Int
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model ExerciseGoal {
+  id           String   @id @default(cuid())
+  userId       String
+  exerciseId   String
+  targetSets   Int
+  targetReps   Int
+  targetWeight Float
+  targetDuration Int    // in minutes
+  startDate    DateTime
+  endDate      DateTime
+  progress     Float    // percentage
+  status       String   // in-progress, completed, failed
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model ExerciseWorkout {
+  id                String   @id @default(cuid())
+  userId           String
+  name             String
+  description      String
+  exercises        Json     // Stores the exercises array with sets, reps, etc.
+  totalDuration    Int      // in minutes
+  difficulty       String   // beginner, intermediate, advanced
+  targetMuscleGroups Json   // Stores the target muscle groups array
+  equipment        Json     // Stores the equipment array
+  caloriesBurned   Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model ExerciseFormTemplate {
+  id            String   @id @default(cuid())
+  exerciseId    String
+  userId        String
+  name          String
+  description   String
+  checklist     Json     // Array of { item: string, description: string, importance: string }
+  tips          String[]
+  commonMistakes String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id])
+  exercise      Exercise @relation(fields: [exerciseId], references: [id])
+
+  @@index([userId])
+  @@index([exerciseId])
+}
+
+model ExerciseFormCheck {
+  id          String   @id @default(cuid())
+  exerciseId  String
+  userId      String
+  date        DateTime
+  checklist   Json     // Array of { item: string, completed: boolean, notes?: string }
+  score       Int
+  feedback    String
+  videoUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+  exercise    Exercise @relation(fields: [exerciseId], references: [id])
+
+  @@index([userId])
+  @@index([exerciseId])
+  @@index([date])
+}
+
+model Exercise {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  category      String
+  difficulty    String   // beginner, intermediate, advanced
+  equipment     Json     // Array of required equipment
+  muscleGroups  Json     // Array of targeted muscle groups
+  instructions  String[]
+  videoUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  formTemplates ExerciseFormTemplate[]
+  formChecks    ExerciseFormCheck[]
+}
+
+model UserPreferences {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  vegetarian        Boolean  @default(false)
+  vegan             Boolean  @default(false)
+  glutenFree        Boolean  @default(false)
+  dairyFree         Boolean  @default(false)
+  nutFree           Boolean  @default(false)
+  preferredCuisines String[]
+  mealSizePreference String  @default("medium")
+  cookingSkillLevel String   @default("intermediate")
+  additionalNotes   String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NutritionalGoals {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  calories      Int      @default(2000)
+  protein       Int      @default(50)
+  carbohydrates Int      @default(250)
+  fats          Int      @default(65)
+  fiber         Int      @default(25)
+  sugar         Int      @default(25)
+  sodium        Int      @default(2300)
+  vitaminA      Int      @default(5000)
+  vitaminC      Int      @default(90)
+  calcium       Int      @default(1000)
+  iron          Int      @default(18)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+} 

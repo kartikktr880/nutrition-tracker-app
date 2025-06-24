@@ -1,66 +1,54 @@
-
-    <!-- Legacy Fix Scripts - Keeping for compatibility -->
-    <script src="scripts/fix-scroll.js" defer></script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script><!DOCTYPE html>
-<html lang="en" class="dark-mode dark-theme">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - Nutrition Tracker</title>
-    <link rel="stylesheet" href="styles/main.css$1
     
-    <!-- Critical Scroll & Header Fixes - Must Load First -->
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css"">
-    <script src="scripts/smooth-scroll-fix.js" defer>
-    <script src="scripts/enhanced-header-scroll.js" defer></script></script>
-    <!-- Fix Scroll Issues - Load Early -->
-    </script>
-    </script>
-    <script src="scripts/fix-scroll.js" defer></script>
-    <!-- Footer Fix Scripts -->
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script>
+    <!-- Theme System -->
+    <link rel="stylesheet" href="styles/theme.css">
+    <script src="scripts/theme-manager.js" defer></script>
     
-
+    <!-- Base Stylesheets -->
+    <link rel="stylesheet" href="styles/core.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/layouts.css">
+<link rel="stylesheet" href="styles/themes.css">
     <link rel="stylesheet" href="styles/settings.css">
     <link rel="stylesheet" href="styles/mobile-nav.css">
     <link rel="stylesheet" href="styles/responsive.css">
-    <link rel="stylesheet" href="styles/dark-mode.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="scripts/theme-manager.js" defer></script>
-    <script src="scripts/i18n.js" defer></script>
-
-    <!-- Dark Mode Enforcer - Load First -->
-    <script src="scripts/dark-mode-enforcer.js"></script>
-
-    <!-- Gradient Scroll Effect -->
-    <script src="scripts/gradient-scroll.js" defer></script>
-    <link rel="stylesheet" href="styles/complete-fixes.css">
-    <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
-    <!-- Final header fixes - should be last to take precedence -->
-    <link rel="stylesheet" href="styles/header-fixes.css">
-
-    <!-- Footer Fix Styles -->
-    <link rel="stylesheet" href="styles/footer-elite-luxury.css">
-        <link rel="stylesheet" href="styles/cleanup-scrolling.css">
-    <link rel="stylesheet" href="styles/screenshot-fix.css">
-
-    <!-- Enhanced Fix Scripts -->
-    <script src="scripts/immediate-scroll-fix.js"></script>
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css">
-    <script src="scripts/enhanced-header-scroll.js" defer></script>
-    <script src="scripts/smooth-scroll-fix.js" defer></script>
-    <script src="scripts/apply-enhanced-fixes.js" defer></script>
-    <script src="scripts/microsoft-screenshot-fix.js" defer></script>
     
-    <!-- Additional Visual Enhancements -->
-    <link rel="stylesheet" href="styles/section-spacing-fix.css">
-    <link rel="stylesheet" href="styles/button-enhancement.css">
-    <link rel="stylesheet" href="styles/images-and-cards-fix.css">
-    <script src="scripts/footer-improver.js" defer></script>
-    </head>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Other Scripts -->
+    <script src="scripts/i18n.js" defer></script>
+    <script src="scripts/settings.js" defer></script>
+    <script src="scripts/script-loader.js"></script>
+    <script src="scripts/error-handler.js"></script>
+    </script>
+    <script src="scripts/css-consolidator.js"></script>
+<script type="module" src="scripts/performance-manager.js"></script>
+<script type="module" src="scripts/animation-system.js"></script>
+<script type="module" src="scripts/scroll-manager.js"></script>
+<script type="module" src="scripts/fix-manager.js"></script>
+
+<script type="module">
+    import performanceManager from './scripts/performance-manager.js';
+    import animationSystem from './scripts/animation-system.js';
+    import scrollManager from './scripts/scroll-manager.js';
+    import fixManager from './scripts/fix-manager.js';
+
+    // Initialize managers
+    document.addEventListener('DOMContentLoaded', function() {
+        performanceManager.startMonitoring();
+        animationSystem.enableDebug();
+        scrollManager.init();
+        fixManager.init();
+    });
+</script>
+
+</head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Premium Desktop Header -->
     <header class="premium-header" id="premium-header">
@@ -182,25 +170,35 @@
             <section id="appearance-settings" class="settings-section">
                 <h2>Appearance Settings</h2>
                 
+                <!-- Theme Options -->
                 <div class="setting-group">
                     <h3>Theme</h3>
                     <div class="setting-item">
-                        <label for="theme-select">Application Theme</label>
-                        <select id="theme-select">
-                            <option value="light">Light</option>
-                            <option value="dark">Dark</option>
-                            <option value="system">System Default</option>
-                        </select>
+                        <label>Application Theme</label>
+                        <div class="theme-options">
+                            <button class="theme-option" data-theme="light">
+                                <i class="fas fa-sun"></i>
+                                <span>Light</span>
+                            </button>
+                            <button class="theme-option" data-theme="dark">
+                                <i class="fas fa-moon"></i>
+                                <span>Dark</span>
+                            </button>
+                            <button class="theme-option" data-theme="system">
+                                <i class="fas fa-desktop"></i>
+                                <span>System</span>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="setting-item">
-                        <label for="color-scheme">Color Scheme</label>
+                        <label>Color Scheme</label>
                         <div class="color-options">
-                            <div class="color-option selected" data-color="green" style="background-color: #4CAF50;"></div>
-                            <div class="color-option" data-color="blue" style="background-color: #2196F3;"></div>
-                            <div class="color-option" data-color="purple" style="background-color: #9C27B0;"></div>
-                            <div class="color-option" data-color="orange" style="background-color: #FF9800;"></div>
-                            <div class="color-option" data-color="red" style="background-color: #F44336;"></div>
+                            <button class="color-option selected" data-color="green" style="background-color: var(--primary);"></button>
+                            <button class="color-option" data-color="blue" style="background-color: #2196F3;"></button>
+                            <button class="color-option" data-color="purple" style="background-color: #9C27B0;"></button>
+                            <button class="color-option" data-color="orange" style="background-color: #FF9800;"></button>
+                            <button class="color-option" data-color="red" style="background-color: #F44336;"></button>
                         </div>
                     </div>
                 </div>
@@ -577,8 +575,6 @@
     <script src="scripts/mobile-nav.js"></script>
     <script src="scripts/data-manager.js"></script>
     <script src="scripts/fitness-integration.js"></script>
-    <script src="scripts/settings.js"></script>
-    <script src="components/inject-sidebar.js"></script>
     <script>
         // Load language selector component
         document.addEventListener('DOMContentLoaded', function() {
@@ -598,19 +594,6 @@
                 .catch(error => {
                     console.error('Error loading language selector:', error);
                 });
-                
-            // Connect theme select dropdown to theme manager
-            const themeSelect = document.getElementById('theme-select');
-            if (themeSelect && window.themeManager) {
-                // Set initial value based on current theme
-                const currentTheme = localStorage.getItem('nutrition_tracker_theme') || 'light';
-                themeSelect.value = currentTheme;
-                
-                // Listen for changes
-                themeSelect.addEventListener('change', function() {
-                    window.themeManager.setTheme(this.value);
-                });
-            }
         });
     </script>
     <script src="scripts/screenshot-mode.js"></script>

@@ -1,3 +1,5 @@
+import StringFormatter from './string-formatter.js';
+
 class MealTimingOptimizer {
     constructor() {
         this.cache = new Map();
@@ -213,11 +215,7 @@ class MealTimingOptimizer {
     }
 
     formatMealName(meal) {
-        return meal
-            .replace(/([A-Z])/g, ' $1')
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+        return StringFormatter.formatMealName(meal);
     }
 
     getEnergyClass(meal) {
@@ -269,7 +267,7 @@ class MealTimingOptimizer {
     }
 
     formatActivityLevel(level) {
-        return level.charAt(0).toUpperCase() + level.slice(1) + ' Activity';
+        return StringFormatter.formatActivityLevel(level);
     }
 
     generateTimingRecommendations() {

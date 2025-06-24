@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark-mode dark-theme">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#1A3C34">
     
     <!-- Immediate Scroll Fix - Applied First -->
-    <script src="scripts/immediate-scroll-fix.js"></script>
+    
     
     <!-- Favicon -->
     <link rel="icon" href="images/favicon.png" type="image/png">
@@ -21,29 +21,26 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind CSS -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script>tailwind.config = {...}</script> -->
-    
-    <!-- Dark Mode Enforcer - Load First -->
-    <script src="scripts/dark-mode-enforcer.js"></script>
+    <!-- Theme System -->
+    <link rel="stylesheet" href="styles/theme.css">
+    <script src="scripts/theme-manager.js"></script>
     
     <!-- Base Stylesheets -->
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/main.css?v=1.0.0">
     
     <!-- Critical Scroll & Header Fixes - Must Load First -->
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css">
-    <script src="scripts/smooth-scroll-fix.js" defer></script>
-    <script src="scripts/enhanced-header-scroll.js" defer></script>
+    
+    </script>
+    </script>
     
     <!-- Apply All Enhanced Fixes - Must load after critical fixes -->
-    <script src="scripts/apply-enhanced-fixes.js" defer></script>
+    </script>
     
     <!-- Legacy Fix Scripts - Keeping for compatibility -->
-    <script src="scripts/fix-scroll.js" defer></script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script>
+    </script>
+    </script>
+    </script>
     
     <!-- Component Stylesheets -->
     <link rel="stylesheet" href="styles/hero-section.css">
@@ -53,12 +50,7 @@
     <link rel="stylesheet" href="styles/stay-updated.css">
     <link rel="stylesheet" href="styles/footer-new.css">
     <link rel="stylesheet" href="styles/premium-announcement-bar.css">
-    <!-- <link rel="stylesheet" href="styles/homepage-header.css"> -->
     <link rel="stylesheet" href="styles/premium-header.css">
-    
-    <!-- Theme Styles -->
-    <link rel="stylesheet" href="styles/dark-mode.css">
-    <link rel="stylesheet" href="styles/premium-dark-mode.css">
     
     <!-- Critical Fixes -->
     <link rel="stylesheet" href="styles/critical-fixes.css">
@@ -67,6 +59,14 @@
     <link rel="stylesheet" href="styles/visual-fixes.css">
     
     <!-- Scripts -->
+    <script type="module">
+        import { initAuthHandler } from './scripts/auth-core.js';
+
+        // Initialize auth handler
+        document.addEventListener('DOMContentLoaded', function() {
+            initAuthHandler();
+        });
+    </script>
     <script src="scripts/mobile-nav.js" defer></script>
     <script src="scripts/step-section.js" defer></script>
     
@@ -149,8 +149,8 @@
         
         /* Fix stat styling */
         .hero-stat {
-            background-color: rgba(26, 60, 52, 0.7) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background-color: var(--surface) !important;
+            border: 1px solid var(--border) !important;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             border-radius: 8px !important;
@@ -158,91 +158,107 @@
         }
         
         .stat-number {
-            color: #FF8C42 !important;
+            color: var(--accent) !important;
             font-weight: bold !important;
         }
         
         .stat-label {
-            color: rgba(255, 255, 255, 0.9) !important;
+            color: var(--text-primary) !important;
         }
     </style>
     
-    <!-- Enhanced Theme Toggle Script (Replaced with Dark Mode Only) -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Force dark mode
-        document.documentElement.classList.add('dark-mode', 'dark-theme');
-        document.body.classList.add('dark-theme');
-        localStorage.setItem('darkMode', 'true');
-        
-        // Hide all theme toggles as they're no longer needed
-        const themeToggles = document.querySelectorAll('.theme-toggle');
-        themeToggles.forEach(toggle => {
-            if (toggle) {
-                toggle.style.display = 'none';
-            }
-        });
-    });
     </script>
-    <script src="scripts/gradient-scroll.js" defer></script>
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
     <!-- Final header fixes - should be last to take precedence -->
     <link rel="stylesheet" href="styles/header-fixes.css">
     <link rel="stylesheet" href="styles/cleanup-scrolling.css">
+    <link rel="stylesheet" href="styles/footer-override.css">
+    <script src="scripts/script-loader.js"></script>
+    <script src="scripts/error-handler.js"></script>
+    </script>
+    <script src="scripts/css-consolidator.js"></script>
+<script type="module" src="scripts/performance-manager.js"></script>
+<script type="module" src="scripts/animation-system.js"></script>
+<script type="module" src="scripts/scroll-manager.js"></script>
+<script type="module" src="scripts/fix-manager.js"></script>
+
+<script type="module">
+    import performanceManager from './scripts/performance-manager.js';
+    import animationSystem from './scripts/animation-system.js';
+    import scrollManager from './scripts/scroll-manager.js';
+    import fixManager from './scripts/fix-manager.js';
+
+    // Initialize managers
+    document.addEventListener('DOMContentLoaded', function() {
+        performanceManager.startMonitoring();
+        animationSystem.enableDebug();
+        scrollManager.init();
+        fixManager.init();
+    });
+</script>
+
+<link rel="stylesheet" href="styles/analytics-dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
-<body class="dark-theme gradient-background dark-mode">
+<body>
     <!-- Premium Desktop Header -->
     <header class="premium-header" id="premium-header">
-      <div class="premium-header-container">
-        <!-- Logo -->
-        <a href="/" class="premium-header-logo">
-          <img src="images/logo.svg" alt="NutriTrack Logo" class="premium-header-logo-img">
-          <span class="premium-header-logo-text">NutriTrack</span>
-        </a>
-        <!-- Profile Icon -->
-        <div class="premium-header-actions">
-          <a href="profile.html" class="header-icon" title="Profile"><i class="fa-solid fa-user-circle"></i></a>
+        <div class="premium-header-container">
+            <!-- Logo -->
+            <a href="/" class="premium-header-logo">
+                <img src="images/logo.svg" alt="NutriTrack Logo" class="premium-header-logo-img">
+                <span class="premium-header-logo-text">NutriTrack</span>
+            </a>
+            
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" aria-label="Toggle theme">
+                <div class="icon-container">
+                    <i class="fas fa-sun sun-icon"></i>
+                    <i class="fas fa-moon moon-icon"></i>
+                </div>
+            </button>
+            
+            <!-- Profile Icon -->
+            <div class="premium-header-actions">
+                <a href="profile.html" class="header-icon" title="Profile">
+                    <i class="fa-solid fa-user-circle"></i>
+                </a>
+            </div>
         </div>
-      </div>
     </header>
     <div id="sidebar-container"></div>
     <main>
         <!-- Hero Section -->
-        <section class="hero-section" style="opacity: 1 !important; visibility: visible !important; background: transparent !important;">
-            <div class="hero-gradient" style="opacity: 0.3 !important; background: transparent !important;"></div>
-            <div class="container" style="position: relative; z-index: 5; background: transparent !important;">
-                <div class="hero-content" style="opacity: 1 !important; visibility: visible !important; display: flex !important; background: transparent !important;">
-                    <div class="hero-text" style="color: white !important; background: transparent !important;">
-                        <h1 style="color: white !important;">Track Your Nutrition Journey</h1>
-                        <p style="color: rgba(255, 255, 255, 0.9) !important;">Achieve your health goals with AI-powered nutrition tracking. Get personalized insights, track progress, and make informed decisions about your diet.</p>
-                        
-                        <div class="hero-stats" style="background: transparent !important;">
-                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
-                                <div class="stat-number" style="color: #FF8C42 !important;">5M+</div>
-                                <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">Active Users</div>
+        <section class="hero-section">
+            <div class="hero-gradient"></div>
+            <div class="container" style="position: relative; z-index: 5;">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Track Your Nutrition Journey</h1>
+                        <p>Achieve your health goals with AI-powered nutrition tracking. Get personalized insights, track progress, and make informed decisions about your diet.</p>
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <div class="stat-number">5M+</div>
+                                <div class="stat-label">Active Users</div>
                             </div>
-                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
-                                <div class="stat-number" style="color: #FF8C42 !important;">98%</div>
-                                <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">Success Rate</div>
+                            <div class="hero-stat">
+                                <div class="stat-number">98%</div>
+                                <div class="stat-label">Success Rate</div>
                             </div>
-                            <div class="hero-stat" style="background-color: rgba(26, 60, 52, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
-                                <div class="stat-number" style="color: #FF8C42 !important;">4.9</div>
-                                <div class="stat-label" style="color: rgba(255, 255, 255, 0.9) !important;">App Rating</div>
+                            <div class="hero-stat">
+                                <div class="stat-number">4.9</div>
+                                <div class="stat-label">App Rating</div>
                             </div>
                         </div>
-                        
                         <div class="hero-buttons">
                             <a href="signup.html" class="btn btn-primary">Get Started Free</a>
                             <a href="#how-it-works" class="btn btn-secondary" id="see-how-it-works-btn">See How It Works</a>
                         </div>
                     </div>
-                    
-                    <div class="hero-image" style="opacity: 1 !important; visibility: visible !important; display: block !important; background: transparent !important;">
-                        <img src="images/hero-app.png" 
-                             alt="Nutrition Tracker App Interface" 
-                             style="max-width: 100%; height: auto; display: block !important; opacity: 1 !important;"
-                             onerror="this.src='https://placehold.co/400x600/2A5E50/FFFFFF?text=Nutrition+Tracker'; this.style.maxWidth='100%'; this.style.height='auto'; this.style.display='block'; this.style.opacity='1'; this.onerror=null;">
+                    <div class="hero-image">
+                        <img src="images/hero-app.png" alt="Nutrition Tracker App Interface" onerror="this.src='https://placehold.co/400x600/2A5E50/FFFFFF?text=Nutrition+Tracker'; this.onerror=null;">
                         <div class="floating-badge">
                             <i class="fas fa-star"></i>
                             <span>Rated #1 Nutrition App</span>
@@ -559,6 +575,42 @@
         </div>
     </div>
 
+    <!-- Add Meal Modal -->
+    <div id="add-meal-modal" class="modal add-meal-modal">
+      <div class="modal-content">
+        <div class="modal-left">
+          <h2>Add Meal</h2>
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="food-search">Food Search</button>
+            <button class="tab-btn" data-tab="meal-templates">Meal Templates</button>
+          </div>
+          <div class="tab-content active" id="food-search">
+            <div class="search-container">
+              <input type="text" id="food-search-input" placeholder="Search for food...">
+              <button id="search-btn">Search</button>
+            </div>
+            <div id="search-results"></div>
+          </div>
+          <div class="tab-content" id="meal-templates">
+            <div id="meal-templates-list"></div>
+          </div>
+        </div>
+        <div class="modal-right">
+          <h3>Smart Suggestions</h3>
+          <p class="suggestions-description">Based on your meal history and nutritional goals</p>
+          <div id="meal-suggestions" class="meal-suggestions">
+            <div class="suggestions-header">
+              <h3>Smart Suggestions</h3>
+              <p class="suggestions-description">Personalized meal suggestions based on your preferences and goals</p>
+            </div>
+            <div class="suggestions-container">
+              <!-- Suggestions will be dynamically inserted here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -566,7 +618,8 @@
     <script src="scripts/firebase-config.js"></script>
     <script src="scripts/unified-auth.js"></script>
     <script src="scripts/mobile-nav.js"></script>
-    <script src="scripts/footer.js"></script>
+    <!-- Visual Enhancements Script -->
+    <script src="scripts/visual-enhancements.js" defer></script>
     <script src="scripts/main.js?v=1.0.0"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -764,5 +817,16 @@
     <script src="components/inject-mobile-nav.js"></script>
     <script src="scripts/screenshot-mode.js"></script>
     <script src="scripts/microsoft-screenshot-fix.js"></script>
+    <script src="components/inject-footer.js"></script>
+    <div id="analytics-section">
+        <button id="show-analytics-btn" class="btn">Show Analytics</button>
+    </div>
+    <script type="module">
+        import AnalyticsDashboard from './scripts/analytics-dashboard.js';
+        
+        document.getElementById('show-analytics-btn').addEventListener('click', () => {
+            const dashboard = new AnalyticsDashboard(window.mealPlanner);
+        });
+    </script>
 </body>
 </html> 

@@ -226,27 +226,107 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
+/* Theme Options */
+.theme-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.theme-option:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.theme-option.active {
+    border-color: var(--primary);
+    background: var(--surface-hover);
+}
+
+.theme-option i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.theme-option span {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
 /* Color Options */
 .color-options {
     display: flex;
-    gap: 10px;
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .color-option {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    border: 2px solid var(--border);
+    transition: all 0.3s ease;
 }
 
 .color-option:hover {
     transform: scale(1.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .color-option.selected {
-    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary-color);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] .theme-option {
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+[data-theme="dark"] .theme-option:hover {
+    background: var(--surface-hover);
+}
+
+[data-theme="dark"] .theme-option.active {
+    background: var(--surface-hover);
+    border-color: var(--primary);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .theme-options {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .theme-option {
+        flex-direction: row;
+        justify-content: flex-start;
+        min-width: auto;
+        padding: 0.75rem;
+    }
+
+    .theme-option i {
+        font-size: 1.25rem;
+    }
 }
 
 /* Checkbox Group */

@@ -1,0 +1,37 @@
+/* Theme transition variables */
+:root {
+  --theme-transition-duration: 200ms;
+  --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base transition styles */
+* {
+  transition: background-color var(--theme-transition-duration) var(--theme-transition-timing),
+              border-color var(--theme-transition-duration) var(--theme-transition-timing),
+              color var(--theme-transition-duration) var(--theme-transition-timing),
+              box-shadow var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+/* Disable transitions for specific elements */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
+/* Smooth theme toggle animation */
+.theme-toggle {
+  transition: transform var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Prevent transition on initial page load */
+.theme-initializing * {
+  transition: none !important;
+} 

@@ -1,10 +1,10 @@
-import { getAuth } from 'firebase/auth';
+import { auth } from './auth-core.js';
 import { getFirestore, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { app } from './firebase-config.js';
 
 class MealSuggestions {
     constructor() {
-        this.auth = getAuth(app);
+        this.auth = auth;
         this.db = getFirestore(app);
         this.suggestionCache = new Map();
         this.cacheTimeout = 30 * 60 * 1000; // 30 minutes

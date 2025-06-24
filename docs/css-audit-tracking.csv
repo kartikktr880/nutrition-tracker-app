@@ -1,0 +1,210 @@
+File,Line,Selector,Property,Value,Category,Priority,Notes
+styles/utils/utilities.css,1,.d-none,display,none,Utility,High,Keep - Core utility class
+styles/utils/utilities.css,2,.d-inline,display,inline,Utility,High,Keep - Core utility class
+styles/utils/utilities.css,3,.d-inline-block,display,inline-block,Utility,High,Keep - Core utility class
+styles/header-fixes.css,8,body,width,100vw,Layout,High,Review - Consider using max-width only
+styles/header-fixes.css,9,body,max-width,100vw,Layout,High,Keep - Critical for preventing overflow
+styles/header-fixes.css,10,body,overflow-x,hidden,Layout,High,Keep - Critical for preventing overflow
+styles/header-fixes.css,11,body,position,relative,Layout,Medium,Review - May not need !important
+styles/header-fixes.css,12,body,margin,0,Layout,Medium,Review - May not need !important
+styles/header-fixes.css,13,body,padding-right,0,Layout,Medium,Review - May not need !important
+styles/utils/animations.css,192,,animation-duration,var(--transition-fast),Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,196,,animation-duration,var(--transition-slow),Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,201,,animation-timing-function,var(--ease-in),Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,205,,animation-timing-function,var(--ease-out),Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,209,,animation-timing-function,var(--ease-in-out),Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,213,,animation-timing-function,var(--ease-bounce),Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,218,,animation-fill-mode,forwards,Animation,Medium,Review - Animation fill mode
+styles/utils/animations.css,222,,animation-fill-mode,backwards,Animation,Medium,Review - Animation fill mode
+styles/utils/animations.css,226,,animation-fill-mode,both,Animation,Medium,Review - Animation fill mode
+styles/utils/animations.css,231,,animation-play-state,paused,Animation,Medium,Review - Animation play state
+styles/utils/animations.css,235,,animation-play-state,running,Animation,Medium,Review - Animation play state
+styles/utils/animations.css,245,,animation-duration,0.01ms,Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,246,,animation-iteration-count,1,Animation,Medium,Review - Animation iteration count
+styles/utils/animations.css,247,,transition-duration,0.01ms,Animation,Medium,Review - Transition timing override
+styles/utils/animations.css,248,,scroll-behavior,auto,Animation,Medium,Review - Scroll behavior override
+styles/utils/animations.css,254,,animation,none,Animation,Medium,Review - Animation override
+styles/utils/animations.css,255,,transition,none,Animation,Medium,Review - Transition override
+styles/utils/animations.css,288,,animation-duration,0.5s,Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,289,,transition-duration,0.5s,Animation,Medium,Review - Transition timing override
+styles/utils/animations.css,294,,animation-duration,0.5s,Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,295,,transition-duration,0.5s,Animation,Medium,Review - Transition timing override
+styles/utils/animations.css,365,,animation,none,Animation,Medium,Review - Animation override
+styles/utils/animations.css,369,,animation-duration,2s,Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,373,,animation-iteration-count,1,Animation,Medium,Review - Animation iteration count
+styles/utils/animations.css,377,,animation-iteration-count,infinite,Animation,Medium,Review - Animation iteration count
+styles/utils/animations.css,381,,animation-timing-function,ease,Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,385,,animation-timing-function,linear,Animation,Medium,Review - Animation timing override
+styles/utils/animations.css,390,,animation-delay,0s,Animation,Medium,Review - Animation delay
+styles/utils/animations.css,394,,animation-delay,0.1s,Animation,Medium,Review - Animation delay
+styles/utils/animations.css,398,,animation-delay,0.2s,Animation,Medium,Review - Animation delay
+styles/utils/animations.css,402,,animation-delay,0.3s,Animation,Medium,Review - Animation delay
+styles/utils/animations.css,406,,animation-delay,0.4s,Animation,Medium,Review - Animation delay
+styles/utils/animations.css,410,,animation-delay,0.5s,Animation,Medium,Review - Animation delay
+styles/utils/animations.css,414,,animation-delay,1s,Animation,Medium,Review - Animation delay
+styles/themes.css,251,,animation-duration,0.01ms,Theme,Medium,Review - Animation timing override
+styles/themes.css,252,,animation-iteration-count,1,Theme,Medium,Review - Animation iteration count
+styles/themes.css,253,,transition-duration,0.01ms,Theme,Medium,Review - Transition timing override
+styles/themes.css,254,,scroll-behavior,auto,Theme,Medium,Review - Scroll behavior override
+styles/themes.css,263,,background-image,none,Theme,Medium,Review - Theme override
+styles/themes.css,267,,display,none,Theme,Medium,Review - Theme override
+styles/themes.css,276,,opacity,1,Theme,Medium,Review - Theme override
+styles/themes.css,285,,background,transparent,Theme,Medium,Review - Theme override
+styles/themes.css,286,,color,#000,Theme,Medium,Review - Theme override
+styles/themes.css,287,,box-shadow,none,Theme,Medium,Review - Theme override
+styles/themes.css,288,,text-shadow,none,Theme,Medium,Review - Theme override
+styles/themes.css,325,,max-width,100%,Theme,Medium,Review - Theme override
+styles/themes.css,401,,-webkit-box-shadow,0 0 0 30px var(--background-primary) inset,Theme,Medium,Review - Theme override
+styles/themes.css,402,,-webkit-text-fill-color,var(--text-primary),Theme,Medium,Review - Theme override
+styles/themes.css,466,,-webkit-box-shadow,0 0 0 30px var(--background-primary) inset,Theme,Medium,Review - Theme override
+styles/themes.css,467,,-webkit-text-fill-color,var(--text-primary),Theme,Medium,Review - Theme override
+styles/themes.css,531,,-webkit-box-shadow,0 0 0 30px var(--background-primary) inset,Theme,Medium,Review - Theme override
+styles/themes.css,532,,-webkit-text-fill-color,var(--text-primary),Theme,Medium,Review - Theme override
+styles/temp.css,187,,z-index,5,Temp,Low,Refactor - Temporary override
+styles/temp.css,222,,display,none,Temp,Low,Refactor - Temporary override
+styles/temp.css,486,,display,none,Temp,Low,Refactor - Temporary override
+styles/temp.css,492,,display,none,Temp,Low,Refactor - Temporary override
+styles/temp.css,498,,display,none,Temp,Low,Refactor - Temporary override
+styles/temp.css,504,,display,none,Temp,Low,Refactor - Temporary override
+styles/temp.css,1090,,opacity,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1091,,transform,translateY(0),Temp,Low,Refactor - Temporary override
+styles/temp.css,1109,,z-index,5,Temp,Low,Refactor - Temporary override
+styles/temp.css,1110,,display,flex,Temp,Low,Refactor - Temporary override
+styles/temp.css,1115,,opacity,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1116,,transform,translateY(0),Temp,Low,Refactor - Temporary override
+styles/temp.css,1122,,color,white,Temp,Low,Refactor - Temporary override
+styles/temp.css,1123,,display,block,Temp,Low,Refactor - Temporary override
+styles/temp.css,1124,,opacity,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1131,,color,white,Temp,Low,Refactor - Temporary override
+styles/temp.css,1133,,opacity,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1140,,color,rgba(255, 255, 255, 0.9),Temp,Low,Refactor - Temporary override
+styles/temp.css,1141,,opacity,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1148,,display,flex,Temp,Low,Refactor - Temporary override
+styles/temp.css,1150,,opacity,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1364,,overflow,visible,Temp,Low,Refactor - Temporary override
+styles/temp.css,1418,,color,white,Temp,Low,Refactor - Temporary override
+styles/temp.css,1427,,color,rgba(255, 255, 255, 0.85),Temp,Low,Refactor - Temporary override
+styles/temp.css,1431,,display,grid,Temp,Low,Refactor - Temporary override
+styles/temp.css,1432,,grid-template-columns,repeat(auto-fit, minmax(280px, 1fr)),Temp,Low,Refactor - Temporary override
+styles/temp.css,1433,,gap,30px,Temp,Low,Refactor - Temporary override
+styles/temp.css,1434,,margin-top,40px,Temp,Low,Refactor - Temporary override
+styles/temp.css,1435,,width,100%,Temp,Low,Refactor - Temporary override
+styles/temp.css,1439,,background,rgba(26, 60, 52, 0.4),Temp,Low,Refactor - Temporary override
+styles/temp.css,1440,,border-radius,12px,Temp,Low,Refactor - Temporary override
+styles/temp.css,1441,,padding,40px 25px,Temp,Low,Refactor - Temporary override
+styles/temp.css,1444,,border,1px solid rgba(255, 255, 255, 0.1),Temp,Low,Refactor - Temporary override
+styles/temp.css,1448,,align-items,center,Temp,Low,Refactor - Temporary override
+styles/temp.css,1449,,text-align,center,Temp,Low,Refactor - Temporary override
+styles/temp.css,1477,,background,linear-gradient(135deg, var(--accent-color-dark), var(--accent-color)),Temp,Low,Refactor - Temporary override
+styles/temp.css,1481,,background,linear-gradient(135deg, var(--primary-color), var(--primary-color-light)),Temp,Low,Refactor - Temporary override
+styles/temp.css,1485,,background,linear-gradient(135deg, var(--accent-color), var(--accent-color-light)),Temp,Low,Refactor - Temporary override
+styles/temp.css,1489,,background,linear-gradient(135deg, var(--primary-color-light), var(--primary-color)),Temp,Low,Refactor - Temporary override
+styles/temp.css,1510,,font-size,28px,Temp,Low,Refactor - Temporary override
+styles/temp.css,1511,,color,white,Temp,Low,Refactor - Temporary override
+styles/temp.css,1513,,line-height,1,Temp,Low,Refactor - Temporary override
+styles/temp.css,1514,,display,block,Temp,Low,Refactor - Temporary override
+styles/temp.css,1520,,color,white,Temp,Low,Refactor - Temporary override
+styles/temp.css,1523,,text-align,center,Temp,Low,Refactor - Temporary override
+styles/temp.css,1527,,color,var(--accent-color),Temp,Low,Refactor - Temporary override
+styles/temp.css,1532,,color,rgba(255, 255, 255, 0.9),Temp,Low,Refactor - Temporary override
+styles/temp.css,1536,,text-align,center,Temp,Low,Refactor - Temporary override
+styles/stay-updated.css,7,,visibility,visible,Component,Medium,Review - Component override
+styles/stay-updated.css,8,,opacity,1,Component,Medium,Review - Component override
+styles/screenshot-fix.css,7,,height,auto,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,8,,min-height,100%,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,9,,max-height,none,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,14,,min-height,100%,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,15,,height,auto,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,16,,overflow,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,21,,position,fixed,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,22,,height,100%,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,23,,width,100%,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,24,,content,"",Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,25,,z-index,-1,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,26,,top,0,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,27,,left,0,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,40,,height,auto,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,41,,min-height,auto,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,42,,overflow,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,43,,contain,none,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,44,,content-visibility,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,49,,position,fixed,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,50,,transform,none,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,51,,-webkit-transform,none,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,52,,opacity,1,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,53,,visibility,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,54,,display,flex,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,59,,padding-right,0,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,60,,max-width,none,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,61,,overflow,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,62,,transform,none,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,63,,position,static,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,69,,position,absolute,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,80,,display,block,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,81,,visibility,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,82,,opacity,1,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,87,,content-visibility,visible,Fix,Medium,Review - Screenshot fix
+styles/screenshot-fix.css,88,,contain,none,Fix,Medium,Review - Screenshot fix
+styles/responsive.css,69,.m-0,margin,0,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,70,.p-0,padding,0,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,73,.m-md-0,margin,0,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,74,.p-md-0,padding,0,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,87,h1,font-size,1.8rem,Responsive,Medium,Review - Responsive heading
+styles/responsive.css,88,h2,font-size,1.5rem,Responsive,Medium,Review - Responsive heading
+styles/responsive.css,89,h3,font-size,1.2rem,Responsive,Medium,Review - Responsive heading
+styles/responsive.css,93,.d-none,display,none,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,94,.d-block,display,block,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,95,.d-flex,display,flex,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,96,.d-grid,display,grid,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,99,.d-lg-none,display,none,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,100,.d-lg-block,display,block,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,101,.d-lg-flex,display,flex,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,105,.d-md-none,display,none,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,106,.d-md-block,display,block,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,107,.d-md-flex,display,flex,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,111,.d-sm-none,display,none,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,112,.d-sm-block,display,block,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,113,.d-sm-flex,display,flex,Responsive,Medium,Review - Responsive utility
+styles/responsive.css,142,,display,block,Responsive,Medium,Review - Responsive override
+styles/responsive.css,162,,font-size,16px,Responsive,Medium,Review - Responsive override
+styles/responsive.css,215,,width,95%,Responsive,Medium,Review - Responsive override
+styles/responsive.css,216,,margin,20px auto,Responsive,Medium,Review - Responsive override
+styles/responsive.css,235,,display,none,Responsive,Medium,Review - Responsive override
+styles/responsive.css,239,,display,block,Responsive,Medium,Review - Responsive override
+styles/reset.css,76,,animation-duration,0.01ms,Reset,Medium,Review - Reset override
+styles/reset.css,77,,animation-iteration-count,1,Reset,Medium,Review - Reset override
+styles/reset.css,78,,transition-duration,0.01ms,Reset,Medium,Review - Reset override
+styles/reset.css,79,,scroll-behavior,auto,Reset,Medium,Review - Reset override
+styles/reset.css,105,,animation-duration,0.01ms,Reset,Medium,Review - Reset override
+styles/reset.css,106,,animation-iteration-count,1,Reset,Medium,Review - Reset override
+styles/reset.css,107,,transition-duration,0.01ms,Reset,Medium,Review - Reset override
+styles/reset.css,108,,scroll-behavior,auto,Reset,Medium,Review - Reset override
+styles/print-shopping-list.css,15,,display,none,Component,Low,Review - Print override
+styles/premium-steps.css,15,,padding,5rem 0,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,16,,position,relative,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,17,,overflow,hidden,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,18,,z-index,10,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,23,,content,'',Component,Medium,Review - Premium steps override
+styles/premium-steps.css,24,,position,absolute,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,25,,top,-50%,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,26,,right,-50%,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,27,,width,100%,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,28,,height,100%,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,29,,background,radial-gradient(circle, rgba(var(--primary-rgb), 0.05) 0%, transparent 70%),Component,Medium,Review - Premium steps override
+styles/premium-steps.css,30,,z-index,-1,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,38,,display,grid,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,39,,grid-template-columns,repeat(auto-fit, minmax(320px, 1fr)),Component,Medium,Review - Premium steps override
+styles/premium-steps.css,40,,gap,30px,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,41,,position,relative,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,47,,display,flex,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,48,,flex-direction,column,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,49,,align-items,center,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,50,,text-align,center,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,51,,padding,40px 28px,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,52,,background,var(--card-bg, white),Component,Medium,Review - Premium steps override
+styles/premium-steps.css,53,,border-radius,20px,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,54,,box-shadow,0 10px 30px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(var(--primary-rgb), 0.05),Component,Medium,Review - Premium steps override
+styles/premium-steps.css,55,,transition,all 0.5s cubic-bezier(0.2, 0.85, 0.4, 1),Component,Medium,Review - Premium steps override
+styles/premium-steps.css,56,,position,relative,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,57,,overflow,hidden,Component,Medium,Review - Premium steps override
+styles/premium-steps.css,58,,z-index,2,Component,Medium,Review - Premium steps override 

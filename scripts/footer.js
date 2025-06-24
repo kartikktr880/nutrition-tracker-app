@@ -208,18 +208,18 @@ class UltraPremiumFooter {
             // Apply dark theme styling 
             const footer = this.footerContainer.querySelector('footer');
             if (footer) {
-                footer.style.backgroundColor = 'transparent';
-                footer.style.color = '#f0f0f0';
-                footer.style.position = 'relative';
-                footer.style.zIndex = '5';
-                footer.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
-                footer.style.paddingTop = '60px';
-                footer.style.paddingBottom = '30px';
-                footer.style.marginTop = '0';
-                footer.style.width = '100%';
-                footer.style.display = 'block';
-                footer.style.visibility = 'visible';
-                footer.style.opacity = '1';
+//                 footer.style.backgroundColor = 'transparent';
+//                 footer.style.color = '#f0f0f0';
+//                 footer.style.position = 'relative';
+//                 footer.style.zIndex = '5';
+//                 footer.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
+//                 footer.style.paddingTop = '60px';
+//                 footer.style.paddingBottom = '30px';
+//                 footer.style.marginTop = '0';
+//                 footer.style.width = '100%';
+//                 footer.style.display = 'block';
+//                 footer.style.visibility = 'visible';
+//                 footer.style.opacity = '1';
             }
             
             // Force the footer container to be visible and positioned correctly
@@ -234,37 +234,37 @@ class UltraPremiumFooter {
             // Apply consistent styling to footer logo
             const footerLogo = this.footerContainer.querySelector('.footer-logo a');
             if (footerLogo) {
-                footerLogo.style.display = 'flex';
-                footerLogo.style.alignItems = 'center';
-                footerLogo.style.gap = '10px';
-                footerLogo.style.textDecoration = 'none';
-                footerLogo.style.position = 'relative';
-                footerLogo.style.zIndex = '10';
+//                 footerLogo.style.display = 'flex';
+//                 footerLogo.style.alignItems = 'center';
+//                 footerLogo.style.gap = '10px';
+//                 footerLogo.style.textDecoration = 'none';
+//                 footerLogo.style.position = 'relative';
+//                 footerLogo.style.zIndex = '10';
                 
                 const logoText = footerLogo.querySelector('span');
                 if (logoText) {
-                    logoText.style.fontFamily = "'Poppins', sans-serif";
-                    logoText.style.fontWeight = '700';
-                    logoText.style.fontSize = '20px';
-                    logoText.style.letterSpacing = '0.5px';
-                    logoText.style.display = 'inline-block';
-                    logoText.style.whiteSpace = 'nowrap';
-                    logoText.style.overflow = 'visible';
-                    logoText.style.color = '#F4EDE4';
+//                     logoText.style.fontFamily = "'Poppins', sans-serif";
+//                     logoText.style.fontWeight = '700';
+//                     logoText.style.fontSize = '20px';
+//                     logoText.style.letterSpacing = '0.5px';
+//                     logoText.style.display = 'inline-block';
+//                     logoText.style.whiteSpace = 'nowrap';
+//                     logoText.style.overflow = 'visible';
+//                     logoText.style.color = '#F4EDE4';
                 }
                 
                 const logoSvg = footerLogo.querySelector('svg');
                 if (logoSvg) {
-                    logoSvg.style.flexShrink = '0';
-                    logoSvg.style.display = 'block';
-                    logoSvg.style.width = '40px';
-                    logoSvg.style.height = '40px';
-                    logoSvg.style.minWidth = '40px';
-                    logoSvg.style.maxWidth = '40px';
-                    logoSvg.style.minHeight = '40px';
-                    logoSvg.style.maxHeight = '40px';
-                    logoSvg.style.position = 'relative';
-                    logoSvg.style.zIndex = '5';
+//                     logoSvg.style.flexShrink = '0';
+//                     logoSvg.style.display = 'block';
+//                     logoSvg.style.width = '40px';
+//                     logoSvg.style.height = '40px';
+//                     logoSvg.style.minWidth = '40px';
+//                     logoSvg.style.maxWidth = '40px';
+//                     logoSvg.style.minHeight = '40px';
+//                     logoSvg.style.maxHeight = '40px';
+//                     logoSvg.style.position = 'relative';
+//                     logoSvg.style.zIndex = '5';
                     
                     // Ensure SVG colors match the header logo
                     const circles = logoSvg.querySelectorAll('circle');
@@ -280,72 +280,72 @@ class UltraPremiumFooter {
             // Style footer container for dark theme
             const footerContainer = this.footerContainer.querySelector('.footer-container');
             if (footerContainer) {
-                footerContainer.style.maxWidth = '1200px';
-                footerContainer.style.margin = '0 auto';
-                footerContainer.style.padding = '0 20px';
-                footerContainer.style.position = 'relative';
-                footerContainer.style.zIndex = '2';
+//                 footerContainer.style.maxWidth = '1200px';
+//                 footerContainer.style.margin = '0 auto';
+//                 footerContainer.style.padding = '0 20px';
+//                 footerContainer.style.position = 'relative';
+//                 footerContainer.style.zIndex = '2';
             }
             
             // Style footer description
             const footerDescription = this.footerContainer.querySelector('.footer-description');
             if (footerDescription) {
-                footerDescription.style.color = 'rgba(244, 237, 228, 0.8)';
-                footerDescription.style.marginTop = '20px';
-                footerDescription.style.marginBottom = '40px';
-                footerDescription.style.maxWidth = '450px';
-                footerDescription.style.lineHeight = '1.6';
+//                 footerDescription.style.color = 'rgba(244, 237, 228, 0.8)';
+//                 footerDescription.style.marginTop = '20px';
+//                 footerDescription.style.marginBottom = '40px';
+//                 footerDescription.style.maxWidth = '450px';
+//                 footerDescription.style.lineHeight = '1.6';
             }
             
             // Style footer links
             const footerLinks = this.footerContainer.querySelectorAll('.footer-links a');
             footerLinks.forEach(link => {
-                link.style.color = 'rgba(244, 237, 228, 0.8)';
-                link.style.textDecoration = 'none';
-                link.style.transition = 'color 0.3s ease';
+//                 link.style.color = 'rgba(244, 237, 228, 0.8)';
+//                 link.style.textDecoration = 'none';
+//                 link.style.transition = 'color 0.3s ease';
             });
             
             // Style footer column headings
             const footerHeadings = this.footerContainer.querySelectorAll('.footer-column h3');
             footerHeadings.forEach(heading => {
-                heading.style.color = '#F4EDE4';
-                heading.style.fontSize = '18px';
-                heading.style.fontWeight = '600';
-                heading.style.marginBottom = '15px';
+//                 heading.style.color = '#F4EDE4';
+//                 heading.style.fontSize = '18px';
+//                 heading.style.fontWeight = '600';
+//                 heading.style.marginBottom = '15px';
             });
 
             // Style footer bottom
             const footerBottom = this.footerContainer.querySelector('.footer-bottom');
             if (footerBottom) {
-                footerBottom.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
-                footerBottom.style.paddingTop = '20px';
-                footerBottom.style.marginTop = '40px';
-                footerBottom.style.display = 'flex';
-                footerBottom.style.justifyContent = 'space-between';
-                footerBottom.style.alignItems = 'center';
-                footerBottom.style.flexWrap = 'wrap';
-                footerBottom.style.gap = '20px';
+//                 footerBottom.style.borderTop = '1px solid rgba(255, 255, 255, 0.05)';
+//                 footerBottom.style.paddingTop = '20px';
+//                 footerBottom.style.marginTop = '40px';
+//                 footerBottom.style.display = 'flex';
+//                 footerBottom.style.justifyContent = 'space-between';
+//                 footerBottom.style.alignItems = 'center';
+//                 footerBottom.style.flexWrap = 'wrap';
+//                 footerBottom.style.gap = '20px';
             }
             
             // Style copyright
             const footerCopyright = this.footerContainer.querySelector('.footer-copyright');
             if (footerCopyright) {
-                footerCopyright.style.color = 'rgba(244, 237, 228, 0.6)';
-                footerCopyright.style.fontSize = '14px';
+//                 footerCopyright.style.color = 'rgba(244, 237, 228, 0.6)';
+//                 footerCopyright.style.fontSize = '14px';
             }
             
             // Style social icons
             const socialIcons = this.footerContainer.querySelectorAll('.social-icon');
             socialIcons.forEach(icon => {
-                icon.style.width = '36px';
-                icon.style.height = '36px';
-                icon.style.borderRadius = '50%';
-                icon.style.background = 'rgba(255, 255, 255, 0.1)';
-                icon.style.display = 'flex';
-                icon.style.alignItems = 'center';
-                icon.style.justifyContent = 'center';
-                icon.style.color = '#F4EDE4';
-                icon.style.transition = 'all 0.3s ease';
+//                 icon.style.width = '36px';
+//                 icon.style.height = '36px';
+//                 icon.style.borderRadius = '50%';
+//                 icon.style.background = 'rgba(255, 255, 255, 0.1)';
+//                 icon.style.display = 'flex';
+//                 icon.style.alignItems = 'center';
+//                 icon.style.justifyContent = 'center';
+//                 icon.style.color = '#F4EDE4';
+//                 icon.style.transition = 'all 0.3s ease';
             });
             
             // Set background gradient overlay
@@ -602,4 +602,12 @@ class UltraPremiumFooter {
 }
 
 // Initialize footer
-const footer = new UltraPremiumFooter(); 
+const footer = new UltraPremiumFooter();
+
+// Load footer component
+document.addEventListener('DOMContentLoaded', function() {
+    // Load the footer component script
+    const footerScript = document.createElement('script');
+    footerScript.src = 'components/inject-footer.js';
+    document.body.appendChild(footerScript);
+}); 

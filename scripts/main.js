@@ -3,9 +3,48 @@
  * Handles theme toggling, animations, and other interactive elements
  */
 
+import { errorAnalytics } from './error-analytics.js';
+import { errorHandler } from './error-handler.js';
+import { errorGuide } from './error-guide.js';
+import { securityAudit } from './security-audit.js';
+import { securityDashboard } from './security-dashboard.js';
+import { memoryLeakDetector } from './memory-leak-detector.js';
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize theme
+    // Initialize error handling
+    window.addEventListener('error', (event) => {
+        errorHandler.handleError(event.error, 'unknown', {
+            component: 'global',
+            code: 'uncaught'
+        });
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+        errorHandler.handleError(event.reason, 'unknown', {
+            component: 'global',
+            code: 'unhandled_promise'
+        });
+    });
+
+    // Initialize security systems
+    Promise.all([
+        securityAudit.initialize().catch(error => {
+            console.warn('Security audit initialization failed:', error);
+        }),
+        securityDashboard.initialize().catch(error => {
+            console.warn('Security dashboard initialization failed:', error);
+        })
+    ]).finally(() => {
+        // Continue with other initializations regardless of security system status
     initTheme();
+    });
+
+    // Initialize memory leak detection in development mode
+    if (process.env.NODE_ENV === 'development') {
+        memoryLeakDetector.init().catch(error => {
+            console.warn('Memory leak detector initialization failed:', error);
+        });
+    }
     
     // Initialize animations
     initAnimations();
@@ -32,68 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
  * Initialize theme preferences
  */
 function initTheme() {
-    // Get all theme toggle buttons
-    const themeToggles = document.querySelectorAll('.theme-toggle, #theme-toggle-btn');
-    
-    // Function to set the correct icon visibility with enhanced positioning
-    function updateThemeIcons() {
-        const isDarkTheme = document.documentElement.classList.contains('dark-mode') || 
-                           document.documentElement.classList.contains('dark-theme');
-        
-        themeToggles.forEach(toggle => {
-            if (!toggle) return;
-            
-            const sunIcon = toggle.querySelector('.sun-icon');
-            const moonIcon = toggle.querySelector('.moon-icon');
-            
-            if (!sunIcon || !moonIcon) return;
-            
-            // Enhanced icon visibility with absolute positioning and z-index
-            if (isDarkTheme) {
-                // Show moon icon in dark mode
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            } else {
-                // Show sun icon in light mode
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
-            }
-        });
+    // Initialize theme using ThemeManager
+    if (window.themeManager) {
+        window.themeManager.init();
     }
     
-    // Add click handlers to theme toggles
-    themeToggles.forEach(toggle => {
-        if (!toggle) return;
-        
-        // Remove existing event listeners to prevent duplicates
-        const newToggle = toggle.cloneNode(true);
-        if (toggle.parentNode) {
-            toggle.parentNode.replaceChild(newToggle, toggle);
-            
-            newToggle.addEventListener('click', function() {
-                // Toggle dark mode classes
-                const isDarkMode = document.documentElement.classList.contains('dark-mode') || 
-                                  document.documentElement.classList.contains('dark-theme');
-                
-                if (isDarkMode) {
-                    document.documentElement.classList.remove('dark-mode', 'dark-theme');
-                    document.body.classList.remove('dark-theme');
-                    localStorage.setItem('darkMode', 'false');
-                    localStorage.setItem('dark-theme', 'false');
-                } else {
-                    document.documentElement.classList.add('dark-mode', 'dark-theme');
-                    document.body.classList.add('dark-theme');
-                    localStorage.setItem('darkMode', 'true');
-                    localStorage.setItem('dark-theme', 'true');
-                }
-                
-                // Update icons immediately
-                updateThemeIcons();
-            });
-        }
-    });
-    
-    // Initialize icons on page load
+    // Update theme icons
     updateThemeIcons();
     
     // Re-check icons after delays to handle any late DOM updates

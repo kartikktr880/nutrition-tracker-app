@@ -12,8 +12,6 @@ import {
 } from 'chart.js';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useTheme } from '@/hooks/useTheme';
-import AnalyticsService from '@/services/analytics';
-import { format } from 'date-fns';
 
 // Register Chart.js components
 ChartJS.register(
@@ -38,14 +36,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ userId }
     autoRefresh: true
   });
   const { isDarkMode } = useTheme();
-  const [reportStart, setReportStart] = useState<string>(format(new Date(), 'yyyy-MM-01'));
-  const [reportEnd, setReportEnd] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
-  const [reportFormat, setReportFormat] = useState<'pdf' | 'csv'>('pdf');
-  const [reportLoading, setReportLoading] = useState(false);
-  const [reportError, setReportError] = useState<string | null>(null);
-  const [exportFormat, setExportFormat] = useState<'json' | 'csv'>('json');
-  const [exportLoading, setExportLoading] = useState(false);
-  const [exportError, setExportError] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -142,122 +132,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ userId }
     }
   };
 
-  // Download report handler
-  const handleDownloadReport = async () => {
-    setReportLoading(true);
-    setReportError(null);
-    try {
-      const analyticsService = AnalyticsService.getInstance();
-      const blob = await analyticsService.generateReport(
-        new Date(reportStart),
-        new Date(reportEnd),
-        reportFormat
-      );
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `nutrition-report.${reportFormat}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err: any) {
-      setReportError(err.message || 'Failed to download report');
-    } finally {
-      setReportLoading(false);
-    }
-  };
-
-  // Export data handler
-  const handleExportData = async () => {
-    setExportLoading(true);
-    setExportError(null);
-    try {
-      const analyticsService = AnalyticsService.getInstance();
-      const blob = await analyticsService.exportData(exportFormat);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `analytics-data.${exportFormat}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err: any) {
-      setExportError(err.message || 'Failed to export data');
-    } finally {
-      setExportLoading(false);
-    }
-  };
-
   return (
     <div className="space-y-6">
-      {/* Download Report Section */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex flex-col md:flex-row md:items-end md:space-x-4 space-y-2 md:space-y-0">
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="report-start">Start Date</label>
-          <input
-            id="report-start"
-            type="date"
-            value={reportStart}
-            onChange={e => setReportStart(e.target.value)}
-            className="border rounded px-2 py-1 dark:bg-gray-700 dark:text-white"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="report-end">End Date</label>
-          <input
-            id="report-end"
-            type="date"
-            value={reportEnd}
-            onChange={e => setReportEnd(e.target.value)}
-            className="border rounded px-2 py-1 dark:bg-gray-700 dark:text-white"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Format</label>
-          <select
-            value={reportFormat}
-            onChange={e => setReportFormat(e.target.value as 'pdf' | 'csv')}
-            className="border rounded px-2 py-1 dark:bg-gray-700 dark:text-white"
-          >
-            <option value="pdf">PDF</option>
-            <option value="csv">CSV</option>
-          </select>
-        </div>
-        <button
-          onClick={handleDownloadReport}
-          disabled={reportLoading}
-          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark disabled:opacity-50 mt-2 md:mt-0"
-        >
-          {reportLoading ? 'Downloading...' : 'Download Report'}
-        </button>
-        {reportError && <span className="text-red-600 ml-2">{reportError}</span>}
-      </div>
-
-      {/* Export Data Section */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex flex-col md:flex-row md:items-end md:space-x-4 space-y-2 md:space-y-0">
-        <div>
-          <label className="block text-sm font-medium mb-1">Export Format</label>
-          <select
-            value={exportFormat}
-            onChange={e => setExportFormat(e.target.value as 'json' | 'csv')}
-            className="border rounded px-2 py-1 dark:bg-gray-700 dark:text-white"
-          >
-            <option value="json">JSON</option>
-            <option value="csv">CSV</option>
-          </select>
-        </div>
-        <button
-          onClick={handleExportData}
-          disabled={exportLoading}
-          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark disabled:opacity-50 mt-2 md:mt-0"
-        >
-          {exportLoading ? 'Exporting...' : 'Export Data'}
-        </button>
-        {exportError && <span className="text-red-600 ml-2">{exportError}</span>}
-      </div>
-
       {/* Period Selector */}
       <div className="flex justify-end space-x-2">
         <button

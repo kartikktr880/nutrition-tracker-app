@@ -9,8 +9,19 @@ class OfflineSupport {
     this.offlineStatusElement = null;
     this.offlineMessageDisplayed = false;
     
+    // Security configuration
+    this.securityConfig = {
+      maxOperationAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxPendingOperations: 100,
+      maxRetries: 3,
+      retryDelay: 1000 // 1 second
+    };
+    
     // Load any pending operations from localStorage
     this.loadPendingOperations();
+    
+    // Clean up old operations
+    this.cleanupOldOperations();
     
     // Initialize event listeners
     this.initEventListeners();
@@ -188,9 +199,21 @@ class OfflineSupport {
       return false;
     }
     
+    // Check if we have too many pending operations
+    if (this.pendingOperations.length >= this.securityConfig.maxPendingOperations) {
+      console.error('Too many pending operations');
+      return false;
+    }
+    
     // Add timestamp and unique ID
     operation.timestamp = new Date().toISOString();
     operation.id = this.generateUniqueId();
+    
+    // Validate operation data
+    if (!this.validateOperation(operation)) {
+      console.error('Invalid operation data:', operation);
+      return false;
+    }
     
     // Add to pending operations
     this.pendingOperations.push(operation);
@@ -248,29 +271,51 @@ class OfflineSupport {
     // Process operations one by one
     for (const operation of this.pendingOperations) {
       try {
-        await this.processOperation(operation);
-        successfulOperations.push(operation.id);
+        // Check operation age
+        const operationAge = Date.now() - new Date(operation.timestamp).getTime();
+        if (operationAge > this.securityConfig.maxOperationAge) {
+          console.warn('Operation too old, skipping:', operation);
+          failedOperations.push({ ...operation, error: 'Operation too old' });
+          continue;
+        }
+        
+        // Implement retry logic
+        let retryCount = 0;
+        let success = false;
+        
+        while (retryCount < this.securityConfig.maxRetries && !success) {
+          try {
+            await this.processOperation(operation);
+            success = true;
+          } catch (error) {
+            retryCount++;
+            if (retryCount === this.securityConfig.maxRetries) {
+              throw error;
+            }
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => 
+              setTimeout(resolve, this.securityConfig.retryDelay * Math.pow(2, retryCount))
+            );
+          }
+        }
+        
+        if (success) {
+          successfulOperations.push(operation);
+        }
       } catch (error) {
-        console.error(`Failed to process operation ${operation.id}:`, error);
-        failedOperations.push({ id: operation.id, error: error.message });
+        console.error('Failed to process operation:', error);
+        failedOperations.push({ ...operation, error: error.message });
       }
     }
     
-    // Remove successful operations
-    this.pendingOperations = this.pendingOperations.filter(op => 
-      !successfulOperations.includes(op.id)
-    );
-    
-    // Save updated pending operations
+    // Update pending operations list
+    this.pendingOperations = failedOperations;
     this.savePendingOperations();
     
-    console.log(`Sync completed. Success: ${successfulOperations.length}, Failed: ${failedOperations.length}`);
-    
     return {
-      success: failedOperations.length === 0,
+      success: true,
       synced: successfulOperations.length,
-      failed: failedOperations.length,
-      failures: failedOperations
+      failed: failedOperations.length
     };
   }
   
@@ -481,6 +526,64 @@ class OfflineSupport {
     cacheKeys.forEach(key => localStorage.removeItem(key));
     
     return cacheKeys.length;
+  }
+  
+  cleanupOldOperations() {
+    const now = Date.now();
+    this.pendingOperations = this.pendingOperations.filter(operation => {
+      const operationAge = now - new Date(operation.timestamp).getTime();
+      return operationAge < this.securityConfig.maxOperationAge;
+    });
+    this.savePendingOperations();
+  }
+  
+  validateOperation(operation) {
+    // Basic validation
+    if (!operation.type || !operation.timestamp || !operation.id) {
+      return false;
+    }
+    
+    // Type-specific validation
+    switch (operation.type) {
+      case 'addFoodLog':
+        return this.validateFoodLogOperation(operation);
+      case 'updateDocument':
+        return this.validateUpdateOperation(operation);
+      case 'createDocument':
+        return this.validateCreateOperation(operation);
+      case 'deleteDocument':
+        return this.validateDeleteOperation(operation);
+      default:
+        return false;
+    }
+  }
+  
+  validateFoodLogOperation(operation) {
+    return operation.userId && 
+           operation.date && 
+           operation.food && 
+           typeof operation.food === 'object' &&
+           Array.isArray(operation.food.breakfast) &&
+           Array.isArray(operation.food.lunch) &&
+           Array.isArray(operation.food.dinner) &&
+           Array.isArray(operation.food.snacks);
+  }
+  
+  validateUpdateOperation(operation) {
+    return operation.collection && 
+           operation.docId && 
+           operation.data && 
+           typeof operation.data === 'object';
+  }
+  
+  validateCreateOperation(operation) {
+    return operation.collection && 
+           operation.data && 
+           typeof operation.data === 'object';
+  }
+  
+  validateDeleteOperation(operation) {
+    return operation.collection && operation.docId;
   }
 }
 

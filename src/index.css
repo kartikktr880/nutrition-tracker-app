@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --success-color: #10b981;
+  --background-color: #f3f4f6;
+  --text-color: #1f2937;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Chart tooltip styles */
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.recharts-default-tooltip {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  padding: 8px 12px !important;
+}
+
+.recharts-tooltip-label {
+  color: var(--text-color) !important;
+  font-weight: 600 !important;
+  margin-bottom: 4px !important;
+}
+
+.recharts-tooltip-item {
+  color: var(--text-color) !important;
+  font-size: 0.875rem !important;
+  padding: 2px 0 !important;
+}
+
+/* Dashboard card styles */
+.dashboard-card {
+  @apply bg-white rounded-lg shadow p-4 transition-all duration-200;
+}
+
+.dashboard-card:hover {
+  @apply shadow-lg transform -translate-y-1;
+}
+
+/* Metric value styles */
+.metric-value {
+  @apply text-2xl font-bold;
+}
+
+.metric-label {
+  @apply text-sm text-gray-600;
+}
+
+/* Trend indicator styles */
+.trend-up {
+  @apply text-green-600;
+}
+
+.trend-down {
+  @apply text-red-600;
+}
+
+.trend-neutral {
+  @apply text-gray-600;
+}
+
+/* Loading state styles */
+.loading-skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+/* Error state styles */
+.error-state {
+  @apply text-red-600 bg-red-50 p-4 rounded-lg;
+}
+
+/* Success state styles */
+.success-state {
+  @apply text-green-600 bg-green-50 p-4 rounded-lg;
+}
+
+/* Warning state styles */
+.warning-state {
+  @apply text-yellow-600 bg-yellow-50 p-4 rounded-lg;
+} 

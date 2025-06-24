@@ -1,10 +1,10 @@
-import { getAuth } from 'firebase/auth';
+import { auth } from './auth-core.js';
 import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { app } from './firebase-config.js';
 
 class RecipeTemplates {
     constructor() {
-        this.auth = getAuth(app);
+        this.auth = auth;
         this.db = getFirestore(app);
         this.templates = [];
         this.categories = ['breakfast', 'lunch', 'dinner', 'snack'];

@@ -24,6 +24,9 @@ class WaterTracker {
       threeWeekStreak: { unlocked: false, title: "Hydration Master", description: "You maintained a 21-day water tracking streak", icon: "trophy" }
     };
     
+    this.timers = new Set();
+    this.eventListeners = new Map();
+    
     this.initElements();
     this.initEventListeners();
     this.loadCurrentDay();
@@ -81,6 +84,21 @@ class WaterTracker {
     
     // Close modal buttons
     this.closeModalBtns = document.querySelectorAll('.close-modal');
+    
+    // Store bound event handlers
+    const clickHandler = this.handleClick.bind(this);
+    const keydownHandler = this.handleKeydown.bind(this);
+    const visibilityHandler = this.handleVisibilityChange.bind(this);
+    
+    // Add event listeners with stored references
+    document.addEventListener('click', clickHandler);
+    document.addEventListener('keydown', keydownHandler);
+    document.addEventListener('visibilitychange', visibilityHandler);
+    
+    // Store references for cleanup
+    this.eventListeners.set('click', clickHandler);
+    this.eventListeners.set('keydown', keydownHandler);
+    this.eventListeners.set('visibilitychange', visibilityHandler);
   }
 
   initEventListeners() {
@@ -1036,6 +1054,35 @@ class WaterTracker {
   init() {
     // Load achievements
     this.loadAchievements();
+  }
+
+  cleanup() {
+    // Remove all event listeners
+    this.eventListeners.forEach((handler, event) => {
+      document.removeEventListener(event, handler);
+    });
+    this.eventListeners.clear();
+
+    // Clear all timers
+    this.timers.forEach(timer => clearInterval(timer));
+    this.timers.clear();
+
+    // Clear any other resources
+    this.reminderTimeout = null;
+    this.lastReminderTime = null;
+  }
+
+  startReminders() {
+    // Clear any existing timers
+    this.timers.forEach(timer => clearInterval(timer));
+    this.timers.clear();
+
+    // Set up new reminder timer
+    const reminderTimer = setInterval(() => {
+      this.checkAndShowReminder();
+    }, this.reminderInterval);
+
+    this.timers.add(reminderTimer);
   }
 }
 

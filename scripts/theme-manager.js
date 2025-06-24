@@ -1,94 +1,214 @@
 /**
- * Dark Mode Theme Manager
- * Forces dark mode across the site
+ * Theme Manager for Nutrition Tracker
+ * Handles theme switching, system preference detection, and theme persistence
  */
 class ThemeManager {
     constructor() {
+        this.THEME_CHANGE_EVENT = 'themechange';
+        this.TRANSITION_DURATION = 300;
+        this.STORAGE_KEY = 'preferred-theme';
+        this.isTransitioning = false;
+        this.themeChangeTimeout = null;
+        
+        // Store bound methods as instance properties
+        this._boundToggleTheme = this.toggleTheme.bind(this);
+        this._boundHandleSystemThemeChange = this.handleSystemThemeChange.bind(this);
+        
+        // Initialize system theme detection
+        this.systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // Initialize theme toggle
+        this.themeToggle = document.querySelector('.theme-toggle');
+        
         this.init();
     }
 
     /**
-     * Initialize the theme manager - forces dark mode
+     * Initialize the theme manager
      */
     init() {
-        // Always use dark mode
-        this.setDarkMode();
-        
-        // Hide all theme toggle buttons
-        this.hideThemeToggles();
-        
-        // console.log('Dark Mode Theme manager initialized');
-    }
+        // Add transition styles
+        const style = document.createElement('style');
+        style.textContent = `
+            * {
+                transition: background-color ${this.TRANSITION_DURATION}ms ease,
+                            color ${this.TRANSITION_DURATION}ms ease,
+                            border-color ${this.TRANSITION_DURATION}ms ease,
+                            box-shadow ${this.TRANSITION_DURATION}ms ease;
+            }
+        `;
+        document.head.appendChild(style);
 
-    /**
-     * Set the theme to dark mode
-     */
-    setDarkMode() {
-        document.documentElement.classList.add('dark-mode', 'dark-theme');
-        document.body.classList.add('dark-theme');
+        // Initialize theme
+        this.setTheme(this.getCurrentTheme());
         
-        // Save preference
-        localStorage.setItem('darkMode', 'true');
-        
-        // Update meta theme-color
-        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-        if (metaThemeColor) {
-            metaThemeColor.setAttribute('content', '#121212');
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            this.mediaQuery.addListener(() => this.handleSystemThemeChange());
         }
-        
-        // console.log('Dark mode enforced');
     }
 
     /**
-     * Get the current theme - always returns 'dark'
-     * @returns {string} 'dark'
+     * Get saved theme preference
+     * @returns {string|null} The saved theme or null if not set
      */
-    getCurrentTheme() {
-        return 'dark';
+    getSavedTheme() {
+        try {
+            return localStorage.getItem(this.STORAGE_KEY);
+        } catch (error) {
+            console.warn('Failed to read theme from localStorage:', error);
+            return null;
+        }
     }
-    
+
     /**
-     * Hide all theme toggle elements
+     * Save theme preference
+     * @param {string} theme - The theme to save
      */
-    hideThemeToggles() {
-        // Find all theme toggle buttons in the document
-        const themeToggles = document.querySelectorAll('.theme-toggle, #theme-toggle-btn');
-        
-        themeToggles.forEach(toggle => {
-            if (!toggle) return;
+    saveTheme(theme) {
+        try {
+            localStorage.setItem(this.STORAGE_KEY, theme);
+        } catch (error) {
+            console.warn('Failed to save theme to localStorage:', error);
+        }
+    }
+
+    /**
+     * Set the theme
+     * @param {string} theme - 'light' or 'dark'
+     */
+    setTheme(theme) {
+        // Clear any pending theme changes
+        if (this.themeChangeTimeout) {
+            clearTimeout(this.themeChangeTimeout);
+        }
+
+        // Debounce theme changes
+        this.themeChangeTimeout = setTimeout(() => {
+            document.documentElement.className = theme;
+            localStorage.setItem(this.STORAGE_KEY, theme);
             
-            // Hide the toggle button
-            toggle.style.display = 'none';
-            toggle.setAttribute('aria-hidden', 'true');
-            
-            // Find moon icon and ensure it's shown (for any styling that might depend on it)
-            const moonIcon = toggle.querySelector('.moon-icon');
-            if (moonIcon) {
-                Object.assign(moonIcon.style, {
-                    display: 'block',
-                    opacity: '1',
-                    visibility: 'visible',
-                    position: 'absolute',
-                    zIndex: '10'
-                });
+            // Update meta theme color
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute('content', theme === 'dark' ? '#1A3C34' : '#ffffff');
             }
-            
-            // Find sun icon and ensure it's hidden
-            const sunIcon = toggle.querySelector('.sun-icon');
-            if (sunIcon) {
-                Object.assign(sunIcon.style, {
-                    display: 'none',
-                    opacity: '0',
-                    visibility: 'hidden',
-                    position: 'absolute',
-                    zIndex: '-1'
-                });
+
+            // Dispatch theme change event
+            this.dispatchThemeEvent(theme);
+        }, 100);
+    }
+
+    /**
+     * Toggle between light and dark themes
+     */
+    toggleTheme() {
+        const currentTheme = this.getCurrentTheme();
+        this.setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    /**
+     * Update meta theme color
+     * @param {string} theme - The current theme
+     */
+    updateMetaThemeColor(theme) {
+        try {
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute('content', 
+                    theme === 'dark' ? '#121212' : '#FFFFFF'
+                );
             }
-        });
+        } catch (error) {
+            console.warn('Failed to update meta theme color:', error);
+        }
+    }
+
+    /**
+     * Initialize theme toggle button
+     */
+    initThemeToggle() {
+        if (!this.themeToggle) return;
         
-        // console.log('Theme toggles hidden');
+        try {
+            this.themeToggle.addEventListener('click', this._boundToggleTheme);
+            
+            // Add keyboard accessibility
+            this.themeToggle.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this._boundToggleTheme();
+                }
+            });
+            
+            // Set initial state
+            const currentTheme = document.documentElement.className;
+            this.themeToggle.setAttribute('aria-label', 
+                `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`
+            );
+        } catch (error) {
+            console.error('Failed to initialize theme toggle:', error);
+        }
+    }
+
+    /**
+     * Listen for system theme changes
+     */
+    initSystemThemeListener() {
+        try {
+            this.systemThemeQuery.addEventListener('change', this._boundHandleSystemThemeChange);
+        } catch (error) {
+            console.error('Failed to initialize system theme listener:', error);
+        }
+    }
+
+    /**
+     * Handle system theme changes
+     */
+    handleSystemThemeChange() {
+        // Only update if user hasn't set a preference
+        if (!localStorage.getItem(this.STORAGE_KEY)) {
+            this.setTheme(this.getCurrentTheme());
+        }
+    }
+
+    /**
+     * Dispatch theme change event
+     * @param {string} theme - The current theme
+     */
+    dispatchThemeEvent(theme) {
+        try {
+            const event = new CustomEvent(this.THEME_CHANGE_EVENT, {
+                detail: { theme }
+            });
+            document.dispatchEvent(event);
+        } catch (error) {
+            console.warn('Failed to dispatch theme event:', error);
+        }
+    }
+
+    /**
+     * Cleanup theme manager
+     */
+    cleanup() {
+        try {
+            if (this.themeToggle) {
+                this.themeToggle.removeEventListener('click', this._boundToggleTheme);
+            }
+            this.systemThemeQuery.removeEventListener('change', this._boundHandleSystemThemeChange);
+        } catch (error) {
+            console.error('Failed to cleanup theme manager:', error);
+        }
+    }
+
+    getCurrentTheme() {
+        return localStorage.getItem(this.STORAGE_KEY) || 
+               (this.systemThemeQuery.matches ? 'dark' : 'light');
     }
 }
 
-// Initialize the theme manager
-window.themeManager = new ThemeManager(); 
+// Initialize theme manager
+const themeManager = new ThemeManager();
+window.themeManager = themeManager;
+document.addEventListener('DOMContentLoaded', () => themeManager.init()); 

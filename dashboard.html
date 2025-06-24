@@ -1,8 +1,8 @@
 
     <!-- Legacy Fix Scripts - Keeping for compatibility -->
-    <script src="scripts/fix-scroll.js" defer></script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script><!DOCTYPE html>
+    </script>
+    </script>
+    </script><!DOCTYPE html>
 <html lang="en" class="dark-mode dark-theme">
 <head>
     <meta name="theme-color" content="#1A3C34">
@@ -12,16 +12,16 @@
     <link rel="stylesheet" href="styles/main.css$1
     
     <!-- Critical Scroll & Header Fixes - Must Load First -->
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css"">
-    <script src="scripts/smooth-scroll-fix.js" defer>
-    <script src="scripts/enhanced-header-scroll.js" defer></script></script>
+    
+    
+    </script></script>
     <!-- Fix Scroll Issues - Load Early -->
     </script>
     </script>
-    <script src="scripts/fix-scroll.js" defer></script>
+    </script>
     <!-- Footer Fix Scripts -->
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script>
+    </script>
+    </script>
     
 
     <link rel="stylesheet" href="styles/dashboard.css">
@@ -571,7 +571,7 @@
     <script src="scripts/dark-mode-enforcer.js"></script>
 
     <!-- Gradient Scroll Effect -->
-    <script src="scripts/gradient-scroll.js" defer></script>
+    </script>
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
     <!-- Final header fixes - should be last to take precedence -->
@@ -583,19 +583,43 @@
     <link rel="stylesheet" href="styles/screenshot-fix.css">
 
     <!-- Enhanced Fix Scripts -->
-    <script src="scripts/immediate-scroll-fix.js"></script>
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css">
-    <script src="scripts/enhanced-header-scroll.js" defer></script>
-    <script src="scripts/smooth-scroll-fix.js" defer></script>
-    <script src="scripts/apply-enhanced-fixes.js" defer></script>
+    
+    
+    </script>
+    </script>
+    </script>
     <script src="scripts/microsoft-screenshot-fix.js" defer></script>
     
     <!-- Additional Visual Enhancements -->
-    <link rel="stylesheet" href="styles/section-spacing-fix.css">
-    <link rel="stylesheet" href="styles/button-enhancement.css">
-    <link rel="stylesheet" href="styles/images-and-cards-fix.css">
+    
+    
+    
     <script src="scripts/footer-improver.js" defer></script>
-    </head>
+        <script src="scripts/script-loader.js"></script>
+    <script src="scripts/error-handler.js"></script>
+    </script>
+    <script src="scripts/css-consolidator.js"></script>
+<script type="module" src="scripts/performance-manager.js"></script>
+<script type="module" src="scripts/animation-system.js"></script>
+<script type="module" src="scripts/scroll-manager.js"></script>
+<script type="module" src="scripts/fix-manager.js"></script>
+
+<script type="module">
+    import performanceManager from './scripts/performance-manager.js';
+    import animationSystem from './scripts/animation-system.js';
+    import scrollManager from './scripts/scroll-manager.js';
+    import fixManager from './scripts/fix-manager.js';
+
+    // Initialize managers
+    document.addEventListener('DOMContentLoaded', function() {
+        performanceManager.startMonitoring();
+        animationSystem.enableDebug();
+        scrollManager.init();
+        fixManager.init();
+    });
+</script>
+
+</head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Premium Desktop Header -->
     <header class="premium-header" id="premium-header">

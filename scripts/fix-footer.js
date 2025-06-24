@@ -12,25 +12,25 @@
         if (!footerContainer) return;
         
         // Ensure footer container is visible
-        footerContainer.style.display = 'block';
-        footerContainer.style.visibility = 'visible';
-        footerContainer.style.opacity = '1';
-        footerContainer.style.width = '100%';
-        footerContainer.style.position = 'relative';
-        footerContainer.style.zIndex = '5';
-        footerContainer.style.marginTop = '0';
+//         footerContainer.style.display = 'block';
+//         footerContainer.style.visibility = 'visible';
+//         footerContainer.style.opacity = '1';
+//         footerContainer.style.width = '100%';
+//         footerContainer.style.position = 'relative';
+//         footerContainer.style.zIndex = '5';
+//         footerContainer.style.marginTop = '0';
         
         // Check if footer is already loaded
         const footer = footerContainer.querySelector('footer');
         if (footer) {
             // Ensure the footer itself is visible
-            footer.style.display = 'block';
-            footer.style.visibility = 'visible';
-            footer.style.opacity = '1';
-            footer.style.width = '100%';
-            footer.style.marginTop = '0';
-            footer.style.position = 'relative';
-            footer.style.zIndex = '5';
+//             footer.style.display = 'block';
+//             footer.style.visibility = 'visible';
+//             footer.style.opacity = '1';
+//             footer.style.width = '100%';
+//             footer.style.marginTop = '0';
+//             footer.style.position = 'relative';
+//             footer.style.zIndex = '5';
         }
         
         // Fix body and main layout to ensure footer is properly positioned
@@ -43,7 +43,7 @@
             main.style.flex = '1 0 auto';
         }
         
-        footerContainer.style.flexShrink = '0';
+        //         footerContainer.style.flexShrink = '0';
     }
     
     /**

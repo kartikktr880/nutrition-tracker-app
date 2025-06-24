@@ -9,6 +9,8 @@
 // Food Database Service
 import { UsdaAPI } from './usda-api.js';
 import dataManager from './data-manager.js';
+import { FoodTypeUtils } from './food-type-utils.js';
+import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 
 class FoodDatabaseService {
     constructor() {
@@ -24,6 +26,8 @@ class FoodDatabaseService {
         this.recentlyUsed = [];  // Track recently used foods for suggestions
         this.maxRecentlyUsed = 10;
         this.favoritesList = []; // User's favorite foods
+        
+        this.foodTypeUtils = new FoodTypeUtils();
         
         this.initialize();
     }
@@ -403,29 +407,7 @@ class FoodDatabaseService {
     
     // Get common foods for meal type (sample implementation)
     getCommonFoodsForMealType(mealType) {
-        // This would ideally be populated from a database of common foods
-        // or from aggregated user data. For now, using sample data.
-        const commonFoods = {
-            breakfast: [
-                { id: 'sample-oatmeal', name: 'Oatmeal', calories: 150, protein: 6, carbs: 27, fat: 2.5 },
-                { id: 'sample-eggs', name: 'Eggs', calories: 140, protein: 12, carbs: 0, fat: 10 },
-                { id: 'sample-yogurt', name: 'Greek Yogurt', calories: 120, protein: 15, carbs: 8, fat: 0 }
-            ],
-            lunch: [
-                { id: 'sample-sandwich', name: 'Turkey Sandwich', calories: 350, protein: 20, carbs: 40, fat: 10 },
-                { id: 'sample-salad', name: 'Chicken Salad', calories: 300, protein: 25, carbs: 15, fat: 12 }
-            ],
-            dinner: [
-                { id: 'sample-salmon', name: 'Salmon', calories: 280, protein: 30, carbs: 0, fat: 15 },
-                { id: 'sample-chicken', name: 'Grilled Chicken', calories: 250, protein: 35, carbs: 0, fat: 10 }
-            ],
-            snacks: [
-                { id: 'sample-apple', name: 'Apple', calories: 80, protein: 0, carbs: 20, fat: 0 },
-                { id: 'sample-nuts', name: 'Mixed Nuts', calories: 170, protein: 5, carbs: 6, fat: 14 }
-            ]
-        };
-        
-        return commonFoods[mealType] || [];
+        return this.foodTypeUtils.getCommonFoodsForMealType(mealType);
     }
     
     // Helper methods for caching
@@ -502,6 +484,45 @@ class FoodDatabaseService {
         
         // Default: sort by relevance (no sorting, keep API order)
         return foods;
+    }
+
+    async addFood(foodData) {
+        try {
+            // Use FoodTypeUtils to determine food type
+            const foodType = this.foodTypeUtils.findFoodType(foodData.name);
+            const foodWithType = {
+                ...foodData,
+                type: foodType || 'other'
+            };
+
+            const docRef = await addDoc(collection(this.db, 'foods'), foodWithType);
+            return docRef.id;
+        } catch (error) {
+            console.error('Error adding food:', error);
+            throw error;
+        }
+    }
+
+    async getFoodsByType(type) {
+        try {
+            const q = query(
+                collection(this.db, 'foods'),
+                where('type', '==', type)
+            );
+            
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        } catch (error) {
+            console.error('Error getting foods by type:', error);
+            return [];
+        }
+    }
+
+    async getCommonFoodsForMealType(mealType) {
+        return this.foodTypeUtils.getCommonFoodsForMealType(mealType);
     }
 }
 

@@ -67,6 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check for URL parameters (e.g., after OAuth callback)
         checkUrlParams();
+
+        initThemeSettings();
+        initColorSettings();
     }
 
     /**
@@ -777,6 +780,140 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Clear the URL parameter
             history.replaceState(null, '', window.location.pathname);
+        }
+    }
+
+    /**
+     * Initialize theme settings
+     */
+    function initThemeSettings() {
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const currentTheme = document.documentElement.className;
+        
+        // Add system theme indicator
+        const systemThemeIndicator = document.createElement('div');
+        systemThemeIndicator.className = 'system-theme-indicator';
+        systemThemeIndicator.innerHTML = `
+            <i class="fas fa-desktop"></i>
+            <span>System theme: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'}</span>
+        `;
+        document.querySelector('.theme-options').appendChild(systemThemeIndicator);
+        
+        // Update system theme indicator when system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addListener((e) => {
+            systemThemeIndicator.querySelector('span').textContent = 
+                `System theme: ${e.matches ? 'Dark' : 'Light'}`;
+        });
+        
+        // Set initial active state
+        themeOptions.forEach(option => {
+            if (option.dataset.theme === currentTheme) {
+                option.classList.add('active');
+            }
+            
+            // Add click handler
+            option.addEventListener('click', function() {
+                const theme = this.dataset.theme;
+                
+                // Update active state
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Apply theme
+                if (window.themeManager) {
+                    window.themeManager.setTheme(theme);
+                }
+            });
+        });
+        
+        // Listen for theme changes
+        document.addEventListener('themechange', function(e) {
+            const newTheme = e.detail.theme;
+            themeOptions.forEach(option => {
+                if (option.dataset.theme === newTheme) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    /**
+     * Initialize color settings
+     */
+    function initColorSettings() {
+        const colorOptions = document.querySelectorAll('.color-option');
+        const currentColor = localStorage.getItem('nutrition_tracker_color') || 'green';
+        
+        // Set initial active state
+        colorOptions.forEach(option => {
+            if (option.dataset.color === currentColor) {
+                option.classList.add('selected');
+            }
+            
+            // Add click handler
+            option.addEventListener('click', function() {
+                const color = this.dataset.color;
+                
+                // Update active state
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Save preference
+                localStorage.setItem('nutrition_tracker_color', color);
+                
+                // Apply color scheme
+                applyColorScheme(color);
+            });
+        });
+    }
+
+    /**
+     * Apply color scheme
+     * @param {string} color - The color scheme to apply
+     */
+    function applyColorScheme(color) {
+        const root = document.documentElement;
+        const colors = {
+            green: {
+                primary: '#1A3C34',
+                primaryDark: '#0F2A24',
+                primaryLight: '#2A5F52'
+            },
+            blue: {
+                primary: '#1976D2',
+                primaryDark: '#1565C0',
+                primaryLight: '#2196F3'
+            },
+            purple: {
+                primary: '#7B1FA2',
+                primaryDark: '#6A1B9A',
+                primaryLight: '#9C27B0'
+            },
+            orange: {
+                primary: '#F57C00',
+                primaryDark: '#EF6C00',
+                primaryLight: '#FF9800'
+            },
+            red: {
+                primary: '#D32F2F',
+                primaryDark: '#C62828',
+                primaryLight: '#F44336'
+            }
+        };
+        
+        const scheme = colors[color] || colors.green;
+        
+        // Update CSS variables
+        root.style.setProperty('--primary', scheme.primary);
+        root.style.setProperty('--primary-dark', scheme.primaryDark);
+        root.style.setProperty('--primary-light', scheme.primaryLight);
+        
+        // Update meta theme color
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', scheme.primary);
         }
     }
 }); 

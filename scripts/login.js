@@ -1,4 +1,4 @@
-import { initializeAuth, registerUser, loginUser } from './firebase-config.js';
+import { loginWithEmail, signInWithGoogle, signInWithFacebook, resetPassword } from './auth-core.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadingSpinner.innerHTML = '<div class="spinner"></div>';
     document.body.appendChild(loadingSpinner);
     
-    // Initialize Firebase Authentication
-    initializeAuth().then(user => {
+    // Initialize auth state
+    firebase.auth().onAuthStateChanged(user => {
         // Hide loading spinner once auth is initialized
         loadingSpinner.style.display = 'none';
         
@@ -60,25 +60,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
-        // Validate form (simple validation for demonstration)
+        // Validate form
         if (!email || !password) {
             showError(errorMessage, 'Please fill in all fields');
             loadingSpinner.style.display = 'none';
             return;
         }
         
-        // Use Firebase authentication
-        const result = await loginUser(email, password);
-        
-        // Hide loading spinner
-        loadingSpinner.style.display = 'none';
-        
-        if (result.success) {
-            // Login successful
-            redirectAfterLogin();
-        } else {
-            // Login failed
-            showError(errorMessage, result.error || 'Invalid email or password');
+        try {
+            // Use API service for login
+            const result = await window.apiService.loginUser(email, password);
+            
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
+            
+            if (result.success) {
+                // Login successful
+                redirectAfterLogin();
+            } else {
+                // Login failed
+                showError(errorMessage, result.error || 'Invalid email or password');
+            }
+        } catch (error) {
+            loadingSpinner.style.display = 'none';
+            showError(errorMessage, 'An error occurred during login');
+            console.error('Login error:', error);
         }
     });
     
@@ -95,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('register-password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
         
-        // Validate form (simple validation for demonstration)
+        // Validate form
         if (!name || !email || !password || !confirmPassword) {
             showError(registerErrorMessage, 'Please fill in all fields');
             loadingSpinner.style.display = 'none';
@@ -114,18 +120,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Use Firebase to register the user
-        const result = await registerUser(email, password, name);
-        
-        // Hide loading spinner
-        loadingSpinner.style.display = 'none';
-        
-        if (result.success) {
-            // Registration successful
-            redirectAfterLogin();
-        } else {
-            // Registration failed
-            showError(registerErrorMessage, result.error || 'Registration failed');
+        try {
+            // Use API service for registration
+            const result = await window.apiService.registerUser(email, password, name);
+            
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
+            
+            if (result.success) {
+                // Registration successful
+                redirectAfterLogin();
+            } else {
+                // Registration failed
+                showError(registerErrorMessage, result.error || 'Registration failed');
+            }
+        } catch (error) {
+            loadingSpinner.style.display = 'none';
+            showError(registerErrorMessage, 'An error occurred during registration');
+            console.error('Registration error:', error);
         }
     });
     

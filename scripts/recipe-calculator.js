@@ -1,3 +1,5 @@
+import StringFormatter from './string-formatter.js';
+
 class RecipeCalculator {
   constructor() {
     this.ingredients = [];
@@ -923,6 +925,10 @@ class RecipeCalculator {
         potassium: 212
       }
     ];
+  }
+
+  formatAmount(amount) {
+    return StringFormatter.formatNumber(amount);
   }
 }
 

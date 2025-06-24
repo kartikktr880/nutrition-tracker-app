@@ -1,11 +1,10 @@
-import { getAuth } from 'firebase/auth';
+import { auth } from './auth-core.js';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { app } from './firebase-config.js';
 import { recipeTemplates } from './recipe-templates.js';
 
 class RecipeImport {
     constructor() {
-        this.auth = getAuth(app);
         this.db = getFirestore(app);
         this.supportedSources = ['url', 'text', 'file'];
     }
@@ -223,7 +222,7 @@ class RecipeImport {
             // Save as template
             const templateData = {
                 ...recipeData,
-                userId: this.auth.currentUser.uid,
+                userId: auth.currentUser.uid,
                 category: 'imported',
                 createdAt: new Date(),
                 timesUsed: 0

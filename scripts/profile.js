@@ -1,4 +1,5 @@
-import { initializeAuth, getUserProfile, updateUserProfile } from './firebase-config.js';
+import { auth, db } from './auth-core.js';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Initialize Firebase Auth

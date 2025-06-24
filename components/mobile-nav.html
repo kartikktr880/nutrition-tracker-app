@@ -1,167 +1,93 @@
 <!-- Mobile Navigation Toggle Button -->
-<button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+<button 
+    class="mobile-menu-toggle" 
+    id="mobileNavToggle" 
+    aria-label="Toggle navigation menu"
+    aria-expanded="false"
+    aria-controls="mobileNav">
     <span></span>
     <span></span>
     <span></span>
 </button>
 
 <!-- Mobile Navigation Overlay -->
-<div class="mobile-nav-overlay" onclick="toggleMobileNav()"></div>
-
-<!-- Mobile Navigation Menu -->
-<div class="mobile-nav">
-    <div class="mobile-nav-menu">
-        <div class="mobile-nav-header">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <img id="mobile-nav-avatar" src="images/profile-placeholder.jpg" alt="Profile Picture">
-                </div>
-                <div class="user-details">
-                    <span id="mobile-nav-username">Guest</span>
-                    <span id="mobile-nav-email"></span>
-                </div>
-            </div>
-            <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Close navigation">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <nav class="mobile-nav-links">
-            <ul>
-                <li>
-                    <a href="index.html" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        Home
-                    </a>
-                </li>
-                <li>
-                    <a href="tracker.html" class="nav-link">
-                        <i class="fas fa-utensils"></i>
-                        Tracker
-                    </a>
-                </li>
-                <li>
-                    <a href="dashboard.html" class="nav-link">
-                        <i class="fas fa-chart-bar"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="meal-planner.html" class="nav-link">
-                        <i class="fas fa-calendar-alt"></i>
-                        Meal Planner
-                    </a>
-                </li>
-                <li>
-                    <a href="food-search.html" class="nav-link">
-                        <i class="fas fa-search"></i>
-                        Food Database
-                    </a>
-                </li>
-                <li>
-                    <a href="recipes.html" class="nav-link">
-                        <i class="fas fa-book"></i>
-                        Recipes
-                    </a>
-                </li>
-                <li>
-                    <a href="shopping-list.html" class="nav-link">
-                        <i class="fas fa-shopping-basket"></i>
-                        Shopping List
-                    </a>
-                </li>
-                <li>
-                    <a href="meal-timing.html" class="nav-link">
-                        <i class="fas fa-clock"></i>
-                        Meal Timing
-                    </a>
-                </li>
-                <li>
-                    <a href="nutrition-goals.html" class="nav-link">
-                        <i class="fas fa-bullseye"></i>
-                        Nutrition Goals
-                    </a>
-                </li>
-                <li>
-                    <a href="profile.html" class="nav-link">
-                        <i class="fas fa-user"></i>
-                        Profile
-                    </a>
-                </li>
-                <li id="mobile-login-item">
-                    <a href="login.html" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </a>
-                </li>
-                <li id="mobile-logout-item" style="display: none;">
-                    <a href="#" class="nav-link" onclick="logoutUser()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link" id="mobile-theme-toggle">
-                        <i class="fas fa-moon"></i>
-                        Dark Mode
-                        <div class="theme-toggle-mobile">
-                            <label class="switch">
-                                <input type="checkbox" id="mobile-theme-toggle-switch">
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <div class="mobile-nav-footer">
-            <div class="language-selection">
-                <label for="mobile-language-selector">Language:</label>
-                <select id="mobile-language-selector" class="language-selector">
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="fr">Français</option>
-                    <option value="de">Deutsch</option>
-                    <option value="zh">中文</option>
-                </select>
-            </div>
-        </div>
-    </div>
+<div 
+    class="mobile-nav-overlay" 
+    id="mobileNavOverlay"
+    aria-hidden="true"
+    tabindex="-1">
 </div>
 
-</script>
-    </script>
-    <script>
+<!-- Mobile Navigation -->
+<nav 
+    class="mobile-nav" 
+    id="mobileNav"
+    aria-label="Main navigation"
+    aria-hidden="true">
+    
+    <div class="mobile-nav-header">
+        <h2 class="mobile-nav-title">Menu</h2>
+        <button 
+            class="mobile-nav-close" 
+            aria-label="Close navigation menu"
+            aria-controls="mobileNav">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
+    
+    <div class="mobile-nav-menu">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home" aria-hidden="true"></i>
+            <span>Home</span>
+        </a>
+        <a href="dashboard.html" class="mobile-nav-item">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="meals.html" class="mobile-nav-item">
+            <i class="fas fa-utensils" aria-hidden="true"></i>
+            <span>Meals</span>
+        </a>
+        <a href="settings.html" class="mobile-nav-item">
+            <i class="fas fa-cog" aria-hidden="true"></i>
+            <span>Settings</span>
+        </a>
+    </div>
+    
+    <div class="mobile-nav-footer">
+        <div class="mobile-auth-buttons">
+            <a href="login.html" class="btn btn-primary">Login</a>
+            <a href="register.html" class="btn btn-secondary">Register</a>
+        </div>
+    </div>
+</nav>
+
+<script>
     // Initialize the theme toggle in mobile navigation
     document.addEventListener('DOMContentLoaded', function() {
-        const mobileThemeToggle = document.getElementById('mobile-theme-toggle-switch');
+        const mobileThemeToggle = document.querySelector('.mobile-nav .theme-toggle');
         if (mobileThemeToggle && window.themeManager) {
             // Set initial state based on current theme
-            mobileThemeToggle.checked = window.themeManager.getCurrentTheme() === 'dark';
+            const currentTheme = document.documentElement.className;
+            mobileThemeToggle.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`);
             
-            // Listen for changes
-            mobileThemeToggle.addEventListener('change', function() {
-                window.themeManager.setTheme(this.checked ? 'dark' : 'light');
+            // Listen for theme changes
+            document.addEventListener('themechange', function(e) {
+                const newTheme = e.detail.theme;
+                mobileThemeToggle.setAttribute('aria-label', `Switch to ${newTheme === 'dark' ? 'light' : 'dark'} theme`);
+            });
+            
+            // Listen for clicks
+            mobileThemeToggle.addEventListener('click', function() {
+                window.themeManager.toggleTheme();
             });
         }
         
         // Set language selector value
         const mobileLangSelector = document.getElementById('mobile-language-selector');
         if (mobileLangSelector) {
-            const currentLang = document.documentElement.lang || 
-                               localStorage.getItem('preferredLanguage') || 
-                               'en';
+            const currentLang = document.documentElement.lang || 'en';
             mobileLangSelector.value = currentLang;
-            
-            mobileLangSelector.addEventListener('change', function() {
-                if (window.i18n && typeof window.i18n.changeLanguage === 'function') {
-                    window.i18n.changeLanguage(this.value);
-                } else {
-                    localStorage.setItem('preferredLanguage', this.value);
-                    window.location.reload();
-                }
-            });
         }
     });
 </script> 

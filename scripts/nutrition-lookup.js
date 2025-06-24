@@ -1,36 +1,17 @@
-import { getAuth } from 'firebase/auth';
+import { auth } from './auth-core.js';
 import { getFirestore, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { app } from './firebase-config.js';
+import { FoodTypeUtils } from './food-type-utils.js';
 
 class NutritionLookup {
     constructor() {
-        this.auth = getAuth(app);
         this.db = getFirestore(app);
         this.lookupCache = new Map();
         this.cacheTimeout = 24 * 60 * 60 * 1000; // 24 hours
-        this.commonFoods = {
-            // Common ingredients with their nutrition per 100g
-            fruits: {
-                apple: { calories: 52, protein: 0.3, carbs: 14, fat: 0.2, fiber: 2.4, sugar: 10.4 },
-                banana: { calories: 89, protein: 1.1, carbs: 23, fat: 0.3, fiber: 2.6, sugar: 12.2 },
-                orange: { calories: 47, protein: 0.9, carbs: 12, fat: 0.1, fiber: 2.4, sugar: 9.4 }
-            },
-            vegetables: {
-                carrot: { calories: 41, protein: 0.9, carbs: 10, fat: 0.2, fiber: 2.8, sugar: 4.7 },
-                broccoli: { calories: 34, protein: 2.8, carbs: 7, fat: 0.4, fiber: 2.6, sugar: 1.7 },
-                spinach: { calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, fiber: 2.2, sugar: 0.4 }
-            },
-            proteins: {
-                chicken_breast: { calories: 165, protein: 31, carbs: 0, fat: 3.6, fiber: 0, sugar: 0 },
-                salmon: { calories: 208, protein: 22, carbs: 0, fat: 13, fiber: 0, sugar: 0 },
-                egg: { calories: 155, protein: 13, carbs: 1.1, fat: 11, fiber: 0, sugar: 1.1 }
-            },
-            grains: {
-                rice: { calories: 130, protein: 2.7, carbs: 28, fat: 0.3, fiber: 0.4, sugar: 0.1 },
-                bread: { calories: 265, protein: 9, carbs: 49, fat: 3.2, fiber: 2.7, sugar: 5.1 },
-                pasta: { calories: 158, protein: 5.8, carbs: 31, fat: 0.9, fiber: 1.8, sugar: 0.6 }
-            }
-        };
+        this.foodTypeUtils = new FoodTypeUtils();
+        this.maxCacheSize = 1000; // Prevent memory issues
+        
+        // Remove duplicate commonFoods database since it's now in FoodTypeUtils
     }
 
     initialize() {
@@ -76,19 +57,65 @@ class NutritionLookup {
     }
 
     async showNutritionLookup(ingredientRow) {
-        const ingredientName = ingredientRow.querySelector('.ingredient-name').value.toLowerCase();
-        const amount = parseFloat(ingredientRow.querySelector('.ingredient-amount').value) || 0;
-        const unit = ingredientRow.querySelector('.ingredient-unit').value.toLowerCase();
+        const nameInput = ingredientRow.querySelector('.ingredient-name');
+        const amountInput = ingredientRow.querySelector('.ingredient-amount');
+        const unitInput = ingredientRow.querySelector('.ingredient-unit');
+
+        // Validate inputs exist
+        if (!nameInput || !amountInput || !unitInput) {
+            console.error('Required input elements not found');
+            this.showError('Error: Required form elements are missing');
+            return;
+        }
+
+        const ingredientName = nameInput.value.toLowerCase();
+        const amount = parseFloat(amountInput.value) || 0;
+        const unit = unitInput.value.toLowerCase();
+
+        // Validate input before proceeding
+        if (!ingredientName.trim()) {
+            this.showError('Please enter an ingredient name');
+            nameInput.focus();
+            return;
+        }
+
+        if (amount <= 0) {
+            this.showError('Please enter a valid amount');
+            amountInput.focus();
+            return;
+        }
+
+        // Remove any existing popup
+        this.removePopup();
 
         const popup = document.createElement('div');
         popup.className = 'nutrition-lookup-popup';
-        popup.innerHTML = '<div class="lookup-loading">Looking up nutrition info...</div>';
+        popup.innerHTML = '<div class="lookup-loading"><i class="fas fa-spinner fa-spin"></i> Looking up nutrition info...</div>';
 
-        // Position the popup
+        // Position the popup with improved positioning logic
         const rect = ingredientRow.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const popupHeight = 300; // Approximate height of popup
+        
+        // Calculate position
+        let top = rect.bottom + window.scrollY + 5;
+        let left = rect.left + window.scrollX;
+        
+        // Check if popup would go below viewport
+        if (top + popupHeight > viewportHeight + window.scrollY) {
+            top = rect.top + window.scrollY - popupHeight - 5;
+        }
+        
+        // Check if popup would go off right edge
+        const viewportWidth = window.innerWidth;
+        const popupWidth = 300; // Approximate width of popup
+        if (left + popupWidth > viewportWidth) {
+            left = viewportWidth - popupWidth - 10;
+        }
+
         popup.style.position = 'absolute';
-        popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
-        popup.style.left = `${rect.left + window.scrollX}px`;
+        popup.style.top = `${top}px`;
+        popup.style.left = `${left}px`;
 
         document.body.appendChild(popup);
 
@@ -98,112 +125,294 @@ class NutritionLookup {
                 popup.innerHTML = this.generateNutritionPopup(nutrition, ingredientName);
                 this.setupPopupEvents(popup, nutrition);
             } else {
-                popup.innerHTML = '<div class="lookup-error">No nutrition information found</div>';
+                popup.innerHTML = `
+                    <div class="lookup-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        No nutrition information found for "${ingredientName}"
+                        <button class="btn btn-sm btn-outline-secondary mt-2" onclick="this.closest('.lookup-error').remove()">Close</button>
+                    </div>`;
             }
         } catch (error) {
             console.error('Error looking up nutrition:', error);
-            popup.innerHTML = '<div class="lookup-error">Error looking up nutrition</div>';
+            popup.innerHTML = `
+                <div class="lookup-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Error looking up nutrition. Please try again.
+                    <button class="btn btn-sm btn-outline-secondary mt-2" onclick="this.closest('.lookup-error').remove()">Close</button>
+                </div>`;
         }
 
         // Close when clicking outside
-        document.addEventListener('click', (e) => {
+        const closePopup = (e) => {
             if (!popup.contains(e.target) && !ingredientRow.contains(e.target)) {
                 this.removePopup();
+                document.removeEventListener('click', closePopup);
+            }
+        };
+        document.addEventListener('click', closePopup);
+    }
+
+    /**
+     * Show an error message to the user
+     * @param {string} message - The error message to display
+     * @param {string} [type='warning'] - The type of alert ('warning', 'error', 'info')
+     * @param {number} [duration=5000] - Duration in milliseconds before auto-dismiss
+     */
+    showError(message, type = 'warning', duration = 5000) {
+        // Validate input
+        if (!message || typeof message !== 'string') {
+            console.error('Invalid error message provided');
+            return;
+        }
+
+        // Remove any existing error messages of the same type
+        const existingErrors = document.querySelectorAll(`.alert-${type}`);
+        existingErrors.forEach(error => error.remove());
+
+        const errorDiv = document.createElement('div');
+        errorDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        
+        // Add appropriate icon based on type
+        const icon = type === 'error' ? 'exclamation-triangle' : 
+                    type === 'info' ? 'info-circle' : 
+                    'exclamation-circle';
+        
+        errorDiv.innerHTML = `
+            <i class="fas fa-${icon}"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Find a suitable container for the error message
+        const container = document.querySelector('.nutrition-form') || document.body;
+        container.insertBefore(errorDiv, container.firstChild);
+        
+        // Auto-dismiss after specified duration
+        if (duration > 0) {
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, duration);
+        }
+
+        // Add fade-out animation
+        errorDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-close')) {
+                errorDiv.classList.add('fade-out');
+                setTimeout(() => errorDiv.remove(), 300);
             }
         });
     }
 
+    /**
+     * Look up nutrition information for an ingredient
+     * @param {string} ingredientName - The name of the ingredient
+     * @param {number} amount - The amount of the ingredient
+     * @param {string} unit - The unit of measurement
+     * @returns {Object|null} Nutrition information or null if not found
+     */
     async lookupNutrition(ingredientName, amount = 100, unit = 'g') {
+        // Enhanced input validation
+        if (!ingredientName || typeof ingredientName !== 'string') {
+            console.error('Invalid ingredient name provided');
+            this.showError('Please enter a valid ingredient name');
+            return null;
+        }
+
+        // Normalize input
+        ingredientName = ingredientName.trim().toLowerCase();
+        amount = parseFloat(amount);
+        unit = unit.toLowerCase();
+
+        // Validate amount
+        if (isNaN(amount) || amount <= 0) {
+            console.error('Invalid amount provided');
+            this.showError('Please enter a valid amount');
+            return null;
+        }
+
+        // Validate unit
+        if (!this.foodTypeUtils.getUnitMultiplier(unit)) {
+            console.error('Invalid unit provided');
+            this.showError(`Unsupported unit: ${unit}`);
+            return null;
+        }
+
         const cacheKey = `${ingredientName}-${amount}-${unit}`;
         const cached = this.lookupCache.get(cacheKey);
         
         if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+            console.log('Retrieved nutrition data from cache');
             return cached.data;
         }
 
-        // First check our common foods database
-        const nutrition = this.findInCommonFoods(ingredientName);
-        if (nutrition) {
-            // Adjust for amount and unit
-            const adjustedNutrition = this.adjustNutritionValues(nutrition, amount, unit);
-            
-            // Cache the result
-            this.lookupCache.set(cacheKey, {
-                timestamp: Date.now(),
-                data: adjustedNutrition
-            });
+        let attempts = 0;
+        const maxAttempts = 3;
+        let lastError = null;
+        let recoveryAttempted = false;
+        
+        while (attempts < maxAttempts) {
+            try {
+                // First try to get nutrition info from FoodTypeUtils
+                const nutritionInfo = this.foodTypeUtils.getNutritionInfo(ingredientName, amount, unit);
+                if (nutritionInfo) {
+                    console.log('Retrieved nutrition data from FoodTypeUtils');
+                    this.cacheResult(cacheKey, nutritionInfo);
+                    return nutritionInfo;
+                }
 
-            return adjustedNutrition;
-        }
+                // If not found in FoodTypeUtils, proceed with API lookup
+                if (!this.appId || !this.appKey) {
+                    throw new Error('API credentials not configured');
+                }
 
-        // If not found in common foods, check Firebase
-        try {
-            const nutritionRef = collection(this.db, 'nutritionData');
-            const q = query(
-                nutritionRef,
-                where('name', '==', ingredientName),
-                limit(1)
-            );
-            
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                const data = querySnapshot.docs[0].data();
-                const adjustedNutrition = this.adjustNutritionValues(data, amount, unit);
+                const response = await fetch(`https://api.edamam.com/api/food-database/v2/parser?app_id=${this.appId}&app_key=${this.appKey}&ingr=${encodeURIComponent(ingredientName)}`);
                 
-                this.lookupCache.set(cacheKey, {
-                    timestamp: Date.now(),
-                    data: adjustedNutrition
-                });
-
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.hints && data.hints.length > 0) {
+                    const food = data.hints[0].food;
+                    const adjustedNutrition = this.adjustNutritionForAmount(food.nutrients, amount, unit);
+                    console.log('Retrieved nutrition data from API');
+                    this.cacheResult(cacheKey, adjustedNutrition);
                 return adjustedNutrition;
             }
+
+                // No results found
+                console.log(`No nutrition data found for ${ingredientName}`);
+                return null;
         } catch (error) {
-            console.error('Error querying nutrition data:', error);
-        }
-
-        return null;
-    }
-
-    findInCommonFoods(ingredientName) {
-        for (const category of Object.values(this.commonFoods)) {
-            for (const [food, nutrition] of Object.entries(category)) {
-                if (ingredientName.includes(food.replace('_', ' '))) {
-                    return nutrition;
+                lastError = error;
+                console.error(`Error looking up nutrition (attempt ${attempts + 1}/${maxAttempts}):`, error);
+                
+                if (attempts < maxAttempts - 1) {
+                    // Wait before retrying, with exponential backoff
+                    const delay = Math.min(1000 * Math.pow(2, attempts), 5000);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    attempts++;
+                    continue;
                 }
+                
+                // If all retries failed and we haven't tried cache recovery yet
+                if (!recoveryAttempted) {
+                    recoveryAttempted = true;
+                    console.log('Attempting cache recovery...');
+                    
+                    // Try to find similar items in cache
+                    const similarItems = Array.from(this.lookupCache.entries())
+                        .filter(([key]) => {
+                            const [cachedName] = key.split('-');
+                            return cachedName.includes(ingredientName) || 
+                                   ingredientName.includes(cachedName);
+                        })
+                        .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+                    if (similarItems.length > 0) {
+                        const [_, cachedData] = similarItems[0];
+                        console.log('Recovered nutrition data from cache after API failure');
+                        this.showError(`Using cached data for similar ingredient. Results may not be exact.`);
+                        return cachedData.data;
+                    }
+                }
+
+                // If we get here, all attempts failed and no cache recovery was possible
+                this.showError(`Unable to find nutrition data for ${ingredientName}. Please try again later.`);
+                return null;
             }
+        }
+
+        // If we get here, all attempts failed
+        if (lastError) {
+            this.showError(`Error looking up nutrition: ${lastError.message}`);
         }
         return null;
     }
 
-    adjustNutritionValues(nutrition, amount, unit) {
-        const baseAmount = 100; // Our nutrition values are per 100g
-        let factor = amount / baseAmount;
+    /**
+     * Adjust nutrition values based on amount and unit with enhanced error handling
+     * @param {Object} nutrition - The nutrition information
+     * @param {number} amount - The amount
+     * @param {string} unit - The unit of measurement
+     * @returns {Object} Adjusted nutrition information
+     * @throws {Error} If nutrition data is invalid
+     */
+    adjustNutritionForAmount(nutrition, amount, unit) {
+        if (!nutrition || typeof nutrition !== 'object') {
+            throw new Error('Invalid nutrition data provided');
+        }
 
-        // Convert common units to grams
-        if (unit !== 'g') {
-            const conversions = {
-                oz: 28.35,
-                lb: 453.6,
-                kg: 1000,
-                cup: 240, // This is approximate and depends on the ingredient
-                tbsp: 15,
-                tsp: 5,
-                ml: 1
+        if (typeof amount !== 'number' || isNaN(amount) || amount < 0) {
+            throw new Error('Invalid amount provided');
+        }
+
+        const multiplier = this.foodTypeUtils.getUnitMultiplier(unit);
+        if (multiplier === null) {
+            throw new Error(`Unsupported unit: ${unit}`);
+        }
+
+        const adjustedAmount = amount * multiplier;
+        
+        try {
+            return {
+                calories: Math.round(nutrition.calories * adjustedAmount / 100),
+                protein: Math.round(nutrition.protein * adjustedAmount / 100 * 10) / 10,
+                carbs: Math.round(nutrition.carbs * adjustedAmount / 100 * 10) / 10,
+                fat: Math.round(nutrition.fat * adjustedAmount / 100 * 10) / 10,
+                fiber: Math.round(nutrition.fiber * adjustedAmount / 100 * 10) / 10,
+                sugar: Math.round(nutrition.sugar * adjustedAmount / 100 * 10) / 10
             };
+        } catch (error) {
+            console.error('Error adjusting nutrition values:', error);
+            throw new Error('Failed to adjust nutrition values');
+        }
+    }
 
-            if (conversions[unit]) {
-                factor = (amount * conversions[unit]) / baseAmount;
+    /**
+     * Cache the result of a nutrition lookup
+     * @param {string} key - The cache key
+     * @param {Object} data - The nutrition data
+     */
+    cacheResult(key, data) {
+        // Validate input
+        if (!key || !data) {
+            console.warn('Invalid cache key or data provided');
+            return;
+        }
+
+        // Validate nutrition data structure
+        const requiredFields = ['calories', 'protein', 'carbs', 'fat', 'fiber', 'sugar'];
+        const isValidData = requiredFields.every(field => 
+            typeof data[field] === 'number' && 
+            !isNaN(data[field]) && 
+            data[field] >= 0
+        );
+
+        if (!isValidData) {
+            console.warn('Invalid nutrition data structure, skipping cache');
+            return;
+        }
+
+        // Manage cache size
+        if (this.lookupCache.size >= this.maxCacheSize) {
+            // Remove oldest entries when cache is full
+            const entriesToRemove = Math.ceil(this.maxCacheSize * 0.2); // Remove 20% of entries
+            const sortedEntries = Array.from(this.lookupCache.entries())
+                .sort((a, b) => a[1].timestamp - b[1].timestamp);
+            
+            for (let i = 0; i < entriesToRemove; i++) {
+                this.lookupCache.delete(sortedEntries[i][0]);
             }
         }
 
-        return {
-            calories: Math.round(nutrition.calories * factor),
-            protein: +(nutrition.protein * factor).toFixed(1),
-            carbs: +(nutrition.carbs * factor).toFixed(1),
-            fat: +(nutrition.fat * factor).toFixed(1),
-            fiber: +(nutrition.fiber * factor).toFixed(1),
-            sugar: +(nutrition.sugar * factor).toFixed(1)
-        };
+        // Add to cache with timestamp
+        this.lookupCache.set(key, {
+            data,
+            timestamp: Date.now()
+        });
     }
 
     generateNutritionPopup(nutrition, ingredientName) {
@@ -290,6 +499,13 @@ class NutritionLookup {
             unit: row.querySelector('.ingredient-unit').value.toLowerCase()
         }));
 
+        // Validate ingredients
+        const invalidIngredients = ingredients.filter(ing => !ing.name.trim() || ing.amount <= 0);
+        if (invalidIngredients.length > 0) {
+            this.showError(`Please check ${invalidIngredients.length} ingredient${invalidIngredients.length > 1 ? 's' : ''} with missing or invalid values`);
+            return;
+        }
+
         const servings = parseInt(document.getElementById('servings').value) || 1;
         let totalNutrition = {
             calories: 0,
@@ -304,14 +520,26 @@ class NutritionLookup {
         const lookupBtn = document.getElementById('lookupNutrition');
         const originalText = lookupBtn.innerHTML;
         lookupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Looking up...';
+        lookupBtn.disabled = true;
 
         try {
-            for (const ingredient of ingredients) {
+            // Create progress container
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'lookup-progress mt-2';
+            lookupBtn.parentNode.insertBefore(progressContainer, lookupBtn.nextSibling);
+
+            for (let i = 0; i < ingredients.length; i++) {
+                const ingredient = ingredients[i];
+                // Update progress
+                progressContainer.innerHTML = `Looking up ${i + 1} of ${ingredients.length}: ${ingredient.name}`;
+                
                 const nutrition = await this.lookupNutrition(ingredient.name, ingredient.amount, ingredient.unit);
                 if (nutrition) {
                     for (const [key, value] of Object.entries(nutrition)) {
                         totalNutrition[key] += value;
                     }
+                } else {
+                    console.warn(`No nutrition data found for ${ingredient.name}`);
                 }
             }
 
@@ -323,10 +551,16 @@ class NutritionLookup {
             }
 
             this.applyNutritionToForm(totalNutrition);
+            
+            // Show success message
+            progressContainer.innerHTML = '<div class="text-success"><i class="fas fa-check-circle"></i> Nutrition lookup complete</div>';
+            setTimeout(() => progressContainer.remove(), 3000);
         } catch (error) {
             console.error('Error looking up full meal nutrition:', error);
+            this.showError('Error looking up nutrition. Please try again.');
         } finally {
             lookupBtn.innerHTML = originalText;
+            lookupBtn.disabled = false;
         }
     }
 
@@ -338,4 +572,4 @@ class NutritionLookup {
     }
 }
 
-export const nutritionLookup = new NutritionLookup(); 
+export default NutritionLookup; 

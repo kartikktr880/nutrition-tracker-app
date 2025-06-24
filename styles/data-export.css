@@ -1,0 +1,228 @@
+/* Data Export/Import UI Styles */
+
+.data-export-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.data-export-content {
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.data-export-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-export-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.data-export-body {
+    padding: 1rem;
+}
+
+.export-section,
+.import-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: var(--secondary-background-color);
+    border-radius: 4px;
+}
+
+.export-section h3,
+.import-section h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text-color);
+}
+
+.format-selection {
+    margin-bottom: 1rem;
+}
+
+.format-selection label {
+    display: inline-block;
+    margin-right: 1rem;
+    color: var(--text-color);
+}
+
+.security-options {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: var(--background-color);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.security-options label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.security-options input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-background-color);
+    color: var(--text-color);
+}
+
+.export-button,
+.import-submit-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.export-button:hover,
+.import-submit-button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+.export-button:disabled,
+.import-submit-button:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+.file-input-container {
+    margin-top: 1rem;
+}
+
+.file-input-container input[type="file"] {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    padding: 0.75rem;
+    background-color: var(--secondary-background-color);
+    border: 2px dashed var(--border-color);
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: border-color 0.2s;
+}
+
+.file-input-label:hover {
+    border-color: var(--primary-color);
+}
+
+.file-name {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-color-secondary);
+}
+
+.status-message {
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    text-align: center;
+    display: none;
+}
+
+.status-message.success {
+    display: block;
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-message.error {
+    display: block;
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .data-export-content {
+        background-color: var(--dark-background-color);
+    }
+
+    .export-section,
+    .import-section {
+        background-color: var(--dark-secondary-background-color);
+    }
+
+    .security-options {
+        background-color: var(--dark-background-color);
+        border-color: var(--dark-border-color);
+    }
+
+    .security-options input[type="password"] {
+        background-color: var(--dark-input-background-color);
+        border-color: var(--dark-border-color);
+        color: var(--dark-text-color);
+    }
+
+    .file-input-label {
+        background-color: var(--dark-secondary-background-color);
+        border-color: var(--dark-border-color);
+        color: var(--dark-text-color);
+    }
+
+    .file-name {
+        color: var(--dark-text-color-secondary);
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .data-export-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .export-section,
+    .import-section {
+        padding: 0.75rem;
+    }
+
+    .security-options {
+        padding: 0.75rem;
+    }
+
+    .export-button,
+    .import-submit-button {
+        padding: 0.5rem;
+    }
+} 

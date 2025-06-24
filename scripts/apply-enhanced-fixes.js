@@ -147,9 +147,9 @@
         // 2. Fix footer positioning
         const footer = document.querySelector('footer');
         if (footer) {
-            footer.style.width = '100%';
-            footer.style.maxWidth = '100%';
-            footer.style.overflowX = 'hidden';
+            //             footer.style.width = '100%';
+            //             footer.style.maxWidth = '100%';
+            //             footer.style.overflowX = 'hidden';
             
             if (config.debug) {
                 console.log('Fixed footer positioning');

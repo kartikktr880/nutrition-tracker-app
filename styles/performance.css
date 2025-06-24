@@ -1,0 +1,96 @@
+/* Performance Dashboard Styles */
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.performance-dashboard {
+    transition: all 0.3s ease-out;
+}
+
+.performance-dashboard:hover {
+    transform: scale(1.02);
+}
+
+.metric {
+    transition: background-color 0.3s ease-out;
+}
+
+.metric:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.metric-value {
+    transition: color 0.3s ease-out;
+}
+
+.performance-alert {
+    transition: all 0.3s ease-out;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .performance-dashboard {
+        background: rgba(0, 0, 0, 0.9) !important;
+    }
+    
+    .metric {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+    
+    .metric:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+}
+
+/* Light mode support */
+@media (prefers-color-scheme: light) {
+    .performance-dashboard {
+        background: rgba(255, 255, 255, 0.9) !important;
+        color: #333 !important;
+    }
+    
+    .metric {
+        background: rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    .metric:hover {
+        background: rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .metric-label {
+        color: #666 !important;
+    }
+    
+    .close-button {
+        color: #333 !important;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .performance-dashboard {
+        bottom: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+        min-width: auto !important;
+    }
+} 

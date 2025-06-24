@@ -1,21 +1,18 @@
-
-    <!-- Legacy Fix Scripts - Keeping for compatibility -->
-    <script src="scripts/fix-scroll.js" defer></script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark-mode dark-theme">
 <head>
     <meta name="theme-color" content="#1A3C34">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports & Analytics - Nutrition Tracker</title>
-    <!-- 
-    <!-- Footer Fix Scripts -->
+    
+    <!-- Legacy Fix Scripts - Keeping for compatibility -->
     </script>
     </script>
-    <script src="scripts/fix-footer.js" defer></script>
-    <script src="scripts/remove-spacers.js" defer></script>
-    <link rel="stylesheet" href="styles/styles.css"> -->
+    </script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/mobile-nav.css">
     <link rel="stylesheet" href="styles/analytics.css">
     <link rel="stylesheet" href="styles/responsive.css">
@@ -273,29 +270,53 @@
     <script src="scripts/dark-mode-enforcer.js"></script>
 
     <!-- Gradient Scroll Effect -->
-    <script src="scripts/gradient-scroll.js" defer></script>
+    </script>
     <link rel="stylesheet" href="styles/complete-fixes.css">
     <link rel="stylesheet" href="styles/disable-old-floating-badge.css">
 
     <!-- Footer Fix Styles -->
     <link rel="stylesheet" href="styles/footer-elite-luxury.css">
-        <link rel="stylesheet" href="styles/cleanup-scrolling.css">
+    <link rel="stylesheet" href="styles/cleanup-scrolling.css">
     <link rel="stylesheet" href="styles/screenshot-fix.css">
 
     <!-- Enhanced Fix Scripts -->
-    <script src="scripts/immediate-scroll-fix.js"></script>
-    <link rel="stylesheet" href="styles/enhanced-scroll-fix.css">
-    <script src="scripts/enhanced-header-scroll.js" defer></script>
-    <script src="scripts/smooth-scroll-fix.js" defer></script>
-    <script src="scripts/apply-enhanced-fixes.js" defer></script>
+    
+    
+    </script>
+    </script>
+    </script>
     <script src="scripts/microsoft-screenshot-fix.js" defer></script>
     
     <!-- Additional Visual Enhancements -->
-    <link rel="stylesheet" href="styles/section-spacing-fix.css">
-    <link rel="stylesheet" href="styles/button-enhancement.css">
-    <link rel="stylesheet" href="styles/images-and-cards-fix.css">
+    
+    
+    
     <script src="scripts/footer-improver.js" defer></script>
-    </head>
+    <script src="scripts/script-loader.js"></script>
+    <script src="scripts/error-handler.js"></script>
+    </script>
+    <script src="scripts/css-consolidator.js"></script>
+<script type="module" src="scripts/performance-manager.js"></script>
+<script type="module" src="scripts/animation-system.js"></script>
+<script type="module" src="scripts/scroll-manager.js"></script>
+<script type="module" src="scripts/fix-manager.js"></script>
+
+<script type="module">
+    import performanceManager from './scripts/performance-manager.js';
+    import animationSystem from './scripts/animation-system.js';
+    import scrollManager from './scripts/scroll-manager.js';
+    import fixManager from './scripts/fix-manager.js';
+
+    // Initialize managers
+    document.addEventListener('DOMContentLoaded', function() {
+        performanceManager.startMonitoring();
+        animationSystem.enableDebug();
+        scrollManager.init();
+        fixManager.init();
+    });
+</script>
+
+</head>
 <body class="dark-theme gradient-background dark-mode">
     <!-- Mobile Navigation Bar -->
     <div class="mobile-nav">
@@ -334,361 +355,182 @@
             </div>
         </header>
 
-        <section class="nutrition-summary">
-            <h2>Nutrition Summary</h2>
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <div class="card-icon calories-icon">
-                        <i class="fa-solid fa-fire"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Calories</h3>
-                        <div class="card-value" id="avg-calories">0</div>
-                        <div class="card-label">daily average</div>
-                        <div class="card-trend positive">
-                            <i class="fa-solid fa-arrow-up"></i> 5% from last period
-                        </div>
+        <!-- Data Quality Section -->
+        <section class="data-quality-section">
+            <div class="data-quality">
+                <div class="data-quality-header">
+                    <h3>Data Quality</h3>
+                    <div class="data-quality-dots">
+                        <div class="quality-dot active"></div>
+                        <div class="quality-dot active"></div>
+                        <div class="quality-dot active"></div>
+                        <div class="quality-dot"></div>
+                        <div class="quality-dot"></div>
                     </div>
                 </div>
-                <div class="summary-card">
-                    <div class="card-icon protein-icon">
-                        <i class="fa-solid fa-drumstick-bite"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Protein</h3>
-                        <div class="card-value" id="avg-protein">0g</div>
-                        <div class="card-label">daily average</div>
-                        <div class="card-trend positive">
-                            <i class="fa-solid fa-arrow-up"></i> 12% from last period
+                <p class="data-quality-text" id="data-quality-text">Good data quality for reliable insights</p>
+            </div>
+            <div id="data-quality-details" class="data-quality-details" style="display: none;">
+                <div class="data-quality-metrics">
+                    <div class="quality-metric">
+                        <span class="metric-label">Completeness:</span>
+                        <div class="metric-bar-container">
+                            <div id="completeness-bar" class="metric-bar" style="width: 60%;"></div>
                         </div>
+                        <span id="completeness-value" class="metric-value">60%</span>
+                    </div>
+                    <div class="quality-metric">
+                        <span class="metric-label">Consistency:</span>
+                        <div class="metric-bar-container">
+                            <div id="consistency-bar" class="metric-bar" style="width: 70%;"></div>
+                        </div>
+                        <span id="consistency-value" class="metric-value">70%</span>
+                    </div>
+                    <div class="quality-metric">
+                        <span class="metric-label">Detail Level:</span>
+                        <div class="metric-bar-container">
+                            <div id="detail-bar" class="metric-bar" style="width: 50%;"></div>
+                        </div>
+                        <span id="detail-value" class="metric-value">50%</span>
                     </div>
                 </div>
-                <div class="summary-card">
-                    <div class="card-icon carbs-icon">
-                        <i class="fa-solid fa-bread-slice"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Carbs</h3>
-                        <div class="card-value" id="avg-carbs">0g</div>
-                        <div class="card-label">daily average</div>
-                        <div class="card-trend negative">
-                            <i class="fa-solid fa-arrow-down"></i> 3% from last period
-                        </div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="card-icon fat-icon">
-                        <i class="fa-solid fa-cheese"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Fat</h3>
-                        <div class="card-value" id="avg-fat">0g</div>
-                        <div class="card-label">daily average</div>
-                        <div class="card-trend flat">
-                            <i class="fa-solid fa-minus"></i> No change from last period
-                        </div>
-                    </div>
+                <div id="quality-issues" class="quality-issues">
+                    <!-- Will be populated with data quality issues -->
                 </div>
             </div>
         </section>
 
-        <section class="calorie-trends">
-            <div class="section-header">
-                <h2>Calorie Trends</h2>
-                <div class="chart-type-toggle">
-                    <button class="chart-type-btn active" data-type="line">Line</button>
-                    <button class="chart-type-btn" data-type="bar">Bar</button>
+        <!-- Nutrition Overview Section -->
+        <section class="nutrition-overview">
+            <div class="overview-header">
+                <h2>Nutrition Overview</h2>
+                <div class="overview-filters">
+                    <button class="filter-btn active" data-metric="calories">Calories</button>
+                    <button class="filter-btn" data-metric="macros">Macros</button>
+                    <button class="filter-btn" data-metric="micronutrients">Micronutrients</button>
                 </div>
             </div>
-            <div class="chart-container">
-                <canvas id="calories-chart"></canvas>
-            </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #4a6fa5;"></div>
-                    <div class="legend-label">Calories Consumed</div>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #6c757d;"></div>
-                    <div class="legend-label">Target</div>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #28a745;"></div>
-                    <div class="legend-label">Calories Burned</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="macronutrient-breakdown">
-            <h2>Macronutrient Breakdown</h2>
-            <div class="chart-grid">
-                <div class="chart-item">
+            <div class="overview-grid">
+                <div class="overview-card">
                     <h3>Daily Average</h3>
-                    <div class="donut-chart-container">
-                        <canvas id="macro-donut-chart"></canvas>
+                    <div class="metric-value" id="avg-calories">1,850</div>
+                    <div class="metric-label">calories</div>
+                    <div class="trend-indicator positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>5% vs last week</span>
                     </div>
-                    <div class="chart-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">Protein</div>
-                            <div class="stat-value" id="macro-protein-percent">0%</div>
+                </div>
+                <div class="overview-card">
+                    <h3>Macro Split</h3>
+                    <canvas id="macro-chart"></canvas>
+                    <div class="macro-labels">
+                        <div class="macro-label">
+                            <span class="dot protein"></span>
+                            <span>Protein: 98g</span>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Carbs</div>
-                            <div class="stat-value" id="macro-carbs-percent">0%</div>
+                        <div class="macro-label">
+                            <span class="dot carbs"></span>
+                            <span>Carbs: 215g</span>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Fat</div>
-                            <div class="stat-value" id="macro-fat-percent">0%</div>
+                        <div class="macro-label">
+                            <span class="dot fat"></span>
+                            <span>Fat: 65g</span>
                         </div>
                     </div>
                 </div>
-                <div class="chart-item">
-                    <h3>Daily Targets</h3>
-                    <div class="target-bars">
-                        <div class="target-bar-item">
-                            <div class="target-label">Protein</div>
-                            <div class="target-bar-container">
-                                <div class="target-bar protein-bar" style="width: 85%;"></div>
-                            </div>
-                            <div class="target-value">85%</div>
+                <div class="overview-card">
+                    <h3>Meal Distribution</h3>
+                    <canvas id="meal-distribution-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trends & Patterns Section -->
+        <section class="trends-patterns">
+            <div class="section-header">
+                <h2>Trends & Patterns</h2>
+                <div class="trend-filters">
+                    <button class="trend-btn active" data-period="week">Week</button>
+                    <button class="trend-btn" data-period="month">Month</button>
+                    <button class="trend-btn" data-period="year">Year</button>
+                </div>
+            </div>
+            <div class="trends-grid">
+                <div class="trend-card">
+                    <h3>Calorie Trend</h3>
+                    <canvas id="calorie-trend-chart"></canvas>
+                    <div class="trend-insights">
+                        <div class="insight positive">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Consistent calorie intake</span>
                         </div>
-                        <div class="target-bar-item">
-                            <div class="target-label">Carbs</div>
-                            <div class="target-bar-container">
-                                <div class="target-bar carbs-bar" style="width: 60%;"></div>
-                            </div>
-                            <div class="target-value">60%</div>
-                        </div>
-                        <div class="target-bar-item">
-                            <div class="target-label">Fat</div>
-                            <div class="target-bar-container">
-                                <div class="target-bar fat-bar" style="width: 75%;"></div>
-                            </div>
-                            <div class="target-value">75%</div>
-                        </div>
-                        <div class="target-bar-item">
-                            <div class="target-label">Fiber</div>
-                            <div class="target-bar-container">
-                                <div class="target-bar fiber-bar" style="width: 55%;"></div>
-                            </div>
-                            <div class="target-value">55%</div>
-                        </div>
-                        <div class="target-bar-item">
-                            <div class="target-label">Sugar</div>
-                            <div class="target-bar-container">
-                                <div class="target-bar sugar-bar" style="width: 120%;"></div>
-                            </div>
-                            <div class="target-value">120%</div>
+                    </div>
+                </div>
+                <div class="trend-card">
+                    <h3>Meal Timing</h3>
+                    <canvas id="meal-timing-chart"></canvas>
+                    <div class="trend-insights">
+                        <div class="insight warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Irregular dinner timing</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="nutrient-trends">
-            <h2>Nutrient Trends</h2>
-            <div class="chart-tabs">
-                <button class="chart-tab active" data-nutrient="macros">Macros</button>
-                <button class="chart-tab" data-nutrient="vitamins">Vitamins</button>
-                <button class="chart-tab" data-nutrient="minerals">Minerals</button>
-            </div>
-            <div class="chart-container">
-                <canvas id="nutrient-trend-chart"></canvas>
-            </div>
-        </section>
-
-        <section class="food-insights">
-            <h2>Food Insights</h2>
-            <div class="insights-grid">
-                <div class="insight-card">
-                    <h3>Top Foods by Calories</h3>
-                    <div class="horizontal-bars-chart">
-                        <div class="horizontal-bar-item">
-                            <div class="bar-label">Salmon</div>
-                            <div class="bar-container">
-                                <div class="horizontal-bar" style="width: 85%;"></div>
-                            </div>
-                            <div class="bar-value">425 kcal</div>
-                        </div>
-                        <div class="horizontal-bar-item">
-                            <div class="bar-label">Avocado Toast</div>
-                            <div class="bar-container">
-                                <div class="horizontal-bar" style="width: 70%;"></div>
-                            </div>
-                            <div class="bar-value">350 kcal</div>
-                        </div>
-                        <div class="horizontal-bar-item">
-                            <div class="bar-label">Greek Yogurt</div>
-                            <div class="bar-container">
-                                <div class="horizontal-bar" style="width: 50%;"></div>
-                            </div>
-                            <div class="bar-value">250 kcal</div>
-                        </div>
-                        <div class="horizontal-bar-item">
-                            <div class="bar-label">Chicken Breast</div>
-                            <div class="bar-container">
-                                <div class="horizontal-bar" style="width: 48%;"></div>
-                            </div>
-                            <div class="bar-value">240 kcal</div>
-                        </div>
-                        <div class="horizontal-bar-item">
-                            <div class="bar-label">Oatmeal</div>
-                            <div class="bar-container">
-                                <div class="horizontal-bar" style="width: 40%;"></div>
-                            </div>
-                            <div class="bar-value">200 kcal</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="insight-card">
-                    <h3>Meals Breakdown</h3>
-                    <div class="small-donut-chart-container">
-                        <canvas id="meals-breakdown-chart"></canvas>
-                    </div>
-                    <div class="chart-legend horizontal">
-                        <div class="legend-item">
-                            <div class="legend-color" style="background-color: #4a6fa5;"></div>
-                            <div class="legend-label">Breakfast: 25%</div>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background-color: #28a745;"></div>
-                            <div class="legend-label">Lunch: 30%</div>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background-color: #fd7e14;"></div>
-                            <div class="legend-label">Dinner: 35%</div>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background-color: #6c757d;"></div>
-                            <div class="legend-label">Snacks: 10%</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="insight-card">
-                    <h3>Most Frequent Foods</h3>
-                    <div class="tag-cloud">
-                        <span class="tag size-5">Eggs</span>
-                        <span class="tag size-4">Chicken</span>
-                        <span class="tag size-5">Coffee</span>
-                        <span class="tag size-3">Oatmeal</span>
-                        <span class="tag size-4">Banana</span>
-                        <span class="tag size-2">Almonds</span>
-                        <span class="tag size-3">Yogurt</span>
-                        <span class="tag size-4">Spinach</span>
-                        <span class="tag size-2">Salmon</span>
-                        <span class="tag size-3">Apple</span>
-                        <span class="tag size-2">Brown Rice</span>
-                        <span class="tag size-3">Avocado</span>
-                    </div>
-                </div>
-                <div class="insight-card">
-                    <h3>Weekly Pattern</h3>
-                    <div class="weekly-pattern-chart">
-                        <canvas id="weekly-pattern-chart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- New Advanced Insights Section -->
-        <section class="advanced-insights">
-            <div class="insights-header">
-                <h2>Advanced Insights</h2>
-                <button id="refresh-insights" class="btn-primary">
-                    <i class="fa-solid fa-rotate-right"></i> Refresh Insights
+        <!-- Insights Section -->
+        <section class="insights-section">
+            <div class="section-header">
+                <h2>Smart Insights</h2>
+                <button id="refresh-insights" class="btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Refresh
                 </button>
             </div>
-            
-            <div id="insights-loading" class="no-data-message" style="display: none;">
-                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-                <p>Analyzing your nutrition data...</p>
-            </div>
-            
-            <div id="insights-no-data" class="no-data-message" style="display: none;">
-                <i class="fa-solid fa-chart-bar fa-2x"></i>
-                <p>Not enough data to generate advanced insights.</p>
-                <p>Please log at least 7 days of meals to see patterns and recommendations.</p>
-            </div>
-            
-            <div id="insights-content">
-                <div class="insights-cards">
-                    <div class="insight-card">
-                        <h3><i class="fa-solid fa-lightbulb"></i> Personalized Recommendations</h3>
-                        <div id="recommendations-container">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
+            <div class="insights-grid">
+                <div class="insight-card nutrition">
+                    <div class="insight-icon">
+                        <i class="fas fa-apple-alt"></i>
                     </div>
-                    
-                    <div class="insight-card">
-                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Nutrition Alerts</h3>
-                        <div id="alerts-container">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-                    </div>
-                    
-                    <div class="insight-card">
-                        <h3><i class="fa-solid fa-utensils"></i> Eating Patterns</h3>
-                        <div id="patterns-container">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-                    </div>
-                    
-                    <div class="insight-card">
-                        <h3><i class="fa-solid fa-calendar-day"></i> Day of Week Patterns</h3>
-                        <div id="weekday-patterns-container">
-                            <!-- Will be populated by JavaScript -->
+                    <div class="insight-content">
+                        <h3>Nutrition Balance</h3>
+                        <p>Your protein intake is below recommended levels. Consider adding more lean protein sources to your meals.</p>
+                        <div class="insight-actions">
+                            <button class="btn-text">View Details</button>
+                            <button class="btn-text">Get Recommendations</button>
                         </div>
                     </div>
                 </div>
-                
-                <div class="data-quality">
-                    <div class="data-quality-text">
-                        Data quality affects analysis accuracy. More consistent logging improves insights.
+                <div class="insight-card timing">
+                    <div class="insight-icon">
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <div class="data-quality-indicator">
-                        <div class="data-quality-dots">
-                            <div class="quality-dot active"></div>
-                            <div class="quality-dot active"></div>
-                            <div class="quality-dot active"></div>
-                            <div class="quality-dot"></div>
-                            <div class="quality-dot"></div>
+                    <div class="insight-content">
+                        <h3>Meal Timing</h3>
+                        <p>Your dinner timing varies significantly. Try to maintain consistent dinner times for better digestion.</p>
+                        <div class="insight-actions">
+                            <button class="btn-text">View Pattern</button>
+                            <button class="btn-text">Set Reminder</button>
                         </div>
-                        <span id="data-quality-text">Good</span>
                     </div>
                 </div>
-                
-                <div id="data-quality-details" class="data-quality-details" style="display: none;">
-                    <div class="data-quality-metrics">
-                        <div class="quality-metric">
-                            <span class="metric-label">Completeness:</span>
-                            <div class="metric-bar-container">
-                                <div id="completeness-bar" class="metric-bar" style="width: 60%;"></div>
-                            </div>
-                            <span id="completeness-value" class="metric-value">60%</span>
-                        </div>
-                        <div class="quality-metric">
-                            <span class="metric-label">Consistency:</span>
-                            <div class="metric-bar-container">
-                                <div id="consistency-bar" class="metric-bar" style="width: 70%;"></div>
-                            </div>
-                            <span id="consistency-value" class="metric-value">70%</span>
-                        </div>
-                        <div class="quality-metric">
-                            <span class="metric-label">Detail Level:</span>
-                            <div class="metric-bar-container">
-                                <div id="detail-bar" class="metric-bar" style="width: 50%;"></div>
-                            </div>
-                            <span id="detail-value" class="metric-value">50%</span>
-                        </div>
+                <div class="insight-card consistency">
+                    <div class="insight-icon">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                    
-                    <div id="quality-issues" class="quality-issues">
-                        <!-- Will be populated with data quality issues -->
+                    <div class="insight-content">
+                        <h3>Consistency Score</h3>
+                        <p>Your meal logging consistency has improved by 15% this week. Keep up the good work!</p>
+                        <div class="insight-actions">
+                            <button class="btn-text">View Progress</button>
+                            <button class="btn-text">Set Goals</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- Export Section -->
         <section class="export-section">
             <h2>Export Data</h2>
             <p>Download your nutrition data for further analysis or record keeping.</p>
@@ -709,8 +551,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="scripts/data-manager.js"></script>
-    <script src="scripts/analytics.js"></script>
-    <script src="scripts/advanced-analytics.js" type="module"></script>
+    <script src="scripts/analytics-core.js" type="module"></script>
+    <script src="scripts/analytics-core.js" type="module"></script>
     <script src="components/inject-sidebar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

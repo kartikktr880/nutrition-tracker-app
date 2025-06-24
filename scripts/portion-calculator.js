@@ -1,5 +1,8 @@
+import { FoodTypeUtils } from './food-type-utils.js';
+
 class PortionCalculator {
     constructor() {
+        this.foodTypeUtils = new FoodTypeUtils();
         this.commonPortions = {
             // Volume measurements
             cup: { ml: 240, oz: 8 },
@@ -113,72 +116,11 @@ class PortionCalculator {
     }
 
     generateHelperContent(ingredientName) {
-        let content = `
-            <div class="helper-header">
-                <h4>Portion Helper</h4>
-                <button class="close-helper">×</button>
-            </div>
-            <div class="helper-content">
-        `;
-
-        // Add common measurement options
-        content += '<div class="helper-section"><h5>Common Measurements</h5>';
-        for (const [visual, reference] of Object.entries(this.visualReferences)) {
-            content += `
-                <div class="portion-option" data-amount="${visual.split(' ')[0]}" data-unit="${visual.split(' ')[1] || ''}">
-                    <i class="fas fa-ruler"></i>
-                    <span class="option-text">${visual}</span>
-                    <small>(like a ${reference})</small>
-                </div>
-            `;
-        }
-        content += '</div>';
-
-        // Add food-specific portions if available
-        const foodType = this.findFoodType(ingredientName);
-        if (foodType && this.commonPortions.serving[foodType]) {
-            content += '<div class="helper-section"><h5>Suggested Portion</h5>';
-            const portion = this.commonPortions.serving[foodType];
-            for (const [state, details] of Object.entries(portion)) {
-                content += `
-                    <div class="portion-option" data-amount="1" data-unit="serving">
-                        <i class="fas fa-utensils"></i>
-                        <span class="option-text">1 serving</span>
-                        <small>(${details.description})</small>
-                    </div>
-                `;
-            }
-            content += '</div>';
-        }
-
-        content += `
-            </div>
-            <div class="helper-footer">
-                <small>Click an option to apply</small>
-            </div>
-        `;
-
-        return content;
+        return this.foodTypeUtils.generateHelperContent(ingredientName);
     }
 
     findFoodType(ingredientName) {
-        const foodTypes = {
-            rice: ['rice', 'risotto'],
-            pasta: ['pasta', 'noodle', 'spaghetti', 'macaroni'],
-            meat: ['chicken', 'beef', 'pork', 'turkey', 'lamb'],
-            fish: ['fish', 'salmon', 'tuna', 'cod', 'tilapia'],
-            vegetables: ['lettuce', 'spinach', 'carrot', 'broccoli', 'pepper'],
-            fruit: ['apple', 'banana', 'orange', 'pear', 'berry'],
-            nuts: ['almond', 'walnut', 'cashew', 'peanut'],
-            cheese: ['cheese', 'cheddar', 'mozzarella', 'parmesan']
-        };
-
-        for (const [type, keywords] of Object.entries(foodTypes)) {
-            if (keywords.some(keyword => ingredientName.includes(keyword))) {
-                return type;
-            }
-        }
-        return null;
+        return this.foodTypeUtils.findFoodType(ingredientName);
     }
 
     removeHelper() {
@@ -188,14 +130,16 @@ class PortionCalculator {
         }
     }
 
-    convertPortion(amount, fromUnit, toUnit) {
-        // Convert between common measurements
-        if (this.commonPortions[fromUnit] && this.commonPortions[toUnit]) {
-            const baseValue = amount * this.commonPortions[fromUnit].ml;
-            return baseValue / this.commonPortions[toUnit].ml;
+    convertUnit(amount, fromUnit, toUnit) {
+        const fromConversion = this.foodTypeUtils.commonPortions[fromUnit];
+        const toConversion = this.foodTypeUtils.commonPortions[toUnit];
+        
+        if (fromConversion && toConversion) {
+            const baseValue = amount * fromConversion.ml;
+            return baseValue / toConversion.ml;
         }
-        return amount;
+        return amount; // Return original amount if conversion not possible
     }
 }
 
-export const portionCalculator = new PortionCalculator(); 
+export default PortionCalculator; 
