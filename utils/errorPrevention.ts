@@ -205,7 +205,7 @@ class ErrorPreventionManager {
 
     if (operation.retryCount >= this.config.maxRetries) {
       // Add to recovery queue
-      await new RecoveryManager().handleCriticalIssue(
+      await new RecoveryManager().handleOperationError(
         operation.type,
         data,
         error.message

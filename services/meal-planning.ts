@@ -1,7 +1,7 @@
 import AIRecommendationService from './ai-recommendation';
 import { prisma } from '@/lib/prisma';
 import { withRetry } from '@/lib/retry';
-import { mealPlanLimiter } from '@/lib/rate-limiter';
+import mealPlanLimiter from '@/lib/rate-limiter';
 import { recordOperationLatency, recordError } from '@/lib/monitoring';
 import type { Goals } from '@prisma/client';
 
@@ -66,7 +66,10 @@ export class MealPlanningService {
   private isWarming = false;
 
   constructor() {
-    this.aiRecommendation = new AIRecommendationService();
+    this.aiRecommendation = new AIRecommendationService({
+      modelEndpoint: process.env.AI_MODEL_ENDPOINT || 'https://api.openai.com/v1/chat/completions',
+      apiKey: process.env.AI_API_KEY || ''
+    });
   }
 
   private getFromCache<T>(cache: Map<string, CacheEntry<T>>, key: string): T | null {

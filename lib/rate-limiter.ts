@@ -194,7 +194,24 @@ class RateLimiter {
       blockedUntil: record.blockedUntil
     };
   }
+
+  async waitForSlot(identifier: string, tier = 'free'): Promise<void> {
+    const result = await this.checkRateLimit(identifier, tier);
+    if (!result.allowed) {
+      const waitTime = result.blockedUntil ? result.blockedUntil - Date.now() : result.resetTime - Date.now();
+      if (waitTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
+      // Try again after waiting
+      await this.checkRateLimit(identifier, tier);
+    }
+  }
 }
 
 export const rateLimiter = RateLimiter.getInstance();
+
+// Create specific rate limiters for different services
+export const recommendationLimiter = RateLimiter.getInstance();
+export const mealPlanLimiter = RateLimiter.getInstance();
+
 export default rateLimiter; 

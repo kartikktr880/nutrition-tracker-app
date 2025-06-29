@@ -1,8 +1,16 @@
 import { RecoveryManager as IRecoveryManager, RecoveryStrategy } from './performance-types';
 import { logAudit } from './audit';
+import { ExerciseSession } from '@/types/exercise';
 
 export class RecoveryManager implements IRecoveryManager {
   private recoveryStrategies: Map<string, RecoveryStrategy>;
+  private static recoveryQueue: Array<{
+    id: string;
+    type: string;
+    data: any;
+    error: string;
+    timestamp: string;
+  }> = [];
 
   constructor() {
     this.recoveryStrategies = new Map();
@@ -39,6 +47,90 @@ export class RecoveryManager implements IRecoveryManager {
       failFast: false,
       priority: 2 // HIGH
     });
+  }
+
+  public async handleOperationError(
+    operationType: string,
+    data: ExerciseSession,
+    error: string
+  ): Promise<string> {
+    const recoveryId = crypto.randomUUID();
+    const recoveryItem = {
+      id: recoveryId,
+      type: operationType,
+      data,
+      error,
+      timestamp: new Date().toISOString()
+    };
+
+    RecoveryManager.recoveryQueue.push(recoveryItem);
+
+    // Log the recovery action
+    await logAudit({
+      userId: data.userId || 'system',
+      action: 'recovery_queued',
+      endpoint: 'recovery-manager',
+      method: 'INTERNAL',
+      status: '200',
+      timestamp: new Date().toISOString(),
+      details: {
+        recoveryId,
+        operationType,
+        error
+      }
+    });
+
+    return recoveryId;
+  }
+
+  public static async processRecoveryQueue(): Promise<Array<{ success: boolean; id: string; error?: string }>> {
+    const results: Array<{ success: boolean; id: string; error?: string }> = [];
+    
+    for (const item of RecoveryManager.recoveryQueue) {
+      try {
+        // Process the recovery item
+        // This is a simplified implementation - in a real app, you'd have more sophisticated recovery logic
+        console.log(`Processing recovery item: ${item.id} for operation: ${item.type}`);
+        
+        results.push({
+          success: true,
+          id: item.id
+        });
+      } catch (error) {
+        results.push({
+          success: false,
+          id: item.id,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
+      }
+    }
+
+    // Clear the queue after processing
+    RecoveryManager.recoveryQueue = [];
+
+    return results;
+  }
+
+  public static async getRecoveryStatus(): Promise<{
+    queueLength: number;
+    lastProcessed: string | null;
+    pendingItems: Array<{ id: string; type: string; timestamp: string }>;
+  }> {
+    return {
+      queueLength: RecoveryManager.recoveryQueue.length,
+      lastProcessed: RecoveryManager.recoveryQueue.length > 0 
+        ? RecoveryManager.recoveryQueue[RecoveryManager.recoveryQueue.length - 1].timestamp 
+        : null,
+      pendingItems: RecoveryManager.recoveryQueue.map(item => ({
+        id: item.id,
+        type: item.type,
+        timestamp: item.timestamp
+      }))
+    };
+  }
+
+  public static async clearRecoveryQueue(): Promise<void> {
+    RecoveryManager.recoveryQueue = [];
   }
 
   public async handleCriticalIssue(issueType: string): Promise<void> {

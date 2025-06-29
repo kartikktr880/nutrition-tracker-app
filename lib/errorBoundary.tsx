@@ -355,17 +355,4 @@ export const DefaultErrorComponent: React.FC<{
   </div>
 );
 
-switch (errorType) {
-  case 'network': {
-    const message = 'Network error occurred.';
-    return <div>{message}</div>;
-  }
-  case 'auth': {
-    const message = 'Authentication error.';
-    return <div>{message}</div>;
-  }
-  default: {
-    const message = 'An unknown error occurred.';
-    return <div>{message}</div>;
-  }
-} 
+export default ErrorBoundary; 

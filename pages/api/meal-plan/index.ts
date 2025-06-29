@@ -1,9 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import prisma from '../../../lib/prisma';
+import { prisma } from '../../../lib/prisma';
 import { AIRecommendationService } from '../../../services/ai-recommendation';
 
-const aiService = new AIRecommendationService();
+const aiService = new AIRecommendationService({
+  modelEndpoint: process.env.AI_MODEL_ENDPOINT || 'https://api.openai.com/v1/chat/completions',
+  apiKey: process.env.AI_API_KEY || ''
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -81,6 +84,7 @@ export default async function handler(
 
         // Generate meal plan using AI service
         const aiMealPlan = await aiService.generateMealPlan({
+          userId,
           startDate: new Date(startDate),
           endDate: new Date(endDate),
           preferences,
@@ -142,13 +146,15 @@ export default async function handler(
         });
 
         // Generate meal prep plan
-        const mealPrepPlan = await aiService.generateMealPrepPlan(mealPlan.meals);
+        const mealPrepPlans = await aiService.generateMealPrepPlan(mealPlan.meals);
+        const mealPrepPlan = mealPrepPlans[0]; // Use the first plan or create a default one
+        
         await prisma.mealPrepPlan.create({
           data: {
             userId,
-            prepSchedule: mealPrepPlan.prepSchedule,
-            totalPrepTime: mealPrepPlan.totalPrepTime,
-            storageInstructions: mealPrepPlan.storageInstructions,
+            prepSchedule: mealPrepPlan?.prepSchedule || [],
+            totalPrepTime: mealPrepPlan?.totalPrepTime || 0,
+            storageInstructions: mealPrepPlan?.storageInstructions || [],
             mealPlanId: mealPlan.id,
           },
         });

@@ -272,4 +272,16 @@ class MonitoringService {
   }
 }
 
-export const monitoring = new MonitoringService(); 
+export const monitoringService = MonitoringService.getInstance();
+
+// Export the class for direct use
+export { MonitoringService };
+
+// Convenience functions
+export const recordError = (message: string, error: Error | string, context?: Record<string, any>) => {
+  monitoringService.recordError(message, error, context);
+};
+
+export const recordOperationLatency = (operation: string, duration: number, context?: Record<string, any>) => {
+  monitoringService.recordOperationLatency(operation, duration, context);
+}; 

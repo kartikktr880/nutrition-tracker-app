@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { v8 } from 'v8';
+import { getHeapStatistics } from 'v8';
 import { performance } from 'perf_hooks';
 
 interface MonitoringState {
@@ -123,7 +123,7 @@ class MonitoringService {
 
   private monitorMemory() {
     setInterval(() => {
-      const heapStats = v8.getHeapStatistics();
+      const heapStats = getHeapStatistics();
       const memoryUsage = process.memoryUsage();
 
       const usage = {
@@ -255,4 +255,5 @@ class MonitoringService {
   }
 }
 
-export default MonitoringService; 
+export default MonitoringService;
+export { MonitoringService }; 

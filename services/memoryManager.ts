@@ -94,7 +94,7 @@ class MemoryManager {
 
   private async checkMemoryUsage() {
     try {
-      const metrics = await this.getMemoryMetrics();
+      const metrics = await this.collectMemoryMetrics();
       this.memoryMetrics.push(metrics);
 
       // Keep only last hour of metrics
@@ -120,7 +120,7 @@ class MemoryManager {
     }
   }
 
-  private async getMemoryMetrics(): Promise<MemoryMetrics> {
+  private async collectMemoryMetrics(): Promise<MemoryMetrics> {
     if (performance.memory) {
       const metrics: MemoryMetrics = {
         totalJSHeapSize: performance.memory.totalJSHeapSize,

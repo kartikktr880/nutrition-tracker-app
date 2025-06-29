@@ -1,9 +1,9 @@
-import { PrismaClient, Preferences, NutritionLog, Meal as PrismaMeal } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { withRetry, RetryError } from '@/lib/retry';
-import { recommendationLimiter } from '@/lib/rate-limiter';
-import { recordOperationLatency, recordError, recordRetry } from '@/lib/monitoring';
-import { Meal, UserPreferences, NutritionalGoals, MealPlan, GroceryList, MealPrepPlan } from '../types/nutrition';
+import recommendationLimiter from '@/lib/rate-limiter';
+import { recordOperationLatency, recordError } from '@/lib/monitoring';
+import { NutritionalGoals, MealPlanV2 as MealPlan, GroceryList, MealPrepPlan } from '../types/nutrition';
 
 interface SeasonalInfo {
   season: string;
@@ -775,6 +775,40 @@ export class AIRecommendationService {
       console.error('Error optimizing meal plan:', error);
       throw error;
     }
+  }
+
+  async generateMealPlan(params: {
+    userId: string;
+    preferences: UserPreferences;
+    goals: NutritionalGoals;
+    startDate: Date;
+    endDate: Date;
+  }): Promise<MealPlan> {
+    return this.generateCompleteMealPlan(
+      params.userId,
+      params.preferences,
+      params.goals,
+      params.startDate,
+      params.endDate
+    );
+  }
+
+  async generateGroceryList(meals: Meal[]): Promise<GroceryList> {
+    return this.generateSmartGroceryList(meals, {
+      dietaryRestrictions: [],
+      favoriteFoods: [],
+      dislikedFoods: [],
+      allergies: []
+    });
+  }
+
+  async generateMealPrepPlan(meals: Meal[]): Promise<MealPrepPlan[]> {
+    const prepPlans: MealPrepPlan[] = [];
+    for (const meal of meals) {
+      const prepPlan = await this.getMealPrepInstructions(meal);
+      prepPlans.push(prepPlan);
+    }
+    return prepPlans;
   }
 }
 
