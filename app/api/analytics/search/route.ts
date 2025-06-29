@@ -14,9 +14,9 @@ export async function GET(request: NextRequest) {
         popularSearches,
         metrics,
       },
-      status: 200,
+      status: 500,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Analytics API error:', error);
     return NextResponse.json({
       error: 'Internal server error',
@@ -24,3 +24,9 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 } 
+
+
+
+
+
+

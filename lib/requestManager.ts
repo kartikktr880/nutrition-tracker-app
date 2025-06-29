@@ -478,8 +478,8 @@ class PersistentCache {
 
 class CircuitBreaker {
   private healthCheckInterval: NodeJS.Timeout;
-  private healthCheckLock: boolean = false;
-  private lastHealthCheck: number = 0;
+  private healthCheckLock = false;
+  private lastHealthCheck = 0;
   private readonly HEALTH_CHECK_COOLDOWN = 5000; // 5 seconds
 
   private async performHealthCheck(): Promise<void> {

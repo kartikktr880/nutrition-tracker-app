@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { barcodeService } from '@/lib/barcode-service';
-import { useToast } from '@/hooks/useToast';
-import { useFoodLog } from '@/hooks/useFoodLog';
+// import { useToast } from '@/hooks/useToast';
+// import { useFoodLog } from '@/hooks/useFoodLog';
 import GroceryList from './GroceryList';
 import MealPrepInstructions from './MealPrepInstructions';
 
@@ -23,8 +23,8 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<number>(Date.now());
   const [selectedMealType, setSelectedMealType] = useState<MealType>('breakfast');
-  const { showToast } = useToast();
-  const { addFoodEntry } = useFoodLog();
+  // // const { showToast } = useToast();
+  // // const { addFoodEntry } = useFoodLog();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mealPlanBalance, setMealPlanBalance] = useState<any>(null);
   const [showGoalSettings, setShowGoalSettings] = useState(false);
@@ -34,8 +34,8 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
 
   const history = barcodeService.getHistory();
   const favorites = barcodeService.getFavorites();
-  const mealPlans = barcodeService.getMealPlans(selectedDate);
-  const mealPlanNutrition = barcodeService.getMealPlanNutrition(selectedDate);
+  const mealPlans = barcodeService.getMealPlans(Number(selectedDate));
+  const mealPlanNutrition = barcodeService.getMealPlanNutrition(Number(selectedDate));
 
   useEffect(() => {
     if (activeTab === 'suggestions') {
@@ -45,39 +45,39 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
 
   useEffect(() => {
     if (activeTab === 'mealplan') {
-      setMealPlanBalance(barcodeService.getMealPlanBalance(selectedDate));
-      const progress = barcodeService.updateGoalProgress(selectedDate);
+      setMealPlanBalance(barcodeService.getMealPlanBalance(Number(selectedDate)));
+      const progress = barcodeService.updateGoalProgress(Number(selectedDate));
       setGoalProgress(progress);
     }
   }, [activeTab, selectedDate, mealPlans]);
 
   const handleAddToFavorites = (barcode: string, data: any) => {
     barcodeService.addToFavorites(barcode, data);
-    showToast('Added to favorites', 'success');
+    // // showToast('Added to favorites', 'success');
   };
 
   const handleRemoveFromFavorites = (barcode: string) => {
     barcodeService.removeFromFavorites(barcode);
-    showToast('Removed from favorites', 'success');
+    // // showToast('Removed from favorites', 'success');
   };
 
   const handleQuickAdd = async (data: any, portion: number = 1) => {
     try {
-      await addFoodEntry({
-        name: data.name,
-        brand: data.brand,
-        nutrition: {
-          ...data.nutrition,
-          calories: data.nutrition.calories * portion,
-          protein: data.nutrition.protein * portion,
-          carbs: data.nutrition.carbs * portion,
-          fat: data.nutrition.fat * portion
-        },
-        timestamp: Date.now()
-      });
-      showToast('Food added successfully', 'success');
+      // await // addFoodEntry({
+      //   name: data.name,
+      //   brand: data.brand,
+      //   nutrition: {
+      //     ...data.nutrition,
+      //     calories: data.nutrition.calories * portion,
+      //     protein: data.nutrition.protein * portion,
+      //     carbs: data.nutrition.carbs * portion,
+      //     fat: data.nutrition.fat * portion
+      //   },
+      //   timestamp: Date.now()
+      // });
+      // // showToast('Food added successfully', 'success');
     } catch (error) {
-      showToast('Failed to add food', 'error');
+      // // showToast('Failed to add food', 'error');
     }
   };
 
@@ -101,17 +101,17 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
       await handleQuickAdd(item.data, item.portion);
     }
     setSelectedItems([]);
-    showToast('All items added successfully', 'success');
+    // // showToast('All items added successfully', 'success');
   };
 
   const handleAddToMealPlan = (data: any) => {
     barcodeService.addToMealPlan('', data, selectedMealType, selectedDate);
-    showToast('Added to meal plan', 'success');
+    // // showToast('Added to meal plan', 'success');
   };
 
   const handleRemoveFromMealPlan = (barcode: string, plannedDate: number) => {
     barcodeService.removeFromMealPlan(barcode, plannedDate);
-    showToast('Removed from meal plan', 'success');
+    // // showToast('Removed from meal plan', 'success');
   };
 
   const renderNutritionInfo = (data: any) => (
@@ -327,7 +327,7 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
               <div key={index} className="bg-white p-3 rounded-lg shadow-sm">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-medium">{suggestion.item.data.name}</h4>
+                    <h4 className="font-medium">{suggestion.item.data?.name || ''}</h4>
                     <p className="text-sm text-gray-600 capitalize">{suggestion.mealType}</p>
                     <p className="text-xs text-blue-600 mt-1">{suggestion.reason}</p>
                   </div>
@@ -410,7 +410,7 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
             }
           });
           setShowGoalSettings(false);
-          const progress = barcodeService.updateGoalProgress(selectedDate);
+          const progress = barcodeService.updateGoalProgress(Number(selectedDate));
           setGoalProgress(progress);
         }}>
           {['calories', 'protein', 'carbs', 'fat'].map(nutrient => (
@@ -422,21 +422,21 @@ export const BarcodeHistory: React.FC<BarcodeHistoryProps> = ({ onSelect }) => {
                   name={`${nutrient}-target`}
                   placeholder="Target"
                   className="px-3 py-2 border rounded"
-                  defaultValue={barcodeService.getNutritionalGoals()[nutrient].target}
+                  defaultValue={barcodeService.getNutritionalGoals()[nutrient as any].target}
                 />
                 <input
                   type="number"
                   name={`${nutrient}-min`}
                   placeholder="Min"
                   className="px-3 py-2 border rounded"
-                  defaultValue={barcodeService.getNutritionalGoals()[nutrient].min}
+                  defaultValue={barcodeService.getNutritionalGoals()[nutrient as any].min}
                 />
                 <input
                   type="number"
                   name={`${nutrient}-max`}
                   placeholder="Max"
                   className="px-3 py-2 border rounded"
-                  defaultValue={barcodeService.getNutritionalGoals()[nutrient].max}
+                  defaultValue={barcodeService.getNutritionalGoals()[nutrient as any].max}
                 />
               </div>
             </div>

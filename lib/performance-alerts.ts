@@ -63,7 +63,7 @@ export class PerformanceAlertService {
   private readonly MAX_ALERTS_PER_WINDOW = 100;
   private alertCounts: Map<number, number> = new Map();
   private lastCleanup: number = Date.now();
-  private cleanupLock: boolean = false;
+  private cleanupLock = false;
   private readonly SEVERITY_LEVELS = ['warning', 'critical'] as const;
   private thresholds: AlertThreshold[] = [
     { metric: 'memory', threshold: 0.9, severity: 'warning' }, // 90% memory usage
@@ -107,6 +107,13 @@ export class PerformanceAlertService {
   private cleanupOldAlerts(): void {
     const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
     this.alerts = this.alerts.filter(alert => alert.timestamp > oneDayAgo);
+  }
+
+  private async cleanupOldAlerts(): Promise<void> {
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+    this.alerts = this.alerts.filter(alert => 
+      alert.timestamp > oneDayAgo || !alert.acknowledged
+    );
   }
 
   checkMetrics(metrics: {
@@ -615,13 +622,6 @@ export class PerformanceAlertService {
     } finally {
       this.cleanupLock = false;
     }
-  }
-
-  private async cleanupOldAlerts(): Promise<void> {
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-    this.alerts = this.alerts.filter(alert => 
-      alert.timestamp > oneDayAgo || !alert.acknowledged
-    );
   }
 
   getAlertsBySeverity(severity: 'warning' | 'critical'): Alert[] {

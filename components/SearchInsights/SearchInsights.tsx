@@ -37,20 +37,23 @@ export const SearchInsights: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const searchService = SearchService.getInstance();
-    try {
-      const data = searchService.getSearchInsights();
-      setInsights(data);
-    } catch (error) {
-      console.error('Error loading search insights:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    const fetchInsights = async () => {
+      const searchService = SearchService.getInstance();
+      try {
+        const data = await searchService.getSearchInsights();
+        setInsights(data);
+      } catch (error) {
+        console.error('Error loading search insights:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchInsights();
   }, []);
 
   if (isLoading) {
     return (
-      <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+      <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4" role="status">
         <div className="animate-pulse space-y-4">
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
           <div className="space-y-3">

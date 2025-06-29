@@ -26,10 +26,8 @@ interface AuditLogSchema {
 class AuditLogger {
   private static instance: AuditLogger;
   private db: IDBPDatabase<AuditLogSchema> | null = null;
-  private isInitialized: boolean = false;
+  private isInitialized = false;
   private readonly maxLogAge: number = 90 * 24 * 60 * 60 * 1000; // 90 days
-
-  private constructor() {}
 
   public static getInstance(): AuditLogger {
     if (!AuditLogger.instance) {
@@ -128,7 +126,7 @@ class AuditLogger {
     try {
       const tx = this.db.transaction('logs', 'readonly');
       const store = tx.store;
-      let index = store.index('by-timestamp');
+      const index = store.index('by-timestamp');
 
       // Build key range based on date filters
       let keyRange: IDBKeyRange | undefined;

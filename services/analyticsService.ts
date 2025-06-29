@@ -38,7 +38,7 @@ class AnalyticsService {
     this.cleanupOldEvents();
   }
 
-  public getPopularSearches(limit: number = 10): { query: string; count: number }[] {
+  public getPopularSearches(limit = 10): { query: string; count: number }[] {
     const queryCounts = new Map<string, number>();
     
     this.searchEvents.forEach(event => {

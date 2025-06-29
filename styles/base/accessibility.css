@@ -1,0 +1,473 @@
+/* ==========================================================================
+   ACCESSIBILITY STYLES
+   ========================================================================== */
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  /* Enhanced focus indicators */
+  *:focus-visible {
+    outline: 3px solid #000000 !important;
+    outline-offset: 2px !important;
+    border-radius: 2px !important;
+  }
+
+  /* High contrast buttons */
+  .btn,
+  button,
+  [role="button"] {
+    border: 2px solid currentColor !important;
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  .btn:hover,
+  button:hover,
+  [role="button"]:hover {
+    background-color: currentColor !important;
+    color: #ffffff !important;
+  }
+
+  .btn:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 3px solid #000000 !important;
+    outline-offset: 2px !important;
+  }
+
+  /* High contrast links */
+  a {
+    text-decoration: underline !important;
+    text-underline-offset: 2px !important;
+  }
+
+  a:hover {
+    text-decoration-thickness: 3px !important;
+  }
+
+  /* High contrast form elements */
+  input,
+  textarea,
+  select {
+    border: 2px solid currentColor !important;
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid #000000 !important;
+    outline-offset: 2px !important;
+    border-color: #000000 !important;
+  }
+
+  /* High contrast cards and containers */
+  .card,
+  .container,
+  [class*="bg-"] {
+    border: 1px solid currentColor !important;
+    background-color: transparent !important;
+  }
+
+  /* High contrast navigation */
+  nav a {
+    border-bottom: 2px solid transparent !important;
+  }
+
+  nav a:hover,
+  nav a[aria-current="page"] {
+    border-bottom-color: currentColor !important;
+  }
+
+  /* High contrast tables */
+  table {
+    border: 2px solid currentColor !important;
+  }
+
+  th,
+  td {
+    border: 1px solid currentColor !important;
+    padding: 8px !important;
+  }
+
+  /* High contrast skip links */
+  .skip-link {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    padding: 8px 16px !important;
+    font-weight: bold !important;
+  }
+
+  .skip-link:focus-visible {
+    outline: 3px solid #ffffff !important;
+    outline-offset: 2px !important;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable specific animations */
+  .animate-pulse,
+  .animate-spin,
+  .animate-bounce {
+    animation: none !important;
+  }
+
+  /* Disable hover animations */
+  .hover\:scale-105:hover,
+  .hover\:scale-110:hover,
+  .hover\:scale-125:hover {
+    transform: none !important;
+  }
+
+  /* Disable transition effects */
+  .transition-all,
+  .transition-colors,
+  .transition-transform {
+    transition: none !important;
+  }
+}
+
+/* Focus Management */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000000;
+  color: #ffffff;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Enhanced Focus Indicators */
+.focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Custom focus styles for different elements */
+.btn:focus-visible,
+button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-color: #3b82f6;
+}
+
+a:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  text-decoration: underline;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Screen Reader Only Content - Focusable */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ARIA Live Regions */
+[aria-live="polite"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+[aria-live="assertive"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* High Contrast Mode - Dark Theme */
+@media (prefers-contrast: high) and (prefers-color-scheme: dark) {
+  *:focus-visible {
+    outline-color: #ffffff !important;
+  }
+
+  .btn:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline-color: #ffffff !important;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline-color: #ffffff !important;
+    border-color: #ffffff !important;
+  }
+
+  .skip-link {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #000000 !important;
+  }
+
+  .skip-link:focus-visible {
+    outline-color: #000000 !important;
+  }
+}
+
+/* Print Styles for Accessibility */
+@media print {
+  /* Hide non-essential elements */
+  .no-print,
+  .skip-link,
+  .sr-only {
+    display: none !important;
+  }
+
+  /* Ensure good contrast for printing */
+  * {
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  /* Show focus indicators in print */
+  *:focus {
+    outline: 2px solid #000000 !important;
+  }
+
+  /* Ensure links are visible */
+  a {
+    text-decoration: underline !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666666;
+  }
+
+  /* Ensure headings have proper hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Prevent orphaned text */
+  p, li {
+    page-break-inside: avoid;
+  }
+}
+
+/* Keyboard Navigation Enhancements */
+@media (any-hover: none) {
+  /* Touch device optimizations */
+  .hover\:bg-accent:hover {
+    background-color: transparent;
+  }
+
+  .hover\:text-accent-foreground:hover {
+    color: inherit;
+  }
+}
+
+/* High Contrast Mode - Additional Enhancements */
+@media (prefers-contrast: high) {
+  /* Enhanced form validation */
+  input:invalid,
+  textarea:invalid,
+  select:invalid {
+    border-color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+  }
+
+  input:valid,
+  textarea:valid,
+  select:valid {
+    border-color: #059669 !important;
+    background-color: #f0fdf4 !important;
+  }
+
+  /* Enhanced status indicators */
+  .status-success {
+    background-color: #059669 !important;
+    color: #ffffff !important;
+    border: 2px solid #059669 !important;
+  }
+
+  .status-error {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    border: 2px solid #dc2626 !important;
+  }
+
+  .status-warning {
+    background-color: #d97706 !important;
+    color: #ffffff !important;
+    border: 2px solid #d97706 !important;
+  }
+
+  .status-info {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    border: 2px solid #2563eb !important;
+  }
+
+  /* Enhanced interactive elements */
+  [role="tab"] {
+    border: 2px solid transparent !important;
+  }
+
+  [role="tab"][aria-selected="true"] {
+    border-color: currentColor !important;
+    background-color: currentColor !important;
+    color: #ffffff !important;
+  }
+
+  [role="tabpanel"] {
+    border: 2px solid currentColor !important;
+    padding: 16px !important;
+  }
+
+  /* Enhanced progress indicators */
+  progress {
+    border: 2px solid currentColor !important;
+    background-color: transparent !important;
+  }
+
+  progress::-webkit-progress-bar {
+    background-color: transparent !important;
+  }
+
+  progress::-webkit-progress-value {
+    background-color: currentColor !important;
+  }
+
+  progress::-moz-progress-bar {
+    background-color: currentColor !important;
+  }
+
+  /* Enhanced meter elements */
+  meter {
+    border: 2px solid currentColor !important;
+    background-color: transparent !important;
+  }
+
+  meter::-webkit-meter-bar {
+    background-color: transparent !important;
+  }
+
+  meter::-webkit-meter-optimum-value {
+    background-color: #059669 !important;
+  }
+
+  meter::-webkit-meter-suboptimum-value {
+    background-color: #d97706 !important;
+  }
+
+  meter::-webkit-meter-even-less-good-value {
+    background-color: #dc2626 !important;
+  }
+}
+
+/* Accessibility Utilities */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.visually-hidden-focusable:focus {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: inherit !important;
+  margin: inherit !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+/* Enhanced focus ring for better visibility */
+.focus-ring {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.focus-ring:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* High contrast focus ring */
+@media (prefers-contrast: high) {
+  .focus-ring {
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+  }
+
+  .focus-ring:focus {
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-contrast: high) and (prefers-color-scheme: dark) {
+  .focus-ring {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  .focus-ring:focus {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+  }
+} 

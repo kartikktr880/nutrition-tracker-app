@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { BarcodeScanner } from './BarcodeScanner';
 import { BarcodeHistory } from './BarcodeHistory';
 import { useBarcodeScanner } from '@/hooks/useBarcodeScanner';
-import { useToast } from '@/hooks/useToast';
+// import { // useToast } from '@/hooks/// useToast';
 
 interface FoodLogEntryProps {
   onAdd: (food: any) => void;
@@ -13,7 +13,7 @@ export const FoodLogEntry: React.FC<FoodLogEntryProps> = ({ onAdd, onCancel }) =
   const [showScanner, setShowScanner] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const { isScanning, startScanning, stopScanning, handleScan, error } = useBarcodeScanner();
-  const { showToast } = useToast();
+  // const { showToast } = useToast();();
 
   const handleScanClick = () => {
     startScanning();
@@ -106,3 +106,7 @@ export const FoodLogEntry: React.FC<FoodLogEntryProps> = ({ onAdd, onCancel }) =
     </div>
   );
 }; 
+
+
+
+

@@ -221,11 +221,11 @@ class DatabaseErrorHandler {
       }
     }
 
-    recordError('database_operation_failed', {
+    recordError('database_operation_failed', JSON.stringify({
       error: lastError,
       attempts: attempt,
       operation: operation.name
-    });
+    }));
 
     throw lastError;
   }
@@ -399,11 +399,11 @@ class DatabaseErrorHandler {
 
   private handleConnectionError(dbType: string, error: DatabaseError) {
     this.updateConnectionStatus(dbType, false, error);
-    recordError(`database_connection_error_${dbType}`, {
+    recordError(`database_connection_error_${dbType}`, JSON.stringify({
       error,
       dbType,
       timestamp: new Date()
-    });
+    }));
 
     auditLogger.log({
       category: 'database',

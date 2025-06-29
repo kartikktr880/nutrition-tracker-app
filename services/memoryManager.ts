@@ -43,7 +43,7 @@ class MemoryManager {
   private memoryThreshold: number;
   private cacheSizeLimit: number;
   private cacheEntryTTL: number;
-  private isProfiling: boolean = false;
+  private isProfiling = false;
   private heapSnapshots: any[] = [];
 
   private constructor() {
@@ -140,15 +140,19 @@ class MemoryManager {
     };
   }
 
+  public getMemoryMetrics(): MemoryMetrics[] {
+    return [...this.memoryMetrics];
+  }
+
   private handleHighMemoryUsage(metrics: MemoryMetrics) {
     const usageRatio = metrics.usedJSHeapSize / metrics.jsHeapSizeLimit;
     
-    recordError('High memory usage detected', {
+    recordError('High memory usage detected', JSON.stringify({
       usageRatio,
       totalHeap: metrics.totalJSHeapSize,
       usedHeap: metrics.usedJSHeapSize,
       limit: metrics.jsHeapSizeLimit
-    });
+    }));
 
     auditLogger.log({
       category: 'memory',
@@ -175,10 +179,10 @@ class MemoryManager {
     const growthRate = this.calculateMemoryGrowthRate(recentMetrics);
 
     if (growthRate > 0.1) { // 10% growth rate threshold
-      recordError('Potential memory leak detected', {
+      recordError('Potential memory leak detected', JSON.stringify({
         growthRate,
         metrics: recentMetrics
-      });
+      }));
 
       this.startMemoryProfiling();
     }
@@ -239,10 +243,10 @@ class MemoryManager {
       };
     }).filter(Boolean);
 
-    recordError('Memory profile analysis', { analysis });
+    recordError('Memory profile analysis', JSON.stringify({ analysis }));
   }
 
-  private cleanupCache(aggressive: boolean = false) {
+  private cleanupCache(aggressive = false) {
     const now = new Date();
     let totalSize = 0;
     const entriesToDelete: string[] = [];
@@ -279,7 +283,7 @@ class MemoryManager {
     }
   }
 
-  private cleanupRateLimiters(aggressive: boolean = false) {
+  private cleanupRateLimiters(aggressive = false) {
     const now = new Date();
     const limitersToDelete: string[] = [];
 
@@ -388,10 +392,6 @@ class MemoryManager {
 
     limiter.count++;
     return true;
-  }
-
-  public getMemoryMetrics(): MemoryMetrics[] {
-    return [...this.memoryMetrics];
   }
 
   public async cleanup() {

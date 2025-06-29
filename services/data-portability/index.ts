@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { v8 } from 'v8';
+// import { v8 } from 'v8';
 import OfflineService from '@/services/offline';
 
 interface ExportData {
@@ -189,21 +189,22 @@ class DataPortabilityService {
 
     try {
       switch (action) {
-        case 'export':
+        case 'export': {
           const exportData = await this.exportData(userId, format as 'json' | 'csv');
           res.setHeader('Content-Type', format === 'csv' ? 'text/csv' : 'application/json');
           res.setHeader('Content-Disposition', `attachment; filename=nutrition-data.${format}`);
           return res.send(exportData);
-
-        case 'import':
+        }
+        case 'import': {
           if (!req.body) {
             return res.status(400).json({ error: 'No data provided' });
           }
           await this.importData(userId, req.body, format as 'json' | 'csv');
           return res.json({ message: 'Data imported successfully' });
-
-        default:
+        }
+        default: {
           return res.status(400).json({ error: 'Invalid action' });
+        }
       }
     } catch (error) {
       console.error('Data portability error:', error);

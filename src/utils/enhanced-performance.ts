@@ -1,6 +1,7 @@
-import { performanceMonitor } from './performance';
+import { performanceMonitor } from '../../utils/performance';
 import { recoveryManager } from './recovery';
-import { logAudit } from './auditLog';
+import { logAudit } from '../../utils/auditLog';
+import { PerformanceMetric } from '../../utils/performance-types';
 
 interface EnhancedPerformanceMetric extends PerformanceMetric {
   confidence: number;
@@ -46,7 +47,7 @@ class EnhancedPerformanceMonitor {
   private async collectEnhancedMetrics(): Promise<void> {
     try {
       const timestamp = new Date().toISOString();
-      const baseMetrics = await performanceMonitor.getMetrics();
+      const baseMetrics = Array.from(performanceMonitor.getAllMetrics().values()).flat();
 
       // Enhance metrics with additional analysis
       const enhancedMetrics = await Promise.all(
@@ -71,17 +72,31 @@ class EnhancedPerformanceMonitor {
         details: {
           timestamp,
           metricCount: enhancedMetrics.length
-        }
+        },
+        timestamp,
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 200
       });
     } catch (error) {
-      console.error('Failed to collect enhanced metrics:', error);
+      let errorMessage = 'Unknown error';
+      if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as any).message;
+      } else {
+        errorMessage = String(error);
+      }
+      console.error('Failed to collect enhanced metrics:', errorMessage);
       logAudit({
         userId: 'system',
         action: 'enhanced_metrics_collection_failed',
         details: {
-          error: error.message,
+          error: errorMessage,
           timestamp: new Date().toISOString()
-        }
+        },
+        timestamp: new Date().toISOString(),
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 500
       });
     }
   }
@@ -116,14 +131,24 @@ class EnhancedPerformanceMonitor {
       // Implementation would depend on storage mechanism
       // This could be a database, cache, or other storage system
     } catch (error) {
-      console.error('Failed to store enhanced metrics:', error);
+      let errorMessage = 'Unknown error';
+      if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as any).message;
+      } else {
+        errorMessage = String(error);
+      }
+      console.error('Failed to store enhanced metrics:', errorMessage);
       logAudit({
         userId: 'system',
         action: 'enhanced_metrics_storage_failed',
         details: {
-          error: error.message,
+          error: errorMessage,
           timestamp: new Date().toISOString()
-        }
+        },
+        timestamp: new Date().toISOString(),
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 500
       });
     }
   }
@@ -150,17 +175,31 @@ class EnhancedPerformanceMonitor {
           patterns: patterns.length,
           correlations: correlations.length,
           anomalies: anomalies.length
-        }
+        },
+        timestamp,
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 200
       });
     } catch (error) {
-      console.error('Failed to analyze performance:', error);
+      let errorMessage = 'Unknown error';
+      if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as any).message;
+      } else {
+        errorMessage = String(error);
+      }
+      console.error('Failed to analyze performance:', errorMessage);
       logAudit({
         userId: 'system',
         action: 'performance_analysis_failed',
         details: {
-          error: error.message,
+          error: errorMessage,
           timestamp: new Date().toISOString()
-        }
+        },
+        timestamp: new Date().toISOString(),
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 500
       });
     }
   }
@@ -209,17 +248,31 @@ class EnhancedPerformanceMonitor {
         details: {
           timestamp,
           insightCount: newInsights.length
-        }
+        },
+        timestamp,
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 200
       });
     } catch (error) {
-      console.error('Failed to generate insights:', error);
+      let errorMessage = 'Unknown error';
+      if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as any).message;
+      } else {
+        errorMessage = String(error);
+      }
+      console.error('Failed to generate insights:', errorMessage);
       logAudit({
         userId: 'system',
         action: 'performance_insights_generation_failed',
         details: {
-          error: error.message,
+          error: errorMessage,
           timestamp: new Date().toISOString()
-        }
+        },
+        timestamp: new Date().toISOString(),
+        endpoint: 'internal',
+        method: 'SYSTEM',
+        status: 500
       });
     }
   }

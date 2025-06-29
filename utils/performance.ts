@@ -148,7 +148,7 @@ export class PerformanceMonitor {
   private recoveryActions: Map<string, RecoveryAction> = new Map();
   private currentIssues: PerformanceIssue[];
   private readonly performanceHistoryBuffer: PerformanceHistoryEntry[] = [];
-  private historyBufferIndex: number = 0;
+  private historyBufferIndex = 0;
   private readonly historyLock: { locked: boolean } = { locked: false };
   private readonly issuePatterns: Map<string, {
     count: number;
@@ -164,7 +164,7 @@ export class PerformanceMonitor {
     attempts: number;
   }> = [];
 
-  private isProcessingRecovery: boolean = false;
+  private isProcessingRecovery = false;
   private readonly MAX_CONCURRENT_RECOVERIES = 2;
   private activeRecoveries: Set<string> = new Set();
 
@@ -3300,6 +3300,10 @@ export class PerformanceMonitor {
         await this.handleWarningIssue(issue);
       }
     }
+  }
+
+  public getAllMetrics(): Map<string, PerformanceMetric[]> {
+    return this.metrics;
   }
 }
 

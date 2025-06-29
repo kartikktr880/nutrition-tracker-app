@@ -268,7 +268,9 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
       {/* Add new item */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex gap-2">
+          <label htmlFor="add-item-input">Add a new item</label>
           <input
+            id="add-item-input"
             type="text"
             placeholder="Add a new item..."
             value={newItemText}
@@ -408,6 +410,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
                             onClick={() => handleDeleteItem(item.id)}
                             className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                             title="Delete item"
+                            aria-label="Delete item"
                           >
                             🗑️
                           </button>

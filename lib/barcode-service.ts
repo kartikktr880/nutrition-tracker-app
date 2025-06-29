@@ -577,7 +577,7 @@ class BarcodeService {
     };
   }
 
-  public getPortionRecommendation(item: BarcodeHistoryItem, targetCalories: number = 2000): number {
+  public getPortionRecommendation(item: BarcodeHistoryItem, targetCalories = 2000): number {
     const nutrition = item.data.nutrition;
     const currentCalories = nutrition.calories;
     
@@ -921,7 +921,7 @@ class BarcodeService {
     return this.goalProgress.find(p => p.date === date) || null;
   }
 
-  public getGoalProgressHistory(days: number = 7): GoalProgress[] {
+  public getGoalProgressHistory(days = 7): GoalProgress[] {
     const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
     return this.goalProgress
       .filter(p => p.date >= cutoff)
@@ -1192,7 +1192,7 @@ class BarcodeService {
     }
   }
 
-  public generateSmartGroceryList(days: number = 7): SmartGroceryList {
+  public generateSmartGroceryList(days = 7): SmartGroceryList {
     try {
       const mealPlans = this.mealPlans.filter(plan => 
         plan.plannedDate >= Date.now() && 

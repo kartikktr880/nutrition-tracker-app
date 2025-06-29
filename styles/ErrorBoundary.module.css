@@ -1,0 +1,97 @@
+.errorContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--background-error);
+}
+
+.errorContent {
+  max-width: 500px;
+  padding: 2rem;
+  background: var(--background-primary);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.errorTitle {
+  margin: 0 0 1rem;
+  color: var(--text-error);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.errorMessage {
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--focus-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: var(--focus-color-dark);
+}
+
+.retryButton:focus {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+  .errorContainer {
+    forced-color-adjust: none;
+    background: Canvas;
+    border: 1px solid ButtonText;
+  }
+
+  .errorContent {
+    background: Canvas;
+    border: 1px solid ButtonText;
+  }
+
+  .errorTitle {
+    color: Mark;
+  }
+
+  .errorMessage {
+    color: ButtonText;
+  }
+
+  .retryButton {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+  }
+
+  .retryButton:hover,
+  .retryButton:focus {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* CSS Custom Properties */
+:root {
+  --background-error: #fee2e2;
+  --background-primary: #ffffff;
+  --text-error: #dc2626;
+  --text-secondary: #666666;
+  --focus-color: #3b82f6;
+  --focus-color-dark: #2563eb;
+} 

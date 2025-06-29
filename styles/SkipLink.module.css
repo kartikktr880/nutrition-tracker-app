@@ -1,0 +1,33 @@
+.skipLink {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.2s ease;
+  text-decoration: none;
+  border: 2px solid transparent;
+}
+
+.skipLink:focus {
+  top: 0;
+  outline: none;
+  border-color: #00ff00;
+  box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.3);
+}
+
+/* High contrast mode styles */
+@media (forced-colors: active) {
+  .skipLink {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 2px solid ButtonText;
+  }
+  
+  .skipLink:focus {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+  }
+} 

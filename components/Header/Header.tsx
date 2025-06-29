@@ -10,6 +10,9 @@ import { SkipLink } from '@/components/SkipLink/SkipLink';
 import { HeaderVariant, getHeaderVariantClasses, getNavVariantClasses, getMobileMenuVariantClasses } from './HeaderVariants';
 import { SearchBar } from '@/components/SearchBar/SearchBar';
 
+/**
+ * Navigation items for the header
+ */
 const navigation = [
   { name: 'Home', href: '/' },
   { name: 'Dashboard', href: '/dashboard' },
@@ -17,6 +20,10 @@ const navigation = [
   { name: 'Progress', href: '/progress' },
 ];
 
+/**
+ * Error fallback component for the header
+ * Displays when the header encounters an error
+ */
 const HeaderErrorFallback = () => (
   <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
     <p className="text-sm text-destructive">
@@ -25,13 +32,35 @@ const HeaderErrorFallback = () => (
   </div>
 );
 
+/**
+ * Props for the MobileMenu component
+ */
 interface MobileMenuProps {
+  /** Whether the mobile menu is open */
   isOpen: boolean;
+  /** Current pathname for active link highlighting */
   pathname: string | null;
+  /** Visual variant of the header */
   variant?: HeaderVariant;
+  /** Accessibility label for the mobile menu */
   'aria-label'?: string;
 }
 
+/**
+ * MobileMenu Component
+ * 
+ * A collapsible mobile navigation menu that displays navigation links
+ * in a vertical layout for smaller screens.
+ * 
+ * @example
+ * ```tsx
+ * <MobileMenu 
+ *   isOpen={isMobileMenuOpen} 
+ *   pathname={pathname} 
+ *   variant="default" 
+ * />
+ * ```
+ */
 const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
   ({ isOpen, pathname, variant = 'default' }, ref) => (
     <div
@@ -71,12 +100,24 @@ const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
 
 MobileMenu.displayName = 'MobileMenu';
 
+/**
+ * Props for the Header component
+ */
 interface HeaderProps {
+  /** Visual variant of the header (default: 'default') */
   variant?: HeaderVariant;
+  /** Additional CSS class names */
   className?: string;
 }
 
-// Placeholder for user authentication state
+/**
+ * Mock user authentication hook
+ * 
+ * Provides mock user data for development and testing purposes.
+ * In production, this should be replaced with actual authentication logic.
+ * 
+ * @returns Mock user object with name and optional avatar URL
+ */
 const useMockUser = () => {
   const [user, setUser] = useState<{ name: string; avatarUrl?: string } | null>({
     name: 'Jane Doe',
@@ -93,6 +134,54 @@ const useMockUser = () => {
   return user;
 };
 
+/**
+ * Header Component
+ * 
+ * A responsive header component that provides navigation, search functionality,
+ * theme toggle, and user profile management. The header is sticky and includes
+ * accessibility features like skip links and proper ARIA labels.
+ * 
+ * @example
+ * ```tsx
+ * // Basic usage
+ * <Header />
+ * 
+ * // With custom variant
+ * <Header variant="premium" />
+ * 
+ * // With custom styling
+ * <Header className="custom-header" />
+ * ```
+ * 
+ * @example
+ * ```tsx
+ * // In a layout component
+ * function Layout({ children }) {
+ *   return (
+ *     <>
+ *       <Header variant="default" />
+ *       <main>
+ *         {children}
+ *       </main>
+ *     </>
+ *   );
+ * }
+ * ```
+ * 
+ * @remarks
+ * - Includes a skip link for accessibility
+ * - Responsive design with mobile menu
+ * - Error boundary for graceful error handling
+ * - Focus trap for mobile menu accessibility
+ * - Theme toggle functionality
+ * - Search bar integration
+ * - User profile menu with avatar
+ * - Proper ARIA labels and roles
+ * - Sticky positioning with backdrop blur
+ * 
+ * @see {@link https://www.w3.org/WAI/WCAG21/Techniques/general/G1 | WCAG G1: Adding a link at the top of each page}
+ * @see {@link https://www.w3.org/WAI/WCAG21/Techniques/general/G59 | WCAG G59: Placing the interactive elements in an order that follows sequences and relationships within the content}
+ */
 export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -128,6 +217,10 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }
     setIsProfileMenuOpen(false);
   }, [pathname]);
 
+  /**
+   * Handles errors that occur within the header component
+   * @param error - The error that occurred
+   */
   const handleError = (error: Error) => {
     console.error('Header error:', error);
   };
@@ -135,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }
   return (
     <ErrorBoundary fallback={<HeaderErrorFallback />} onError={handleError}>
       <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border shadow-sm">
-        <SkipLink />
+        <SkipLink target="main-content" />
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:py-3" aria-label="Main navigation">
           <div className="flex items-center gap-4">
             <Link

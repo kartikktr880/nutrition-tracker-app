@@ -1,0 +1,136 @@
+.container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 4px;
+  background: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion:hover,
+.suggestion.selected {
+  background-color: var(--background-hover);
+}
+
+.text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  margin-left: 0.5rem;
+  background: var(--badge-background);
+  color: var(--badge-text);
+}
+
+.history .badge {
+  background: var(--badge-history);
+  color: var(--badge-history-text);
+}
+
+.popular .badge {
+  background: var(--badge-popular);
+  color: var(--badge-popular-text);
+}
+
+.fuzzy .badge {
+  background: var(--badge-fuzzy);
+  color: var(--badge-fuzzy-text);
+}
+
+.error {
+  padding: 1rem;
+  color: var(--text-error);
+  text-align: center;
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+  .container {
+    border: 1px solid ButtonText;
+  }
+
+  .suggestion:hover,
+  .suggestion.selected {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .badge {
+    border: 1px solid ButtonText;
+  }
+
+  .history .badge,
+  .popular .badge,
+  .fuzzy .badge {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .suggestion:hover .badge,
+  .suggestion.selected .badge {
+    border-color: HighlightText;
+    color: HighlightText;
+  }
+}
+
+/* Scrollbar Styles */
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+/* CSS Custom Properties */
+:root {
+  --background-primary: #ffffff;
+  --background-hover: #f3f4f6;
+  --text-primary: #111827;
+  --text-error: #dc2626;
+  --border-color: #e5e7eb;
+  --badge-background: #e5e7eb;
+  --badge-text: #4b5563;
+  --badge-history: #dbeafe;
+  --badge-history-text: #1e40af;
+  --badge-popular: #fef3c7;
+  --badge-popular-text: #92400e;
+  --badge-fuzzy: #f3e8ff;
+  --badge-fuzzy-text: #6b21a8;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+} 

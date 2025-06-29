@@ -143,7 +143,7 @@ class ComponentLifecycleManager {
     this.cleanupComponentResources(this.currentComponentId, true);
   }
 
-  private async cleanupComponentResources(componentId: string, aggressive: boolean = false) {
+  private async cleanupComponentResources(componentId: string, aggressive = false) {
     try {
       const state = this.components.get(componentId);
       if (!state) return;

@@ -1,7 +1,7 @@
 import { ExerciseSession } from '@/types/exercise';
 import { validateSessionData } from './validation';
-import { logAudit } from './auditLog';
-import { recoveryManager } from './recovery';
+import { logAudit } from '../utils/auditLog';
+import { RecoveryManager } from './recovery';
 import { encryptData, decryptData } from './encryption';
 
 interface ErrorPreventionConfig {
@@ -139,6 +139,10 @@ class ErrorPreventionManager {
     logAudit({
       userId: data.userId,
       action: 'track_operation',
+      endpoint: 'error_prevention',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         type,
         operationId,
@@ -173,6 +177,10 @@ class ErrorPreventionManager {
     logAudit({
       userId: operation.userId,
       action: 'update_operation_status',
+      endpoint: 'error_prevention',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         type: operation.type,
         operationId,
@@ -197,32 +205,63 @@ class ErrorPreventionManager {
 
     if (operation.retryCount >= this.config.maxRetries) {
       // Add to recovery queue
-      await recoveryManager.addToRecoveryQueue(
+      await new RecoveryManager().handleCriticalIssue(
         operation.type,
         data,
         error.message
       );
 
       await this.updateOperationStatus(operationId, 'failed', error.message);
+
+      logAudit({
+        userId: operation.userId,
+        action: 'operation_error_handled',
+        endpoint: 'error_prevention',
+        method: 'INTERNAL',
+        status: 500,
+        timestamp: new Date().toISOString(),
+        details: {
+          type: operation.type,
+          operationId,
+          error: error.message,
+          retryCount: operation.retryCount
+        }
+      });
+
+      logAudit({
+        userId: operation.userId,
+        action: 'operation_abandoned',
+        endpoint: 'error_prevention',
+        method: 'INTERNAL',
+        status: 500,
+        timestamp: new Date().toISOString(),
+        details: {
+          type: operation.type,
+          operationId,
+          reason: 'Max retries exceeded'
+        }
+      });
+
+      logAudit({
+        userId: operation.userId,
+        action: 'operation_completed',
+        endpoint: 'error_prevention',
+        method: 'INTERNAL',
+        status: 200,
+        timestamp: new Date().toISOString(),
+        details: {
+          type: operation.type,
+          operationId
+        }
+      });
     } else {
       // Retry after delay
       setTimeout(async () => {
-        await this.updateOperationStatus(operationId, 'pending');
+        operation.status = 'pending'; this.operationStates.set(operationId, operation);
       }, this.config.retryDelay);
     }
 
     this.operationStates.set(operationId, operation);
-
-    logAudit({
-      userId: operation.userId,
-      action: 'handle_operation_error',
-      details: {
-        type: operation.type,
-        operationId,
-        error: error.message,
-        retryCount: operation.retryCount
-      }
-    });
   }
 
   public async getOperationStatus(operationId: string): Promise<OperationState | null> {
@@ -240,6 +279,10 @@ class ErrorPreventionManager {
         logAudit({
           userId: operation.userId,
           action: 'cleanup_operation',
+          endpoint: 'error_prevention',
+          method: 'INTERNAL',
+          status: 200,
+          timestamp: new Date().toISOString(),
           details: {
             type: operation.type,
             operationId: id,
@@ -282,6 +325,10 @@ class ErrorPreventionManager {
     logAudit({
       userId: operation.userId,
       action: 'reset_operation',
+      endpoint: 'error_prevention',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         type: operation.type,
         operationId
@@ -291,3 +338,4 @@ class ErrorPreventionManager {
 }
 
 export const errorPreventionManager = ErrorPreventionManager.getInstance(); 
+

@@ -130,7 +130,7 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
         case 'priority':
           return b.priority.localeCompare(a.priority);
         case 'name':
-          return a.name.localeCompare(b.name);
+          return a?.name.localeCompare(b?.name);
         case 'category':
           return a.category.localeCompare(b.category);
         default:
@@ -147,7 +147,7 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
           >
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <h3 className="font-medium">{item.name}</h3>
+                <h3 className="font-medium">{item?.name}</h3>
                 <div className="text-sm text-gray-600">
                   <span className={getPriorityColor(item.priority)}>
                     {item.priority} priority
@@ -250,3 +250,4 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
 };
 
 export default GroceryList; 
+

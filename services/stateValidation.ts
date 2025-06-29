@@ -44,7 +44,7 @@ interface ValidationConfig {
   };
 }
 
-interface ValidationResult {
+export interface ValidationResult {
   isValid: boolean;
   errors: string[];
   warnings: string[];
@@ -461,7 +461,7 @@ class StateValidation {
         ]
       });
 
-      recordError('State validation failed', error instanceof Error ? error.message : String(error), { key });
+      recordError('State validation failed', error instanceof Error ? error.message : String(error));
       return errorResult;
     }
   }

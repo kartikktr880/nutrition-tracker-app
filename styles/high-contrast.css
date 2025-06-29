@@ -1,0 +1,126 @@
+/* High Contrast Mode Styles */
+:root[data-high-contrast="true"] {
+  --text-color: #ffffff;
+  --bg-color: #000000;
+  --primary-color: #ffff00;
+  --secondary-color: #00ff00;
+  --border-color: #ffffff;
+  --focus-color: #00ff00;
+  --error-color: #ff0000;
+  --success-color: #00ff00;
+}
+
+/* Text and Background Colors */
+[data-high-contrast="true"] body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Links */
+[data-high-contrast="true"] a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+[data-high-contrast="true"] a:hover,
+[data-high-contrast="true"] a:focus {
+  color: var(--secondary-color);
+  text-decoration: none;
+  outline: 2px solid var(--focus-color);
+}
+
+/* Buttons */
+[data-high-contrast="true"] button {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+[data-high-contrast="true"] button:hover,
+[data-high-contrast="true"] button:focus {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  outline: 2px solid var(--focus-color);
+}
+
+/* Form Elements */
+[data-high-contrast="true"] input,
+[data-high-contrast="true"] select,
+[data-high-contrast="true"] textarea {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+[data-high-contrast="true"] input:focus,
+[data-high-contrast="true"] select:focus,
+[data-high-contrast="true"] textarea:focus {
+  outline: 2px solid var(--focus-color);
+}
+
+/* Focus Indicators */
+[data-high-contrast="true"] *:focus {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+/* Icons and Visual Elements */
+[data-high-contrast="true"] svg,
+[data-high-contrast="true"] img {
+  filter: grayscale(100%) contrast(200%);
+}
+
+/* Error States */
+[data-high-contrast="true"] .error {
+  color: var(--error-color);
+  border-color: var(--error-color);
+}
+
+/* Success States */
+[data-high-contrast="true"] .success {
+  color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+/* Disabled States */
+[data-high-contrast="true"] *:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Tables */
+[data-high-contrast="true"] table {
+  border: 2px solid var(--border-color);
+}
+
+[data-high-contrast="true"] th,
+[data-high-contrast="true"] td {
+  border: 1px solid var(--border-color);
+}
+
+/* Lists */
+[data-high-contrast="true"] ul,
+[data-high-contrast="true"] ol {
+  border-left: 2px solid var(--border-color);
+}
+
+/* Tooltips */
+[data-high-contrast="true"] [role="tooltip"] {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+/* Modal Overlays */
+[data-high-contrast="true"] [role="dialog"] {
+  background-color: var(--bg-color);
+  border: 2px solid var(--border-color);
+}
+
+/* Skip Links */
+[data-high-contrast="true"] .skip-link:focus {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  outline: 2px solid var(--focus-color);
+} 

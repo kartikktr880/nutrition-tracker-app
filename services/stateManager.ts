@@ -105,20 +105,20 @@ class StateManager {
     const maxSize = config?.maxSize ?? this.DEFAULT_MAX_SIZE;
 
     if (size > maxSize) {
-      recordError('State size exceeds limit', {
+      recordError('State size exceeds limit', JSON.stringify({
         key,
         size,
         maxSize
-      });
+      }));
       return false;
     }
 
     if (size > this.MAX_STATE_SIZE) {
-      recordError('State size exceeds maximum allowed', {
+      recordError('State size exceeds maximum allowed', JSON.stringify({
         key,
         size,
         maxAllowed: this.MAX_STATE_SIZE
-      });
+      }));
       return false;
     }
 
@@ -147,11 +147,11 @@ class StateManager {
       const validationResult = await stateValidation.validate(key, value);
       
       if (!validationResult.isValid) {
-        recordError('State validation failed', {
+        recordError('State validation failed', JSON.stringify({
           key,
           errors: validationResult.errors,
           warnings: validationResult.warnings
-        });
+        }));
         return false;
       }
 
@@ -203,7 +203,7 @@ class StateManager {
 
       // Check state limit
       if (this.states.size >= this.MAX_STATES && !this.states.has(key)) {
-        recordError('Maximum number of states reached');
+        recordError('Maximum number of states reached', 'State limit exceeded', { key, currentSize: this.states.size, maxSize: this.MAX_STATES });
         return false;
       }
 
@@ -327,10 +327,10 @@ class StateManager {
               return recoveredState;
             }
           }
-          recordError('State validation failed on get', {
+          recordError('State validation failed on get', JSON.stringify({
             key,
             errors: validationResult.errors
-          });
+          }));
           return undefined;
         }
       }
@@ -448,7 +448,7 @@ class StateManager {
       // Validate checksum
       const currentChecksum = this.calculateChecksum(record.value);
       if (currentChecksum !== record.metadata.checksum) {
-        recordError('Persisted state checksum mismatch', { key });
+        recordError('Persisted state checksum mismatch', JSON.stringify({ key }));
         return undefined;
       }
 

@@ -28,7 +28,7 @@ class SecurityService {
   private static instance: SecurityService;
   private config: SecurityConfig;
   private lastCleanupTime: number = Date.now();
-  private isInitialized: boolean = false;
+  private isInitialized = false;
 
   private constructor() {
     this.config = {

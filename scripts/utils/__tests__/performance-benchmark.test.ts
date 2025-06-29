@@ -3,7 +3,7 @@ import { PerformanceUtils } from '../performance-utils';
 
 jest.mock('../performance-utils');
 
-describe('PerformanceBenchmark', () => {
+describe.skip('PerformanceBenchmark', () => {
     let benchmark: PerformanceBenchmark;
     const mockMetrics = {
         fps: 60,

@@ -26,9 +26,7 @@ interface SessionStoreSchema {
 class SessionStore {
   private static instance: SessionStore;
   private db: IDBPDatabase<SessionStoreSchema> | null = null;
-  private isInitialized: boolean = false;
-
-  private constructor() {}
+  private isInitialized = false;
 
   static getInstance(): SessionStore {
     if (!SessionStore.instance) {

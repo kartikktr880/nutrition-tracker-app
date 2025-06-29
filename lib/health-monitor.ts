@@ -36,11 +36,9 @@ class HealthMonitor {
   private static instance: HealthMonitor;
   private metrics: HealthMetrics[] = [];
   private checks: HealthCheck[] = [];
-  private isInitialized: boolean = false;
+  private isInitialized = false;
   private readonly maxMetricsAge: number = 24 * 60 * 60 * 1000; // 24 hours
   private readonly maxMetricsCount: number = 1440; // 1 metric per minute for 24 hours
-
-  private constructor() {}
 
   static getInstance(): HealthMonitor {
     if (!HealthMonitor.instance) {
@@ -192,7 +190,7 @@ class HealthMonitor {
     return this.metrics[this.metrics.length - 1];
   }
 
-  getMetricsHistory(duration: number = 3600000): HealthMetrics[] {
+  getMetricsHistory(duration = 3600000): HealthMetrics[] {
     const now = Date.now();
     return this.metrics.filter(m => now - m.timestamp <= duration);
   }

@@ -18,7 +18,7 @@ export default async function handler(
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const userId = session.user.id;
+  const userId = session.user?.id || 'unknown-user';
 
   switch (req.method) {
     case 'GET':
@@ -71,7 +71,7 @@ export default async function handler(
             userId,
             mealPlanId,
             meals: {
-              connect: mealPlan.meals.map(meal => ({ id: meal.id }))
+              connect: mealPlan.meals.map((meal: any) => ({ id: meal.id }))
             },
             prepSchedule: {
               create: mealPrepPlan.prepSchedule

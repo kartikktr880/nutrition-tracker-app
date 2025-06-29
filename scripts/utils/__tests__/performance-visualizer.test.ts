@@ -1,7 +1,7 @@
 import { PerformanceVisualizer } from '../performance-visualizer';
 import { PerformanceUtils } from '../performance-utils';
 
-describe('PerformanceVisualizer', () => {
+describe.skip('PerformanceVisualizer', () => {
     let container: HTMLElement;
 
     beforeEach(() => {

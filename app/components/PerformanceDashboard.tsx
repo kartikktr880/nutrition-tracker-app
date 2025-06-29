@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+// import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -176,11 +176,11 @@ export default function PerformanceDashboard() {
           <h2 className="text-xl font-semibold mb-4">Health Checks</h2>
           <div className="grid grid-cols-2 gap-4">
             {healthStatus.checks.map(check => (
-              <div key={check.name} className="flex items-center space-x-2">
+              <div key={check?.name} className="flex items-center space-x-2">
                 <div className={`w-3 h-3 rounded-full ${
                   check.status === 'pass' ? 'bg-green-500' : 'bg-red-500'
                 }`} />
-                <span>{check.name}</span>
+                <span>{check?.name}</span>
               </div>
             ))}
           </div>
@@ -262,3 +262,5 @@ export default function PerformanceDashboard() {
     </div>
   );
 } 
+
+

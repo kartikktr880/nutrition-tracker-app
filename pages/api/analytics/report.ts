@@ -47,22 +47,25 @@ export default async function handler(
     // Process data for report
     const reportData = {
       nutrition: {
-        totalCalories: nutritionData.reduce((sum, log) => sum + log.calories, 0),
-        averageCalories: nutritionData.reduce((sum, log) => sum + log.calories, 0) / nutritionData.length || 0,
-        totalProtein: nutritionData.reduce((sum, log) => sum + log.protein, 0),
-        totalCarbs: nutritionData.reduce((sum, log) => sum + log.carbs, 0),
-        totalFat: nutritionData.reduce((sum, log) => sum + log.fat, 0),
-        dailyBreakdown: nutritionData.map(log => ({
+        totalCalories: nutritionData.reduce((sum: any, log: any) => sum + log.calories, 0),
+        averageCalories: nutritionData.reduce((sum: any, log: any) => sum + log.calories, 0) / nutritionData.length || 0,
+        totalProtein: nutritionData.reduce((sum: any, log: any) => sum + log.protein, 0),
+        totalCarbs: nutritionData.reduce((sum: any, log: any) => sum + log.carbs, 0),
+        totalFat: nutritionData.reduce((sum: any, log: any) => sum + log.fat, 0),
+        dailyBreakdown: nutritionData.map((log: any) => ({
           date: log.date.toISOString().split('T')[0],
           calories: log.calories,
           protein: log.protein,
           carbs: log.carbs,
           fat: log.fat
-        }))
+        })),
+        calorieGoalPercentage: nutritionData.length > 0 && goals?.calorieGoal 
+          ? (nutritionData.reduce((sum: any, log: any) => sum + log.calories, 0) / nutritionData.length / goals.calorieGoal * 100) 
+          : 0
       },
       goals: {
         calorieGoal: goals?.calorieGoal || 2000,
-        progress: goals ? (nutritionData.reduce((sum, log) => sum + log.calories, 0) / nutritionData.length) / goals.calorieGoal * 100 : 0
+        progress: goals ? (nutritionData.reduce((sum: any, log: any) => sum + log.calories, 0) / nutritionData.length) / goals.calorieGoal * 100 : 0
       }
     };
 
@@ -93,7 +96,7 @@ async function generatePDFReport(data: any): Promise<Buffer> {
       const doc = new PDFDocument();
       const chunks: Buffer[] = [];
 
-      doc.on('data', chunk => chunks.push(chunk));
+      doc.on('data', (chunk: any) => chunks.push(chunk));
       doc.on('end', () => resolve(Buffer.concat(chunks)));
       doc.on('error', reject);
 

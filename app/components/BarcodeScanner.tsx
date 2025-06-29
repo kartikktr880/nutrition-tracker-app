@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { BarcodeDetector } from 'barcode-detector';
-import { useToast } from '@/hooks/useToast';
+// import { BarcodeDetector } from 'barcode-detector';
+// import { useToast } from '@/hooks/useToast';
 
 interface BarcodeScannerProps {
   onScan: (barcode: string) => void;
@@ -12,7 +12,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   useEffect(() => {
     if (!('BarcodeDetector' in window)) {
@@ -29,7 +29,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
         }
       } catch (err) {
         setError('Failed to access camera');
-        showToast('Camera access denied', 'error');
+        // showToast('Camera access denied', 'error');
       }
     };
 
@@ -41,12 +41,12 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [showToast]);
+  }, []);
 
   useEffect(() => {
     if (!isScanning || !videoRef.current || !canvasRef.current) return;
 
-    const detector = new BarcodeDetector();
+    // const detector = new BarcodeDetector();
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     let animationFrameId: number;
@@ -59,12 +59,12 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
       context.drawImage(videoRef.current, 0, 0);
 
       try {
-        const barcodes = await detector.detect(canvas);
-        if (barcodes.length > 0) {
-          const barcode = barcodes[0].rawValue;
-          onScan(barcode);
-          setIsScanning(false);
-        }
+        // const barcodes = await detector.detect(canvas);
+        // if (barcodes.length > 0) {
+        //   const barcode = barcodes[0].rawValue;
+        //   onScan(barcode);
+        //   setIsScanning(false);
+        // }
       } catch (err) {
         console.error('Barcode detection error:', err);
       }
@@ -114,3 +114,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
     </div>
   );
 }; 
+
+
+
+
+
+
+

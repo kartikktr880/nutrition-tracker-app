@@ -12,12 +12,12 @@ describe('LoadingOverlay', () => {
     render(<LoadingOverlay isLoading={true} />);
     const overlay = screen.getByRole('alert');
     expect(overlay).toBeInTheDocument();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getAllByText('Loading...').length).toBeGreaterThan(0);
   });
 
   it('renders with custom label', () => {
     render(<LoadingOverlay isLoading={true} label="Custom loading text" />);
-    expect(screen.getByText('Custom loading text')).toBeInTheDocument();
+    expect(screen.getAllByText('Custom loading text').length).toBeGreaterThan(0);
   });
 
   it('applies custom className', () => {

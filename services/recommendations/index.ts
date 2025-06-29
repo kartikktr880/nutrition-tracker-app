@@ -99,7 +99,7 @@ class RecommendationService {
   public async getMealRecommendations(
     userId: string,
     mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack',
-    count: number = 5
+    count = 5
   ): Promise<MealRecommendation[]> {
     if (this.isDisposed) {
       throw new Error('Service has been disposed');

@@ -29,8 +29,6 @@ class StateRecovery {
   private readonly DEFAULT_BACKUP_INTERVAL = 300000; // 5 minutes
   private backupIntervals: Map<string, NodeJS.Timeout> = new Map();
 
-  private constructor() {}
-
   public static getInstance(): StateRecovery {
     if (!StateRecovery.instance) {
       StateRecovery.instance = new StateRecovery();

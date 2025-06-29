@@ -25,7 +25,7 @@ export async function GET() {
       metrics: healthStatus.metrics,
       security: securityStatus
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Health check failed:', error);
     return NextResponse.json(
       { error: 'Health check failed' },
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json({ results });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Detailed health check failed:', error);
     return NextResponse.json(
       { error: 'Detailed health check failed' },
@@ -59,3 +59,9 @@ export async function POST(request: Request) {
     );
   }
 } 
+
+
+
+
+
+

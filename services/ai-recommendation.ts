@@ -137,7 +137,7 @@ export class AIRecommendationService {
     misses: 0,
     evictions: 0
   };
-  private isWarming: boolean = false;
+  private isWarming = false;
 
   constructor(config: AIRecommendationConfig) {
     this.config = config;
@@ -236,7 +236,7 @@ export class AIRecommendationService {
         take: 10
       });
 
-      const meals = recentMeals.map(meal => ({
+      const meals = recentMeals.map((meal: any) => ({
         id: meal.id,
         name: meal.name,
         calories: meal.calories,
@@ -248,10 +248,10 @@ export class AIRecommendationService {
       }));
 
       const totalMeals = meals.length || 1;
-      const averageCalories = meals.reduce((sum, meal) => sum + meal.calories, 0) / totalMeals;
-      const averageProtein = meals.reduce((sum, meal) => sum + meal.protein, 0) / totalMeals;
-      const averageCarbs = meals.reduce((sum, meal) => sum + meal.carbs, 0) / totalMeals;
-      const averageFat = meals.reduce((sum, meal) => sum + meal.fat, 0) / totalMeals;
+      const averageCalories = meals.reduce((sum: any, meal: any) => sum + meal.calories, 0) / totalMeals;
+      const averageProtein = meals.reduce((sum: any, meal: any) => sum + meal.protein, 0) / totalMeals;
+      const averageCarbs = meals.reduce((sum: any, meal: any) => sum + meal.carbs, 0) / totalMeals;
+      const averageFat = meals.reduce((sum: any, meal: any) => sum + meal.fat, 0) / totalMeals;
 
       return {
         recentMeals: meals,

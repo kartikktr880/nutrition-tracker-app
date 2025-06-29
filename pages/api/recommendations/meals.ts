@@ -16,7 +16,7 @@ export default async function handler(
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const userId = session.user.id;
+    const userId = session.user?.id || 'unknown-user';
     const { mealType = 'lunch', count = '5' } = req.query;
 
     if (!['breakfast', 'lunch', 'dinner', 'snack'].includes(mealType as string)) {

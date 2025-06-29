@@ -1,3 +1,4 @@
+export {};
 import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { MealPlan } from '../../components/MealPlan';
@@ -91,22 +92,22 @@ export default function MealPlanningPage() {
       <div>
         {activeTab === 'meal-plan' && (
           <MealPlan
-            userId={session.user.id}
+            userId={session.user?.id || 'unknown-user'}
             startDate={startDate}
             endDate={endDate}
           />
         )}
         {activeTab === 'grocery-list' && (
-          <GroceryList userId={session.user.id} />
+          <GroceryList userId={session.user?.id || 'unknown-user'} />
         )}
         {activeTab === 'meal-prep' && (
-          <MealPrepPlan userId={session.user.id} />
+          <MealPrepPlan userId={session.user?.id || 'unknown-user'} />
         )}
         {activeTab === 'preferences' && (
-          <UserPreferences userId={session.user.id} />
+          <UserPreferences userId={session.user?.id || 'unknown-user'} />
         )}
         {activeTab === 'goals' && (
-          <NutritionalGoals userId={session.user.id} />
+          <NutritionalGoals userId={session.user?.id || 'unknown-user'} />
         )}
       </div>
     </div>

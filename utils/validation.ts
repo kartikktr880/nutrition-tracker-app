@@ -13,12 +13,12 @@ export function validateExerciseData(exercise: Exercise): string | null {
     return 'Exercise name is required';
   }
 
-  if (!exercise.type || !['strength', 'cardio', 'flexibility'].includes(exercise.type)) {
-    return 'Invalid exercise type';
+  if (!exercise.category || !['strength', 'cardio', 'flexibility'].includes(exercise.category)) {
+    return 'Invalid exercise category';
   }
 
-  if (!exercise.intensity || !['low', 'medium', 'high', 'veryHigh'].includes(exercise.intensity)) {
-    return 'Invalid intensity level';
+  if (!exercise.intensity || exercise.intensity < 0 || exercise.intensity > 20) {
+    return 'Invalid intensity level (must be between 0 and 20)';
   }
 
   return null;
@@ -36,7 +36,7 @@ export function validateSessionData(session: ExerciseSession): string | null {
   ];
 
   for (const field of requiredFields) {
-    if (session[field] === undefined || session[field] === null) {
+    if ((session as any)[field] === undefined || (session as any)[field] === null) {
       return `${field} is required`;
     }
   }
@@ -103,3 +103,5 @@ export function validateSessionData(session: ExerciseSession): string | null {
 
   return null;
 } 
+
+

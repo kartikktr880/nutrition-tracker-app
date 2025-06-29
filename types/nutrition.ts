@@ -56,21 +56,15 @@ export interface NutritionalGoals {
   };
 }
 
-export interface MealPlan {
+export interface MealPlanV2 {
   id: string;
-  userId: string;
+  name: string;
   startDate: Date;
   endDate: Date;
+  dailyCalories: number;
+  macroRatios: MacroRatios;
   meals: Meal[];
-  nutritionalSummary: {
-    totalCalories: number;
-    totalProtein: number;
-    totalCarbs: number;
-    totalFat: number;
-    averageNutritionalScore: number;
-  };
-  preferences: UserPreferences;
-  goals: NutritionalGoals;
+  restrictions: DietaryRestrictions;
 }
 
 export interface GroceryList {
@@ -114,4 +108,126 @@ export interface PrepTask {
   estimatedTime: number;
   priority: 'high' | 'medium' | 'low';
   dependencies?: string[];
+}
+
+export interface NutritionalGoalsType {
+  dailyCalories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  sugar: number;
+  sodium: number;
+  water: number;
+  mealDistribution: {
+    breakfast: number;
+    lunch: number;
+    dinner: number;
+    snacks: number;
+  };
+}
+
+export interface MacroRatios {
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface NutrientLimits {
+  min: number;
+  max: number;
+  unit: string;
+}
+
+export interface NutrientGoals {
+  [nutrient: string]: NutrientLimits;
+}
+
+export interface DietaryRestrictions {
+  allergies: string[];
+  intolerances: string[];
+  preferences: string[];
+  excludedFoods: string[];
+}
+
+export interface NutritionProgress {
+  date: string;
+  calories: number;
+  macros: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  nutrients: {
+    [nutrient: string]: number;
+  };
+  water: number;
+  compliance: number;
+  notes?: string;
+}
+
+export interface FoodItem {
+  id: string;
+  name: string;
+  brand?: string;
+  servingSize: number;
+  servingUnit: string;
+  calories: number;
+  macros: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  nutrients: {
+    [nutrient: string]: number;
+  };
+  tags: string[];
+  allergens?: string[];
+  ingredients?: string[];
+}
+
+export interface Recipe {
+  id: string;
+  name: string;
+  ingredients: Array<{
+    foodItem: FoodItem;
+    quantity: number;
+    unit: string;
+  }>;
+  instructions: string[];
+  prepTime: number;
+  cookTime: number;
+  servings: number;
+  totalNutrition: {
+    calories: number;
+    macros: MacroRatios;
+    nutrients: {
+      [nutrient: string]: number;
+    };
+  };
+  tags: string[];
+  image?: string;
+}
+
+export interface UserNutritionProfile {
+  id: string;
+  goals: NutritionalGoalsType;
+  restrictions: DietaryRestrictions;
+  favoriteRecipes: string[];
+  customFoods: FoodItem[];
+  mealPlans: MealPlanV2[];
+  progress: NutritionProgress[];
+  settings: {
+    measurementSystem: 'metric' | 'imperial';
+    notifications: {
+      mealReminders: boolean;
+      waterReminders: boolean;
+      progressUpdates: boolean;
+    };
+    privacySettings: {
+      shareProgress: boolean;
+      shareRecipes: boolean;
+      publicProfile: boolean;
+    };
+  };
 } 

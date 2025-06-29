@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import MonitoringService from '@/services/monitoring';
+import { MonitoringService } from '@/services/monitoring';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {

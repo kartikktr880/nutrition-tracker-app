@@ -24,13 +24,13 @@ class OfflineService {
   private static instance: OfflineService;
   private syncQueue: SyncOperation[] = [];
   private isOnline: boolean = navigator.onLine;
-  private syncInProgress: boolean = false;
-  private maxRetries: number = 3;
-  private syncInterval: number = 30000; // 30 seconds
+  private syncInProgress = false;
+  private maxRetries = 3;
+  private syncInterval = 30000; // 30 seconds
   private syncTimer: NodeJS.Timeout | null = null;
-  private maxQueueSize: number = 1000;
-  private requestTimeout: number = 30000; // 30 seconds
-  private batchSize: number = 10;
+  private maxQueueSize = 1000;
+  private requestTimeout = 30000; // 30 seconds
+  private batchSize = 10;
   private conflictListeners: ((conflict: ConflictResolution) => void)[] = [];
 
   private constructor() {

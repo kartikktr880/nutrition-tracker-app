@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     if (!validationResult.success) {
       return NextResponse.json(
         { error: 'Invalid input', details: validationResult.error.errors },
-        { status: 400 }
+        { status: 500 }
       );
     }
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     if (end < start) {
       return NextResponse.json(
         { error: 'End date must be after start date' },
-        { status: 400 }
+        { status: 500 }
       );
     }
 
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     if (daysDiff > 30) {
       return NextResponse.json(
         { error: 'Date range cannot exceed 30 days' },
-        { status: 400 }
+        { status: 500 }
       );
     }
 
@@ -72,10 +72,10 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ mealPlan });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error generating meal plan:', error);
     return NextResponse.json(
-      { error: 'Failed to generate meal plan', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to generate meal plan', details: error instanceof Error ? (error as Error).message : 'Unknown error' },
       { status: 500 }
     );
   }
@@ -90,24 +90,28 @@ export async function PUT(request: Request) {
     if (!validationResult.success) {
       return NextResponse.json(
         { error: 'Invalid input', details: validationResult.error.errors },
-        { status: 400 }
+        { status: 500 }
       );
     }
 
     const { userId, mealPlan } = validationResult.data;
 
     const mealPlanningService = new MealPlanningService();
-    await mealPlanningService.saveMealPlan(userId, mealPlan.map(day => ({
-      ...day,
-      date: new Date(day.date)
-    })));
+    await mealPlanningService.saveMealPlan(userId, mealPlan as any);
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error saving meal plan:', error);
     return NextResponse.json(
-      { error: 'Failed to save meal plan', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to save meal plan', details: error instanceof Error ? (error as Error).message : 'Unknown error' },
       { status: 500 }
     );
   }
 } 
+
+
+
+
+
+
+

@@ -12,7 +12,7 @@ class ChecklistService {
   private listeners: Set<() => void> = new Set();
 
   // Get all checklists from localStorage
-  private getChecklists(): Checklist[] {
+  private getChecklistsSync(): Checklist[] {
     try {
       const stored = localStorage.getItem(this.storageKey);
       if (!stored) return [];
@@ -63,18 +63,18 @@ class ChecklistService {
 
   // Get all checklists
   async getChecklists(): Promise<Checklist[]> {
-    return this.getChecklists();
+    return Promise.resolve(this.getChecklistsSync());
   }
 
   // Get checklist by ID
   async getChecklist(id: string): Promise<Checklist | null> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     return checklists.find(checklist => checklist.id === id) || null;
   }
 
   // Create new checklist
   async createChecklist(data: ChecklistFormData): Promise<Checklist> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const newChecklist: Checklist = {
       id: this.generateId(),
       title: data.title,
@@ -95,7 +95,7 @@ class ChecklistService {
 
   // Update checklist
   async updateChecklist(id: string, data: Partial<ChecklistFormData>): Promise<Checklist> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const index = checklists.findIndex(checklist => checklist.id === id);
     
     if (index === -1) {
@@ -114,14 +114,14 @@ class ChecklistService {
 
   // Delete checklist
   async deleteChecklist(id: string): Promise<void> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const filtered = checklists.filter(checklist => checklist.id !== id);
     this.saveChecklists(filtered);
   }
 
   // Archive checklist
   async archiveChecklist(id: string): Promise<void> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const index = checklists.findIndex(checklist => checklist.id === id);
     
     if (index === -1) {
@@ -135,7 +135,7 @@ class ChecklistService {
 
   // Add item to checklist
   async addItem(checklistId: string, data: ChecklistItemFormData): Promise<ChecklistItem> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const checklistIndex = checklists.findIndex(checklist => checklist.id === checklistId);
     
     if (checklistIndex === -1) {
@@ -162,7 +162,7 @@ class ChecklistService {
 
   // Update checklist item
   async updateItem(checklistId: string, itemId: string, data: Partial<ChecklistItemFormData>): Promise<ChecklistItem> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const checklistIndex = checklists.findIndex(checklist => checklist.id === checklistId);
     
     if (checklistIndex === -1) {
@@ -188,7 +188,7 @@ class ChecklistService {
 
   // Delete checklist item
   async deleteItem(checklistId: string, itemId: string): Promise<void> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const checklistIndex = checklists.findIndex(checklist => checklist.id === checklistId);
     
     if (checklistIndex === -1) {
@@ -202,7 +202,7 @@ class ChecklistService {
 
   // Toggle item completion
   async toggleItem(checklistId: string, itemId: string): Promise<ChecklistItem> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     const checklistIndex = checklists.findIndex(checklist => checklist.id === checklistId);
     
     if (checklistIndex === -1) {
@@ -227,7 +227,7 @@ class ChecklistService {
 
   // Filter checklists
   async filterChecklists(filters: ChecklistFilters): Promise<Checklist[]> {
-    let checklists = this.getChecklists().filter(checklist => !checklist.isArchived);
+    let checklists = this.getChecklistsSync().filter(checklist => !checklist.isArchived);
 
     // Search filter
     if (filters.search) {
@@ -281,7 +281,7 @@ class ChecklistService {
 
   // Calculate statistics
   async getStats(): Promise<ChecklistStats> {
-    const checklists = this.getChecklists().filter(checklist => !checklist.isArchived);
+    const checklists = this.getChecklistsSync();
     const allItems = checklists.flatMap(checklist => checklist.items);
     
     const totalItems = allItems.length;
@@ -324,7 +324,7 @@ class ChecklistService {
 
   // Export checklists
   async exportChecklists(): Promise<string> {
-    const checklists = this.getChecklists();
+    const checklists = this.getChecklistsSync();
     return JSON.stringify(checklists, null, 2);
   }
 

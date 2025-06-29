@@ -29,8 +29,6 @@ class NotificationService {
     enabled: true
   };
 
-  private constructor() {}
-
   static getInstance(): NotificationService {
     if (!NotificationService.instance) {
       NotificationService.instance = new NotificationService();

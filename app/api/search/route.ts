@@ -31,25 +31,18 @@ export async function POST(request: NextRequest) {
     // Get search results based on type
     let results: SearchResult[];
     if (validatedData.type === 'food') {
-      results = await databaseService.searchFoods(
-        validatedData.query,
-        validatedData.limit,
-        validatedData.offset,
-        validatedData.filters
-      );
+      results = await databaseService.searchFoods(validatedData.query);
     } else if (validatedData.type === 'meal') {
       results = await databaseService.searchMeals(
         validatedData.query,
         validatedData.limit,
-        validatedData.offset,
-        validatedData.filters
+        validatedData.offset
       );
     } else {
       results = await databaseService.searchAll(
         validatedData.query,
         validatedData.limit,
-        validatedData.offset,
-        validatedData.filters
+        validatedData.offset
       );
     }
 
@@ -82,16 +75,16 @@ export async function POST(request: NextRequest) {
         hasMore: validatedResults.length === (validatedData.limit || 10),
         suggestions,
       },
-      status: 200,
+      status: 500,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Search API error:', error);
     
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Invalid request data',
-        status: 400,
-      }, { status: 400 });
+        status: 500,
+      }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -137,3 +130,9 @@ function generateSuggestions(query: string, results: SearchResult[]): string[] {
 
   return Array.from(suggestions).slice(0, 5);
 } 
+
+
+
+
+
+

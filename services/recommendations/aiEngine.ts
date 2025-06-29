@@ -19,8 +19,6 @@ export class AIRecommendationEngine {
   private modelCache: Map<string, any> = new Map();
   private readonly MODEL_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
-  private constructor() {}
-
   public static getInstance(): AIRecommendationEngine {
     if (!AIRecommendationEngine.instance) {
       AIRecommendationEngine.instance = new AIRecommendationEngine();
@@ -161,7 +159,7 @@ export class AIRecommendationEngine {
     });
 
     // Score meals based on model and preferences
-    const scoredMeals = potentialMeals.map(meal => ({
+    const scoredMeals = potentialMeals.map((meal: any) => ({
       ...meal,
       confidence: this.calculateConfidence(meal, model, preferences, nutritionalNeeds),
       reason: this.generateRecommendationReason(meal, model, preferences)
@@ -169,7 +167,7 @@ export class AIRecommendationEngine {
 
     // Return top N recommendations
     return scoredMeals
-      .sort((a, b) => b.confidence - a.confidence)
+      .sort((a: any, b: any) => b.confidence - a.confidence)
       .slice(0, count);
   }
 

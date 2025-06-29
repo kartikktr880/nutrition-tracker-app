@@ -172,7 +172,7 @@ class DatabaseService {
     }
   }
 
-  public async searchMeals(query: string, limit: number = 10, offset: number = 0): Promise<SearchResult[]> {
+  public async searchMeals(query: string, limit = 10, offset = 0): Promise<SearchResult[]> {
     const meals = Array.from(this.meals.values());
     const filteredMeals = meals.filter(meal => 
       meal.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -193,7 +193,7 @@ class DatabaseService {
     }));
   }
 
-  public async searchAll(query: string, limit: number = 10, offset: number = 0): Promise<SearchResult[]> {
+  public async searchAll(query: string, limit = 10, offset = 0): Promise<SearchResult[]> {
     const [foods, meals] = await Promise.all([
       this.searchFoods(query),
       this.searchMeals(query, limit, offset),

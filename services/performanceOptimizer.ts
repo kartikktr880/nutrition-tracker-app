@@ -36,9 +36,9 @@ class PerformanceOptimizer {
   private metrics: PerformanceMetrics[] = [];
   private metricsInterval: NodeJS.Timeout | null = null;
   private config: OptimizationConfig;
-  private isOptimizing: boolean = false;
-  private lastFrameTime: number = 0;
-  private frameCount: number = 0;
+  private isOptimizing = false;
+  private lastFrameTime = 0;
+  private frameCount = 0;
   private fpsUpdateInterval: NodeJS.Timeout | null = null;
 
   private constructor() {

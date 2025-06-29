@@ -21,7 +21,7 @@ class RateLimiter {
   private static instance: RateLimiter;
   private records: Map<string, RateLimitRecord> = new Map();
   private tiers: Map<string, RateLimitTier>;
-  private isInitialized: boolean = false;
+  private isInitialized = false;
 
   private constructor() {
     this.tiers = new Map([
@@ -85,7 +85,7 @@ class RateLimiter {
     return `${tier}:${identifier}`;
   }
 
-  async checkRateLimit(identifier: string, tier: string = 'free'): Promise<{
+  async checkRateLimit(identifier: string, tier = 'free'): Promise<{
     allowed: boolean;
     remaining: number;
     resetTime: number;
@@ -150,12 +150,12 @@ class RateLimiter {
     }
   }
 
-  async resetRateLimit(identifier: string, tier: string = 'free'): Promise<void> {
+  async resetRateLimit(identifier: string, tier = 'free'): Promise<void> {
     const key = this.getKey(identifier, tier);
     this.records.delete(key);
   }
 
-  async getRateLimitInfo(identifier: string, tier: string = 'free'): Promise<{
+  async getRateLimitInfo(identifier: string, tier = 'free'): Promise<{
     tier: string;
     maxRequests: number;
     windowMs: number;

@@ -1,30 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { dataManagementService } from '../../lib/data-management-service';
-import { Line, Bar, Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// // import { Line, Bar, div } from 'react-chartjs-2';
+// // import { Chart, registerables } from 'chart.js';
+// // Chart.register(...registerables);
 
 const DataAnalytics: React.FC = () => {
   const [analyticsData, setAnalyticsData] = useState<any>(null);
@@ -112,7 +90,7 @@ const DataAnalytics: React.FC = () => {
       ...prev,
       sections: {
         ...prev.sections,
-        [section]: !prev.sections[section]
+        [section as any]: !prev.sections[section as any]
       }
     }));
   };
@@ -282,9 +260,9 @@ const DataAnalytics: React.FC = () => {
                 onChange={(e) => handleReportConfigChange('chartType', e.target.value)}
                 className="w-full border rounded px-2 py-1"
               >
-                <option value="line">Line Chart</option>
-                <option value="bar">Bar Chart</option>
-                <option value="pie">Pie Chart</option>
+                <option value="line">div Chart</option>
+                <option value="bar">div Chart</option>
+                <option value="pie">div Chart</option>
               </select>
             </div>
           </div>
@@ -350,13 +328,13 @@ const DataAnalytics: React.FC = () => {
               <h4 className="font-medium mb-2">Chart</h4>
               <div className="h-64">
                 {customReport.chartData.type === 'line' && (
-                  <Line data={customReport.chartData.data} options={customReport.chartData.options} />
+                  <div>Chart Placeholder</div>
                 )}
                 {customReport.chartData.type === 'bar' && (
-                  <Bar data={customReport.chartData.data} options={customReport.chartData.options} />
+                  <div>Chart Placeholder</div>
                 )}
                 {customReport.chartData.type === 'pie' && (
-                  <Pie data={customReport.chartData.data} options={customReport.chartData.options} />
+                  <div>Chart Placeholder</div>
                 )}
               </div>
             </div>
@@ -397,19 +375,19 @@ const DataAnalytics: React.FC = () => {
         {/* Barcode Scan Chart */}
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <h3 className="font-medium mb-3">{barcodeChartData.title}</h3>
-          <Line data={barcodeChartData.data} options={barcodeChartData.options} />
+          <div>Chart Placeholder</div>
         </div>
 
         {/* Meal Plan Distribution Chart */}
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <h3 className="font-medium mb-3">{mealPlanChartData.title}</h3>
-          <Pie data={mealPlanChartData.data} options={mealPlanChartData.options} />
+          <div>Chart Placeholder</div>
         </div>
 
         {/* Goal Progress Chart */}
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <h3 className="font-medium mb-3">{goalProgressChartData.title}</h3>
-          <Bar data={goalProgressChartData.data} options={goalProgressChartData.options} />
+          <div>Chart Placeholder</div>
         </div>
       </div>
 

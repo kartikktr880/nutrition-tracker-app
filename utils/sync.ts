@@ -28,7 +28,7 @@ const DEFAULT_CONFIG: SyncConfig = {
 
 class SyncManager {
   private queue: SyncQueue[] = [];
-  private isProcessing: boolean = false;
+  private isProcessing = false;
   private config: SyncConfig;
   private syncInterval: NodeJS.Timeout | null = null;
 

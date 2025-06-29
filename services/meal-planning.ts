@@ -63,7 +63,7 @@ export class MealPlanningService {
     misses: 0,
     evictions: 0
   };
-  private isWarming: boolean = false;
+  private isWarming = false;
 
   constructor() {
     this.aiRecommendation = new AIRecommendationService();

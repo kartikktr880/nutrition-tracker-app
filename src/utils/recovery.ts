@@ -1,8 +1,9 @@
 import { ExerciseSession } from '@/types/exercise';
-import { logAudit } from './auditLog';
-import { encryptData, decryptData } from './encryption';
-import { validateSessionData } from './validation';
+import { logAudit } from '../../utils/auditLog';
+import { encryptData, decryptData } from '../../utils/encryption';
+import { validateSessionData } from '../../utils/validation';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 interface RecoveryConfig {
   maxRetries: number;
@@ -298,7 +299,7 @@ class RecoveryManager {
   private performanceTimer?: NodeJS.Timeout;
   private resourceTimer?: NodeJS.Timeout;
   private performanceMetrics: PerformanceMetrics;
-  private processingStartTime: number = 0;
+  private processingStartTime = 0;
   private operationsInProgress: Set<string> = new Set();
   private resourceUsage: ResourceUsage;
   private retryStrategies: Map<string, RetryStrategy>;
@@ -554,6 +555,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'performance_metrics_update',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: this.performanceMetrics
     });
   }
@@ -576,6 +581,10 @@ class RecoveryManager {
       logAudit({
         userId: 'system',
         action: 'resource_usage_check',
+        endpoint: 'recovery',
+        method: 'INTERNAL',
+        status: 200,
+        timestamp: new Date().toISOString(),
         details: this.resourceUsage
       });
     } catch (error) {
@@ -613,6 +622,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'high_resource_usage',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         resourceUsage: this.resourceUsage,
         pausedOperations: pendingOperations.length
@@ -647,6 +660,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'retry_strategy_applied',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         operationId: operation.id,
         strategyType,
@@ -700,6 +717,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'recovery_conflict',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         type: operation.type,
         operationId: operation.id,
@@ -711,7 +732,7 @@ class RecoveryManager {
 
   private async processOperationInTransaction(
     operation: RecoveryOperation,
-    tx: any
+    tx: Prisma.TransactionClient
   ): Promise<void> {
     if (this.isResourceUsageHigh()) {
       await this.applyRetryStrategy(operation, 'resource');
@@ -775,7 +796,7 @@ class RecoveryManager {
     }
   }
 
-  private async getCurrentVersion(id: string, tx: any): Promise<number> {
+  private async getCurrentVersion(id: string, tx: Prisma.TransactionClient): Promise<number> {
     const session = await tx.exerciseSession.findUnique({
       where: { id },
       select: { version: true }
@@ -901,11 +922,11 @@ class RecoveryManager {
     type: 'create' | 'update' | 'delete',
     data: ExerciseSession,
     error?: string,
-    priority: number = 0,
+    priority = 0,
     dependencies?: string[],
     category: 'critical' | 'high' | 'medium' | 'low' = 'medium',
     deadline?: string,
-    estimatedDuration: number = 0,
+    estimatedDuration = 0,
     resourceRequirements: {
       memory: number;
       cpu: number;
@@ -944,6 +965,10 @@ class RecoveryManager {
     logAudit({
       userId: data.userId,
       action: 'add_to_recovery_queue',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         type,
         operationId,
@@ -993,23 +1018,18 @@ class RecoveryManager {
   ): Promise<void> {
     // Start a transaction
     const transaction = await prisma.$transaction(
-      async (tx) => {
+      async (tx: Prisma.TransactionClient) => {
         for (const operation of operations) {
-          try {
-            // Check dependencies
-            if (operation.dependencies?.length) {
-              const dependencyStatus = await this.checkDependencies(operation.dependencies);
-              if (!dependencyStatus.allSatisfied) {
-                throw new Error(`Dependencies not satisfied: ${dependencyStatus.failedDependencies.join(', ')}`);
-              }
+          // Check dependencies
+          if (operation.dependencies?.length) {
+            const dependencyStatus = await this.checkDependencies(operation.dependencies);
+            if (!dependencyStatus.allSatisfied) {
+              throw new Error(`Dependencies not satisfied: ${dependencyStatus.failedDependencies.join(', ')}`);
             }
-
-            // Process the operation
-            await this.processOperationInTransaction(operation, tx);
-          } catch (error) {
-            // If any operation fails, the entire transaction will be rolled back
-            throw error;
           }
+
+          // Process the operation
+          await this.processOperationInTransaction(operation, tx);
         }
       },
       {
@@ -1028,7 +1048,7 @@ class RecoveryManager {
 
   private async recoverCreateInTransaction(
     operation: RecoveryOperation,
-    tx: any
+    tx: Prisma.TransactionClient
   ): Promise<void> {
     const session = await tx.exerciseSession.create({
       data: {
@@ -1048,6 +1068,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'recovery_create_success',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         sessionId: session.id,
         operationId: operation.id
@@ -1057,7 +1081,7 @@ class RecoveryManager {
 
   private async recoverUpdateInTransaction(
     operation: RecoveryOperation,
-    tx: any
+    tx: Prisma.TransactionClient
   ): Promise<void> {
     const session = await tx.exerciseSession.update({
       where: { id: operation.data.id },
@@ -1077,6 +1101,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'recovery_update_success',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         sessionId: session.id,
         operationId: operation.id
@@ -1086,7 +1114,7 @@ class RecoveryManager {
 
   private async recoverDeleteInTransaction(
     operation: RecoveryOperation,
-    tx: any
+    tx: Prisma.TransactionClient
   ): Promise<void> {
     await tx.exerciseSession.delete({
       where: { id: operation.data.id }
@@ -1095,6 +1123,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'recovery_delete_success',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         sessionId: operation.data.id,
         operationId: operation.id
@@ -1142,6 +1174,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'recovery_operation_error',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 500,
+      timestamp: new Date().toISOString(),
       details: {
         type: operation.type,
         operationId: operation.id,
@@ -1161,6 +1197,10 @@ class RecoveryManager {
         logAudit({
           userId: operation.userId,
           action: 'cleanup_recovery_operation',
+          endpoint: 'recovery',
+          method: 'INTERNAL',
+          status: 200,
+          timestamp: new Date().toISOString(),
           details: {
             type: operation.type,
             operationId: id,
@@ -1203,6 +1243,10 @@ class RecoveryManager {
     logAudit({
       userId: operation.userId,
       action: 'reset_recovery_operation',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         type: operation.type,
         operationId
@@ -1217,6 +1261,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'clear_recovery_queue',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         reason: 'manual_clear'
       }
@@ -1265,7 +1313,11 @@ class RecoveryManager {
         ? (this.performanceMetrics.operationsProcessed - this.performanceMetrics.errorCount) 
           / this.performanceMetrics.operationsProcessed * 100
         : 0,
-      resourceUtilization: this.resourceUsage
+      resourceUtilization: {
+        memory: this.resourceUsage.memory,
+        cpu: this.resourceUsage.cpu,
+        connections: this.resourceUsage.activeConnections
+      }
     };
 
     // Calculate timeline metrics
@@ -1332,6 +1384,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'health_check',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: health
     });
 
@@ -1420,6 +1476,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'database_fallback',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: { timestamp: new Date().toISOString() }
     });
   }
@@ -1429,6 +1489,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'network_fallback',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: { timestamp: new Date().toISOString() }
     });
   }
@@ -1438,6 +1502,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'validation_fallback',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: { timestamp: new Date().toISOString() }
     });
   }
@@ -1508,12 +1576,21 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'monitoring_dashboard_update',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: this.monitoringDashboard
     });
   }
 
   private calculateResourceTrend(resource: 'memory' | 'cpu' | 'connections'): 'increasing' | 'stable' | 'decreasing' {
-    const current = this.resourceUsage[resource];
+    const resourceMap = {
+      memory: this.resourceUsage.memory,
+      cpu: this.resourceUsage.cpu,
+      connections: this.resourceUsage.activeConnections
+    };
+    const current = resourceMap[resource];
     const previous = this.monitoringDashboard.performanceAnalytics.resources[resource].current;
     const threshold = 5; // 5% change threshold
 
@@ -1551,11 +1628,17 @@ class RecoveryManager {
   }
 
   private async executeRecoveryAction(action: AutomatedRecoveryAction): Promise<void> {
-    const recoveryAction = {
+    const recoveryAction: {
+      id: string;
+      type: string;
+      target: string;
+      status: 'pending' | 'in_progress' | 'completed' | 'failed';
+      timestamp: string;
+    } = {
       id: crypto.randomUUID(),
       type: action.type,
       target: action.id,
-      status: 'in_progress' as const,
+      status: 'in_progress',
       timestamp: new Date().toISOString()
     };
 
@@ -1566,13 +1649,21 @@ class RecoveryManager {
       await action.action();
       recoveryAction.status = 'completed';
       this.monitoringDashboard.recoveryActions.completed.push({
-        ...recoveryAction,
+        id: recoveryAction.id,
+        type: recoveryAction.type,
+        target: recoveryAction.target,
+        status: 'completed',
+        timestamp: recoveryAction.timestamp,
         duration: Date.now() - new Date(recoveryAction.timestamp).getTime()
       });
     } catch (error) {
       recoveryAction.status = 'failed';
       this.monitoringDashboard.recoveryActions.completed.push({
-        ...recoveryAction,
+        id: recoveryAction.id,
+        type: recoveryAction.type,
+        target: recoveryAction.target,
+        status: 'failed',
+        timestamp: recoveryAction.timestamp,
         duration: Date.now() - new Date(recoveryAction.timestamp).getTime()
       });
       throw error;
@@ -1597,11 +1688,28 @@ class RecoveryManager {
 
   private async performMemoryCleanup(): Promise<void> {
     // Implement memory cleanup logic
-    logAudit({
-      userId: 'system',
-      action: 'memory_cleanup',
-      details: { timestamp: new Date().toISOString() }
-    });
+    try {
+      // Implement memory cache clearing
+      if (global.gc) {
+        global.gc();
+      }
+      await this.clearMemoryCache();
+      logAudit({
+        userId: 'system',
+        action: 'memory_cache_cleared',
+        endpoint: 'recovery',
+        method: 'INTERNAL',
+        status: 200,
+        timestamp: new Date().toISOString(),
+        details: { timestamp: new Date().toISOString() }
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to clear memory cache: ${error.message}`);
+      } else {
+        throw new Error('Failed to clear memory cache: Unknown error');
+      }
+    }
   }
 
   private async optimizeQueue(): Promise<void> {
@@ -1609,6 +1717,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'queue_optimization',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: { timestamp: new Date().toISOString() }
     });
   }
@@ -1618,6 +1730,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'database_recovery',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: { timestamp: new Date().toISOString() }
     });
   }
@@ -1725,6 +1841,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'alert_routing',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         alertId: alert.id,
         groups: matchingGroups.map(g => g.id)
@@ -1857,6 +1977,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'email_notification_sent',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         notificationId: notification.id,
         channelId: channel.id
@@ -1872,6 +1996,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'slack_notification_sent',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         notificationId: notification.id,
         channelId: channel.id
@@ -1887,6 +2015,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'push_notification_sent',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         notificationId: notification.id,
         channelId: channel.id
@@ -1902,6 +2034,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'webhook_notification_sent',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         notificationId: notification.id,
         channelId: channel.id
@@ -1917,6 +2053,10 @@ class RecoveryManager {
     logAudit({
       userId: 'system',
       action: 'sms_notification_sent',
+      endpoint: 'recovery',
+      method: 'INTERNAL',
+      status: 200,
+      timestamp: new Date().toISOString(),
       details: {
         notificationId: notification.id,
         channelId: channel.id
@@ -1955,10 +2095,18 @@ class RecoveryManager {
               logAudit({
                 userId: 'system',
                 action: 'memory_cache_cleared',
+                endpoint: 'recovery',
+                method: 'INTERNAL',
+                status: 200,
+                timestamp: new Date().toISOString(),
                 details: { timestamp: new Date().toISOString() }
               });
             } catch (error) {
-              throw new Error(`Failed to clear memory cache: ${error.message}`);
+              if (error instanceof Error) {
+                throw new Error(`Failed to clear memory cache: ${error.message}`);
+              } else {
+                throw new Error('Failed to clear memory cache: Unknown error');
+              }
             }
           },
           rollback: async () => {
@@ -1974,10 +2122,18 @@ class RecoveryManager {
               logAudit({
                 userId: 'system',
                 action: 'memory_usage_reduced',
+                endpoint: 'recovery',
+                method: 'INTERNAL',
+                status: 200,
+                timestamp: new Date().toISOString(),
                 details: { timestamp: new Date().toISOString() }
               });
             } catch (error) {
-              throw new Error(`Failed to reduce memory usage: ${error.message}`);
+              if (error instanceof Error) {
+                throw new Error(`Failed to reduce memory usage: ${error.message}`);
+              } else {
+                throw new Error('Failed to reduce memory usage: Unknown error');
+              }
             }
           },
           rollback: async () => {
@@ -2001,10 +2157,18 @@ class RecoveryManager {
               logAudit({
                 userId: 'system',
                 action: 'cpu_throttled',
+                endpoint: 'recovery',
+                method: 'INTERNAL',
+                status: 200,
+                timestamp: new Date().toISOString(),
                 details: { timestamp: new Date().toISOString() }
               });
             } catch (error) {
-              throw new Error(`Failed to throttle CPU: ${error.message}`);
+              if (error instanceof Error) {
+                throw new Error(`Failed to throttle CPU: ${error.message}`);
+              } else {
+                throw new Error('Failed to throttle CPU: Unknown error');
+              }
             }
           },
           rollback: async () => {
@@ -2020,10 +2184,18 @@ class RecoveryManager {
               logAudit({
                 userId: 'system',
                 action: 'tasks_deferred',
+                endpoint: 'recovery',
+                method: 'INTERNAL',
+                status: 200,
+                timestamp: new Date().toISOString(),
                 details: { timestamp: new Date().toISOString() }
               });
             } catch (error) {
-              throw new Error(`Failed to defer tasks: ${error.message}`);
+              if (error instanceof Error) {
+                throw new Error(`Failed to defer tasks: ${error.message}`);
+              } else {
+                throw new Error('Failed to defer tasks: Unknown error');
+              }
             }
           },
           rollback: async () => {
@@ -2047,10 +2219,18 @@ class RecoveryManager {
               logAudit({
                 userId: 'system',
                 action: 'network_requests_optimized',
+                endpoint: 'recovery',
+                method: 'INTERNAL',
+                status: 200,
+                timestamp: new Date().toISOString(),
                 details: { timestamp: new Date().toISOString() }
               });
             } catch (error) {
-              throw new Error(`Failed to optimize network requests: ${error.message}`);
+              if (error instanceof Error) {
+                throw new Error(`Failed to optimize network requests: ${error.message}`);
+              } else {
+                throw new Error('Failed to optimize network requests: Unknown error');
+              }
             }
           },
           rollback: async () => {
@@ -2066,10 +2246,18 @@ class RecoveryManager {
               logAudit({
                 userId: 'system',
                 action: 'request_caching_enabled',
+                endpoint: 'recovery',
+                method: 'INTERNAL',
+                status: 200,
+                timestamp: new Date().toISOString(),
                 details: { timestamp: new Date().toISOString() }
               });
             } catch (error) {
-              throw new Error(`Failed to enable request caching: ${error.message}`);
+              if (error instanceof Error) {
+                throw new Error(`Failed to enable request caching: ${error.message}`);
+              } else {
+                throw new Error('Failed to enable request caching: Unknown error');
+              }
             }
           },
           rollback: async () => {
@@ -2130,8 +2318,12 @@ class RecoveryManager {
 
       success = true;
     } catch (recoveryError) {
-      error = recoveryError.message;
-      console.error(`Recovery failed for type ${type}:`, recoveryError);
+      if (recoveryError instanceof Error) {
+        error = recoveryError.message;
+      } else {
+        error = 'Unknown error';
+      }
+      console.error(`Recovery failed for type ${type}:`, recoveryError as any);
     } finally {
       // Record recovery attempt
       this.recoveryHistory.push({
@@ -2150,6 +2342,10 @@ class RecoveryManager {
       logAudit({
         userId: 'system',
         action: 'recovery_attempt',
+        endpoint: 'recovery',
+        method: 'INTERNAL',
+        status: 200,
+        timestamp,
         details: {
           type,
           success,

@@ -798,10 +798,10 @@ class DataManagementService {
 
   public generateCustomReport(config: ReportConfig): ReportResult {
     try {
-      let filteredData = this.applyFilters(config.filters);
-      let processedData = this.processData(filteredData, config);
-      let summary = this.generateSummary(processedData, config);
-      let chartData = config.chartType ? this.generateChartData(processedData, config) : undefined;
+      const filteredData = this.applyFilters(config.filters);
+      const processedData = this.processData(filteredData, config);
+      const summary = this.generateSummary(processedData, config);
+      const chartData = config.chartType ? this.generateChartData(processedData, config) : undefined;
 
       return {
         data: processedData,

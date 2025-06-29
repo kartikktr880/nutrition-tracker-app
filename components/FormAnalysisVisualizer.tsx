@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { validationVisualization } from '@/services/validationVisualization';
-import { ValidationResult } from '@/services/stateValidation';
+import { validationVisualization } from '../services/validationVisualization';
+import { ValidationResult } from '../services/stateValidation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 
 interface FormAnalysisVisualizerProps {
   exerciseKey: string;
@@ -208,7 +208,7 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
   };
 
   return (
-    <div className={`form-analysis-visualizer ${className}`}>
+    <div className={`form-analysis-visualizer ${className}`} data-testid="form-analysis-visualizer-root">
       <div className="visualization-container">
         <canvas
           ref={canvasRef}
@@ -248,7 +248,7 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
       {showDetailedMetrics && (
         <div className="detailed-metrics">
           <div className="metric">
-            <span className="metric-label">Accuracy</span>
+            <span className="metric-label" aria-label="Accuracy">Accuracy</span>
             <div className="metric-bar">
               <motion.div
                 initial={{ width: 0 }}
@@ -259,7 +259,7 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
             </div>
           </div>
           <div className="metric">
-            <span className="metric-label">Alignment</span>
+            <span className="metric-label" aria-label="Alignment">Alignment</span>
             <div className="metric-bar">
               <motion.div
                 initial={{ width: 0 }}
@@ -270,7 +270,7 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
             </div>
           </div>
           <div className="metric">
-            <span className="metric-label">Stability</span>
+            <span className="metric-label" aria-label="Stability">Stability</span>
             <div className="metric-bar">
               <motion.div
                 initial={{ width: 0 }}
@@ -281,7 +281,7 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
             </div>
           </div>
           <div className="metric">
-            <span className="metric-label">Timing</span>
+            <span className="metric-label" aria-label="Timing">Timing</span>
             <div className="metric-bar">
               <motion.div
                 initial={{ width: 0 }}

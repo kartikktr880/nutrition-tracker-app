@@ -25,8 +25,6 @@ class StatePersistence {
   private isInitialized = false;
   private initPromise: Promise<void> | null = null;
 
-  private constructor() {}
-
   public static getInstance(): StatePersistence {
     if (!StatePersistence.instance) {
       StatePersistence.instance = new StatePersistence();
