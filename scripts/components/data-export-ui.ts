@@ -10,7 +10,6 @@ import { LoggingUtils } from '../utils/logging-utils';
 export class DataExportUI {
     private static instance: DataExportUI;
     private container: HTMLElement | null = null;
-    private readonly logger = LoggingUtils.getInstance();
 
     private constructor() {
         // Private constructor for singleton pattern
@@ -196,13 +195,13 @@ export class DataExportUI {
 
             this.showStatus('Data exported successfully', 'success');
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'Data export UI' }
-            );
-            this.showStatus('Export failed: ' + error.message, 'error');
+            if (error instanceof Error) {
+                this.handleError(error);
+                this.showStatus('Export failed: ' + error.message, 'error');
+            } else {
+                this.handleError(new Error(String(error)));
+                this.showStatus('Export failed: ' + String(error), 'error');
+            }
         }
     }
 
@@ -247,13 +246,13 @@ export class DataExportUI {
             const importSubmitButton = this.container?.querySelector('.import-submit-button');
             if (importSubmitButton) importSubmitButton.setAttribute('disabled', '');
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'Data import UI' }
-            );
-            this.showStatus('Import failed: ' + error.message, 'error');
+            if (error instanceof Error) {
+                this.handleError(error);
+                this.showStatus('Import failed: ' + error.message, 'error');
+            } else {
+                this.handleError(new Error(String(error)));
+                this.showStatus('Import failed: ' + String(error), 'error');
+            }
         }
     }
 
@@ -323,6 +322,11 @@ export class DataExportUI {
             this.container.remove();
             this.container = null;
         }
+    }
+
+    private handleError(error: Error): void {
+        LoggingUtils.log('error', error.message);
+        this.showStatus(error.message, 'error');
     }
 }
 

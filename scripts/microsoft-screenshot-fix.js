@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Microsoft Screenshot Fix
  * This script detects when Microsoft's screenshot tool is being used and applies fixes
@@ -92,7 +93,7 @@
         createScreenshotToggle();
         
         if (config.debug) {
-            console.log('Microsoft screenshot fix initialized');
+            logInfo('Microsoft screenshot fix initialized');
         }
     }
     
@@ -149,7 +150,7 @@
         
         // Log state
         if (config.debug) {
-            console.log('Screenshot mode enabled');
+            logInfo('Screenshot mode enabled');
         }
     }
     
@@ -186,7 +187,7 @@
         
         // Log state
         if (config.debug) {
-            console.log('Screenshot mode disabled');
+            logInfo('Screenshot mode disabled');
         }
     }
     

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Analytics service for tracking user interactions and performance metrics
  */
@@ -99,10 +100,10 @@ class AnalyticsService {
 
     try {
       // In a real app, this would send to an analytics service
-      console.log('Sending analytics batch:', events);
+      logInfo('Sending analytics batch:', events);
 
       // Track the flush event itself (but don't queue it)
-      console.log('Analytics flush:', {
+      logInfo('Analytics flush:', {
         timestamp: Date.now(),
         batchSize: events.length,
         sessionId: this.sessionId
@@ -110,7 +111,7 @@ class AnalyticsService {
     } catch (err) {
       // Put failed events back in the queue
       this.queue = [...events, ...this.queue].slice(-this.options.queueSize);
-      console.error('Failed to flush analytics:', err);
+      logError('Failed to flush analytics:', err);
     }
   }
 
@@ -211,6 +212,55 @@ class AnalyticsService {
     this.flush();
   }
 }
+
+export interface AnalyticsData {
+  id: string;
+  userId: string;
+  timestamp: Date;
+  metrics: Record<string, number>;
+}
+
+export const getAnalyticsData = async (): Promise<AnalyticsData[]> => {
+  // Mock implementation - replace with actual API call
+  return [
+    {
+      id: '1',
+      userId: 'user1',
+      timestamp: new Date(),
+      metrics: {
+        calories: 1850,
+        protein: 120,
+        carbs: 200,
+        fat: 65
+      }
+    }
+  ];
+};
+
+export const exportAnalyticsData = async (format: string): Promise<string> => {
+  // Mock implementation - replace with actual export logic
+  const data = await getAnalyticsData();
+  
+  if (format === 'csv') {
+    return 'csv,export,data';
+  }
+  
+  return JSON.stringify(data);
+};
+
+export const generateAnalyticsReport = async (period: string): Promise<Record<string, unknown>> => {
+  // Mock implementation - replace with actual report generation
+  return {
+    period,
+    totalEntries: 30,
+    averageCalories: 1850,
+    trends: {
+      calories: 'stable',
+      protein: 'increasing',
+      carbs: 'decreasing'
+    }
+  };
+};
 
 // Export singleton instance
 export const analytics = new AnalyticsService(); 

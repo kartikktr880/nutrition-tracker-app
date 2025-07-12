@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // nav.js - Handle navigation functionality
 
 /**
@@ -16,12 +17,12 @@ class NavManager {
      */
     init() {
         try {
-            console.log('Initializing navigation...');
+            logInfo('Initializing navigation...');
             this.setupEventListeners();
             this.updateActiveNavItem();
-            console.log('Navigation initialized successfully');
+            logInfo('Navigation initialized successfully');
         } catch (error) {
-            console.error('Failed to initialize navigation:', error);
+            logError('Failed to initialize navigation:', error);
         }
     }
 

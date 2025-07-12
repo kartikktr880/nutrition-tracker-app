@@ -1,9 +1,10 @@
-import { HomeIcon, ChartBarIcon, DocumentDuplicateIcon, ChartPieIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-import DataManagement from './DataManagement';
+import { DocumentDuplicateIcon, ChartPieIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+
 import DataAnalytics from './DataAnalytics';
+import DataManagement from './DataManagement';
 
 // Add to navigation items
-const navigation = [
+const _navigation = [
   {
     name: 'Data Management',
     href: '/data-management',
@@ -21,6 +22,4 @@ const navigation = [
     href: '/checklists',
     icon: CheckCircleIcon
   }
-];
-
-// ... rest of the existing code ... 
+]; 

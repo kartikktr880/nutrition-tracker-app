@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Enhanced Meal Analytics
  * Provides sophisticated meal analysis and suggestions
@@ -72,7 +73,7 @@ class MealAnalytics {
                 ]);
             }
         } catch (error) {
-            console.error('Error loading user preferences:', error);
+            logError('Error loading user preferences:', error);
             this.preferences = new Map();
         }
     }
@@ -843,7 +844,7 @@ class MealAnalytics {
             
             this.displayAnalytics(analytics);
         } catch (error) {
-            console.error('Error loading analytics:', error);
+            logError('Error loading analytics:', error);
             document.getElementById('weeklyStats').innerHTML = 'Error loading analytics';
         }
     }

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from './logger';
 import fs from 'fs';
 import path from 'path';
 import { ExerciseSession } from '@/types/exercise';
@@ -13,8 +14,8 @@ export function backupSessionData(session: ExerciseSession): void {
     // Ensure backup directory exists
     fs.mkdirSync(BACKUP_DIR, { recursive: true });
     fs.writeFileSync(filepath, JSON.stringify(session, null, 2), 'utf8');
-    console.log(`Session data backed up to ${filepath}`);
+    logInfo(`Session data backed up to ${filepath}`);
   } catch (error) {
-    console.error('Failed to backup session data:', error);
+    logError('Failed to backup session data:', error as Error | undefined);
   }
 } 

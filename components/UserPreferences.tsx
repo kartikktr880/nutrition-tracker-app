@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { UserPreferences as UserPreferencesType } from '../types/nutrition';
 
 interface UserPreferencesProps {
@@ -115,7 +116,7 @@ export const UserPreferences: React.FC<UserPreferencesProps> = ({ userId }) => {
                     <input
                       type="checkbox"
                       name={restriction}
-                      checked={formData[restriction as keyof UserPreferencesType] as boolean}
+                      checked={Boolean(formData[restriction as keyof UserPreferencesType])}
                       onChange={handleInputChange}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />

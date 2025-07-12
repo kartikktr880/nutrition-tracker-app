@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getHeapStatistics } from 'v8';
 import { performance } from 'perf_hooks';
@@ -182,7 +183,7 @@ class MonitoringService {
   }
 
   private handlePerformanceWarning(metric: string, value: number) {
-    console.warn(`Performance warning: ${metric} = ${value}`);
+    logWarn(`Performance warning: ${metric} = ${value}`);
     // Implement performance optimization strategies
   }
 

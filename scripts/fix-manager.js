@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Fix Manager
  * Unified system for managing UI fixes and enhancements
@@ -263,7 +264,7 @@ class FixManager {
      */
     enableDebug() {
         this.state.debug = true;
-        console.log('Fix Manager: Debug mode enabled');
+        logInfo('Fix Manager: Debug mode enabled');
     }
 
     /**

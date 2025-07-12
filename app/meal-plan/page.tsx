@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { MealPlan } from '@/components/MealPlan';
 import { addDays } from 'date-fns';
+import { useState } from 'react';
+
+import { MealPlan } from '@/components/MealPlan';
 
 export default function MealPlanPage() {
   const [startDate, setStartDate] = useState(new Date());

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
 import {
   LineChart,
   Line,
@@ -11,17 +11,19 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+
 import { ExerciseSession, ExerciseProgress } from '@/types/exercise';
+import { logError } from 'src/utils/logger';
 
 interface ExerciseAnalyticsProps {
   timeRange: 'week' | 'month' | 'year';
 }
 
 export const ExerciseAnalytics: React.FC<ExerciseAnalyticsProps> = ({ timeRange }) => {
-  const { data: session } = useSession();
+  const { data: _session } = useSession();
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<ExerciseSession[]>([]);
-  const [progress, setProgress] = useState<ExerciseProgress[]>([]);
+  const [_progress, setProgress] = useState<ExerciseProgress[]>([]);
   const [stats, setStats] = useState({
     totalSessions: 0,
     totalDuration: 0,
@@ -30,38 +32,37 @@ export const ExerciseAnalytics: React.FC<ExerciseAnalyticsProps> = ({ timeRange 
   });
 
   useEffect(() => {
+    const fetchExerciseData = async () => {
+      setLoading(true);
+      try {
+        const startDate = getStartDate(timeRange);
+        const endDate = new Date();
+
+        const [sessionsResponse, progressResponse] = await Promise.all([
+          fetch(`/api/exercise/session?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
+          fetch(`/api/exercise/progress?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
+        ]);
+
+        if (!sessionsResponse.ok || !progressResponse.ok) {
+          throw new Error('Failed to fetch exercise data');
+        }
+
+        const [sessionsData, progressData] = await Promise.all([
+          sessionsResponse.json(),
+          progressResponse.json(),
+        ]);
+
+        setSessions(sessionsData);
+        setProgress(progressData);
+        calculateStats(sessionsData, progressData);
+      } catch (error) {
+        logError();
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchExerciseData();
   }, [timeRange]);
-
-  const fetchExerciseData = async () => {
-    setLoading(true);
-    try {
-      const startDate = getStartDate(timeRange);
-      const endDate = new Date();
-
-      const [sessionsResponse, progressResponse] = await Promise.all([
-        fetch(`/api/exercise/session?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
-        fetch(`/api/exercise/progress?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
-      ]);
-
-      if (!sessionsResponse.ok || !progressResponse.ok) {
-        throw new Error('Failed to fetch exercise data');
-      }
-
-      const [sessionsData, progressData] = await Promise.all([
-        sessionsResponse.json(),
-        progressResponse.json(),
-      ]);
-
-      setSessions(sessionsData);
-      setProgress(progressData);
-      calculateStats(sessionsData, progressData);
-    } catch (error) {
-      console.error('Error fetching exercise data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getStartDate = (range: 'week' | 'month' | 'year'): Date => {
     const date = new Date();
@@ -81,9 +82,9 @@ export const ExerciseAnalytics: React.FC<ExerciseAnalyticsProps> = ({ timeRange 
 
   const calculateStats = (sessions: ExerciseSession[], progress: ExerciseProgress[]) => {
     const totalSessions = sessions.length;
-    const totalDuration = sessions.reduce((sum, session) => sum + session.totalDuration, 0);
+    const totalDuration = sessions.reduce((sum, session) => sum + session.duration, 0);
     const totalCaloriesBurned = sessions.reduce((sum, session) => sum + session.caloriesBurned, 0);
-    const averageIntensity = progress.reduce((sum, p) => sum + p.intensity, 0) / progress.length || 0;
+    const averageIntensity = progress.reduce((sum, p) => sum + Number(p.intensity), 0) / progress.length || 0;
 
     setStats({
       totalSessions,
@@ -96,7 +97,7 @@ export const ExerciseAnalytics: React.FC<ExerciseAnalyticsProps> = ({ timeRange 
   const prepareChartData = () => {
     return sessions.map(session => ({
       date: new Date(session.startTime).toLocaleDateString(),
-      duration: session.totalDuration,
+      duration: session.duration,
       calories: session.caloriesBurned,
     }));
   };

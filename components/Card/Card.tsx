@@ -1,20 +1,20 @@
-import React from 'react';
+import { HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'elevated' | 'outlined';
   padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
-const variantClasses = {
-  default: 'bg-white dark:bg-gray-800',
-  elevated: 'bg-white dark:bg-gray-800 shadow-lg',
-  outlined: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700',
+const variantClasses: Record<string, string> = {
+  default: 'bg-white shadow-sm dark:bg-gray-900',
+  elevated: 'bg-white shadow-lg dark:bg-gray-900',
+  outlined: 'bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-700',
 };
 
-const paddingClasses = {
-  none: '',
-  sm: 'p-3',
+const paddingClasses: Record<string, string> = {
+  none: 'p-0',
+  sm: 'p-2',
   md: 'p-4',
   lg: 'p-6',
 };

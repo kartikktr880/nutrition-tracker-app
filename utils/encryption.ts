@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from './logger';
 import { ExerciseSession } from '@/types/exercise';
 
 // Generate a secure encryption key
@@ -16,7 +17,7 @@ const generateKey = async (): Promise<CryptoKey> => {
 // Convert string to ArrayBuffer
 const stringToArrayBuffer = (str: string): ArrayBuffer => {
   const encoder = new TextEncoder();
-  return encoder.encode(str);
+  return encoder.encode(str).buffer as ArrayBuffer;
 };
 
 // Convert ArrayBuffer to string
@@ -79,9 +80,9 @@ export const encryptData = async (data: any): Promise<string> => {
     combinedBuffer.set(new Uint8Array(encryptedBuffer), iv.length);
 
     // Convert to Base64
-    return arrayBufferToBase64(combinedBuffer);
+    return arrayBufferToBase64(combinedBuffer.buffer);
   } catch (error) {
-    console.error('Encryption error:', error);
+    logError('Encryption error:', error as Error | undefined);
     throw new Error('Failed to encrypt data');
   }
 };
@@ -121,7 +122,7 @@ export const decryptData = async (encryptedData: string): Promise<any> => {
       return decryptedString;
     }
   } catch (error) {
-    console.error('Decryption error:', error);
+    logError('Decryption error:', error as Error | undefined);
     throw new Error('Failed to decrypt data');
   }
 }; 

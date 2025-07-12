@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from './logger';
 import fs from 'fs';
 import path from 'path';
 
@@ -28,6 +29,6 @@ export function logAudit(entry: AuditLogEntry) {
     fs.appendFileSync(LOG_FILE, logLine, 'utf8');
   } catch (error) {
     // Fallback: log to console if file write fails
-    console.error('Audit log write failed:', error, logEntry);
+    logError('Audit log write failed:', error as Error | undefined);
   }
 } 

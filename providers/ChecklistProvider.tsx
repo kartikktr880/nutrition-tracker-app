@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+
 import { checklistService } from '../services/checklistService';
 import { 
   Checklist, 
@@ -50,7 +51,7 @@ export const ChecklistProvider: React.FC<ChecklistProviderProps> = ({ children }
       setStats(statsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load checklists');
-      console.error('Error loading checklists:', err);
+      // logError('Error loading checklists:', err); // Removed logger import
     } finally {
       setIsLoading(false);
     }

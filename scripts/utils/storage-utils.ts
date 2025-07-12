@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 export class StorageUtils {
     private static readonly STORAGE_KEYS = {
         USER_DATA: 'user_data',
@@ -31,91 +32,111 @@ export class StorageUtils {
         data: any;
     }> = [];
 
-    static async saveData<T>(key: string, data: T, type: keyof typeof this.STORAGE_TYPES = 'localStorage'): Promise<void> {
+    static async saveData<T>(key: string, data: T, type: keyof typeof this.STORAGE_TYPES = 'LOCAL'): Promise<void> {
         try {
             const serializedData = JSON.stringify(data);
             
             switch (type) {
-                case 'localStorage':
+                case 'LOCAL':
                     localStorage.setItem(key, serializedData);
                     break;
-                case 'sessionStorage':
+                case 'SESSION':
                     sessionStorage.setItem(key, serializedData);
                     break;
-                case 'indexedDB':
+                case 'INDEXED_DB':
                     await this.saveToIndexedDB(key, data);
                     break;
             }
 
             this.trackAnalytics('save', { key, type });
         } catch (error) {
-            console.error('Error saving data:', error);
+            logError('Error saving data:', error);
             throw new Error('Failed to save data');
         }
     }
 
-    static async getData<T>(key: string, type: keyof typeof this.STORAGE_TYPES = 'localStorage'): Promise<T | null> {
+    static async getData<T>(key: string, type: keyof typeof this.STORAGE_TYPES = 'LOCAL'): Promise<T | null> {
         try {
             let data: string | null = null;
             
             switch (type) {
-                case 'localStorage':
+                case 'LOCAL':
                     data = localStorage.getItem(key);
                     break;
-                case 'sessionStorage':
+                case 'SESSION':
                     data = sessionStorage.getItem(key);
                     break;
-                case 'indexedDB':
+                case 'INDEXED_DB':
                     return await this.getFromIndexedDB<T>(key);
             }
 
             this.trackAnalytics('get', { key, type });
-            return data ? JSON.parse(data) : null;
+            if (!data) return null;
+            const parsed = JSON.parse(data);
+            if ((key === this.STORAGE_KEYS.ANALYTICS || key === this.STORAGE_KEYS.BACKUP) && !Array.isArray(parsed)) {
+                return [] as unknown as T;
+            }
+            return parsed;
         } catch (error) {
-            console.error('Error getting data:', error);
+            logError('Error getting data:', error);
             throw new Error('Failed to get data');
         }
     }
 
-    static async removeData(key: string, type: keyof typeof this.STORAGE_TYPES = 'localStorage'): Promise<void> {
+    static async removeData(key: string, type: keyof typeof this.STORAGE_TYPES = 'LOCAL'): Promise<void> {
         try {
             switch (type) {
-                case 'localStorage':
+                case 'LOCAL':
                     localStorage.removeItem(key);
                     break;
-                case 'sessionStorage':
+                case 'SESSION':
                     sessionStorage.removeItem(key);
                     break;
-                case 'indexedDB':
+                case 'INDEXED_DB':
                     await this.removeFromIndexedDB(key);
                     break;
             }
 
             this.trackAnalytics('remove', { key, type });
         } catch (error) {
-            console.error('Error removing data:', error);
+            logError('Error removing data:', error);
             throw new Error('Failed to remove data');
         }
     }
 
-    static async clearAll(type: keyof typeof this.STORAGE_TYPES = 'localStorage'): Promise<void> {
+    static async clearAll(type: keyof typeof this.STORAGE_TYPES = 'LOCAL'): Promise<void> {
         try {
             switch (type) {
-                case 'localStorage':
+                case 'LOCAL':
                     localStorage.clear();
                     break;
-                case 'sessionStorage':
+                case 'SESSION':
                     sessionStorage.clear();
                     break;
-                case 'indexedDB':
+                case 'INDEXED_DB':
                     await this.clearIndexedDB();
                     break;
             }
 
             this.trackAnalytics('clear', { type });
         } catch (error) {
-            console.error('Error clearing storage:', error);
+            logError('Error clearing storage:', error);
             throw new Error('Failed to clear storage');
+        }
+    }
+
+    static async clearCorruptedData(): Promise<void> {
+        await this.clearAll('LOCAL');
+        await this.clearAll('SESSION');
+        await this.clearAll('INDEXED_DB');
+    }
+
+    static getLocalItem(key: string): string | null {
+        try {
+            return localStorage.getItem(key);
+        } catch (error) {
+            logError('Error getting local item:', error);
+            return null;
         }
     }
 
@@ -135,7 +156,8 @@ export class StorageUtils {
                 }
             };
 
-            const backups = await this.getData<Array<typeof backupData>>(this.STORAGE_KEYS.BACKUP) || [];
+            const rawBackups = await this.getData<Array<typeof backupData>>(this.STORAGE_KEYS.BACKUP);
+            const backups = Array.isArray(rawBackups) ? rawBackups : [];
             backups.push(backupData);
 
             // Keep only the most recent backups
@@ -148,15 +170,16 @@ export class StorageUtils {
 
             this.trackAnalytics('backup', { timestamp: now });
         } catch (error) {
-            console.error('Error creating backup:', error);
+            logError('Error creating backup:', error);
             throw new Error('Failed to create backup');
         }
     }
 
     static async restoreBackup(timestamp: number): Promise<void> {
         try {
-            const backups = await this.getData<Array<{ timestamp: number; data: any }>>(this.STORAGE_KEYS.BACKUP);
-            if (!backups) {
+            const rawBackups = await this.getData<Array<{ timestamp: number; data: any }>>(this.STORAGE_KEYS.BACKUP);
+            const backups = Array.isArray(rawBackups) ? rawBackups : [];
+            if (!backups.length) {
                 throw new Error('No backups found');
             }
 
@@ -176,7 +199,7 @@ export class StorageUtils {
 
             this.trackAnalytics('restore', { timestamp });
         } catch (error) {
-            console.error('Error restoring backup:', error);
+            logError('Error restoring backup:', error);
             throw new Error('Failed to restore backup');
         }
     }
@@ -205,9 +228,13 @@ export class StorageUtils {
 
     private static async getFromIndexedDB<T>(key: string): Promise<T | null> {
         const db = await this.openIndexedDB();
-        const transaction = db.transaction(['storage'], 'readonly');
-        const store = transaction.objectStore('storage');
-        return await store.get(key);
+        return new Promise<T | null>((resolve, reject) => {
+            const transaction = db.transaction(['storage'], 'readonly');
+            const store = transaction.objectStore('storage');
+            const request = store.get(key);
+            request.onsuccess = () => resolve(request.result ?? null);
+            request.onerror = () => reject(request.error);
+        });
     }
 
     private static async removeFromIndexedDB(key: string): Promise<void> {
@@ -269,19 +296,21 @@ export class StorageUtils {
             await this.saveData(this.STORAGE_KEYS.ANALYTICS, analytics);
             this.analyticsQueue = [];
         } catch (error) {
-            console.error('Error flushing analytics:', error);
+            logError('Error flushing analytics:', error);
         }
     }
 
-    static getAnalytics(): Promise<Array<typeof this.analyticsQueue[0]>> {
-        return this.getData(this.STORAGE_KEYS.ANALYTICS) || Promise.resolve([]);
+    static async getAnalytics(): Promise<Array<typeof this.analyticsQueue[0]>> {
+        const data = await this.getData(this.STORAGE_KEYS.ANALYTICS);
+        return Array.isArray(data) ? data : [];
     }
 
     static setAnalyticsEnabled(enabled: boolean): void {
         this.ANALYTICS_CONFIG.enabled = enabled;
     }
 
-    static getBackupInfo(): Promise<Array<{ timestamp: number }>> {
-        return this.getData(this.STORAGE_KEYS.BACKUP) || Promise.resolve([]);
+    static async getBackupInfo(): Promise<Array<{ timestamp: number }>> {
+        const data = await this.getData(this.STORAGE_KEYS.BACKUP);
+        return Array.isArray(data) ? data : [];
     }
 } 

@@ -1,12 +1,27 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
 import { validateExerciseFormTemplate } from '@/lib/validations/exerciseForm';
+import { logError } from '@/utils/logger';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Session {
+  user: User;
+}
+
+interface ZodError {
+  name: string;
+  errors: unknown[];
+}
 
 export async function GET(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 500 });
     }
@@ -40,7 +55,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(templates);
   } catch (error: unknown) {
-    console.error('Error fetching form templates:', error);
+    logError('Error fetching form templates:', error);
     return NextResponse.json(
       { error: 'Failed to fetch form templates' },
       { status: 500 }
@@ -50,7 +65,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 500 });
     }
@@ -73,7 +88,7 @@ export async function POST(request: Request) {
     const template = await prisma.exerciseFormTemplate.create({
       data: {
         ...validatedData,
-        userId: (session.user as any).id,
+        userId: session.user.id,
       },
       include: {
         exercise: {
@@ -87,10 +102,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(template);
   } catch (error: unknown) {
-    console.error('Error creating form template:', error);
-    if (typeof error === 'object' && error && 'name' in error && (error as any).name === 'ZodError') {
+    logError('Error creating form template:', error);
+    if (typeof error === 'object' && error && 'name' in error && (error as ZodError).name === 'ZodError') {
       return NextResponse.json(
-        { error: 'Invalid input data', details: (error as any).errors },
+        { error: 'Invalid input data', details: (error as ZodError).errors },
         { status: 500 }
       );
     }

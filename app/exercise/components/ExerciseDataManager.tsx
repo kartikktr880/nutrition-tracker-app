@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+
 import { useExerciseData } from '@/lib/hooks/useExerciseData';
 import { ExerciseSession, ExerciseProgress, ExerciseGoal } from '@/types/exercise';
-import { motion } from 'framer-motion';
 
 export function ExerciseDataManager() {
   const {
@@ -37,8 +38,8 @@ export function ExerciseDataManager() {
 
   const handleCreateSession = async () => {
     const newSession = await createSession({
-      startTime: new Date(),
-      endTime: new Date(Date.now() + 3600000), // 1 hour later
+      startTime: new Date().toISOString(),
+      endTime: new Date(Date.now() + 3600000).toISOString(), // 1 hour later
       type: 'cardio',
       intensity: 'medium',
       caloriesBurned: 300,
@@ -51,7 +52,7 @@ export function ExerciseDataManager() {
 
   const handleCreateProgress = async () => {
     const newProgress = await createProgress({
-      date: new Date(),
+      date: new Date().toISOString(),
       weight: 75,
       bodyFatPercentage: 20,
       measurements: {
@@ -70,8 +71,8 @@ export function ExerciseDataManager() {
     const newGoal = await createGoal({
       type: 'weight',
       target: 70,
-      deadline: new Date(Date.now() + 30 * 24 * 3600000), // 30 days later
-      status: 'in_progress',
+      deadline: new Date(Date.now() + 30 * 24 * 3600000).toISOString(), // 30 days later
+      status: 'in-progress',
     });
 
     if (newGoal) {
@@ -160,7 +161,7 @@ export function ExerciseDataManager() {
                 key={session.id}
                 className="p-2 bg-gray-50 rounded flex justify-between items-center"
               >
-                <span>{session.type}</span>
+                <span>{session.exerciseId}</span>
                 <span className="text-sm text-gray-500">
                   {new Date(session.startTime).toLocaleDateString()}
                 </span>
@@ -178,16 +179,16 @@ export function ExerciseDataManager() {
           <h3 className="text-lg font-semibold mb-4">Active Goals</h3>
           <div className="space-y-2">
             {goals
-              .filter((goal) => goal.status === 'in_progress')
+              .filter((goal) => goal.status === 'in-progress')
               .slice(0, 5)
               .map((goal) => (
                 <div
                   key={goal.id}
                   className="p-2 bg-gray-50 rounded flex justify-between items-center"
                 >
-                  <span>{goal.type}</span>
+                  <span>{goal.description}</span>
                   <span className="text-sm text-gray-500">
-                    Target: {goal.target}
+                    Target: {goal.targetWeight}kg
                   </span>
                 </div>
               ))}

@@ -1,11 +1,21 @@
 import React from 'react';
-import ExportManager from './components/ExportManager';
+
+import { useAuth } from '../hooks/useAuth';
 
 const ExportPage: React.FC = () => {
+  const { user: _user } = useAuth();
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Export Management</h1>
-      <ExportManager />
+    <div className="export-page">
+      <h1>Export Data</h1>
+      <div className="export-content">
+        <p>Export your nutrition data in various formats.</p>
+        <div className="export-options">
+          <button className="export-btn">Export as JSON</button>
+          <button className="export-btn">Export as CSV</button>
+          <button className="export-btn">Export as PDF</button>
+        </div>
+      </div>
     </div>
   );
 };

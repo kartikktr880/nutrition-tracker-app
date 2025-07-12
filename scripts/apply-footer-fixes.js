@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Apply Footer Fixes to All Pages
  * This script finds all HTML files in the project and ensures they include the necessary footer fixes
@@ -8,7 +9,7 @@ const path = require('path');
 
 // Find all HTML files in the directory and subdirectories
 function findHtmlFiles(dir, fileList = []) {
-    console.log(`Searching for HTML files in: ${dir}`);
+    logInfo(`Searching for HTML files in: ${dir}`);
     
     try {
         const files = fs.readdirSync(dir);
@@ -25,15 +26,15 @@ function findHtmlFiles(dir, fileList = []) {
                         findHtmlFiles(filePath, fileList);
                     }
                 } else if (file.endsWith('.html')) {
-                    console.log(`Found HTML file: ${filePath}`);
+                    logInfo(`Found HTML file: ${filePath}`);
                     fileList.push(filePath);
                 }
             } catch (err) {
-                console.error(`Error accessing ${filePath}: ${err.message}`);
+                logError(`Error accessing ${filePath}: ${err.message}`);
             }
         });
     } catch (err) {
-        console.error(`Error reading directory ${dir}: ${err.message}`);
+        logError(`Error reading directory ${dir}: ${err.message}`);
     }
     
     return fileList;
@@ -41,7 +42,7 @@ function findHtmlFiles(dir, fileList = []) {
 
 // Inject our footer fix scripts into an HTML file
 function injectFooterFixes(htmlFilePath) {
-    console.log(`Processing: ${htmlFilePath}`);
+    logInfo(`Processing: ${htmlFilePath}`);
     
     try {
         let htmlContent = fs.readFileSync(htmlFilePath, 'utf8');
@@ -49,7 +50,7 @@ function injectFooterFixes(htmlFilePath) {
         // Check if the file already has the fixes
         if (htmlContent.includes('fix-footer.js') && 
             htmlContent.includes('remove-spacers.js')) {
-            console.log(`${htmlFilePath} already has the fixes.`);
+            logInfo(`${htmlFilePath} already has the fixes.`);
             return;
         }
         
@@ -61,7 +62,7 @@ function injectFooterFixes(htmlFilePath) {
             const fixScrollIndex = htmlContent.indexOf('fix-scroll.js');
             const scriptEndIndex = htmlContent.indexOf('</script>', fixScrollIndex);
             insertPosition = scriptEndIndex + 9; // After the </script> tag
-            console.log(`Inserting after fix-scroll.js script at position ${insertPosition}`);
+            logInfo(`Inserting after fix-scroll.js script at position ${insertPosition}`);
         } 
         // Otherwise look for other good insertion points
         else {
@@ -69,14 +70,14 @@ function injectFooterFixes(htmlFilePath) {
             const cssLinkIndex = htmlContent.indexOf('<link rel="stylesheet"');
             if (cssLinkIndex !== -1) {
                 insertPosition = cssLinkIndex;
-                console.log(`Inserting before first stylesheet at position ${insertPosition}`);
+                logInfo(`Inserting before first stylesheet at position ${insertPosition}`);
             } 
             // Or before the closing head tag
             else {
                 const headCloseIndex = htmlContent.indexOf('</head>');
                 if (headCloseIndex !== -1) {
                     insertPosition = headCloseIndex;
-                    console.log(`Inserting before </head> at position ${insertPosition}`);
+                    logInfo(`Inserting before </head> at position ${insertPosition}`);
                 } 
                 // Last resort: beginning of body
                 else {
@@ -85,9 +86,9 @@ function injectFooterFixes(htmlFilePath) {
                         // Find the closing > of the body tag
                         const bodyTagEndIndex = htmlContent.indexOf('>', bodyIndex);
                         insertPosition = bodyTagEndIndex + 1;
-                        console.log(`Inserting at beginning of body at position ${insertPosition}`);
+                        logInfo(`Inserting at beginning of body at position ${insertPosition}`);
                     } else {
-                        console.error(`Could not find insertion point in ${htmlFilePath}`);
+                        logError(`Could not find insertion point in ${htmlFilePath}`);
                         return;
                     }
                 }
@@ -114,54 +115,54 @@ function injectFooterFixes(htmlFilePath) {
     <link rel="stylesheet" href="styles/footer-elite-luxury.css">
     `;
                 htmlContent = htmlContent.slice(0, headCloseIndex) + cssToInject + htmlContent.slice(headCloseIndex);
-                console.log(`Added footer-elite-luxury.css stylesheet link`);
+                logInfo(`Added footer-elite-luxury.css stylesheet link`);
             }
         }
         
         // Write the updated content back to the file
         fs.writeFileSync(htmlFilePath, htmlContent, 'utf8');
-        console.log(`Added footer fixes to ${htmlFilePath}`);
+        logInfo(`Added footer fixes to ${htmlFilePath}`);
     } catch (err) {
-        console.error(`Error processing ${htmlFilePath}: ${err.message}`);
+        logError(`Error processing ${htmlFilePath}: ${err.message}`);
     }
 }
 
 // Main function
 function main() {
     try {
-        console.log("Starting footer fixes application...");
+        logInfo("Starting footer fixes application...");
         
         const currentDir = process.cwd();
-        console.log(`Current working directory: ${currentDir}`);
+        logInfo(`Current working directory: ${currentDir}`);
         
         const htmlFiles = findHtmlFiles('.');
-        console.log(`Found ${htmlFiles.length} HTML files.`);
+        logInfo(`Found ${htmlFiles.length} HTML files.`);
         
         // Ensure our fix scripts exist
         const scriptsDir = './scripts';
-        console.log(`Checking for required scripts in ${scriptsDir}...`);
+        logInfo(`Checking for required scripts in ${scriptsDir}...`);
         
         if (!fs.existsSync(path.join(scriptsDir, 'fix-footer.js'))) {
-            console.error('fix-footer.js does not exist in the scripts directory.');
+            logError('fix-footer.js does not exist in the scripts directory.');
             return;
         } else {
-            console.log('Found fix-footer.js');
+            logInfo('Found fix-footer.js');
         }
         
         if (!fs.existsSync(path.join(scriptsDir, 'remove-spacers.js'))) {
-            console.error('remove-spacers.js does not exist in the scripts directory.');
+            logError('remove-spacers.js does not exist in the scripts directory.');
             return;
         } else {
-            console.log('Found remove-spacers.js');
+            logInfo('Found remove-spacers.js');
         }
         
         // Apply fixes to all HTML files
         htmlFiles.forEach(injectFooterFixes);
         
-        console.log(`Applied footer fixes to ${htmlFiles.length} HTML files.`);
+        logInfo(`Applied footer fixes to ${htmlFiles.length} HTML files.`);
         
     } catch (error) {
-        console.error('Error:', error);
+        logError('Error:', error);
     }
 }
 

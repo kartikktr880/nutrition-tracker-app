@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Update All HTML Files
  * This script adds the necessary scripts and styles to all HTML files in the project
@@ -53,7 +54,7 @@ function updateHtmlFile(filePath) {
         // Skip excluded directories
         if (isExcluded(filePath)) {
             if (config.debug) {
-                console.log(`Skipping excluded file: ${filePath}`);
+                logInfo(`Skipping excluded file: ${filePath}`);
             }
             filesSkipped++;
             return;
@@ -66,7 +67,7 @@ function updateHtmlFile(filePath) {
         // Check if file already has the fixes
         if (content.includes('apply-enhanced-fixes.js')) {
             if (config.debug) {
-                console.log(`File already fixed: ${filePath}`);
+                logInfo(`File already fixed: ${filePath}`);
             }
             filesSkipped++;
             return;
@@ -101,19 +102,19 @@ function updateHtmlFile(filePath) {
             filesUpdated++;
             
             if (config.debug) {
-                console.log(`Updated file: ${filePath}`);
+                logInfo(`Updated file: ${filePath}`);
             }
         } else {
             filesSkipped++;
             
             if (config.debug) {
-                console.log(`No changes needed: ${filePath}`);
+                logInfo(`No changes needed: ${filePath}`);
             }
         }
         
         filesProcessed++;
     } catch (error) {
-        console.error(`Error processing ${filePath}:`, error);
+        logError(`Error processing ${filePath}:`, error);
         errors++;
     }
 }
@@ -128,7 +129,7 @@ function updateAllHtmlFiles() {
             ignore: config.excludeDirs.map(dir => `${dir}/**`)
         });
         
-        console.log(`Found ${htmlFiles.length} HTML files`);
+        logInfo(`Found ${htmlFiles.length} HTML files`);
         
         // Process each file
         htmlFiles.forEach(file => {
@@ -144,7 +145,7 @@ Files skipped: ${filesSkipped}
 Errors: ${errors}
         `);
     } catch (error) {
-        console.error('Error updating HTML files:', error);
+        logError('Error updating HTML files:', error);
     }
 }
 

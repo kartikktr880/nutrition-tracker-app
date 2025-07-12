@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Non-module version of dashboard.js
 
 class NutritionDashboard {
@@ -13,42 +14,42 @@ class NutritionDashboard {
     
     async init() {
         try {
-            console.log('Dashboard initialization started');
+            logInfo('Dashboard initialization started');
             
             // Show loading state immediately
             this.showLoading(true);
             
             // Check if dataManager is available
             if (!window.dataManager) {
-                console.error('DataManager not found. Loading data-manager.js dynamically.');
+                logError('DataManager not found. Loading data-manager.js dynamically.');
                 await this.loadDataManager();
             } else {
-                console.log('DataManager found, proceeding with initialization');
+                logInfo('DataManager found, proceeding with initialization');
             }
             
             // Set up event listeners
             this.setupEventListeners();
-            console.log('Event listeners set up');
+            logInfo('Event listeners set up');
             
             // Load user goals
-            console.log('Loading user goals...');
+            logInfo('Loading user goals...');
             await this.loadGoals();
-            console.log('User goals loaded successfully');
+            logInfo('User goals loaded successfully');
             
             // Load initial data
-            console.log('Loading dashboard data...');
+            logInfo('Loading dashboard data...');
             await this.loadData();
-            console.log('Dashboard data loaded successfully');
+            logInfo('Dashboard data loaded successfully');
             
             // Render dashboard
-            console.log('Rendering dashboard...');
+            logInfo('Rendering dashboard...');
             this.renderDashboard();
-            console.log('Dashboard rendered successfully');
+            logInfo('Dashboard rendered successfully');
             
             // Ensure loading spinner is hidden
             this.showLoading(false);
         } catch (error) {
-            console.error('Dashboard initialization error:', error);
+            logError('Dashboard initialization error:', error);
             this.showError('Failed to initialize dashboard. Please try again later.');
             
             // Always hide loading spinner even on error
@@ -123,7 +124,7 @@ class NutritionDashboard {
                 await dataManager.saveGoals(this.goals);
             }
         } catch (error) {
-            console.error('Error loading goals:', error);
+            logError('Error loading goals:', error);
             this.showError('Failed to load nutrition goals.');
         }
     }
@@ -156,21 +157,21 @@ class NutritionDashboard {
             // Wait for both to complete
             const [foodEntries, waterData] = await Promise.all([
                 foodEntriesPromise.catch(err => {
-                    console.error('Error loading meal data:', err);
+                    logError('Error loading meal data:', err);
                     return []; // Return empty array on error
                 }),
                 waterDataPromise.catch(err => {
-                    console.error('Error loading water data:', err);
+                    logError('Error loading water data:', err);
                     return []; // Return empty array on error
                 })
             ]);
             
-            console.log(`Loaded ${foodEntries?.length || 0} food entries and ${waterData?.length || 0} water entries`);
+            logInfo(`Loaded ${foodEntries?.length || 0} food entries and ${waterData?.length || 0} water entries`);
             
             // Use mock data if no data is available (helpful for testing and first-time users)
             const useMockData = (!foodEntries || foodEntries.length === 0) && (!waterData || waterData.length === 0);
             if (useMockData) {
-                console.log('Using mock data for dashboard');
+                logInfo('Using mock data for dashboard');
                 const mockData = this.generateMockData(startDate, endDate);
                 // Process the data for dashboard
                 this.currentData = mockData;
@@ -184,7 +185,7 @@ class NutritionDashboard {
             
             return this.currentData;
         } catch (error) {
-            console.error('Error loading dashboard data:', error);
+            logError('Error loading dashboard data:', error);
             this.showError('Failed to load dashboard data. Please try again later.');
             
             // Always hide loading regardless of error
@@ -949,7 +950,7 @@ class NutritionDashboard {
             modal.classList.remove('active');
             
         } catch (error) {
-            console.error('Error generating report:', error);
+            logError('Error generating report:', error);
             this.showError('Failed to generate report. Please try again later.');
         }
     }
@@ -958,7 +959,7 @@ class NutritionDashboard {
         // This is a placeholder for PDF generation
         // In a real application, you would use a library like jsPDF or pdfmake
         alert('PDF report generation would be implemented here with a proper PDF library.');
-        console.log('Generating PDF report with data:', reportData, 'Options:', options);
+        logInfo('Generating PDF report with data:', reportData, 'Options:', options);
     }
     
     generateCSVReport(reportData, reportType, options) {
@@ -1036,7 +1037,7 @@ class NutritionDashboard {
             el.style.display = isLoading ? 'none' : 'block';
         });
         
-        console.log(`Dashboard loading state: ${isLoading ? 'Loading' : 'Loaded'}`);
+        logInfo(`Dashboard loading state: ${isLoading ? 'Loading' : 'Loaded'}`);
     }
     
     showError(message) {
@@ -1050,7 +1051,7 @@ class NutritionDashboard {
                 errorContainer.classList.remove('active');
             }, 5000);
         } else {
-            console.error(message);
+            logError(message);
         }
     }
 
@@ -1064,7 +1065,7 @@ class NutritionDashboard {
                 // Give time for dataManager to initialize
                 setTimeout(() => {
                     if (window.dataManager) {
-                        console.log('DataManager loaded successfully');
+                        logInfo('DataManager loaded successfully');
                         resolve();
                     } else {
                         reject(new Error('DataManager failed to initialize after loading'));
@@ -1199,27 +1200,27 @@ class NutritionDashboard {
                 const deleteRequest = indexedDB.deleteDatabase('nutritionTrackerDB');
                 
                 deleteRequest.onsuccess = () => {
-                    console.log('Database successfully deleted');
+                    logInfo('Database successfully deleted');
                     alert('Dashboard data has been reset. The page will now reload.');
                     window.location.reload();
                 };
                 
                 deleteRequest.onerror = () => {
-                    console.error('Error deleting database');
+                    logError('Error deleting database');
                     alert('Failed to reset data. Please try again or clear browser data manually.');
                 };
             } else {
-                console.error('DataManager not available for reset');
+                logError('DataManager not available for reset');
                 alert('Failed to reset data. Please try clearing browser data manually.');
             }
         } catch (error) {
-            console.error('Error resetting dashboard data:', error);
+            logError('Error resetting dashboard data:', error);
             alert('An error occurred while trying to reset the dashboard data.');
         }
     }
 
     generateMockData(startDate, endDate) {
-        console.log('Generating mock data for dashboard');
+        logInfo('Generating mock data for dashboard');
         
         // Initialize processed data structure similar to processData output
         const mockData = {

@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { SkipLink } from './SkipLink';
 
-const meta: Meta<typeof SkipLink> = {
+const meta = {
   title: 'Components/SkipLink',
   component: SkipLink,
   parameters: {
@@ -11,22 +10,21 @@ const meta: Meta<typeof SkipLink> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof SkipLink>;
 
-export const Default: Story = {
+export const Default = {
   args: {
     children: 'Skip to main content',
   },
 };
 
-export const CustomTarget: Story = {
+export const CustomTarget = {
   args: {
     targetId: 'custom-content',
     children: 'Skip to custom content',
   },
 };
 
-export const CustomStyling: Story = {
+export const CustomStyling = {
   args: {
     className: 'bg-secondary text-secondary-foreground',
     children: 'Skip with custom style',

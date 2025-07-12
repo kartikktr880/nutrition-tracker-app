@@ -1,23 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+
 import { useSearchHistory } from '../hooks/useSearchHistory';
 import { analytics } from '../services/analytics';
-import { LoadingSpinner } from './LoadingSpinner';
-import { ErrorBoundary } from './ErrorBoundary';
 import styles from '../styles/SearchSuggestions.module.css';
 
-interface SearchSuggestionsProps {
-  query: string;
-  onSelect: (suggestion: string) => void;
-  maxSuggestions?: number;
-  className?: string;
-}
-
-interface Suggestion {
-  id: string;
-  text: string;
-  type: 'history' | 'popular' | 'fuzzy';
-  score?: number;
-}
+import { ErrorBoundary } from './ErrorBoundary';
+import { LoadingSpinner } from './LoadingSpinner';
 
 /**
  * Search suggestions component with autocomplete functionality
@@ -32,6 +20,22 @@ interface Suggestion {
  * />
  * ```
  */
+// Move debounce outside the component for stable identity
+function debounce(
+  func: (searchQuery: string) => void | Promise<void>,
+  wait: number
+): (searchQuery: string) => void {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(searchQuery: string) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(searchQuery);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   query,
   onSelect,
@@ -47,60 +51,53 @@ export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   const { history, getRecentSearches } = useSearchHistory();
 
   // Debounce search suggestions
-  const debouncedSearch = useCallback(
-    debounce(async (searchQuery: string) => {
-      if (!searchQuery.trim()) {
+  const debouncedSearch = useCallback((searchQuery: string) => {
+    debounce(async (query: string) => {
+      if (!query.trim()) {
         setSuggestions([]);
         return;
       }
-
       setLoading(true);
       setError(null);
-
       try {
-        // Get recent searches that match the query
-        const recentMatches = getRecentSearches()
-          .filter(item => item.query.toLowerCase().includes(searchQuery.toLowerCase()))
+        const recentSearches = await getRecentSearches();
+        const recentMatches = recentSearches
+          .filter(item => item.query.toLowerCase().includes(query.toLowerCase()))
           .map(item => ({
             id: item.id,
             text: item.query,
             type: 'history' as const
           }));
-
-        // Get popular searches (in a real app, this would come from analytics)
-        const popularMatches = getPopularSearches(searchQuery)
+        const popularMatches = getPopularSearches(query)
           .map(item => ({
             id: `popular-${item.id}`,
             text: item.query,
             type: 'popular' as const,
             score: item.score
           }));
-
-        // Get fuzzy matches
-        const fuzzyMatches = getFuzzyMatches(searchQuery, history)
+        const fuzzyMatches = getFuzzyMatches(query, history)
           .map(item => ({
             id: `fuzzy-${item.id}`,
             text: item.query,
             type: 'fuzzy' as const,
             score: item.score
           }));
-
-        // Combine and sort suggestions
         const allSuggestions = [
           ...recentMatches,
           ...popularMatches,
           ...fuzzyMatches
         ]
-          .sort((a, b) => (b.score || 0) - (a.score || 0))
+          .sort((a, b) => {
+            const aScore = 'score' in a ? a.score : 0;
+            const bScore = 'score' in b ? b.score : 0;
+            return bScore - aScore;
+          })
           .slice(0, maxSuggestions);
-
         setSuggestions(allSuggestions);
-
-        // Track suggestions generated
         analytics.trackEvent({
           category: 'Search',
           action: 'suggestions_generated',
-          label: searchQuery,
+          label: query,
           value: allSuggestions.length
         });
       } catch (err) {
@@ -108,14 +105,13 @@ export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
         analytics.trackError({
           errorType: 'suggestions_error',
           errorMessage: err instanceof Error ? err.message : 'Unknown error',
-          context: { query: searchQuery }
+          context: { query }
         });
       } finally {
         setLoading(false);
       }
-    }, 300),
-    [history, getRecentSearches, maxSuggestions]
-  );
+    }, 300)(searchQuery);
+  }, [history, getRecentSearches, maxSuggestions]);
 
   // Update suggestions when query changes
   useEffect(() => {
@@ -214,24 +210,6 @@ export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   );
 };
 
-// Helper function to debounce function calls
-function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
-
-  return function executedFunction(...args: Parameters<T>) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
 // Helper function to get popular searches (mock implementation)
 function getPopularSearches(query: string): Array<{ id: string; query: string; score: number }> {
   // In a real app, this would fetch from an API or analytics service
@@ -286,4 +264,18 @@ function calculateFuzzyScore(query: string, text: string): number {
   }
 
   return queryIndex === query.length ? score / query.length : 0;
+} 
+
+// Type for a suggestion item
+export type Suggestion =
+  | { id: string; text: string; type: 'history' }
+  | { id: string; text: string; type: 'popular'; score: number }
+  | { id: string; text: string; type: 'fuzzy'; score: number };
+
+// Props for SearchSuggestions component
+export interface SearchSuggestionsProps {
+  query: string;
+  onSelect: (suggestion: string) => void;
+  maxSuggestions?: number;
+  className?: string;
 } 

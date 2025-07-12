@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 class MealPrepOptimizer {
     constructor() {
         this.cache = new Map();
@@ -104,7 +105,7 @@ class MealPrepOptimizer {
             try {
                 this.settings = JSON.parse(savedSettings);
             } catch (e) {
-                console.error('Error loading saved settings:', e);
+                logError('Error loading saved settings:', e);
                 this.settings = { ...this.defaultSettings };
             }
         } else {

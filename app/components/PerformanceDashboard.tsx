@@ -1,20 +1,12 @@
-import { useEffect, useState } from 'react';
-// import { Line, Bar, Doughnut } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
-import { healthMonitor } from '@/lib/health-monitor';
+import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from 'chart.js';
+import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+
 import { performanceAlertService } from '@/lib/performance-alerts';
-import PerformanceAlerts from './PerformanceAlerts';
-import NotificationPreferences from './NotificationPreferences';
+
 import NotificationHistory from './NotificationHistory';
+import NotificationPreferences from './NotificationPreferences';
+import PerformanceAlerts from './PerformanceAlerts';
 
 ChartJS.register(
   CategoryScale,
@@ -69,7 +61,7 @@ export default function PerformanceDashboard() {
         if (!response.ok) throw new Error('Failed to fetch health status');
         const data = await response.json();
         setHealthStatus(data);
-        setMetricsHistory(prev => [...prev, data.metrics].slice(-60)); // Keep last 60 minutes
+        setMetricsHistory((prev: PerformanceMetrics[]) => [...prev, data.metrics].slice(-60)); // Keep last 60 minutes
 
         // Check for performance alerts
         performanceAlertService.checkMetrics(data.metrics);
@@ -111,23 +103,23 @@ export default function PerformanceDashboard() {
   };
 
   const chartData = {
-    labels: metricsHistory.map(m => formatTimestamp(m.timestamp)),
+    labels: metricsHistory.map((m: PerformanceMetrics) => formatTimestamp(m.timestamp)),
     datasets: [
       {
         label: 'Memory Usage',
-        data: metricsHistory.map(m => m.memory.used),
+        data: metricsHistory.map((m: PerformanceMetrics) => m.memory.used),
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
       },
       {
         label: 'Response Time',
-        data: metricsHistory.map(m => m.performance.responseTime),
+        data: metricsHistory.map((m: PerformanceMetrics) => m.performance.responseTime),
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.1
       },
       {
         label: 'Error Rate',
-        data: metricsHistory.map(m => m.performance.errorRate * 100),
+        data: metricsHistory.map((m: PerformanceMetrics) => m.performance.errorRate * 100),
         borderColor: 'rgb(255, 159, 64)',
         tension: 0.1
       }
@@ -175,7 +167,7 @@ export default function PerformanceDashboard() {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">Health Checks</h2>
           <div className="grid grid-cols-2 gap-4">
-            {healthStatus.checks.map(check => (
+            {healthStatus.checks.map((check: { name: string; status: 'pass' | 'fail' }) => (
               <div key={check?.name} className="flex items-center space-x-2">
                 <div className={`w-3 h-3 rounded-full ${
                   check.status === 'pass' ? 'bg-green-500' : 'bg-red-500'

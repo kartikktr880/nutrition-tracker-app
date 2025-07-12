@@ -22,6 +22,17 @@ interface CrossFieldValidation<T> {
   priority?: number;
 }
 
+interface ValidationContext {
+  validationType: 'schema' | 'rule' | 'type' | 'custom';
+  timestamp: number;
+  config: {
+    schema: boolean;
+    rules: boolean;
+    typeGuard: boolean;
+    customValidators: boolean;
+  };
+}
+
 interface ValidationConfig {
   schema?: z.ZodType<any>;
   rules?: ValidationRule<any>[];
@@ -32,6 +43,8 @@ interface ValidationConfig {
   customValidators?: Array<(value: any) => boolean | Promise<boolean>>;
   middleware?: ValidationMiddleware<any>[];
   crossFieldValidations?: CrossFieldValidation<any>[];
+  minLength?: number;
+  maxLength?: number;
   cacheConfig?: {
     enabled?: boolean;
     ttl?: number;
@@ -232,7 +245,7 @@ class StateValidation {
         environment: {
           browser: navigator.userAgent,
           device: navigator.platform,
-          network: navigator.connection?.type ?? 'unknown'
+          network: (navigator as any).connection?.type ?? 'unknown'
         }
       }
     };
@@ -264,7 +277,7 @@ class StateValidation {
           warnings: [],
           metadata: {
             validationTime: performance.now() - startTime,
-            validationType: 'schema',
+            validationType: 'schema' as const,
             timestamp: new Date(),
             performanceMetrics
           }
@@ -398,40 +411,44 @@ class StateValidation {
         result
       );
 
-      // Record analytics
-      validationAnalytics.recordValidation(key, processedResult, debugInfo);
-
-      // Cache result if enabled
-      if (config.cacheConfig?.enabled) {
-        const cacheKey = `${key}:${JSON.stringify(value)}`;
-        this.validationCache.set(cacheKey, {
-          result: processedResult,
-          timestamp: Date.now()
+      if (processedResult) {
+        validationAnalytics.recordValidation(key, processedResult, debugInfo);
+        
+        auditLogger.log({
+          category: 'validation',
+          severity: processedResult.isValid ? 'info' : 'warning',
+          message: `State validation ${processedResult.isValid ? 'passed' : 'failed'}`,
+          context: {
+            key,
+            errors: processedResult.errors,
+            warnings: processedResult.warnings,
+            validationTime: processedResult.metadata.validationTime,
+            performanceMetrics: processedResult.metadata.performanceMetrics
+          }
         });
-      }
 
-      // Log validation result
-      auditLogger.log({
-        category: 'state_validation',
-        severity: processedResult.isValid ? 'info' : 'warning',
-        message: `State validation ${processedResult.isValid ? 'passed' : 'failed'}`,
-        context: {
+        recordOperationLatency('state_validation', processedResult.metadata.validationTime, {
           key,
-          errors: processedResult.errors,
-          warnings: processedResult.warnings,
-          validationTime: processedResult.metadata.validationTime,
-          performanceMetrics: processedResult.metadata.performanceMetrics
+          isValid: processedResult.isValid,
+          validationType: processedResult.metadata.validationType,
+          errorCount: processedResult.errors.length,
+          warningCount: processedResult.warnings.length
+        });
+
+        return processedResult;
+      }
+      
+      return { 
+        isValid: false, 
+        errors: ['Validation failed'],
+        warnings: [],
+        metadata: {
+          validationTime: performance.now() - startTime,
+          validationType: 'custom' as const,
+          timestamp: new Date(),
+          performanceMetrics
         }
-      });
-
-      recordOperationLatency('state_validation', processedResult.metadata.validationTime, {
-        key,
-        isValid: processedResult.isValid,
-        validationType: processedResult.metadata.validationType,
-        cacheHit: performanceMetrics.cacheHit
-      });
-
-      return processedResult;
+      };
     } catch (error) {
       const errorResult = {
         isValid: false,
@@ -439,7 +456,7 @@ class StateValidation {
         warnings: [],
         metadata: {
           validationTime: performance.now() - startTime,
-          validationType: 'schema',
+          validationType: 'schema' as const,
           timestamp: new Date(),
           performanceMetrics
         }
@@ -484,6 +501,213 @@ class StateValidation {
 
   public async cleanup(): Promise<void> {
     this.cleanupCache();
+  }
+
+  private validateArray<T>(data: any, config: ValidationConfig): ValidationResult {
+    if (!Array.isArray(data)) {
+      return {
+        isValid: false,
+        errors: ['Data must be an array'],
+        warnings: [],
+        metadata: {
+          validationTime: 0,
+          validationType: 'schema' as const,
+          timestamp: new Date(),
+          performanceMetrics: {
+            cacheHit: false,
+            middlewareTime: 0,
+            validationTime: 0,
+            totalTime: 0
+          }
+        }
+      };
+    }
+
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    // Validate array length if specified
+    if (config.minLength && data.length < config.minLength) {
+      errors.push(`Array must have at least ${config.minLength} items`);
+    }
+
+    if (config.maxLength && data.length > config.maxLength) {
+      errors.push(`Array must have at most ${config.maxLength} items`);
+    }
+
+    // Validate array items if schema is provided
+    if (config.schema) {
+      data.forEach((item, index) => {
+        const itemValidation = this.validateWithSchema(item, config.schema!);
+        if (!itemValidation.isValid) {
+          errors.push(`Item ${index}: ${itemValidation.errors.join(', ')}`);
+        }
+        warnings.push(...itemValidation.warnings);
+      });
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings,
+      metadata: {
+        validationTime: 0,
+        validationType: 'schema' as const,
+        timestamp: new Date(),
+        performanceMetrics: {
+          cacheHit: false,
+          middlewareTime: 0,
+          validationTime: 0,
+          totalTime: 0
+        }
+      }
+    };
+  }
+
+  private validateWithTypeGuard<T>(data: any, typeGuard: (value: any) => value is T): ValidationResult {
+    if (!typeGuard(data)) {
+      return {
+        isValid: false,
+        errors: ['Data failed type guard validation'],
+        warnings: [],
+        metadata: {
+          validationTime: 0,
+          validationType: 'type' as const,
+          timestamp: new Date(),
+          performanceMetrics: {
+            cacheHit: false,
+            middlewareTime: 0,
+            validationTime: 0,
+            totalTime: 0
+          }
+        }
+      };
+    }
+
+    return {
+      isValid: true,
+      errors: [],
+      warnings: [],
+      metadata: {
+        validationTime: 0,
+        validationType: 'type' as const,
+        timestamp: new Date(),
+        performanceMetrics: {
+          cacheHit: false,
+          middlewareTime: 0,
+          validationTime: 0,
+          totalTime: 0
+        }
+      }
+    };
+  }
+
+  private createValidationContext(config: ValidationConfig): ValidationContext {
+    return {
+      validationType: config.schema ? 'schema' : config.rules ? 'rule' : config.typeGuard ? 'type' : 'custom',
+      timestamp: Date.now(),
+      config: {
+        schema: !!config.schema,
+        rules: !!config.rules,
+        typeGuard: !!config.typeGuard,
+        customValidators: !!config.customValidators
+      }
+    };
+  }
+
+  private validateWithCustomValidators(data: any, validators: ((value: any) => boolean | Promise<boolean>)[]): ValidationResult {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    for (const validator of validators) {
+      try {
+        const result = validator(data);
+        if (result instanceof Promise) {
+          // Handle async validators
+          result.catch(error => {
+            errors.push(`Custom validation failed: ${error.message}`);
+          });
+        } else if (!result) {
+          errors.push('Custom validation failed');
+        }
+      } catch (error) {
+        errors.push(`Custom validation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings,
+      metadata: {
+        validationTime: 0,
+        validationType: 'custom' as const,
+        timestamp: new Date(),
+        performanceMetrics: {
+          cacheHit: false,
+          middlewareTime: 0,
+          validationTime: 0,
+          totalTime: 0
+        }
+      }
+    };
+  }
+
+  private validateWithSchema(data: any, schema: z.ZodType<any>): ValidationResult {
+    try {
+      schema.parse(data);
+      return {
+        isValid: true,
+        errors: [],
+        warnings: [],
+        metadata: {
+          validationTime: 0,
+          validationType: 'schema' as const,
+          timestamp: new Date(),
+          performanceMetrics: {
+            cacheHit: false,
+            middlewareTime: 0,
+            validationTime: 0,
+            totalTime: 0
+          }
+        }
+      };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return {
+          isValid: false,
+          errors: error.errors.map(e => `${e.path.join('.')}: ${e.message}`),
+          warnings: [],
+          metadata: {
+            validationTime: 0,
+            validationType: 'schema' as const,
+            timestamp: new Date(),
+            performanceMetrics: {
+              cacheHit: false,
+              middlewareTime: 0,
+              validationTime: 0,
+              totalTime: 0
+            }
+          }
+        };
+      }
+      return {
+        isValid: false,
+        errors: ['Schema validation failed'],
+        warnings: [],
+        metadata: {
+          validationTime: 0,
+          validationType: 'schema' as const,
+          timestamp: new Date(),
+          performanceMetrics: {
+            cacheHit: false,
+            middlewareTime: 0,
+            validationTime: 0,
+            totalTime: 0
+          }
+        }
+      };
+    }
   }
 }
 

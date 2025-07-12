@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { 
   Checklist, 
   ChecklistItem, 
@@ -29,7 +30,7 @@ class ChecklistService {
         }))
       }));
     } catch (error) {
-      console.error('Error loading checklists:', error);
+      logError('Error loading checklists:', error);
       return [];
     }
   }
@@ -40,7 +41,7 @@ class ChecklistService {
       localStorage.setItem(this.storageKey, JSON.stringify(checklists));
       this.notifyListeners();
     } catch (error) {
-      console.error('Error saving checklists:', error);
+      logError('Error saving checklists:', error);
       throw new Error('Failed to save checklists');
     }
   }

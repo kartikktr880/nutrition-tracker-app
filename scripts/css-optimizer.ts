@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { CSSUtils } from './utils/css-utils';
 
 class CSSOptimizer {
@@ -17,7 +18,7 @@ class CSSOptimizer {
 
     static async optimize(): Promise<void> {
         try {
-            console.log('Starting CSS optimization...');
+            logInfo('Starting CSS optimization...');
             
             // Analyze all CSS files
             for (const file of this.CSS_FILES) {
@@ -34,9 +35,9 @@ class CSSOptimizer {
             // Generate report
             this.generateReport();
             
-            console.log('CSS optimization completed successfully!');
+            logInfo('CSS optimization completed successfully!');
         } catch (error) {
-            console.error('Error during CSS optimization:', error);
+            logError('Error during CSS optimization:', error);
             throw error;
         }
     }
@@ -49,7 +50,7 @@ class CSSOptimizer {
             }
             return await response.text();
         } catch (error) {
-            console.error(`Error reading CSS file ${file}:`, error);
+            logError(`Error reading CSS file ${file}:`, error);
             return '';
         }
     }
@@ -72,7 +73,7 @@ class CSSOptimizer {
             
             document.head.appendChild(link);
         } catch (error) {
-            console.error('Error writing optimized CSS:', error);
+            logError('Error writing optimized CSS:', error);
             throw error;
         }
     }
@@ -85,19 +86,19 @@ class CSSOptimizer {
             temporaryRules: CSSUtils.getTemporaryRules()
         };
 
-        console.log('\nCSS Optimization Report:');
-        console.log('----------------------');
-        console.log(`Important Rules: ${report.importantRules.size}`);
-        console.log(`Media Queries: ${report.mediaQueries.size}`);
-        console.log(`Theme Overrides: ${report.themeOverrides.size}`);
-        console.log(`Temporary Rules: ${report.temporaryRules.size}`);
+        logInfo('\nCSS Optimization Report:');
+        logInfo('----------------------');
+        logInfo(`Important Rules: ${report.importantRules.size}`);
+        logInfo(`Media Queries: ${report.mediaQueries.size}`);
+        logInfo(`Theme Overrides: ${report.themeOverrides.size}`);
+        logInfo(`Temporary Rules: ${report.temporaryRules.size}`);
         
         // Log temporary rules that should be reviewed
         if (report.temporaryRules.size > 0) {
-            console.log('\nTemporary Rules to Review:');
+            logInfo('\nTemporary Rules to Review:');
             report.temporaryRules.forEach((declarations, selector) => {
-                console.log(`\n${selector}:`);
-                declarations.forEach(decl => console.log(`  ${decl}`));
+                logInfo(`\n${selector}:`);
+                declarations.forEach(decl => logInfo(`  ${decl}`));
             });
         }
     }

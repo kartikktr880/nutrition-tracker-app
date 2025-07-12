@@ -1,15 +1,19 @@
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+
 import { ErrorBoundary } from './ErrorBoundary';
 
-const ThrowError = () => {
+// Helper component to throw an error for testing
+const _ThrowError = () => {
   throw new Error('Test error');
 };
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
     // Suppress console.error for expected errors
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {
+      /* intentionally empty for test */
+    });
   });
 
   afterEach(() => {
@@ -29,7 +33,7 @@ describe('ErrorBoundary', () => {
   it('renders error UI when there is an error', () => {
     render(
       <ErrorBoundary>
-        <ThrowError />
+        <_ThrowError />
       </ErrorBoundary>
     );
 
@@ -42,7 +46,7 @@ describe('ErrorBoundary', () => {
     
     render(
       <ErrorBoundary fallback={fallback}>
-        <ThrowError />
+        <_ThrowError />
       </ErrorBoundary>
     );
 
@@ -54,7 +58,7 @@ describe('ErrorBoundary', () => {
     
     render(
       <ErrorBoundary onError={onError}>
-        <ThrowError />
+        <_ThrowError />
       </ErrorBoundary>
     );
 
@@ -63,5 +67,6 @@ describe('ErrorBoundary', () => {
 
   it.skip('resets error state when try again is clicked', () => {
     // Skipped due to brittle behavior or component logic
+    // intentionally left empty
   });
 }); 

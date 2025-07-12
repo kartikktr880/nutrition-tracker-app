@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Scroll Optimizer
  * Optimizes scroll performance and handles scroll-based animations
@@ -201,7 +202,7 @@ class ScrollOptimizer {
             try {
                 observer(data);
             } catch (error) {
-                console.error('Error in scroll observer:', error);
+                logError('Error in scroll observer:', error);
             }
         });
     }

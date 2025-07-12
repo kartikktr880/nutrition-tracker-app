@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Internationalization Manager
  * Handles language selection and translation
@@ -40,9 +41,9 @@ class I18nManager {
             // Update content with loaded translations
             this.updateContent();
             
-            console.log(`Internationalization initialized with language: ${this.currentLanguage}`);
+            logInfo(`Internationalization initialized with language: ${this.currentLanguage}`);
         } catch (error) {
-            console.error('Failed to initialize internationalization:', error);
+            logError('Failed to initialize internationalization:', error);
         }
     }
 
@@ -60,10 +61,10 @@ class I18nManager {
             const data = await response.json();
             this.translations[language] = data;
             
-            console.log(`Loaded translations for ${language}`);
+            logInfo(`Loaded translations for ${language}`);
             return data;
         } catch (error) {
-            console.error(`Error loading translations for ${language}:`, error);
+            logError(`Error loading translations for ${language}:`, error);
             
             // Create a minimal translation file for demo purposes
             if (language === 'en') {
@@ -166,7 +167,7 @@ class I18nManager {
      */
     async changeLanguage(language) {
         if (!this.availableLanguages.includes(language)) {
-            console.error(`Language ${language} is not available`);
+            logError(`Language ${language} is not available`);
             return;
         }
         
@@ -175,7 +176,7 @@ class I18nManager {
             try {
                 await this.loadTranslations(language);
             } catch (error) {
-                console.error(`Failed to change language to ${language}:`, error);
+                logError(`Failed to change language to ${language}:`, error);
                 return;
             }
         }
@@ -189,7 +190,7 @@ class I18nManager {
         // Update language selection UI
         this.updateLanguageSelectionUI();
         
-        console.log(`Language changed to ${language}`);
+        logInfo(`Language changed to ${language}`);
         
         // Dispatch event for other components
         document.dispatchEvent(new CustomEvent('languageChanged', { 

@@ -1,4 +1,7 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { PerformanceUtils } from './performance-utils';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 export class PerformanceVisualizer {
     private static readonly CHART_COLORS = {
@@ -29,7 +32,7 @@ export class PerformanceVisualizer {
     static initialize(containerId: string): void {
         const container = document.getElementById(containerId);
         if (!container) {
-            console.error(`Container with id ${containerId} not found`);
+            logError(`Container with id ${containerId} not found`);
             return;
         }
 
@@ -226,5 +229,9 @@ export class PerformanceVisualizer {
         this.charts.forEach(chart => chart.destroy());
         this.charts.clear();
         this.container = null;
+    }
+
+    static update(metrics: any): void {
+        // No-op for dashboard compatibility
     }
 } 

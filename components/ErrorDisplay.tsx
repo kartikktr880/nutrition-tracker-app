@@ -1,5 +1,4 @@
 import React from 'react';
-import { recordError } from '@/lib/monitoring';
 
 interface ErrorDisplayProps {
   error: Error;
@@ -21,8 +20,8 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   const handleRetry = () => {
     try {
       resetError();
-    } catch (retryError) {
-      recordError('Error retry failed', retryError instanceof Error ? retryError.message : String(retryError));
+    } catch (retryError: unknown) {
+      // recordError('Error retry failed', retryError instanceof Error ? retryError.message : String(retryError));
     }
   };
 
@@ -110,6 +109,4 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
       `}</style>
     </div>
   );
-};
-
-export default ErrorDisplay; 
+}; 

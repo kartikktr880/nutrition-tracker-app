@@ -1,21 +1,12 @@
+import { AlertCircle, BarChart3, Info, Target, TrendingUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import {
-  TrendingUp,
-  AlertCircle,
-  Info,
-  Target,
-  BarChart3,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormConsistencyScoreProps {
   checks: ExerciseFormCheck[];
@@ -46,13 +37,13 @@ export function FormConsistencyScore({
     if (!currentCheck || !checks.length) return;
 
     // Calculate overall consistency score
-    const overallScore = calculateOverallScore(checks, currentCheck);
+    const overallScore = calculateOverallScore(checks);
     
     // Calculate critical form points score
-    const criticalScore = calculateCriticalScore(checks, currentCheck);
+    const criticalScore = calculateCriticalScore(checks);
     
     // Calculate area-specific scores
-    const areaScores = calculateAreaScores(checks, currentCheck);
+    const areaScores = calculateAreaScores(checks);
     
     // Determine trend
     const trend = calculateTrend(checks);
@@ -65,10 +56,7 @@ export function FormConsistencyScore({
     });
   }, [checks, currentCheck]);
 
-  const calculateOverallScore = (
-    checks: ExerciseFormCheck[],
-    currentCheck: ExerciseFormCheck
-  ): number => {
+  const calculateOverallScore = (checks: ExerciseFormCheck[]): number => {
     const recentChecks = checks.slice(-5); // Consider last 5 checks
     const scores = recentChecks.map((check) => {
       const completed = check.checklist.filter((item) => item.completed).length;
@@ -78,10 +66,7 @@ export function FormConsistencyScore({
     return scores.reduce((sum, score) => sum + score, 0) / scores.length;
   };
 
-  const calculateCriticalScore = (
-    checks: ExerciseFormCheck[],
-    currentCheck: ExerciseFormCheck
-  ): number => {
+  const calculateCriticalScore = (checks: ExerciseFormCheck[]): number => {
     const recentChecks = checks.slice(-5);
     const scores = recentChecks.map((check) => {
       const criticalItems = check.checklist.filter(
@@ -94,10 +79,7 @@ export function FormConsistencyScore({
     return scores.reduce((sum, score) => sum + score, 0) / scores.length;
   };
 
-  const calculateAreaScores = (
-    checks: ExerciseFormCheck[],
-    currentCheck: ExerciseFormCheck
-  ): { [key: string]: number } => {
+  const calculateAreaScores = (checks: ExerciseFormCheck[]): { [key: string]: number } => {
     const areas = ['upper_body', 'lower_body', 'core', 'posture'];
     const scores: { [key: string]: number } = {};
 
@@ -160,16 +142,11 @@ export function FormConsistencyScore({
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Form Consistency Score</h3>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Info className="w-5 h-5 text-gray-400" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Track your form consistency over time</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip content="This section explains your overall form consistency score and how it's calculated.">
+          <TooltipTrigger>
+            <Info className="w-5 h-5 text-gray-400" />
+          </TooltipTrigger>
+        </Tooltip>
       </div>
 
       <div className="space-y-6">
@@ -231,6 +208,14 @@ export function FormConsistencyScore({
             Form {metrics.trend.charAt(0).toUpperCase() + metrics.trend.slice(1)}
           </span>
         </div>
+
+        <Tooltip content="View detailed breakdown of your form consistency analysis.">
+          <TooltipTrigger>
+            <Button variant="outline" size="sm">
+              View Details
+            </Button>
+          </TooltipTrigger>
+        </Tooltip>
       </div>
     </Card>
   );

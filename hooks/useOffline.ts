@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { useState, useEffect } from 'react';
 import OfflineService from '@/services/offline';
 
@@ -37,7 +38,7 @@ export function useOffline() {
       await OfflineService.getInstance().queueOperation(operation);
       setSyncState(OfflineService.getInstance().getState());
     } catch (error) {
-      console.error('Failed to queue operation:', error);
+      logError('Failed to queue operation:', error);
       throw error;
     }
   };
@@ -47,7 +48,7 @@ export function useOffline() {
       await OfflineService.getInstance().resolveConflict(conflictIndex, resolution);
       setSyncState(OfflineService.getInstance().getState());
     } catch (error) {
-      console.error('Failed to resolve conflict:', error);
+      logError('Failed to resolve conflict:', error);
       throw error;
     }
   };

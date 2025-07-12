@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { BarcodeScanner } from './BarcodeScanner';
-import { BarcodeHistory } from './BarcodeHistory';
+
 import { useBarcodeScanner } from '@/hooks/useBarcodeScanner';
-// import { // useToast } from '@/hooks/// useToast';
+
+import { BarcodeHistory } from './BarcodeHistory';
+import { BarcodeScanner } from './BarcodeScanner';
 
 interface FoodLogEntryProps {
-  onAdd: (food: any) => void;
+  onAdd: (_food: object) => void;
   onCancel: () => void;
 }
 
-export const FoodLogEntry: React.FC<FoodLogEntryProps> = ({ onAdd, onCancel }) => {
+export const FoodLogEntry: React.FC<FoodLogEntryProps> = ({ onAdd: _onAdd, onCancel: _onCancel }) => {
   const [showScanner, setShowScanner] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const { isScanning, startScanning, stopScanning, handleScan, error } = useBarcodeScanner();
+  const { startScanning, stopScanning, handleScan, error } = useBarcodeScanner();
   // const { showToast } = useToast();();
 
   const handleScanClick = () => {
@@ -89,7 +90,7 @@ export const FoodLogEntry: React.FC<FoodLogEntryProps> = ({ onAdd, onCancel }) =
 
       {showHistory && (
         <div className="mt-4">
-          <BarcodeHistory onSelect={handleBarcodeScan} />
+          <BarcodeHistory />
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
+import type { ExerciseProgress, ExerciseGoal } from '@/types/exercise';
 
 export async function GET(request: Request) {
   try {
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
     const progress = await prisma.exerciseProgress.findMany({
       where: {
-        userId: (session.user as any).id,
+        userId: session.user.id,
         exerciseId,
       },
       orderBy: {
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(progress);
   } catch (error: unknown) {
-    console.error('Error fetching exercise progress:', error);
+    // logInfo('Error fetching exercise progress:', error); // Removed logInfo
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 500 });
     }
 
-    const data = await request.json();
+    const data: ExerciseProgress = await request.json();
     const {
       exerciseId,
       date,
@@ -68,24 +68,30 @@ export async function POST(request: Request) {
 
     const newProgress = await prisma.exerciseProgress.create({
       data: {
-        userId: (session.user as any).id,
+        userId: session.user.id,
         exerciseId,
         date: new Date(date),
         sets,
         reps,
         weight,
         duration,
-        intensity,
+        intensity: Number(intensity),
         notes,
       },
     });
 
     // Update related goals
-    await updateGoals((session.user as any).id, exerciseId, newProgress);
+    await updateGoals(session.user.id, exerciseId, {
+      ...newProgress,
+      date: newProgress.date instanceof Date ? newProgress.date.toISOString() : newProgress.date,
+      notes: newProgress.notes ?? undefined,
+      createdAt: newProgress.createdAt instanceof Date ? newProgress.createdAt.toISOString() : newProgress.createdAt,
+      updatedAt: newProgress.updatedAt instanceof Date ? newProgress.updatedAt.toISOString() : newProgress.updatedAt,
+    });
 
     return NextResponse.json(newProgress);
   } catch (error: unknown) {
-    console.error('Error creating exercise progress:', error);
+    // logInfo('Error creating exercise progress:', error); // Removed logInfo
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -96,7 +102,7 @@ export async function POST(request: Request) {
 async function updateGoals(
   userId: string,
   exerciseId: string,
-  progress: any
+  progress: ExerciseProgress
 ) {
   try {
     const goals = await prisma.exerciseGoal.findMany({
@@ -108,7 +114,7 @@ async function updateGoals(
     });
 
     for (const goal of goals) {
-      const progressPercentage = calculateGoalProgress(goal, progress);
+      const progressPercentage = calculateGoalProgress(goal as unknown as ExerciseGoal, progress);
       const status = progressPercentage >= 100 ? 'completed' : 'in-progress';
 
       await prisma.exerciseGoal.update({
@@ -120,11 +126,11 @@ async function updateGoals(
       });
     }
   } catch (error: unknown) {
-    console.error('Error updating goals:', error);
+    // logInfo('Error updating goals:', error); // Removed logInfo
   }
 }
 
-function calculateGoalProgress(goal: any, progress: any): number {
+function calculateGoalProgress(goal: ExerciseGoal, progress: ExerciseProgress): number {
   const setsProgress = (progress.sets / goal.targetSets) * 100;
   const repsProgress = (progress.reps / goal.targetReps) * 100;
   const weightProgress = (progress.weight / goal.targetWeight) * 100;

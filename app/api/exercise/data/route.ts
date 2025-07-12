@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/utils/logger';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Session {
+  user: User;
+}
 
 export async function GET(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -18,9 +28,9 @@ export async function GET(request: Request) {
     let data;
     switch (type) {
       case 'sessions':
-        data = await prisma.any.findMany({
+        data = await prisma.exerciseSession.findMany({
           where: {
-            userId: (session.user as any).id,
+            userId: session.user.id,
             ...(startDate && endDate
               ? {
                   startTime: {
@@ -36,7 +46,7 @@ export async function GET(request: Request) {
       case 'progress':
         data = await prisma.exerciseProgress.findMany({
           where: {
-            userId: (session.user as any).id,
+            userId: session.user.id,
             ...(startDate && endDate
               ? {
                   date: {
@@ -52,7 +62,7 @@ export async function GET(request: Request) {
       case 'goals':
         data = await prisma.exerciseGoal.findMany({
           where: {
-            userId: (session.user as any).id,
+            userId: session.user.id,
           },
           orderBy: { createdAt: 'desc' },
         });
@@ -66,7 +76,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(data);
   } catch (error: unknown) {
-    console.error('Error fetching exercise data:', error);
+    logError('Error fetching exercise data:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -76,7 +86,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -87,10 +97,10 @@ export async function POST(request: Request) {
     let result;
     switch (type) {
       case 'session':
-        result = await prisma.any.create({
+        result = await prisma.exerciseSession.create({
           data: {
             ...payload,
-            userId: (session.user as any).id,
+            userId: session.user.id,
           },
         });
         break;
@@ -98,7 +108,7 @@ export async function POST(request: Request) {
         result = await prisma.exerciseProgress.create({
           data: {
             ...payload,
-            userId: (session.user as any).id,
+            userId: session.user.id,
           },
         });
         break;
@@ -106,7 +116,7 @@ export async function POST(request: Request) {
         result = await prisma.exerciseGoal.create({
           data: {
             ...payload,
-            userId: (session.user as any).id,
+            userId: session.user.id,
             status: 'in-progress',
             progress: 0,
           },
@@ -121,7 +131,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error: unknown) {
-    console.error('Error creating exercise data:', error);
+    logError('Error creating exercise data:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -131,7 +141,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -149,7 +159,7 @@ export async function PUT(request: Request) {
     let result;
     switch (type) {
       case 'session':
-        result = await prisma.any.update({
+        result = await prisma.exerciseSession.update({
           where: { id },
           data: payload,
         });
@@ -175,7 +185,7 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(result);
   } catch (error: unknown) {
-    console.error('Error updating exercise data:', error);
+    logError('Error updating exercise data:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -185,7 +195,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -204,7 +214,7 @@ export async function DELETE(request: Request) {
     let result;
     switch (type) {
       case 'session':
-        result = await prisma.any.delete({
+        result = await prisma.exerciseSession.delete({
           where: { id },
         });
         break;
@@ -225,9 +235,9 @@ export async function DELETE(request: Request) {
         );
     }
 
-    return NextResponse.json({ success: true, data: result });
+    return NextResponse.json(result);
   } catch (error: unknown) {
-    console.error('Error deleting exercise data:', error);
+    logError('Error deleting exercise data:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

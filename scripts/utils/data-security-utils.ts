@@ -49,7 +49,7 @@ export class DataSecurityUtils {
 
             // Use CompressionStream API if available
             if (typeof CompressionStream !== 'undefined') {
-                const stream = new CompressionStream(compressionOptions.method);
+                const stream = new CompressionStream(compressionOptions.method || 'gzip');
                 const writer = stream.writable.getWriter();
                 const reader = stream.readable.getReader();
 
@@ -67,15 +67,14 @@ export class DataSecurityUtils {
             } else {
                 // Fallback to pako if CompressionStream is not available
                 const pako = await import('pako');
-                return pako.gzip(data, { level: compressionOptions.level });
+                return pako.gzip(data, { level: compressionOptions.level as 0 | 6 | 1 | -1 | 2 | 3 | 4 | 5 | 7 | 8 | 9 | undefined });
             }
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'Data compression' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(error, ErrorCategory.STORAGE, ErrorSeverity.HIGH, { context: 'Data compression' });
+            } else {
+                await errorUtils.handleError(new Error(String(error)), ErrorCategory.STORAGE, ErrorSeverity.HIGH, { context: 'Data compression' });
+            }
             throw error;
         }
     }
@@ -89,7 +88,7 @@ export class DataSecurityUtils {
 
             // Use DecompressionStream API if available
             if (typeof DecompressionStream !== 'undefined') {
-                const stream = new DecompressionStream(compressionOptions.method);
+                const stream = new DecompressionStream(compressionOptions.method || 'gzip');
                 const writer = stream.writable.getWriter();
                 const reader = stream.readable.getReader();
 
@@ -112,12 +111,11 @@ export class DataSecurityUtils {
                 return new TextDecoder().decode(decompressed);
             }
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'Data decompression' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(error, ErrorCategory.STORAGE, ErrorSeverity.HIGH, { context: 'Data decompression' });
+            } else {
+                await errorUtils.handleError(new Error(String(error)), ErrorCategory.STORAGE, ErrorSeverity.HIGH, { context: 'Data decompression' });
+            }
             throw error;
         }
     }
@@ -142,7 +140,7 @@ export class DataSecurityUtils {
             const encoder = new TextEncoder();
             const dataBuffer = encoder.encode(data);
             const encryptedData = await crypto.subtle.encrypt(
-                { name: encryptionOptions.algorithm, iv },
+                { name: encryptionOptions.algorithm || 'AES-GCM', iv },
                 key,
                 dataBuffer
             );
@@ -155,12 +153,11 @@ export class DataSecurityUtils {
 
             return result;
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.SECURITY,
-                ErrorSeverity.HIGH,
-                { context: 'Data encryption' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(error, ErrorCategory.RUNTIME, ErrorSeverity.HIGH, { context: 'Data encryption' });
+            } else {
+                await errorUtils.handleError(new Error(String(error)), ErrorCategory.RUNTIME, ErrorSeverity.HIGH, { context: 'Data encryption' });
+            }
             throw error;
         }
     }
@@ -182,19 +179,18 @@ export class DataSecurityUtils {
             
             // Decrypt the data
             const decryptedData = await crypto.subtle.decrypt(
-                { name: encryptionOptions.algorithm, iv },
+                { name: encryptionOptions.algorithm || 'AES-GCM', iv },
                 key,
                 data
             );
 
             return new TextDecoder().decode(decryptedData);
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.SECURITY,
-                ErrorSeverity.HIGH,
-                { context: 'Data decryption' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(error, ErrorCategory.RUNTIME, ErrorSeverity.HIGH, { context: 'Data decryption' });
+            } else {
+                await errorUtils.handleError(new Error(String(error)), ErrorCategory.RUNTIME, ErrorSeverity.HIGH, { context: 'Data decryption' });
+            }
             throw error;
         }
     }
@@ -224,11 +220,11 @@ export class DataSecurityUtils {
             {
                 name: 'PBKDF2',
                 salt,
-                iterations: options.iterations!,
+                iterations: options.iterations || 100000,
                 hash: 'SHA-256'
             },
             keyMaterial,
-            { name: options.algorithm, length: options.keySize },
+            { name: options.algorithm || 'AES-GCM', length: options.keySize || 256 },
             false,
             ['encrypt', 'decrypt']
         );

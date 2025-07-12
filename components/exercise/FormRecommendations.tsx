@@ -1,24 +1,11 @@
-import { useState, useEffect } from 'react';
-import { ExerciseFormCheck, ExerciseFormTemplate } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import {
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  Target,
-  Calendar,
-  Award,
-  ChevronRight,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ExerciseFormCheck, ExerciseFormTemplate } from '@/lib/validations/exerciseForm';
+
+import { Target, CheckCircle, AlertCircle } from '../icons/lucide-react';
 
 interface FormRecommendationsProps {
   checks: ExerciseFormCheck[];
@@ -49,14 +36,14 @@ export function FormRecommendations({
     if (checks.length === 0) return;
 
     // Calculate streak
-    const sortedChecks = [...checks].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    const sortedChecks = checks.sort(
+      (a, b) => new Date(b.date || Date.now()).getTime() - new Date(a.date || Date.now()).getTime()
     );
     let currentStreak = 0;
-    let lastDate = new Date(sortedChecks[0].date);
+    let lastDate = new Date(sortedChecks[0].date || Date.now());
 
     for (const check of sortedChecks) {
-      const checkDate = new Date(check.date);
+      const checkDate = new Date(check.date || Date.now());
       const dayDiff = Math.floor(
         (lastDate.getTime() - checkDate.getTime()) / (1000 * 60 * 60 * 24)
       );
@@ -163,7 +150,6 @@ export function FormRecommendations({
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-4">
           <div className="flex items-center space-x-2">
-            <Calendar className="w-5 h-5 text-blue-500" />
             <div>
               <p className="text-sm font-medium">Current Streak</p>
               <p className="text-2xl font-bold">{streak} days</p>
@@ -204,11 +190,11 @@ export function FormRecommendations({
           >
             <div className="flex items-start space-x-4">
               {recommendation.type === 'achievement' ? (
-                <Award className="w-5 h-5 text-green-500 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
               ) : recommendation.type === 'focus' ? (
-                <AlertTriangle className="w-5 h-5 text-red-500 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
               ) : (
-                <TrendingUp className="w-5 h-5 text-yellow-500 mt-0.5" />
+                <Target className="w-5 h-5 text-yellow-500 mt-0.5" />
               )}
               <div className="flex-1">
                 <div className="flex items-center justify-between">
@@ -232,7 +218,6 @@ export function FormRecommendations({
                     }}
                   >
                     {recommendation.action}
-                    <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
               </div>
@@ -242,7 +227,7 @@ export function FormRecommendations({
       </div>
 
       <div className="flex items-center space-x-2 text-sm text-gray-500">
-        <CheckCircle2 className="w-4 h-4" />
+        <CheckCircle className="w-4 h-4" />
         <span>
           Based on {checks.length} form checks and {template.checklist.length} form
           points

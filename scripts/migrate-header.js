@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Header Migration Script
  * Safely transitions from old header implementation to new header manager
@@ -24,9 +25,9 @@ class HeaderMigration {
             // 3. Clean up old files
             await this.cleanupOldFiles();
 
-            console.log('Header migration completed successfully');
+            logInfo('Header migration completed successfully');
         } catch (error) {
-            console.error('Header migration failed:', error);
+            logError('Header migration failed:', error);
             await this.rollback();
         }
     }
@@ -74,7 +75,7 @@ class HeaderMigration {
     }
 
     async rollback() {
-        console.log('Rolling back changes...');
+        logInfo('Rolling back changes...');
         // Implementation of rollback logic
     }
 

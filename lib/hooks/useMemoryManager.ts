@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
+
 import { memoryManager } from '../memoryManager';
 
 interface UseMemoryManagerOptions {

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { auth } from './auth-core.js';
 import { getFirestore, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { app } from './firebase-config.js';
@@ -126,7 +127,7 @@ class MealSuggestions {
             
             this.displaySuggestions(suggestions);
         } catch (error) {
-            console.error('Error loading suggestions:', error);
+            logError('Error loading suggestions:', error);
             document.getElementById('suggestionsGrid').innerHTML = 'Error loading suggestions';
         }
     }

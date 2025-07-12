@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { SearchOptionsSchema, SearchResultSchema, SearchResult } from '@/services/searchService';
-import { databaseService } from '@/services/databaseService';
+
 import { analyticsService } from '@/services/analyticsService';
+import { databaseService } from '@/services/databaseService';
+import { SearchOptionsSchema, SearchResultSchema, SearchResult } from '@/services/searchService';
+import { logError } from '@/utils/logger';
 
 // Request validation schema
 const SearchRequestSchema = z.object({
@@ -78,7 +80,7 @@ export async function POST(request: NextRequest) {
       status: 500,
     });
   } catch (error: unknown) {
-    console.error('Search API error:', error);
+    logError('Search API error:', error);
     
     if (error instanceof z.ZodError) {
       return NextResponse.json({

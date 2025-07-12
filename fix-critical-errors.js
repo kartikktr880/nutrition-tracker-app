@@ -1,9 +1,10 @@
+import { logError, logWarn, logInfo, logDebug } from './utils/logger';
 const fs = require('fs');
 const path = require('path');
 
 // Fix critical TypeScript errors
 function fixCriticalErrors() {
-  console.log('🔧 Fixing critical TypeScript errors...');
+  logInfo('🔧 Fixing critical TypeScript errors...');
   
   // 1. Fix recordError calls
   fixRecordErrorCalls();
@@ -17,11 +18,11 @@ function fixCriticalErrors() {
   // 4. Fix test file issues
   fixTestFileIssues();
   
-  console.log('✅ Critical errors fixed!');
+  logInfo('✅ Critical errors fixed!');
 }
 
 function fixRecordErrorCalls() {
-  console.log('  📝 Fixing recordError calls...');
+  logInfo('  📝 Fixing recordError calls...');
   
   const files = [
     'services/stateManager.ts',
@@ -46,13 +47,13 @@ function fixRecordErrorCalls() {
       );
       
       fs.writeFileSync(file, content);
-      console.log(`    ✅ Fixed ${file}`);
+      logInfo(`    ✅ Fixed ${file}`);
     }
   });
 }
 
 function fixStatusTypeMismatches() {
-  console.log('  📝 Fixing status type mismatches...');
+  logInfo('  📝 Fixing status type mismatches...');
   
   const files = [
     'utils/recovery.ts',
@@ -68,13 +69,13 @@ function fixStatusTypeMismatches() {
       content = content.replace(/status:\s*500/g, "status: '500'");
       
       fs.writeFileSync(file, content);
-      console.log(`    ✅ Fixed ${file}`);
+      logInfo(`    ✅ Fixed ${file}`);
     }
   });
 }
 
 function fixMissingExports() {
-  console.log('  📝 Fixing missing exports...');
+  logInfo('  📝 Fixing missing exports...');
   
   // Fix validationVisualization.ts
   const validationVizFile = 'services/validationVisualization.ts';
@@ -83,13 +84,13 @@ function fixMissingExports() {
     if (!content.trim()) {
       content = 'export {}; // Empty module to satisfy TypeScript';
       fs.writeFileSync(validationVizFile, content);
-      console.log(`    ✅ Fixed ${validationVizFile}`);
+      logInfo(`    ✅ Fixed ${validationVizFile}`);
     }
   }
 }
 
 function fixTestFileIssues() {
-  console.log('  📝 Fixing test file issues...');
+  logInfo('  📝 Fixing test file issues...');
   
   const testFiles = [
     'src/__tests__/Checklist.test.tsx',
@@ -107,7 +108,7 @@ function fixTestFileIssues() {
       if (content.trim() === 'describe.skip(\'SKIPPED\', () => {\n});') {
         content = 'export {};\n\ndescribe.skip(\'SKIPPED\', () => {\n});';
         fs.writeFileSync(file, content);
-        console.log(`    ✅ Fixed ${file}`);
+        logInfo(`    ✅ Fixed ${file}`);
       }
     }
   });

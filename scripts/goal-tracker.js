@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Enhanced Goal Tracker for Nutrition Tracker App
  * Provides advanced goal tracking and visualization
@@ -86,7 +87,7 @@ class GoalTracker {
       
       return true;
     } catch (error) {
-      console.error('Error initializing goal tracker:', error);
+      logError('Error initializing goal tracker:', error);
       return false;
     }
   }
@@ -644,7 +645,7 @@ class GoalTracker {
       // Show success message
       this.showToast('Goal saved successfully!', 'success');
     } catch (error) {
-      console.error('Error saving goal:', error);
+      logError('Error saving goal:', error);
       this.showToast('Error saving goal. Please try again.', 'error');
     }
   }
@@ -722,7 +723,7 @@ class GoalTracker {
         this.showToast('Goal deleted successfully!', 'success');
       }
     } catch (error) {
-      console.error('Error deleting goal:', error);
+      logError('Error deleting goal:', error);
       this.showToast('Error deleting goal. Please try again.', 'error');
     }
   }
@@ -774,7 +775,7 @@ class GoalTracker {
       // Show success message
       this.showToast('Progress updated successfully!', 'success');
     } catch (error) {
-      console.error('Error logging progress:', error);
+      logError('Error logging progress:', error);
       this.showToast('Error updating progress. Please try again.', 'error');
     }
   }
@@ -792,7 +793,7 @@ class GoalTracker {
         this.progressData = userDoc.data().progressData;
       }
     } catch (error) {
-      console.error('Error loading progress data:', error);
+      logError('Error loading progress data:', error);
     }
   }
   
@@ -819,7 +820,7 @@ class GoalTracker {
         document.head.appendChild(script);
       });
     } catch (error) {
-      console.error('Error loading Chart.js:', error);
+      logError('Error loading Chart.js:', error);
     }
   }
   

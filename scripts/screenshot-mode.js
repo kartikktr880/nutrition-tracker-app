@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Screenshot Mode
  * This script adds a screenshot mode toggle to make full-page screenshots possible
@@ -234,7 +235,7 @@
         linkEl.href = 'styles/screenshot-fix.css';
         document.head.appendChild(linkEl);
         
-        console.log('Screenshot mode initialized. Press Alt+S or use the button to toggle.');
+        logInfo('Screenshot mode initialized. Press Alt+S or use the button to toggle.');
     }
     
     // Run when DOM is ready

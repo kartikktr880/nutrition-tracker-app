@@ -1,6 +1,9 @@
-import React from 'react';
-import { SearchService } from '@/services/searchService';
 import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+
+import { SearchService } from '@/services/searchService';
+
+import { logError, logInfo } from '../../utils/logger';
 
 const getInsightIcon = (type: string) => {
   switch (type) {
@@ -33,17 +36,17 @@ const getInsightColor = (type: string) => {
 };
 
 export const SearchInsights: React.FC = () => {
-  const [insights, setInsights] = React.useState<ReturnType<typeof SearchService.prototype.getSearchInsights> | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [_insights, setInsights] = useState<ReturnType<typeof SearchService.prototype.getSearchInsights> | null>(null);
+  const [_isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchInsights = async () => {
       const searchService = SearchService.getInstance();
       try {
         const data = await searchService.getSearchInsights();
         setInsights(data);
       } catch (error) {
-        console.error('Error loading search insights:', error);
+        logError('Error loading search insights:', error);
       } finally {
         setIsLoading(false);
       }
@@ -51,7 +54,7 @@ export const SearchInsights: React.FC = () => {
     fetchInsights();
   }, []);
 
-  if (isLoading) {
+  if (_isLoading) {
     return (
       <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4" role="status">
         <div className="animate-pulse space-y-4">
@@ -66,7 +69,7 @@ export const SearchInsights: React.FC = () => {
     );
   }
 
-  if (!insights || insights.length === 0) {
+  if (!_insights || _insights.length === 0) {
     return null;
   }
 
@@ -77,7 +80,7 @@ export const SearchInsights: React.FC = () => {
       </h3>
 
       <div className="space-y-4">
-        {insights.map((insight, index) => (
+        {_insights.map((insight, index) => (
           <motion.div
             key={`${insight.type}-${index}`}
             initial={{ opacity: 0, y: 20 }}
@@ -100,7 +103,7 @@ export const SearchInsights: React.FC = () => {
                   <button
                     onClick={() => {
                       // Handle action based on type
-                      console.log('Action:', insight.action);
+                      logInfo('Action:', insight.action);
                     }}
                     className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
                   >

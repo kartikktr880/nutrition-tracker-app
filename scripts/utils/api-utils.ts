@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 export class APIUtils {
     private static state = {
         cache: new Map<string, any>(),
@@ -37,7 +38,11 @@ export class APIUtils {
 
             return data;
         } catch (error) {
-            this.handleError(error);
+            if (error instanceof Error) {
+                this.handleError(error);
+            } else {
+                this.handleError(new Error(String(error)));
+            }
             throw error;
         }
     }
@@ -56,6 +61,7 @@ export class APIUtils {
                 await this.delay(Math.pow(2, this.state.retryCount) * 1000);
             }
         }
+        throw new Error('retryRequest failed: max retries exceeded');
     }
 
     private static handleError(error: Error): void {
@@ -104,7 +110,7 @@ export class APIUtils {
             try {
                 observer(data);
             } catch (error) {
-                console.error('Error in API observer:', error);
+                logError('Error in API observer:', error);
             }
         });
     }

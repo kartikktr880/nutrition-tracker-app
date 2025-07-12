@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Performance Optimizer
  * Provides utilities to optimize performance for large datasets
@@ -36,16 +37,16 @@ class PerformanceOptimizer {
                 const observer = new PerformanceObserver((list) => {
                     list.getEntries().forEach((entry) => {
                         if (entry.duration > 100) {
-                            console.warn('Long task detected:', entry.duration.toFixed(2) + 'ms', entry);
+                            logWarn('Long task detected:', entry.duration.toFixed(2) + 'ms', entry);
                         }
                     });
                 });
                 
                 observer.observe({ entryTypes: ['longtask'] });
                 
-                console.log('Performance monitoring initialized');
+                logInfo('Performance monitoring initialized');
             } catch (e) {
-                console.error('Performance observer error:', e);
+                logError('Performance observer error:', e);
             }
         }
         
@@ -447,7 +448,7 @@ class PerformanceOptimizer {
             try {
                 renderFn();
             } catch (error) {
-                console.error('Error in render function:', error);
+                logError('Error in render function:', error);
             }
         }
         

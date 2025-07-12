@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { storage } from '../services/storage';
 import { analytics } from '../services/analytics';
@@ -9,6 +10,19 @@ export interface SearchHistoryItem {
   results?: number;
 }
 
+interface UseSearchHistoryReturn {
+  history: SearchHistoryItem[];
+  loading: boolean;
+  error: string | null;
+  hasMore: boolean;
+  addItem: (query: string, results?: number) => Promise<void>;
+  removeItem: (id: string) => Promise<void>;
+  clearHistory: () => Promise<void>;
+  getRecentSearches: (limit?: number) => Promise<SearchHistoryItem[]>;
+  addToRecent: (query: string) => Promise<void>;
+  loadMore: () => Promise<void>;
+}
+
 /**
  * Hook for managing search history with persistence and analytics
  * 
@@ -18,8 +32,11 @@ export interface SearchHistoryItem {
  * const { history, addItem, removeItem, clearHistory } = useSearchHistory();
  * ```
  */
-export const useSearchHistory = () => {
+export const useSearchHistory = (): UseSearchHistoryReturn => {
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
 
   // Load history on mount
   useEffect(() => {
@@ -28,7 +45,7 @@ export const useSearchHistory = () => {
         const savedHistory = await storage.loadSearchHistory();
         setHistory(savedHistory);
       } catch (error) {
-        console.error('Failed to load search history:', error);
+        logError('Failed to load search history:', error);
         analytics.trackError({
           errorType: 'storage',
           errorMessage: 'Failed to load search history'
@@ -42,22 +59,28 @@ export const useSearchHistory = () => {
   // Add search to history
   const addItem = useCallback(async (query: string, results = 0) => {
     try {
-      const newItem: Omit<SearchHistoryItem, 'id' | 'timestamp'> = {
+      const newItem: SearchHistoryItem = {
+        id: crypto.randomUUID(),
         query,
-        results
+        results,
+        timestamp: Date.now()
       };
 
       await storage.addSearchItem(newItem);
       const updatedHistory = await storage.loadSearchHistory();
       setHistory(updatedHistory);
 
-      analytics.trackSearch({
-        query,
-        resultCount: results,
-        success: true
+      analytics.trackEvent({
+        category: 'search',
+        action: 'search_added',
+        value: results,
+        metadata: {
+          query,
+          success: true
+        }
       });
     } catch (error) {
-      console.error('Failed to add search to history:', error);
+      logError('Failed to add search to history:', error);
       analytics.trackError({
         errorType: 'storage',
         errorMessage: 'Failed to add search to history'
@@ -72,7 +95,7 @@ export const useSearchHistory = () => {
       const updatedHistory = await storage.loadSearchHistory();
       setHistory(updatedHistory);
     } catch (error) {
-      console.error('Failed to remove search from history:', error);
+      logError('Failed to remove search from history:', error);
       analytics.trackError({
         errorType: 'storage',
         errorMessage: 'Failed to remove search from history'
@@ -86,7 +109,7 @@ export const useSearchHistory = () => {
       await storage.clearSearchHistory();
       setHistory([]);
     } catch (error) {
-      console.error('Failed to clear search history:', error);
+      logError('Failed to clear search history:', error);
       analytics.trackError({
         errorType: 'storage',
         errorMessage: 'Failed to clear search history'
@@ -100,7 +123,7 @@ export const useSearchHistory = () => {
       const recent = await storage.loadRecentSearches();
       return recent.slice(0, limit);
     } catch (error) {
-      console.error('Failed to get recent searches:', error);
+      logError('Failed to get recent searches:', error);
       analytics.trackError({
         errorType: 'storage',
         errorMessage: 'Failed to get recent searches'
@@ -114,7 +137,7 @@ export const useSearchHistory = () => {
     try {
       await storage.addRecentSearch(query);
     } catch (error) {
-      console.error('Failed to add to recent searches:', error);
+      logError('Failed to add to recent searches:', error);
       analytics.trackError({
         errorType: 'storage',
         errorMessage: 'Failed to add to recent searches'
@@ -122,12 +145,21 @@ export const useSearchHistory = () => {
     }
   }, []);
 
+  const loadMore = async (): Promise<void> => {
+    // Implementation for loading more items
+    logInfo('Loading more search history items...');
+  };
+
   return {
     history,
+    loading,
+    error,
+    hasMore,
     addItem,
     removeItem,
     clearHistory,
     getRecentSearches,
-    addToRecent
+    addToRecent,
+    loadMore
   };
 }; 

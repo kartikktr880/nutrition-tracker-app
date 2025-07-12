@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -177,8 +178,8 @@ app.get('/health', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Security Audit API running on http://localhost:${PORT}`);
-    console.log('Health check available at /health');
-    console.log('Security audit available at /audit');
-    console.log('Environment:', process.env.NODE_ENV || 'development');
+    logInfo(`Security Audit API running on http://localhost:${PORT}`);
+    logInfo('Health check available at /health');
+    logInfo('Security audit available at /audit');
+    logInfo('Environment:', process.env.NODE_ENV || 'development');
 }); 

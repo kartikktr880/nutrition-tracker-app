@@ -1,15 +1,21 @@
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from '@/utils/logger';
+
 import { auditLogger } from './audit-logger';
 
 interface ErrorDetails {
   error: Error | string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   severity?: 'FATAL' | 'ERROR' | 'WARNING';
+}
+
+interface ErrorWithCode extends Error {
+  code?: string;
 }
 
 interface LatencyDetails {
   operation: string;
   duration: number;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 class MonitoringService {
@@ -45,7 +51,7 @@ class MonitoringService {
     }
   }
 
-  public recordError(message: string, error: Error | string, context?: Record<string, any>) {
+  public recordError(message: string, error: Error | string, context?: Record<string, unknown>) {
     const errorDetails: ErrorDetails = {
       error: error instanceof Error ? error : new Error(error),
       context,
@@ -61,18 +67,18 @@ class MonitoringService {
       message,
       context: {
         error: error instanceof Error ? error.message : error,
-        ...context
+        ...(context as object)
       }
     });
 
     // In production, you would also send this to your error tracking service
     if (process.env.NODE_ENV === 'production') {
       // TODO: Implement production error tracking service integration
-      console.error('Production error:', errorDetails);
+      logError('Production error:', errorDetails);
     }
   }
 
-  public recordOperationLatency(operation: string, duration: number, context?: Record<string, any>) {
+  public recordOperationLatency(operation: string, duration: number, context?: Record<string, unknown>) {
     const latencyDetails: LatencyDetails = {
       operation,
       duration,
@@ -113,20 +119,22 @@ class MonitoringService {
 
   public getErrorCount(errorCode?: string): number {
     if (!errorCode) return this.errorLogs.length;
-    return this.errorLogs.filter(log => 
-      log.error instanceof Error && 
-      (log.error as any).code === errorCode
-    ).length;
+    return this.errorLogs.filter(log => {
+      if (log.error instanceof Error && 'code' in log.error) {
+        return (log.error as ErrorWithCode).code === errorCode;
+      }
+      return false;
+    }).length;
   }
 }
 
 export const monitoringService = MonitoringService.getInstance();
 
 // Convenience functions
-export const recordError = (message: string, error: Error | string, context?: Record<string, any>) => {
+export const recordError = (message: string, error: Error | string, context?: Record<string, unknown>) => {
   monitoringService.recordError(message, error, context);
 };
 
-export const recordOperationLatency = (operation: string, duration: number, context?: Record<string, any>) => {
+export const recordOperationLatency = (operation: string, duration: number, context?: Record<string, unknown>) => {
   monitoringService.recordOperationLatency(operation, duration, context);
 }; 

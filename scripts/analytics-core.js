@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Analytics Core Module
  * A consolidated analytics system that combines basic, enhanced, and advanced analytics features
@@ -73,7 +74,7 @@ class AnalyticsCore {
      * Initialize the analytics system
      */
     initialize() {
-        console.log('Analytics Core initialized');
+        logInfo('Analytics Core initialized');
         this.startPerformanceMonitoring();
         this.initializeInsights();
     }
@@ -100,7 +101,7 @@ class AnalyticsCore {
             if (this.performanceMetrics.lastAnimationFrame) {
                 const delta = timestamp - this.performanceMetrics.lastAnimationFrame;
                 if (delta > 50) { // Frame drop detected (less than 20fps)
-                    console.warn('Performance: Frame drop detected');
+                    logWarn('Performance: Frame drop detected');
                     this.optimizeForPerformance();
                 }
             }
@@ -260,7 +261,7 @@ class AnalyticsCore {
         if (format === 'pdf') {
             this.exportInsightsPDF();
         } else {
-            console.log(`Exporting data in ${format} format`);
+            logInfo(`Exporting data in ${format} format`);
         }
     }
 

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -14,7 +15,7 @@ const logStream = fs.createWriteStream(logFile, { flags: 'a' });
 
 function log(message) {
     const timestamp = new Date().toISOString();
-    console.log(message);
+    logInfo(message);
     logStream.write(`[${timestamp}] ${message}\n`);
 }
 

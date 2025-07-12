@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Remove Spacers Script
  * This script finds and removes any large spacer elements that might be pushing the footer down
@@ -27,7 +28,7 @@
         
         // Log and remove the spacers
         largeSpacers.forEach(spacer => {
-            console.log('Removing large spacer:', spacer);
+            logInfo('Removing large spacer:', spacer);
             spacer.style.display = 'none';
             spacer.style.height = '0';
             spacer.style.padding = '0';
@@ -42,12 +43,12 @@
             const paddingBottom = parseInt(computedStyle.paddingBottom);
             
             if (marginBottom > 100) {
-                console.log('Reducing excessive margin-bottom on:', section);
+                logInfo('Reducing excessive margin-bottom on:', section);
                 section.style.marginBottom = '50px';
             }
             
             if (paddingBottom > 100) {
-                console.log('Reducing excessive padding-bottom on:', section);
+                logInfo('Reducing excessive padding-bottom on:', section);
                 section.style.paddingBottom = '50px';
             }
         });
@@ -59,7 +60,7 @@
             const paddingBottom = parseInt(computedStyle.paddingBottom);
             
             if (paddingBottom > 100) {
-                console.log('Reducing excessive padding-bottom on main');
+                logInfo('Reducing excessive padding-bottom on main');
                 main.style.paddingBottom = '50px';
             }
         }

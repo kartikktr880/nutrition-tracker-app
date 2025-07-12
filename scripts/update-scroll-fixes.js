@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Update Scroll Fixes
  * This script updates all HTML files to use the new scroll-manager.js
@@ -49,10 +50,10 @@ function updateFile(filePath) {
         // Write back if modified
         if (modified) {
             fs.writeFileSync(filePath, content, 'utf8');
-            console.log(`Updated: ${filePath}`);
+            logInfo(`Updated: ${filePath}`);
         }
     } catch (error) {
-        console.error(`Error updating ${filePath}:`, error);
+        logError(`Error updating ${filePath}:`, error);
     }
 }
 
@@ -64,10 +65,10 @@ function removeOldFiles() {
         try {
             if (fs.existsSync(file)) {
                 fs.unlinkSync(file);
-                console.log(`Removed: ${file}`);
+                logInfo(`Removed: ${file}`);
             }
         } catch (error) {
-            console.error(`Error removing ${file}:`, error);
+            logError(`Error removing ${file}:`, error);
         }
     });
 }
@@ -104,8 +105,8 @@ try {
     // Remove old files
     removeOldFiles();
 
-    console.log('Scroll fix updates completed successfully!');
+    logInfo('Scroll fix updates completed successfully!');
 } catch (error) {
-    console.error('Error during update:', error);
+    logError('Error during update:', error);
     process.exit(1);
 } 

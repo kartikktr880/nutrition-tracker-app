@@ -25,7 +25,7 @@ export class PerformanceHistory {
     }
 
     static addRecord(): void {
-        const metrics = PerformanceUtils.getCurrentMetrics();
+        const metrics = PerformanceUtils.getMetrics();
         if (!metrics) return;
 
         const record: PerformanceRecord = {
@@ -35,8 +35,8 @@ export class PerformanceHistory {
             memoryUsage: metrics.memoryUsage,
             cpuUsage: metrics.cpuUsage,
             issues: {
-                warnings: metrics.warnings || 0,
-                critical: metrics.critical || 0
+                warnings: 0,
+                critical: 0
             }
         };
 

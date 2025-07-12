@@ -1,85 +1,101 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useSession } from 'next-auth/react';
-import { MealPlan, NutritionalGoals, UserPreferences } from '@/types/meal-plan';
 
-interface SmartMealPlannerProps {
-  onPlanGenerated: (plan: MealPlan) => void;
+// import { useAuth } from '../../../hooks/useAuth';
+// import { useMealPlanningService } from '../../../hooks/useMealPlanningService'; // Commented out if not available
+
+interface MealPlan {
+  id: string;
+  name: string;
+  meals: Meal[];
+  totalCalories: number;
 }
 
-export const SmartMealPlanner: React.FC<SmartMealPlannerProps> = ({ onPlanGenerated }) => {
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(false);
-  const [preferences, setPreferences] = useState<UserPreferences>({
-    dietaryRestrictions: [],
-    allergies: [],
-    cuisinePreferences: [],
-    mealTiming: {},
-    calorieGoals: 2000,
-  });
-  const [nutritionalGoals, setNutritionalGoals] = useState<NutritionalGoals>({
-    protein: 0,
-    carbs: 0,
-    fats: 0,
-    fiber: 0,
-  });
+interface Meal {
+  id: string;
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
 
-  const generateMealPlan = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/meal-plan/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          preferences,
-          nutritionalGoals,
-          userId: session?.user?.id,
-        }),
-      });
+const SmartMealPlanner: React.FC = () => {
+  // const { user } = useAuth(); // Unused
+  const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
+  // const [_selectedPlan, _setSelectedPlan] = useState<MealPlan | null>(null); // Unused
+  // const [loading, setLoading] = useState(false); // Unused
+  // const [error, setError] = useState<string | null>(null); // Unused
+  // const [generatedMealPlan, setGeneratedMealPlan] = useState<unknown>(null); // Unused
+  // const mealPlanningService = useMealPlanningService(); // Commented out if not available
+  // const mealPlanningService = {} as any; // Placeholder, unused
+  // const startDate = new Date(); // Unused
+  // const endDate = new Date(); // Unused
 
-      if (!response.ok) {
-        throw new Error('Failed to generate meal plan');
-      }
-
-      const plan = await response.json();
-      onPlanGenerated(plan);
-    } catch (error) {
-      console.error('Error generating meal plan:', error);
-      // Handle error appropriately
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    // Load meal plans from API or localStorage
+    const savedPlans = localStorage.getItem('mealPlans');
+    if (savedPlans) {
+      setMealPlans(JSON.parse(savedPlans));
     }
-  };
+  }, []);
+
+  // const generateMealPlan = async () => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     if (!user) {
+  //       setError('User not found');
+  //       return;
+  //     }
+
+  //     const userPreferences = (user as any).preferences || {};
+  //     const userGoals = (user as any).goals || {};
+
+  //     const mealPlan = await mealPlanningService.generateMealPlan({
+  //       userId: user.id,
+  //       preferences: userPreferences,
+  //       goals: userGoals,
+  //       startDate: new Date(startDate),
+  //       endDate: new Date(endDate)
+  //     });
+
+  //     setGeneratedMealPlan(mealPlan);
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : 'Failed to generate meal plan');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6 bg-white rounded-lg shadow-lg"
-    >
-      <h2 className="text-2xl font-bold mb-6">Smart Meal Planner</h2>
+    <div className="smart-meal-planner">
+      <h2>Smart Meal Planner</h2>
+      {/* <button onClick={generateMealPlan} className="generate-btn">
+        Generate New Meal Plan
+      </button> */}
       
-      {/* Preferences Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-4">Your Preferences</h3>
-        {/* Add preference inputs here */}
+      <div className="meal-plans">
+        {mealPlans.map(plan => (
+          <div key={plan.id} className="meal-plan-card">
+            <h3>{plan.name}</h3>
+            <p>Total Calories: {plan.totalCalories}</p>
+            <div className="meals">
+              {plan.meals.map(meal => (
+                <div key={meal.id} className="meal-item">
+                  <h4>{meal.name}</h4>
+                  <p>Calories: {meal.calories}</p>
+                  <p>Protein: {meal.protein}g</p>
+                  <p>Carbs: {meal.carbs}g</p>
+                  <p>Fat: {meal.fat}g</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-
-      {/* Nutritional Goals Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-4">Nutritional Goals</h3>
-        {/* Add nutritional goal inputs here */}
-      </div>
-
-      <button
-        onClick={generateMealPlan}
-        disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-      >
-        {loading ? 'Generating Plan...' : 'Generate Smart Meal Plan'}
-      </button>
-    </motion.div>
+    </div>
   );
-}; 
+};
+
+export default SmartMealPlanner; 

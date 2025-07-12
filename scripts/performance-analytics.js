@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 
 /**
  * Performance Analytics
@@ -210,7 +211,7 @@ class PatternCorrelationAnalyzer {
                 global.gc();
             }
         } catch (error) {
-            console.error('Error cleaning up correlation cache:', error);
+            logError('Error cleaning up correlation cache:', error);
             // If cleanup fails, clear the entire cache to prevent memory issues
             this.correlationCache.clear();
         }
@@ -257,7 +258,7 @@ class PatternCorrelationAnalyzer {
                             });
                         }
                     } catch (error) {
-                        console.warn(`Error analyzing correlation between ${metric1} and ${metric2}:`, error);
+                        logWarn(`Error analyzing correlation between ${metric1} and ${metric2}:`, error);
                         continue;
                     }
                 }
@@ -265,7 +266,7 @@ class PatternCorrelationAnalyzer {
 
             return correlations;
         } catch (error) {
-            console.error('Error in correlation analysis:', error);
+            logError('Error in correlation analysis:', error);
             return {};
         }
     }
@@ -304,7 +305,7 @@ class PatternCorrelationAnalyzer {
 
             return bestCorrelation;
         } catch (error) {
-            console.error('Error in metric pair analysis:', error);
+            logError('Error in metric pair analysis:', error);
             return { strength: 0, lag: 0, type: 'none', patterns: [] };
         }
     }
@@ -559,7 +560,7 @@ class FourierTransform {
                 fft[k + n/2].imag = even[k].imag - tempImag;
             }
         } catch (error) {
-            console.error('Error in recursive FFT:', error);
+            logError('Error in recursive FFT:', error);
         }
     }
 
@@ -624,7 +625,7 @@ class FourierTransform {
         try {
             const n = values.length;
             if (n === 0) {
-                console.warn('Empty values array provided to FFT');
+                logWarn('Empty values array provided to FFT');
                 return [];
             }
             
@@ -642,7 +643,7 @@ class FourierTransform {
             
             return fft;
         } catch (error) {
-            console.error('Error in FFT calculation:', error);
+            logError('Error in FFT calculation:', error);
             return [];
         }
     }
@@ -732,7 +733,7 @@ class PerformanceAnalytics {
 
     updateMetric(metric, value) {
         if (this.recoveryMode) {
-            console.warn('Skipping metric update during recovery mode');
+            logWarn('Skipping metric update during recovery mode');
             return;
         }
 
@@ -910,7 +911,7 @@ class PerformanceAnalytics {
 
             return dynamicThresholds;
         } catch (error) {
-            console.warn('Error calculating adaptive thresholds:', error);
+            logWarn('Error calculating adaptive thresholds:', error);
             return this.patternConfig.adaptiveThresholds;
         }
     }
@@ -998,7 +999,7 @@ class PerformanceAnalytics {
             
             return this.sortAndLimitPatterns(patterns);
         } catch (error) {
-            console.error('Error in pattern detection:', error);
+            logError('Error in pattern detection:', error);
             return [];
         }
     }
@@ -1155,7 +1156,7 @@ class PerformanceAnalytics {
         try {
             const n = values.length;
             if (n === 0) {
-                console.warn('Empty values array provided to FFT');
+                logWarn('Empty values array provided to FFT');
                 return [];
             }
             
@@ -1173,7 +1174,7 @@ class PerformanceAnalytics {
             
             return fft;
         } catch (error) {
-            console.error('Error in FFT calculation:', error);
+            logError('Error in FFT calculation:', error);
             return [];
         }
     }
@@ -1335,7 +1336,7 @@ class PerformanceAnalytics {
             return Math.min(thresholds.maxConfidence, 
                    Math.max(thresholds.minConfidence, confidence));
         } catch (error) {
-            console.warn('Error calculating pattern confidence:', error);
+            logWarn('Error calculating pattern confidence:', error);
             return thresholds.minConfidence;
         }
     }
@@ -1372,7 +1373,7 @@ class PerformanceAnalytics {
             
             return Math.max(0, 1 - (avgVariance / maxVariance));
         } catch (error) {
-            console.warn('Error calculating stability confidence:', error);
+            logWarn('Error calculating stability confidence:', error);
             return 0;
         }
     }
@@ -1385,7 +1386,7 @@ class PerformanceAnalytics {
             // Higher variance means lower confidence
             return Math.max(0, 1 - (variance / maxVariance));
         } catch (error) {
-            console.warn('Error calculating variance confidence:', error);
+            logWarn('Error calculating variance confidence:', error);
             return 0;
         }
     }
@@ -1427,7 +1428,7 @@ class PerformanceAnalytics {
             const avgVariance = this.calculateVariance(movingAvg);
             return avgVariance < this.patternConfig.stabilityThreshold;
         } catch (error) {
-            console.warn('Error checking pattern stability:', error);
+            logWarn('Error checking pattern stability:', error);
             return false;
         }
     }
@@ -1441,7 +1442,7 @@ class PerformanceAnalytics {
             const squaredDiffs = values.map(v => Math.pow(v - mean, 2));
             return squaredDiffs.reduce((a, b) => a + b, 0) / (n - 1);
         } catch (error) {
-            console.warn('Error calculating variance:', error);
+            logWarn('Error calculating variance:', error);
             return 0;
         }
     }
@@ -1556,7 +1557,7 @@ class PerformanceAnalytics {
             try {
                 observer(data);
             } catch (error) {
-                console.error('Error in analytics observer:', error);
+                logError('Error in analytics observer:', error);
             }
         });
     }
@@ -1665,7 +1666,7 @@ class PerformanceAnalytics {
     }
 
     handleError(error, context) {
-        console.error(`Error in ${context}:`, error);
+        logError(`Error in ${context}:`, error);
         
         const currentTime = Date.now();
         if (currentTime - this.lastErrorReset > this.errorResetInterval) {
@@ -1703,7 +1704,7 @@ class PerformanceAnalytics {
 
     handleGenericError(error) {
         // Handle other types of errors
-        console.warn('Generic error occurred:', error);
+        logWarn('Generic error occurred:', error);
     }
 
     resetMetrics() {
@@ -1716,7 +1717,7 @@ class PerformanceAnalytics {
 
     enterRecoveryMode() {
         this.recoveryMode = true;
-        console.warn('Entering recovery mode due to multiple errors');
+        logWarn('Entering recovery mode due to multiple errors');
         
         // Clear problematic data
         this.clearProblematicData();
@@ -1764,7 +1765,7 @@ class PerformanceAnalytics {
             // Reset wavelet transform
             this.waveletTransform = new WaveletTransform();
         } catch (error) {
-            console.error('Error during component reinitialization:', error);
+            logError('Error during component reinitialization:', error);
         }
     }
 
@@ -1801,7 +1802,7 @@ class PerformanceAnalytics {
                 global.gc();
             }
         } catch (error) {
-            console.error('Error during data cleanup:', error);
+            logError('Error during data cleanup:', error);
             this.handleError(error, 'cleanupOldData');
         }
     }

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 class RecipeScaling {
     constructor() {
         this.cache = new Map();
@@ -536,7 +537,7 @@ class RecipeScaling {
         form.dispatchEvent(mealScaledEvent);
         
         // Log scaling action for analytics
-        console.log(`Meal scaled by factor of ${scalingFactor.toFixed(2)}`);
+        logInfo(`Meal scaled by factor of ${scalingFactor.toFixed(2)}`);
     }
 
     showConfirmation() {

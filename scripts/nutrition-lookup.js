@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { auth } from './auth-core.js';
 import { getFirestore, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { app } from './firebase-config.js';
@@ -63,7 +64,7 @@ class NutritionLookup {
 
         // Validate inputs exist
         if (!nameInput || !amountInput || !unitInput) {
-            console.error('Required input elements not found');
+            logError('Required input elements not found');
             this.showError('Error: Required form elements are missing');
             return;
         }
@@ -133,7 +134,7 @@ class NutritionLookup {
                     </div>`;
             }
         } catch (error) {
-            console.error('Error looking up nutrition:', error);
+            logError('Error looking up nutrition:', error);
             popup.innerHTML = `
                 <div class="lookup-error">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -161,7 +162,7 @@ class NutritionLookup {
     showError(message, type = 'warning', duration = 5000) {
         // Validate input
         if (!message || typeof message !== 'string') {
-            console.error('Invalid error message provided');
+            logError('Invalid error message provided');
             return;
         }
 
@@ -215,7 +216,7 @@ class NutritionLookup {
     async lookupNutrition(ingredientName, amount = 100, unit = 'g') {
         // Enhanced input validation
         if (!ingredientName || typeof ingredientName !== 'string') {
-            console.error('Invalid ingredient name provided');
+            logError('Invalid ingredient name provided');
             this.showError('Please enter a valid ingredient name');
             return null;
         }
@@ -227,14 +228,14 @@ class NutritionLookup {
 
         // Validate amount
         if (isNaN(amount) || amount <= 0) {
-            console.error('Invalid amount provided');
+            logError('Invalid amount provided');
             this.showError('Please enter a valid amount');
             return null;
         }
 
         // Validate unit
         if (!this.foodTypeUtils.getUnitMultiplier(unit)) {
-            console.error('Invalid unit provided');
+            logError('Invalid unit provided');
             this.showError(`Unsupported unit: ${unit}`);
             return null;
         }
@@ -243,7 +244,7 @@ class NutritionLookup {
         const cached = this.lookupCache.get(cacheKey);
         
         if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-            console.log('Retrieved nutrition data from cache');
+            logInfo('Retrieved nutrition data from cache');
             return cached.data;
         }
 
@@ -257,7 +258,7 @@ class NutritionLookup {
                 // First try to get nutrition info from FoodTypeUtils
                 const nutritionInfo = this.foodTypeUtils.getNutritionInfo(ingredientName, amount, unit);
                 if (nutritionInfo) {
-                    console.log('Retrieved nutrition data from FoodTypeUtils');
+                    logInfo('Retrieved nutrition data from FoodTypeUtils');
                     this.cacheResult(cacheKey, nutritionInfo);
                     return nutritionInfo;
                 }
@@ -277,17 +278,17 @@ class NutritionLookup {
                 if (data.hints && data.hints.length > 0) {
                     const food = data.hints[0].food;
                     const adjustedNutrition = this.adjustNutritionForAmount(food.nutrients, amount, unit);
-                    console.log('Retrieved nutrition data from API');
+                    logInfo('Retrieved nutrition data from API');
                     this.cacheResult(cacheKey, adjustedNutrition);
                 return adjustedNutrition;
             }
 
                 // No results found
-                console.log(`No nutrition data found for ${ingredientName}`);
+                logInfo(`No nutrition data found for ${ingredientName}`);
                 return null;
         } catch (error) {
                 lastError = error;
-                console.error(`Error looking up nutrition (attempt ${attempts + 1}/${maxAttempts}):`, error);
+                logError(`Error looking up nutrition (attempt ${attempts + 1}/${maxAttempts}):`, error);
                 
                 if (attempts < maxAttempts - 1) {
                     // Wait before retrying, with exponential backoff
@@ -300,7 +301,7 @@ class NutritionLookup {
                 // If all retries failed and we haven't tried cache recovery yet
                 if (!recoveryAttempted) {
                     recoveryAttempted = true;
-                    console.log('Attempting cache recovery...');
+                    logInfo('Attempting cache recovery...');
                     
                     // Try to find similar items in cache
                     const similarItems = Array.from(this.lookupCache.entries())
@@ -313,7 +314,7 @@ class NutritionLookup {
 
                     if (similarItems.length > 0) {
                         const [_, cachedData] = similarItems[0];
-                        console.log('Recovered nutrition data from cache after API failure');
+                        logInfo('Recovered nutrition data from cache after API failure');
                         this.showError(`Using cached data for similar ingredient. Results may not be exact.`);
                         return cachedData.data;
                     }
@@ -366,7 +367,7 @@ class NutritionLookup {
                 sugar: Math.round(nutrition.sugar * adjustedAmount / 100 * 10) / 10
             };
         } catch (error) {
-            console.error('Error adjusting nutrition values:', error);
+            logError('Error adjusting nutrition values:', error);
             throw new Error('Failed to adjust nutrition values');
         }
     }
@@ -379,7 +380,7 @@ class NutritionLookup {
     cacheResult(key, data) {
         // Validate input
         if (!key || !data) {
-            console.warn('Invalid cache key or data provided');
+            logWarn('Invalid cache key or data provided');
             return;
         }
 
@@ -392,7 +393,7 @@ class NutritionLookup {
         );
 
         if (!isValidData) {
-            console.warn('Invalid nutrition data structure, skipping cache');
+            logWarn('Invalid nutrition data structure, skipping cache');
             return;
         }
 
@@ -539,7 +540,7 @@ class NutritionLookup {
                         totalNutrition[key] += value;
                     }
                 } else {
-                    console.warn(`No nutrition data found for ${ingredient.name}`);
+                    logWarn(`No nutrition data found for ${ingredient.name}`);
                 }
             }
 
@@ -556,7 +557,7 @@ class NutritionLookup {
             progressContainer.innerHTML = '<div class="text-success"><i class="fas fa-check-circle"></i> Nutrition lookup complete</div>';
             setTimeout(() => progressContainer.remove(), 3000);
         } catch (error) {
-            console.error('Error looking up full meal nutrition:', error);
+            logError('Error looking up full meal nutrition:', error);
             this.showError('Error looking up nutrition. Please try again.');
         } finally {
             lookupBtn.innerHTML = originalText;

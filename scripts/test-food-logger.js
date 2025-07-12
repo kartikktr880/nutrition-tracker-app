@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Test data
 const testFood = {
     id: 'test-food-1',
@@ -19,7 +20,7 @@ class FoodLoggerTester {
     }
 
     async runTests() {
-        console.log('🧪 Starting Food Logger Tests...\n');
+        logInfo('🧪 Starting Food Logger Tests...\n');
         
         // Test cases
         await this.testCreateFoodEntry();
@@ -33,7 +34,7 @@ class FoodLoggerTester {
     }
 
     async testCreateFoodEntry() {
-        console.log('Testing Food Entry Creation:');
+        logInfo('Testing Food Entry Creation:');
         
         try {
             const entry = createFoodEntry(testFood, 1);
@@ -76,13 +77,13 @@ class FoodLoggerTester {
             
             this.runTestGroup(tests);
         } catch (error) {
-            console.error('❌ Error in createFoodEntry:', error);
+            logError('❌ Error in createFoodEntry:', error);
             this.failedTests++;
         }
     }
 
     async testCalculateMacros() {
-        console.log('\nTesting Macro Calculations:');
+        logInfo('\nTesting Macro Calculations:');
         
         const amounts = [0.5, 1, 2];
         amounts.forEach(amount => {
@@ -112,7 +113,7 @@ class FoodLoggerTester {
     }
 
     async testMealTotals() {
-        console.log('\nTesting Meal Totals:');
+        logInfo('\nTesting Meal Totals:');
         
         try {
             // Clear existing entries
@@ -161,13 +162,13 @@ class FoodLoggerTester {
             
             this.runTestGroup(tests);
         } catch (error) {
-            console.error('❌ Error in testMealTotals:', error);
+            logError('❌ Error in testMealTotals:', error);
             this.failedTests++;
         }
     }
 
     async testMacroDistribution() {
-        console.log('\nTesting Macro Distribution:');
+        logInfo('\nTesting Macro Distribution:');
         
         try {
             const totals = {
@@ -196,13 +197,13 @@ class FoodLoggerTester {
             
             this.runTestGroup(tests);
         } catch (error) {
-            console.error('❌ Error in testMacroDistribution:', error);
+            logError('❌ Error in testMacroDistribution:', error);
             this.failedTests++;
         }
     }
 
     async testProgressBars() {
-        console.log('\nTesting Progress Bars:');
+        logInfo('\nTesting Progress Bars:');
         
         try {
             // Set test goals
@@ -245,7 +246,7 @@ class FoodLoggerTester {
             
             this.runTestGroup(tests);
         } catch (error) {
-            console.error('❌ Error in testProgressBars:', error);
+            logError('❌ Error in testProgressBars:', error);
             this.failedTests++;
         }
     }
@@ -253,25 +254,25 @@ class FoodLoggerTester {
     runTestGroup(tests) {
         tests.forEach(test => {
             if (test.condition) {
-                console.log(`✅ ${test.name}`);
+                logInfo(`✅ ${test.name}`);
                 this.passedTests++;
             } else {
-                console.log(`❌ ${test.name}`);
+                logInfo(`❌ ${test.name}`);
                 this.failedTests++;
             }
         });
     }
 
     printSummary() {
-        console.log('\n📊 Test Summary:');
-        console.log(`Total Tests: ${this.passedTests + this.failedTests}`);
-        console.log(`Passed: ${this.passedTests} ✅`);
-        console.log(`Failed: ${this.failedTests} ❌`);
+        logInfo('\n📊 Test Summary:');
+        logInfo(`Total Tests: ${this.passedTests + this.failedTests}`);
+        logInfo(`Passed: ${this.passedTests} ✅`);
+        logInfo(`Failed: ${this.failedTests} ❌`);
         
         if (this.failedTests === 0) {
-            console.log('\n🎉 All tests passed successfully!');
+            logInfo('\n🎉 All tests passed successfully!');
         } else {
-            console.log('\n⚠️ Some tests failed. Please review the output above.');
+            logInfo('\n⚠️ Some tests failed. Please review the output above.');
         }
     }
 }

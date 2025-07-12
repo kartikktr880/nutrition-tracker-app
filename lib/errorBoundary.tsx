@@ -1,8 +1,11 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { recordError } from './monitoring';
+import React, { Component, ErrorInfo, ReactNode, useState, useCallback } from 'react';
+
+import { syncManager } from '@/utils/sync';
+
+import { logError } from '../utils/logger';
 import { auditLogger } from './audit-logger';
 import { componentLifecycleManager } from './componentLifecycleManager';
-import { syncManager } from '@/utils/sync';
+import { recordError } from './monitoring';
 
 export interface ErrorBoundaryProps {
   children: ReactNode;
@@ -68,7 +71,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidMount() {
-    componentLifecycleManager.registerComponent(this.componentId);
+    componentLifecycleManager.registerComponent(this.componentId, {
+      onMount: () => {
+        logError(`ErrorBoundary ${this.componentId} mounted`);
+      },
+      onUnmount: () => {
+        logError(`ErrorBoundary ${this.componentId} unmounted`);
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -104,7 +114,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         this.setState({ lastRecoveryStrategy: strategy.name });
         return true;
       } catch (recoveryError) {
-        console.error(`Recovery strategy ${strategy.name} failed:`, recoveryError);
+        logError(`Recovery strategy ${strategy.name} failed:`, recoveryError);
         this.setState(prevState => ({
           recoveryAttempt: prevState.recoveryAttempt + 1
         }));
@@ -167,7 +177,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.props.syncQueueCheck) {
       const queueStatus = syncManager.getQueueStatus();
       if (queueStatus.failed > 0) {
-        console.warn('Failed sync operations detected:', queueStatus);
+        logError('Failed sync operations detected:', queueStatus);
       }
     }
 
@@ -218,7 +228,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           error={error}
           resetError={this.resetError}
           retryCount={retryAttempt}
-          errorInfo={errorInfo}
+          errorInfo={errorInfo || undefined}
         />
       );
     }
@@ -295,17 +305,17 @@ export function withErrorBoundary<P extends object>(
 
 // Custom hook for error boundary context
 export function useErrorBoundary() {
-  const [error, setError] = React.useState<Error | null>(null);
-  const [errorInfo, setErrorInfo] = React.useState<ErrorInfo | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [errorInfo, setErrorInfo] = useState<ErrorInfo | null>(null);
 
-  const showBoundary = React.useCallback((error: Error, errorInfo?: ErrorInfo) => {
+  const showBoundary = useCallback((error: Error, errorInfo?: ErrorInfo) => {
     setError(error);
     if (errorInfo) {
       setErrorInfo(errorInfo);
     }
   }, []);
 
-  const resetBoundary = React.useCallback(() => {
+  const resetBoundary = useCallback(() => {
     setError(null);
     setErrorInfo(null);
   }, []);

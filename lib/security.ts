@@ -1,9 +1,11 @@
-import { PrismaClient } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import { withRetry } from '@/lib/retry';
-import { recordOperationLatency, recordError } from '@/lib/monitoring';
-import { sessionStore } from './session-store';
+import { PrismaClient as _PrismaClient } from '@prisma/client';
+
+import { recordOperationLatency as _recordOperationLatency, recordError } from '@/lib/monitoring';
+import { prisma as _prisma } from '@/lib/prisma';
+import { withRetry as _withRetry } from '@/lib/retry';
+
 import { auditLogger } from './audit-logger';
+import { sessionStore } from './session-store';
 
 interface SecurityConfig {
   sessionTimeout: number;
@@ -16,7 +18,8 @@ interface SecurityConfig {
   csrfSecret: string;
 }
 
-interface SessionData {
+interface _SessionData {
+  id: string;
   userId: string;
   createdAt: number;
   lastActivity: number;
@@ -55,7 +58,6 @@ class SecurityService {
 
     try {
       await sessionStore.initialize();
-      await auditLogger.initialize();
       await this.cleanupSessions();
 
       // Start session cleanup interval
@@ -90,9 +92,9 @@ class SecurityService {
 
     await auditLogger.log({
       category: 'authentication',
-      action: 'session_created',
+      message: 'session_created',
       userId,
-      sessionId,
+      context: { sessionId },
       severity: 'info'
     });
 
@@ -104,10 +106,9 @@ class SecurityService {
     if (!session) {
       await auditLogger.log({
         category: 'authentication',
-        action: 'session_validation_failed',
-        sessionId,
-        severity: 'warning',
-        details: { reason: 'session_not_found' }
+        message: 'session_validation_failed',
+        context: { sessionId, reason: 'session_not_found' },
+        severity: 'warning'
       });
       return false;
     }
@@ -117,9 +118,9 @@ class SecurityService {
       await sessionStore.deleteSession(sessionId);
       await auditLogger.log({
         category: 'authentication',
-        action: 'session_expired',
+        message: 'session_expired',
         userId: session.userId,
-        sessionId,
+        context: { sessionId },
         severity: 'info'
       });
       return false;
@@ -136,9 +137,9 @@ class SecurityService {
     if (session) {
       await auditLogger.log({
         category: 'authentication',
-        action: 'session_invalidated',
+        message: 'session_invalidated',
         userId: session.userId,
-        sessionId,
+        context: { sessionId },
         severity: 'info'
       });
     }
@@ -164,13 +165,13 @@ class SecurityService {
       
       await auditLogger.log({
         category: 'security',
-        action: 'account_locked',
+        message: 'account_locked',
         userId,
-        severity: 'warning',
-        details: { 
+        context: { 
           reason: 'max_login_attempts_exceeded',
           attempts: session.loginAttempts
-        }
+        },
+        severity: 'warning'
       });
       
       return false;
@@ -196,7 +197,7 @@ class SecurityService {
       
       await auditLogger.log({
         category: 'security',
-        action: 'login_attempts_reset',
+        message: 'login_attempts_reset',
         userId,
         severity: 'info'
       });
@@ -225,9 +226,9 @@ class SecurityService {
     if (!isValid) {
       await auditLogger.log({
         category: 'security',
-        action: 'csrf_validation_failed',
+        message: 'csrf_validation_failed',
         userId: session.userId,
-        sessionId,
+        context: { sessionId },
         severity: 'warning'
       });
     }

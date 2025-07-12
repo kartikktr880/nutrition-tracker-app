@@ -22,6 +22,15 @@ model User {
   meals         Meal[]
   userPreferences UserPreferences?
   nutritionalGoals NutritionalGoals?
+  mealPlans     MealPlan[]
+  groceryLists  GroceryList[]
+  mealPrepPlans MealPrepPlan[]
+  exerciseSessions ExerciseSession[]
+  exerciseProgresses ExerciseProgress[]
+  exerciseGoals ExerciseGoal[]
+  exerciseWorkouts ExerciseWorkout[]
+  exerciseFormTemplates ExerciseFormTemplate[]
+  exerciseFormChecks ExerciseFormCheck[]
 }
 
 model Goals {
@@ -93,16 +102,19 @@ model Meal {
   prepTime  Int
   cookTime  Int
   servings  Int
-  tags      String[]
+  tags      Json
   imageUrl  String?
   nutritionalScore Float
   mealPlanId String
   mealPlan  MealPlan @relation(fields: [mealPlanId], references: [id])
   mealPrepPlan MealPrepPlan? @relation(fields: [mealPrepPlanId], references: [id])
   mealPrepPlanId String?
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
 
   @@index([mealPlanId])
   @@index([mealPrepPlanId])
+  @@index([userId])
 }
 
 model GroceryList {
@@ -230,8 +242,8 @@ model ExerciseFormTemplate {
   name          String
   description   String
   checklist     Json     // Array of { item: string, description: string, importance: string }
-  tips          String[]
-  commonMistakes String[]
+  tips          Json
+  commonMistakes Json
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -249,7 +261,7 @@ model ExerciseFormCheck {
   date        DateTime
   checklist   Json     // Array of { item: string, completed: boolean, notes?: string }
   score       Int
-  feedback    String
+  feedback    String?
   videoUrl    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -270,7 +282,7 @@ model Exercise {
   difficulty    String   // beginner, intermediate, advanced
   equipment     Json     // Array of required equipment
   muscleGroups  Json     // Array of targeted muscle groups
-  instructions  String[]
+  instructions  Json
   videoUrl      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -287,7 +299,7 @@ model UserPreferences {
   glutenFree        Boolean  @default(false)
   dairyFree         Boolean  @default(false)
   nutFree           Boolean  @default(false)
-  preferredCuisines String[]
+  preferredCuisines Json
   mealSizePreference String  @default("medium")
   cookingSkillLevel String   @default("intermediate")
   additionalNotes   String?

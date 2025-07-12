@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export type HeaderVariant = 'default' | 'transparent' | 'compact' | 'elevated';

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -34,22 +35,22 @@ const startServer = async () => {
     try {
         const port = await findAvailablePort(process.env.PORT || 4000);
         server = app.listen(port, () => {
-            console.log(`Unified Monitoring Service running on http://localhost:${port}`);
-            console.log('Health check available at /health');
-            console.log('Security monitoring available at /security');
-            console.log('Memory monitoring available at /memory');
-            console.log('Operation monitoring available at /operations');
-            console.log('Browser compatibility available at /browser');
-            console.log('Dashboard available at /dashboard');
-            console.log('Environment:', process.env.NODE_ENV || 'development');
+            logInfo(`Unified Monitoring Service running on http://localhost:${port}`);
+            logInfo('Health check available at /health');
+            logInfo('Security monitoring available at /security');
+            logInfo('Memory monitoring available at /memory');
+            logInfo('Operation monitoring available at /operations');
+            logInfo('Browser compatibility available at /browser');
+            logInfo('Dashboard available at /dashboard');
+            logInfo('Environment:', process.env.NODE_ENV || 'development');
         });
 
         // Graceful shutdown
         const gracefulShutdown = () => {
-            console.log('Received shutdown signal, closing server...');
+            logInfo('Received shutdown signal, closing server...');
             if (server) {
                 server.close(() => {
-                    console.log('Server closed');
+                    logInfo('Server closed');
                     process.exit(0);
                 });
             } else {
@@ -60,7 +61,7 @@ const startServer = async () => {
         process.on('SIGTERM', gracefulShutdown);
         process.on('SIGINT', gracefulShutdown);
     } catch (error) {
-        console.error('Failed to start server:', error);
+        logError('Failed to start server:', error);
         process.exit(1);
     }
 };
@@ -571,7 +572,7 @@ app.get('/api/security-metrics', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
+    logError('Unhandled error:', err);
     
     // Log error to file
     const errorLog = {
@@ -587,7 +588,7 @@ app.use((err, req, res, next) => {
         path.join(__dirname, 'logs', 'errors.log'),
         JSON.stringify(errorLog) + '\n',
         (writeErr) => {
-            if (writeErr) console.error('Failed to write error log:', writeErr);
+            if (writeErr) logError('Failed to write error log:', writeErr);
         }
     );
 

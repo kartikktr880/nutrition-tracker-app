@@ -1,24 +1,27 @@
-import React from 'react';
-import { SearchService } from '@/services/searchService';
 import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+
+import { SearchService } from '@/services/searchService';
+
+import { logError } from '../../utils/logger';
 
 export const SearchAnalytics: React.FC = () => {
-  const [analytics, setAnalytics] = React.useState<ReturnType<typeof SearchService.prototype.getSearchAnalytics> | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [_analytics, setAnalytics] = useState<ReturnType<typeof SearchService.prototype.getSearchAnalytics> | null>(null);
+  const [_isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const searchService = SearchService.getInstance();
     try {
       const data = searchService.getSearchAnalytics();
       setAnalytics(data);
     } catch (error) {
-      console.error('Error loading search analytics:', error);
+      logError('Error loading search analytics:', error);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  if (isLoading) {
+  if (_isLoading) {
     return (
       <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
         <div className="animate-pulse space-y-4">
@@ -32,7 +35,7 @@ export const SearchAnalytics: React.FC = () => {
     );
   }
 
-  if (!analytics) {
+  if (!_analytics) {
     return null;
   }
 
@@ -53,10 +56,10 @@ export const SearchAnalytics: React.FC = () => {
             Total Searches (30 days)
           </h4>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">
-            {analytics.totalSearches}
+            {_analytics.totalSearches}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Avg. {analytics.averageSearchesPerDay.toFixed(1)} per day
+            Avg. {_analytics.averageSearchesPerDay.toFixed(1)} per day
           </p>
         </motion.div>
 
@@ -71,11 +74,11 @@ export const SearchAnalytics: React.FC = () => {
             Recent Activity
           </h4>
           <div className="flex justify-between items-end h-24">
-            {analytics.recentActivity.map(({ date, count }, index) => (
+            {_analytics.recentActivity.map(({ date, count }) => (
               <div key={date} className="flex flex-col items-center">
                 <div
                   className="w-8 bg-blue-500 dark:bg-blue-600 rounded-t"
-                  style={{ height: `${(count / Math.max(...analytics.recentActivity.map(a => a.count))) * 80}px` }}
+                  style={{ height: `${(count / Math.max(..._analytics.recentActivity.map(a => a.count))) * 80}px` }}
                 />
                 <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {new Date(date).toLocaleDateString(undefined, { weekday: 'short' })}
@@ -96,7 +99,7 @@ export const SearchAnalytics: React.FC = () => {
             Searches by Type
           </h4>
           <div className="space-y-2">
-            {Object.entries(analytics.searchesByType).map(([type, count]) => (
+            {Object.entries(_analytics.searchesByType).map(([type, count]) => (
               <div key={type} className="flex justify-between items-center">
                 <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">{type}</span>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">{count}</span>
@@ -116,7 +119,7 @@ export const SearchAnalytics: React.FC = () => {
             Popular Tags
           </h4>
           <div className="flex flex-wrap gap-2">
-            {analytics.popularTags.map(({ tag, count }) => (
+            {_analytics.popularTags.map(({ tag, count }) => (
               <span
                 key={tag}
                 className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"

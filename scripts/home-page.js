@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Home Page Manager
  * Handles loading and initialization of the home page content
@@ -13,7 +14,7 @@ class HomePageManager {
      */
     async init() {
         try {
-            console.log('Initializing home page...');
+            logInfo('Initializing home page...');
             
             // Remove loader when content is loaded
             const loader = document.querySelector('.loader');
@@ -24,9 +25,9 @@ class HomePageManager {
             // Initialize components after content is loaded
             this.initComponents();
             
-            console.log('Home page initialized successfully');
+            logInfo('Home page initialized successfully');
         } catch (error) {
-            console.error('Failed to initialize home page:', error);
+            logError('Failed to initialize home page:', error);
             this.showError('Failed to load content. Please try again.');
         }
     }
@@ -333,7 +334,7 @@ class HomePageManager {
      * Setup scroll animations
      */
     setupScrollAnimations() {
-        console.log('Setting up scroll animations...');
+        logInfo('Setting up scroll animations...');
         
         // Create intersection observer for scroll animations
         const animateObserver = new IntersectionObserver(

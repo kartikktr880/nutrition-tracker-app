@@ -1,26 +1,12 @@
-import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
+import { AlertTriangle, CheckCircle2, Info, Lightbulb, Target } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { Clock } from '@/components/icons/lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Lightbulb,
-  Info,
-  Target,
-  AlertCircle,
-  Clock,
-  Calendar,
-  ArrowRight,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Card } from '@/components/ui/card';
+import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormRecommendationEngineProps {
   checks: ExerciseFormCheck[];
@@ -57,10 +43,75 @@ export function FormRecommendationEngine({
   useEffect(() => {
     if (!currentCheck || !checks.length) return;
 
-    const recommendations = generateRecommendations(checks, currentCheck);
+    const generateRecommendations = (
+      checks: ExerciseFormCheck[]
+    ): Recommendation[] => {
+      const recommendations: Recommendation[] = [];
+
+      // Analyze recent performance
+      const recentChecks = checks.slice(-5);
+      const recentScores = recentChecks.map((check) => {
+        const completed = check.checklist.filter((item) => item.completed).length;
+        return (completed / check.checklist.length) * 100;
+      });
+
+      const averageScore = recentScores.reduce((sum, score) => sum + score, 0) / recentScores.length;
+      const trend = recentScores[recentScores.length - 1] - recentScores[0];
+
+      // Generate recommendations based on performance
+      if (averageScore < 70) {
+        recommendations.push({
+          type: 'warning',
+          title: 'Form Needs Attention',
+          description: 'Your recent form scores indicate areas needing immediate attention.',
+          priority: 'high',
+          action: 'Review form checklist',
+          impact: 'Prevent potential injury and improve effectiveness',
+        });
+      } else if (trend < -5) {
+        recommendations.push({
+          type: 'improvement',
+          title: 'Form Consistency Declining',
+          description: 'Your form consistency has decreased recently.',
+          priority: 'medium',
+          action: 'Focus on form fundamentals',
+          impact: 'Maintain progress and prevent regression',
+        });
+      }
+
+      // Analyze time-based patterns
+      const timeBasedAnalysis = analyzeTimeBasedPatterns(checks);
+      if (timeBasedAnalysis.optimalTime) {
+        recommendations.push({
+          type: 'maintenance',
+          title: 'Optimal Training Time',
+          description: `Your form is most consistent during ${timeBasedAnalysis.optimalTime}.`,
+          priority: 'low',
+          action: 'Schedule workouts accordingly',
+          impact: 'Maximize form consistency',
+        });
+      }
+
+      // Analyze area-specific patterns
+      const areaAnalysis = analyzeAreaPatterns(checks);
+      areaAnalysis.weakAreas.forEach((area) => {
+        recommendations.push({
+          type: 'improvement',
+          title: `${area} Form Focus`,
+          description: `Your ${area.toLowerCase()} form needs attention.`,
+          priority: 'medium',
+          action: 'Practice specific exercises',
+          impact: 'Improve overall form quality',
+        });
+      });
+
+      return recommendations;
+    };
+
+    const recommendations = generateRecommendations(checks);
     const focusAreas = identifyFocusAreas(checks);
     const optimalTiming = determineOptimalTiming(checks);
-    const nextSteps = generateNextSteps(checks, currentCheck);
+    const nextSteps = generateNextSteps(checks);
 
     setMetrics({
       recommendations,
@@ -69,72 +120,6 @@ export function FormRecommendationEngine({
       nextSteps,
     });
   }, [checks, currentCheck]);
-
-  const generateRecommendations = (
-    checks: ExerciseFormCheck[],
-    currentCheck: ExerciseFormCheck
-  ): Recommendation[] => {
-    const recommendations: Recommendation[] = [];
-
-    // Analyze recent performance
-    const recentChecks = checks.slice(-5);
-    const recentScores = recentChecks.map((check) => {
-      const completed = check.checklist.filter((item) => item.completed).length;
-      return (completed / check.checklist.length) * 100;
-    });
-
-    const averageScore = recentScores.reduce((sum, score) => sum + score, 0) / recentScores.length;
-    const trend = recentScores[recentScores.length - 1] - recentScores[0];
-
-    // Generate recommendations based on performance
-    if (averageScore < 70) {
-      recommendations.push({
-        type: 'warning',
-        title: 'Form Needs Attention',
-        description: 'Your recent form scores indicate areas needing immediate attention.',
-        priority: 'high',
-        action: 'Review form checklist',
-        impact: 'Prevent potential injury and improve effectiveness',
-      });
-    } else if (trend < -5) {
-      recommendations.push({
-        type: 'improvement',
-        title: 'Form Consistency Declining',
-        description: 'Your form consistency has decreased recently.',
-        priority: 'medium',
-        action: 'Focus on form fundamentals',
-        impact: 'Maintain progress and prevent regression',
-      });
-    }
-
-    // Analyze time-based patterns
-    const timeBasedAnalysis = analyzeTimeBasedPatterns(checks);
-    if (timeBasedAnalysis.optimalTime) {
-      recommendations.push({
-        type: 'maintenance',
-        title: 'Optimal Training Time',
-        description: `Your form is most consistent during ${timeBasedAnalysis.optimalTime}.`,
-        priority: 'low',
-        action: 'Schedule workouts accordingly',
-        impact: 'Maximize form consistency',
-      });
-    }
-
-    // Analyze area-specific patterns
-    const areaAnalysis = analyzeAreaPatterns(checks);
-    areaAnalysis.weakAreas.forEach((area) => {
-      recommendations.push({
-        type: 'improvement',
-        title: `${area} Form Focus`,
-        description: `Your ${area.toLowerCase()} form needs attention.`,
-        priority: 'medium',
-        action: 'Practice specific exercises',
-        impact: 'Improve overall form quality',
-      });
-    });
-
-    return recommendations;
-  };
 
   const identifyFocusAreas = (checks: ExerciseFormCheck[]): string[] => {
     const areas = ['upper_body', 'lower_body', 'core', 'posture'];
@@ -173,7 +158,7 @@ export function FormRecommendationEngine({
     };
 
     checks.forEach((check) => {
-      const hour = new Date(check.timestamp).getHours();
+      const hour = new Date((check.date ?? Date.now())).getHours();
       let timeOfDay: keyof typeof timeBasedScores;
 
       if (hour >= 5 && hour < 12) {
@@ -209,8 +194,7 @@ export function FormRecommendationEngine({
   };
 
   const generateNextSteps = (
-    checks: ExerciseFormCheck[],
-    currentCheck: ExerciseFormCheck
+    checks: ExerciseFormCheck[]
   ): string[] => {
     const nextSteps: string[] = [];
     const recentChecks = checks.slice(-5);
@@ -250,7 +234,7 @@ export function FormRecommendationEngine({
     };
 
     checks.forEach((check) => {
-      const hour = new Date(check.timestamp).getHours();
+      const hour = new Date((check.date ?? Date.now())).getHours();
       let timeOfDay: keyof typeof timeBasedScores;
 
       if (hour >= 5 && hour < 12) {
@@ -340,16 +324,11 @@ export function FormRecommendationEngine({
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Form Recommendations</h3>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Info className="w-5 h-5 text-gray-400" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Personalized recommendations for form improvement</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip content="AI-powered form recommendations">
+          <TooltipTrigger>
+            <Info className="w-5 h-5 text-gray-400" />
+          </TooltipTrigger>
+        </Tooltip>
       </div>
 
       <div className="space-y-6">
@@ -375,10 +354,11 @@ export function FormRecommendationEngine({
               <p className="text-sm text-gray-600">{recommendation.description}</p>
               {recommendation.action && (
                 <div className="flex items-center space-x-2">
-                  <Button variant="outline" size="sm">
-                    {recommendation.action}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+                  <Tooltip content="View recommendation details">
+                    <Button variant="outline" size="sm">
+                      View Details
+                    </Button>
+                  </Tooltip>
                   <span className="text-sm text-gray-500">
                     Impact: {recommendation.impact}
                   </span>

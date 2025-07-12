@@ -1,9 +1,11 @@
 import { ExerciseSession, ExerciseProgress, ExerciseGoal } from '@/types/exercise';
 
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from '../../utils/logger';
+
 class ExerciseDataService {
   private static instance: ExerciseDataService;
-  private cache: Map<string, any>;
-  private syncQueue: any[];
+  private cache: Map<string, unknown>;
+  private syncQueue: unknown[];
 
   private constructor() {
     this.cache = new Map();
@@ -22,7 +24,7 @@ class ExerciseDataService {
     const cacheKey = `sessions_${startDate?.toISOString()}_${endDate?.toISOString()}`;
     
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      return this.cache.get(cacheKey) as Promise<ExerciseSession[]>;
     }
 
     const response = await fetch(
@@ -37,7 +39,7 @@ class ExerciseDataService {
 
     const data = await response.json();
     this.cache.set(cacheKey, data);
-    return data;
+    return data as Promise<ExerciseSession[]>;
   }
 
   async createSession(session: Partial<ExerciseSession>): Promise<ExerciseSession> {
@@ -53,7 +55,7 @@ class ExerciseDataService {
 
     const data = await response.json();
     this.invalidateCache('sessions');
-    return data;
+    return data as Promise<ExerciseSession>;
   }
 
   // Progress Management
@@ -61,7 +63,7 @@ class ExerciseDataService {
     const cacheKey = `progress_${startDate?.toISOString()}_${endDate?.toISOString()}`;
     
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      return this.cache.get(cacheKey) as Promise<ExerciseProgress[]>;
     }
 
     const response = await fetch(
@@ -76,7 +78,7 @@ class ExerciseDataService {
 
     const data = await response.json();
     this.cache.set(cacheKey, data);
-    return data;
+    return data as Promise<ExerciseProgress[]>;
   }
 
   async createProgress(progress: Partial<ExerciseProgress>): Promise<ExerciseProgress> {
@@ -92,7 +94,7 @@ class ExerciseDataService {
 
     const data = await response.json();
     this.invalidateCache('progress');
-    return data;
+    return data as Promise<ExerciseProgress>;
   }
 
   // Goal Management
@@ -100,7 +102,7 @@ class ExerciseDataService {
     const cacheKey = 'goals';
     
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      return this.cache.get(cacheKey) as Promise<ExerciseGoal[]>;
     }
 
     const response = await fetch('/api/exercise/data?type=goals');
@@ -111,7 +113,7 @@ class ExerciseDataService {
 
     const data = await response.json();
     this.cache.set(cacheKey, data);
-    return data;
+    return data as Promise<ExerciseGoal[]>;
   }
 
   async createGoal(goal: Partial<ExerciseGoal>): Promise<ExerciseGoal> {
@@ -127,7 +129,7 @@ class ExerciseDataService {
 
     const data = await response.json();
     this.invalidateCache('goals');
-    return data;
+    return data as Promise<ExerciseGoal>;
   }
 
   // Cache Management
@@ -140,7 +142,7 @@ class ExerciseDataService {
   }
 
   // Offline Support
-  async queueSync(operation: any) {
+  async queueSync(operation: unknown) {
     this.syncQueue.push(operation);
     await this.processSyncQueue();
   }
@@ -154,25 +156,27 @@ class ExerciseDataService {
       this.syncQueue.shift();
       await this.processSyncQueue();
     } catch (error) {
-      console.error('Sync operation failed:', error);
+      logError('Sync operation failed:', error);
       // Retry logic can be implemented here
     }
   }
 
-  private async executeOperation(operation: any) {
-    const { type, method, data } = operation;
+  private async executeOperation(operation: unknown) {
+    if (typeof operation !== 'object' || operation === null) {
+      throw new Error('Invalid operation');
+    }
+    const { type, method, data } = operation as { type: string; method: string; data: unknown };
+    const safeData = (typeof data === 'object' && data !== null) ? data : {};
     const response = await fetch('/api/exercise/data', {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, ...data }),
+      body: JSON.stringify({ type, ...safeData }),
     });
 
     if (!response.ok) {
       throw new Error(`Failed to execute ${method} operation for ${type}`);
     }
-
-    return response.json();
   }
 }
 
-export const exerciseDataService = ExerciseDataService.getInstance(); 
+export const exerciseDataService = ExerciseDataService.getInstance();

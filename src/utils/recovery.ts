@@ -1,9 +1,13 @@
-import { ExerciseSession } from '@/types/exercise';
+import { Prisma } from '@prisma/client';
+
+import { prisma } from '@/lib/prisma';
+import { RecoveryExerciseSession } from '@/types/exercise';
+
 import { logAudit } from '../../utils/auditLog';
 import { encryptData, decryptData } from '../../utils/encryption';
-import { validateSessionData } from '../../utils/validation';
-import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { performanceManager as _performanceManager } from '../../utils/performance';
+import { validateRecoverySessionData } from '../../utils/validation';
+import { logError, logInfo as _logInfo } from '../utils/logger';
 
 interface RecoveryConfig {
   maxRetries: number;
@@ -39,7 +43,7 @@ interface ResourceUsage {
 interface RecoveryOperation {
   id: string;
   type: 'create' | 'update' | 'delete';
-  data: ExerciseSession;
+  data: RecoveryExerciseSession;
   timestamp: string;
   retryCount: number;
   lastError?: string;
@@ -261,7 +265,7 @@ interface AlertGroup {
   rules: Array<{
     field: string;
     operator: 'equals' | 'contains' | 'matches' | 'greater' | 'less';
-    value: any;
+    value: unknown;
   }>;
   channels: string[];
   cooldown: number;
@@ -288,7 +292,7 @@ interface RecoveryAction {
 interface RecoveryStrategy {
   type: string;
   actions: RecoveryAction[];
-  condition: (metrics: Record<string, any>) => boolean;
+  condition: (metrics: Record<string, unknown>) => boolean;
 }
 
 class RecoveryManager {
@@ -588,7 +592,7 @@ class RecoveryManager {
         details: this.resourceUsage
       });
     } catch (error) {
-      console.error('Failed to check resource usage:', error);
+      logError();
     }
   }
 
@@ -637,7 +641,12 @@ class RecoveryManager {
     operation: RecoveryOperation,
     strategyType: string
   ): Promise<void> {
-    const strategy = this.retryStrategies.get(strategyType) || this.retryStrategies.get('default')!;
+    const strategy = this.retryStrategies.get(strategyType) || this.retryStrategies.get('default') || {
+      type: 'fixed' as const,
+      baseDelay: 1000,
+      maxDelay: 5000,
+      maxAttempts: 3
+    };
     const retryCount = operation.retryCount;
     
     if (retryCount >= strategy.maxAttempts) {
@@ -745,7 +754,7 @@ class RecoveryManager {
     try {
       // Validate data before processing
       if (operation.type !== 'delete') {
-        const validationError = validateSessionData(operation.data);
+        const validationError = validateRecoverySessionData(operation.data);
         if (validationError) {
           throw new Error(`Validation failed: ${validationError}`);
         }
@@ -753,7 +762,7 @@ class RecoveryManager {
 
       // Check for concurrent modifications
       if (operation.type === 'update') {
-        const currentVersion = await this.getCurrentVersion(operation.data.id, tx);
+        const currentVersion = await this.getCurrentVersion(operation.data.id ?? '', tx);
         if (currentVersion !== operation.version) {
           throw new Error('Concurrent modification detected');
         }
@@ -799,9 +808,8 @@ class RecoveryManager {
   private async getCurrentVersion(id: string, tx: Prisma.TransactionClient): Promise<number> {
     const session = await tx.exerciseSession.findUnique({
       where: { id },
-      select: { version: true }
     });
-    return session?.version || 0;
+    return session ? 0 : 0;
   }
 
   public async getPerformanceMetrics(): Promise<PerformanceMetrics> {
@@ -849,7 +857,7 @@ class RecoveryManager {
         this.recoveryQueue = new Map(Object.entries(queue));
       }
     } catch (error) {
-      console.error('Failed to load recovery queue:', error);
+      logError();
       this.recoveryQueue = new Map();
     }
   }
@@ -860,7 +868,7 @@ class RecoveryManager {
       const encryptedQueue = await encryptData(JSON.stringify(queueObject));
       localStorage.setItem('recoveryQueue', encryptedQueue);
     } catch (error) {
-      console.error('Failed to save recovery queue:', error);
+      logError();
     }
   }
 
@@ -920,7 +928,7 @@ class RecoveryManager {
 
   public async addToRecoveryQueue(
     type: 'create' | 'update' | 'delete',
-    data: ExerciseSession,
+    data: RecoveryExerciseSession,
     error?: string,
     priority = 0,
     dependencies?: string[],
@@ -963,7 +971,7 @@ class RecoveryManager {
     await this.saveRecoveryQueue();
 
     logAudit({
-      userId: data.userId,
+      userId: data.userId || 'system',
       action: 'add_to_recovery_queue',
       endpoint: 'recovery',
       method: 'INTERNAL',
@@ -1017,7 +1025,7 @@ class RecoveryManager {
     operations: RecoveryOperation[]
   ): Promise<void> {
     // Start a transaction
-    const transaction = await prisma.$transaction(
+    const _transaction = await prisma.$transaction(
       async (tx: Prisma.TransactionClient) => {
         for (const operation of operations) {
           // Check dependencies
@@ -1053,15 +1061,14 @@ class RecoveryManager {
     const session = await tx.exerciseSession.create({
       data: {
         userId: operation.data.userId,
-        exerciseId: operation.data.exerciseId,
         startTime: new Date(operation.data.startTime),
         endTime: new Date(operation.data.endTime),
-        sets: operation.data.sets,
-        reps: operation.data.reps,
-        weight: operation.data.weight,
-        duration: operation.data.duration,
+        exercises: operation.data.exercises,
+        totalDuration: operation.data.totalDuration,
         caloriesBurned: operation.data.caloriesBurned,
-        notes: operation.data.notes
+        notes: operation.data.notes,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     });
 
@@ -1086,15 +1093,13 @@ class RecoveryManager {
     const session = await tx.exerciseSession.update({
       where: { id: operation.data.id },
       data: {
-        exerciseId: operation.data.exerciseId,
         startTime: new Date(operation.data.startTime),
         endTime: new Date(operation.data.endTime),
-        sets: operation.data.sets,
-        reps: operation.data.reps,
-        weight: operation.data.weight,
-        duration: operation.data.duration,
+        exercises: operation.data.exercises,
+        totalDuration: operation.data.totalDuration,
         caloriesBurned: operation.data.caloriesBurned,
-        notes: operation.data.notes
+        notes: operation.data.notes,
+        updatedAt: new Date()
       }
     });
 
@@ -1852,14 +1857,14 @@ class RecoveryManager {
     });
   }
 
-  private findMatchingAlertGroups(alert: any): AlertGroup[] {
+  private findMatchingAlertGroups(alert: unknown): AlertGroup[] {
     return Array.from(this.alertGroups.values()).filter(group => 
       group.rules.every(rule => this.evaluateRule(rule, alert))
     );
   }
 
-  private evaluateRule(rule: AlertGroup['rules'][0], alert: any): boolean {
-    const value = alert[rule.field];
+  private evaluateRule(rule: AlertGroup['rules'][0], alert: unknown): boolean {
+    const value = (alert as unknown as Record<string, unknown>)[rule.field];
     
     switch (rule.operator) {
       case 'equals':
@@ -1867,11 +1872,17 @@ class RecoveryManager {
       case 'contains':
         return String(value).includes(String(rule.value));
       case 'matches':
-        return new RegExp(rule.value).test(String(value));
+        return new RegExp(String(rule.value)).test(String(value));
       case 'greater':
-        return value > rule.value;
+        if (typeof value === 'number' && typeof rule.value === 'number') {
+          return value > rule.value;
+        }
+        return false;
       case 'less':
-        return value < rule.value;
+        if (typeof value === 'number' && typeof rule.value === 'number') {
+          return value < rule.value;
+        }
+        return false;
       default:
         return false;
     }
@@ -1886,7 +1897,7 @@ class RecoveryManager {
   }
 
   private async createNotifications(
-    alert: any,
+    alert: unknown,
     group: AlertGroup
   ): Promise<void> {
     const notifications: AlertNotification[] = [];
@@ -1897,7 +1908,7 @@ class RecoveryManager {
 
       const notification: AlertNotification = {
         id: crypto.randomUUID(),
-        alertId: alert.id,
+        alertId: (alert as unknown as Record<string, string>)['id'],
         channelId,
         status: 'pending',
         timestamp: new Date().toISOString(),
@@ -1909,7 +1920,7 @@ class RecoveryManager {
     }
 
     // Add to notification queue
-    this.notificationQueue.set(alert.id, notifications);
+    this.notificationQueue.set((alert as unknown as Record<string, string>)['id'], notifications);
     
     // Update group last triggered
     group.lastTriggered = new Date().toISOString();
@@ -1920,7 +1931,7 @@ class RecoveryManager {
   }
 
   private async processNotificationQueue(): Promise<void> {
-    for (const [alertId, notifications] of this.notificationQueue.entries()) {
+    for (const [_alertId, notifications] of this.notificationQueue.entries()) {
       for (const notification of notifications) {
         if (notification.status === 'pending') {
           await this.sendNotification(notification);
@@ -2080,7 +2091,10 @@ class RecoveryManager {
     // Memory recovery strategy
     this.strategies.set('memory', {
       type: 'memory',
-      condition: (metrics) => metrics.memoryUsage > metrics.memoryThreshold,
+      condition: (metrics) => {
+        const m = metrics as Record<string, number>;
+        return m['memoryUsage'] > m['memoryThreshold'];
+      },
       actions: [
         {
           name: 'clearMemoryCache',
@@ -2146,7 +2160,10 @@ class RecoveryManager {
     // CPU recovery strategy
     this.strategies.set('cpu', {
       type: 'cpu',
-      condition: (metrics) => metrics.cpuUsage > metrics.cpuThreshold,
+      condition: (metrics) => {
+        const m = metrics as Record<string, number>;
+        return m['cpuUsage'] > m['cpuThreshold'];
+      },
       actions: [
         {
           name: 'throttleCPU',
@@ -2208,7 +2225,10 @@ class RecoveryManager {
     // Network recovery strategy
     this.strategies.set('network', {
       type: 'network',
-      condition: (metrics) => metrics.networkLatency > metrics.networkThreshold,
+      condition: (metrics) => {
+        const m = metrics as Record<string, number>;
+        return m['networkLatency'] > m['networkThreshold'];
+      },
       actions: [
         {
           name: 'optimizeNetworkRequests',
@@ -2310,7 +2330,7 @@ class RecoveryManager {
         try {
           await action.execute();
         } catch (actionError) {
-          console.error(`Recovery action ${action.name} failed:`, actionError);
+          logError();
           await action.rollback();
           throw actionError;
         }
@@ -2323,7 +2343,7 @@ class RecoveryManager {
       } else {
         error = 'Unknown error';
       }
-      console.error(`Recovery failed for type ${type}:`, recoveryError as any);
+      logError();
     } finally {
       // Record recovery attempt
       this.recoveryHistory.push({

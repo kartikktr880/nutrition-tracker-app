@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Fix Footer Visibility
  * This script ensures the footer is always properly displayed on the page
@@ -56,7 +57,7 @@
         // Check if footer content exists
         const footerContent = footerContainer.querySelector('footer');
         if (!footerContent || footerContent.offsetHeight < 10) {
-            console.log('Footer not fully loaded, retrying...');
+            logInfo('Footer not fully loaded, retrying...');
             
             // If footer.js didn't initialize properly, manually initialize it
             if (window.UltraPremiumFooter && typeof window.UltraPremiumFooter.prototype.init === 'function') {
@@ -69,7 +70,7 @@
             // Retry after a short delay
             setTimeout(ensureFooterIsLoaded, 500);
         } else {
-            console.log('Footer loaded successfully');
+            logInfo('Footer loaded successfully');
             fixFooterVisibility();
         }
     }

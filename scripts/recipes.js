@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Recipes.js - JavaScript functionality for the recipes page
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -452,7 +453,7 @@ class RecipeManager {
                             }
                         })
                         .catch(error => {
-                            console.error('Error sharing recipe:', error);
+                            logError('Error sharing recipe:', error);
                             this.showErrorMessage('Failed to share recipe');
                         });
                 };

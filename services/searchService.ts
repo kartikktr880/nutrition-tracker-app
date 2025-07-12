@@ -1,3 +1,4 @@
+import { logWarn, logInfo, logDebug } from '../utils/logger';
 import { z } from 'zod';
 import { apiClient } from './apiClient';
 
@@ -155,7 +156,7 @@ export class SearchService {
       const stored = localStorage.getItem(this.RECENT_SEARCHES_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.error('Error loading recent searches:', error);
+      logWarn('Error loading recent searches:', { error });
       return [];
     }
   }
@@ -164,7 +165,7 @@ export class SearchService {
     try {
       localStorage.setItem(this.RECENT_SEARCHES_KEY, JSON.stringify(this.recentSearches));
     } catch (error) {
-      console.error('Error saving recent searches:', error);
+      logWarn('Error saving recent searches:', { error });
     }
   }
 
@@ -400,7 +401,7 @@ export class SearchService {
 
       return resultsWithHighlights;
     } catch (error) {
-      console.error('Search error:', error);
+      logWarn('Search error:', { error });
       throw error instanceof Error ? error : new Error('Failed to perform search');
     }
   }
@@ -420,7 +421,7 @@ export class SearchService {
       };
       return JSON.stringify(exportData, null, 2);
     } catch (error) {
-      console.error('Error exporting recent searches:', error);
+      logWarn('Error exporting recent searches:', { error });
       throw new Error('Failed to export recent searches');
     }
   }
@@ -449,7 +450,7 @@ export class SearchService {
 
       this.saveRecentSearches();
     } catch (error) {
-      console.error('Error importing recent searches:', error);
+      logWarn('Error importing recent searches:', { error });
       throw new Error('Failed to import recent searches');
     }
   }
@@ -833,7 +834,7 @@ export class SearchService {
 
       this.saveRecentSearches();
     } catch (error) {
-      console.error('Error importing search history:', error);
+      logWarn('Error importing search history:', { error });
       throw new Error('Failed to import search history');
     }
   }
@@ -854,7 +855,7 @@ export class SearchService {
         backupKeys.slice(5).forEach(key => localStorage.removeItem(key));
       }
     } catch (error) {
-      console.error('Error backing up search history:', error);
+      logWarn('Error backing up search history:', { error });
       throw new Error('Failed to backup search history');
     }
   }
@@ -867,7 +868,7 @@ export class SearchService {
       }
       this.importSearchHistory(backupData);
     } catch (error) {
-      console.error('Error restoring from backup:', error);
+      logWarn('Error restoring from backup:', { error });
       throw new Error('Failed to restore from backup');
     }
   }

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Animation Manager
  * Handles performance optimizations and animation management across the application
@@ -32,7 +33,7 @@ export class AnimationManager {
             try {
                 await this.animate(animation);
             } catch (error) {
-                console.error('Animation failed:', error);
+                logError('Animation failed:', error);
             }
         }
     }

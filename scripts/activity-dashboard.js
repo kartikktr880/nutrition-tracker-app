@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Activity Dashboard - Handles displaying and managing user's fitness activity data
  */
@@ -162,7 +163,7 @@ class ActivityDashboard {
             
             this.showToast('Success! Your activity data has been synced.', 'success');
         } catch (error) {
-            console.error('Sync error:', error);
+            logError('Sync error:', error);
             this.showToast('Failed to sync activity data. Please try again.', 'error');
         } finally {
             if (syncBtn) {
@@ -185,7 +186,7 @@ class ActivityDashboard {
             this.updateActivitySummary();
             this.displayRecentActivities();
         } catch (error) {
-            console.error('Error loading activity data:', error);
+            logError('Error loading activity data:', error);
             this.showToast('Failed to load activity data.', 'error');
             loadSuccess = false;
         } finally {
@@ -532,7 +533,7 @@ class ActivityDashboard {
                 if (calorieSummary) calorieSummary.style.display = 'flex';
             }
         } catch (error) {
-            console.error('Error updating calorie summary:', error);
+            logError('Error updating calorie summary:', error);
         }
     }
     

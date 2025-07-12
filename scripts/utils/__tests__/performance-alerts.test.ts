@@ -1,7 +1,7 @@
 import { PerformanceAlerts, AlertCallback } from '../performance-alerts';
 import { PerformanceUtils } from '../performance-utils';
 
-describe.skip('PerformanceAlerts', () => {
+describe('PerformanceAlerts', () => {
     let mockCallback: AlertCallback;
     let mockMetrics: any;
 
@@ -18,7 +18,7 @@ describe.skip('PerformanceAlerts', () => {
         };
 
         // Mock PerformanceUtils
-        jest.spyOn(PerformanceUtils, 'getCurrentMetrics').mockReturnValue(mockMetrics);
+        jest.spyOn(PerformanceUtils, 'getMetrics').mockReturnValue(mockMetrics);
 
         // Reset alerts
         PerformanceAlerts.destroy();

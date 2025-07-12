@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Remove Firebase imports
 // import { auth, db } from './auth-core.js';
 // import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -210,10 +211,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             const result = await window.apiService.saveFoodLog(currentUser.uid, today, foodLog);
             
             if (!result.success) {
-                console.error('Failed to save food log:', result.error);
+                logError('Failed to save food log:', result.error);
             }
         } catch (error) {
-            console.error('Error saving food log:', error);
+            logError('Error saving food log:', error);
         }
     }
     
@@ -231,10 +232,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 updateFoodEntries();
                 updateNutritionTotals();
             } else {
-                console.error('Failed to load food log:', result.error);
+                logError('Failed to load food log:', result.error);
             }
         } catch (error) {
-            console.error('Error loading food log:', error);
+            logError('Error loading food log:', error);
         }
     }
     

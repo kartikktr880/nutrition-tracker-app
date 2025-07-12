@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Update All HTML Files
  * Adds dark-mode-enforcer.js to all HTML files in the project
@@ -22,14 +23,14 @@ async function processHtmlFile(filePath) {
         
         // Check if dark-mode-enforcer.js is already included
         if (content.includes('dark-mode-enforcer.js') && content.includes('gradient-scroll.js')) {
-            // console.log(`✓ Already updated: ${filePath}`);
+            // logInfo(`✓ Already updated: ${filePath}`);
             return;
         }
         
         // Find the head section closing tag
         const headCloseIndex = content.indexOf('</head>');
         if (headCloseIndex === -1) {
-            // console.log(`✕ No head section found: ${filePath}`);
+            // logInfo(`✕ No head section found: ${filePath}`);
             return;
         }
         
@@ -132,9 +133,9 @@ async function processHtmlFile(filePath) {
         
         // Write updated content back to file
         await writeFile(filePath, finalContent, 'utf8');
-        // console.log(`✓ Updated: ${filePath}`);
+        // logInfo(`✓ Updated: ${filePath}`);
     } catch (error) {
-        console.error(`✕ Error processing ${filePath}:`, error.message);
+        logError(`✕ Error processing ${filePath}:`, error.message);
     }
 }
 
@@ -160,15 +161,15 @@ async function processDirectory(dirPath) {
             }
         }
     } catch (error) {
-        console.error(`Error processing directory ${dirPath}:`, error.message);
+        logError(`Error processing directory ${dirPath}:`, error.message);
     }
 }
 
 // Main function
 async function main() {
-    // console.log('Starting to update all HTML files with dark mode enforcer...');
+    // logInfo('Starting to update all HTML files with dark mode enforcer...');
     await processDirectory(rootDir);
-    // console.log('Finished updating HTML files!');
+    // logInfo('Finished updating HTML files!');
 }
 
 // Run the main function

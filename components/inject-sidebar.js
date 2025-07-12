@@ -109,7 +109,7 @@ fetch('components/sidebar.html')
           hamburger.classList.remove('active');
           document.body.style.overflow = '';
         }
-        function toggleSidebar() {
+        function _toggleSidebar() {
           if (sidebar.style.transform === 'translateX(0)') {
             closeSidebar();
           } else {

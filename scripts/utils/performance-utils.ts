@@ -1,17 +1,29 @@
+declare global {
+  interface Performance {
+    memory?: {
+      totalJSHeapSize: number;
+      usedJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    };
+  }
+}
+
+type MetricsType = {
+  longTasks: number;
+  errors: Error[];
+  memoryUsage: number;
+  fps: number;
+  frameTime: number;
+  cpuUsage: number;
+  lastUpdate: number;
+};
+
 export class PerformanceUtils {
     private static marks: Map<string, number> = new Map();
     private static measures: Map<string, number> = new Map();
     private static observers: Set<Function> = new Set();
     private static performanceMode: boolean = false;
-    private static metrics: {
-        longTasks: number;
-        errors: Error[];
-        memoryUsage: number;
-        fps: number;
-        frameTime: number;
-        cpuUsage: number;
-        lastUpdate: number;
-    } = {
+    private static metrics: MetricsType = {
         longTasks: 0,
         errors: [],
         memoryUsage: 0,
@@ -40,7 +52,7 @@ export class PerformanceUtils {
     private static readonly HISTORY_MAX_ENTRIES = 100;
     private static performanceHistory: Array<{
         timestamp: number;
-        metrics: typeof this.metrics;
+        metrics: MetricsType;
         issues: Array<{
             type: string;
             severity: 'warning' | 'critical';
@@ -249,9 +261,8 @@ export class PerformanceUtils {
         jsHeapSizeLimit: number;
     } {
         if (!performance.memory) {
-            throw new Error('Memory API not available');
+            return { totalJSHeapSize: 0, usedJSHeapSize: 0, jsHeapSizeLimit: 0 };
         }
-
         return {
             totalJSHeapSize: performance.memory.totalJSHeapSize,
             usedJSHeapSize: performance.memory.usedJSHeapSize,
@@ -305,12 +316,12 @@ export class PerformanceUtils {
     }
 
     private static monitorMemory(): void {
-        if (performance.memory) {
-            setInterval(() => {
+        setInterval(() => {
+            if (performance.memory) {
                 this.metrics.memoryUsage = performance.memory.usedJSHeapSize;
                 this.checkPerformanceThresholds();
-            }, 5000);
-        }
+            }
+        }, 5000);
     }
 
     private static monitorCPU(): void {
@@ -333,32 +344,27 @@ export class PerformanceUtils {
     }
 
     private static checkPerformanceThresholds(): void {
-        const issues = [];
-
+        const issues: Array<{ type: string; severity: 'warning' | 'critical'; value: number }> = [];
         if (this.metrics.fps < this.PERFORMANCE_THRESHOLDS.fps.critical) {
             issues.push({ type: 'fps', severity: 'critical', value: this.metrics.fps });
         } else if (this.metrics.fps < this.PERFORMANCE_THRESHOLDS.fps.warning) {
             issues.push({ type: 'fps', severity: 'warning', value: this.metrics.fps });
         }
-
         if (this.metrics.frameTime > this.PERFORMANCE_THRESHOLDS.frameTime.critical) {
             issues.push({ type: 'frameTime', severity: 'critical', value: this.metrics.frameTime });
         } else if (this.metrics.frameTime > this.PERFORMANCE_THRESHOLDS.frameTime.warning) {
             issues.push({ type: 'frameTime', severity: 'warning', value: this.metrics.frameTime });
         }
-
         if (this.metrics.memoryUsage > this.PERFORMANCE_THRESHOLDS.memoryUsage.critical) {
             issues.push({ type: 'memory', severity: 'critical', value: this.metrics.memoryUsage });
         } else if (this.metrics.memoryUsage > this.PERFORMANCE_THRESHOLDS.memoryUsage.warning) {
             issues.push({ type: 'memory', severity: 'warning', value: this.metrics.memoryUsage });
         }
-
         if (this.metrics.cpuUsage > this.PERFORMANCE_THRESHOLDS.cpuUsage.critical) {
             issues.push({ type: 'cpu', severity: 'critical', value: this.metrics.cpuUsage });
         } else if (this.metrics.cpuUsage > this.PERFORMANCE_THRESHOLDS.cpuUsage.warning) {
             issues.push({ type: 'cpu', severity: 'warning', value: this.metrics.cpuUsage });
         }
-
         if (issues.length > 0) {
             this.addToHistory(issues);
             this.notifyObservers({
@@ -404,10 +410,7 @@ export class PerformanceUtils {
     }
 
     static setPerformanceThresholds(thresholds: Partial<typeof this.PERFORMANCE_THRESHOLDS>): void {
-        this.PERFORMANCE_THRESHOLDS = {
-            ...this.PERFORMANCE_THRESHOLDS,
-            ...thresholds
-        };
+        Object.assign(this.PERFORMANCE_THRESHOLDS, thresholds);
     }
 
     static setAutoPerformanceMode(enabled: boolean): void {
@@ -639,10 +642,7 @@ export class PerformanceUtils {
     }
 
     static setAlertThresholds(thresholds: Partial<typeof this.ALERT_THRESHOLDS>): void {
-        this.ALERT_THRESHOLDS = {
-            ...this.ALERT_THRESHOLDS,
-            ...thresholds
-        };
+        Object.assign(this.ALERT_THRESHOLDS, thresholds);
     }
 
     static addAlertCallback(callback: (alert: {
@@ -667,8 +667,7 @@ export class PerformanceUtils {
 
     private static checkAlertThresholds(): void {
         const now = Date.now();
-        const alerts = [];
-
+        const alerts: Array<{ type: string; severity: 'warning' | 'critical'; value: number; threshold: number; timestamp: number }> = [];
         if (this.metrics.fps < this.ALERT_THRESHOLDS.fps.critical) {
             alerts.push({
                 type: 'fps',
@@ -676,7 +675,7 @@ export class PerformanceUtils {
                 value: this.metrics.fps,
                 threshold: this.ALERT_THRESHOLDS.fps.critical,
                 timestamp: now
-            });
+            } as { type: string; severity: 'critical'; value: number; threshold: number; timestamp: number });
         } else if (this.metrics.fps < this.ALERT_THRESHOLDS.fps.warning) {
             alerts.push({
                 type: 'fps',
@@ -684,9 +683,8 @@ export class PerformanceUtils {
                 value: this.metrics.fps,
                 threshold: this.ALERT_THRESHOLDS.fps.warning,
                 timestamp: now
-            });
+            } as { type: string; severity: 'warning'; value: number; threshold: number; timestamp: number });
         }
-
         if (this.metrics.frameTime > this.ALERT_THRESHOLDS.frameTime.critical) {
             alerts.push({
                 type: 'frameTime',
@@ -694,7 +692,7 @@ export class PerformanceUtils {
                 value: this.metrics.frameTime,
                 threshold: this.ALERT_THRESHOLDS.frameTime.critical,
                 timestamp: now
-            });
+            } as { type: string; severity: 'critical'; value: number; threshold: number; timestamp: number });
         } else if (this.metrics.frameTime > this.ALERT_THRESHOLDS.frameTime.warning) {
             alerts.push({
                 type: 'frameTime',
@@ -702,9 +700,8 @@ export class PerformanceUtils {
                 value: this.metrics.frameTime,
                 threshold: this.ALERT_THRESHOLDS.frameTime.warning,
                 timestamp: now
-            });
+            } as { type: string; severity: 'warning'; value: number; threshold: number; timestamp: number });
         }
-
         if (this.metrics.memoryUsage > this.ALERT_THRESHOLDS.memoryUsage.critical) {
             alerts.push({
                 type: 'memory',
@@ -712,7 +709,7 @@ export class PerformanceUtils {
                 value: this.metrics.memoryUsage,
                 threshold: this.ALERT_THRESHOLDS.memoryUsage.critical,
                 timestamp: now
-            });
+            } as { type: string; severity: 'critical'; value: number; threshold: number; timestamp: number });
         } else if (this.metrics.memoryUsage > this.ALERT_THRESHOLDS.memoryUsage.warning) {
             alerts.push({
                 type: 'memory',
@@ -720,9 +717,8 @@ export class PerformanceUtils {
                 value: this.metrics.memoryUsage,
                 threshold: this.ALERT_THRESHOLDS.memoryUsage.warning,
                 timestamp: now
-            });
+            } as { type: string; severity: 'warning'; value: number; threshold: number; timestamp: number });
         }
-
         if (this.metrics.cpuUsage > this.ALERT_THRESHOLDS.cpuUsage.critical) {
             alerts.push({
                 type: 'cpu',
@@ -730,7 +726,7 @@ export class PerformanceUtils {
                 value: this.metrics.cpuUsage,
                 threshold: this.ALERT_THRESHOLDS.cpuUsage.critical,
                 timestamp: now
-            });
+            } as { type: string; severity: 'critical'; value: number; threshold: number; timestamp: number });
         } else if (this.metrics.cpuUsage > this.ALERT_THRESHOLDS.cpuUsage.warning) {
             alerts.push({
                 type: 'cpu',
@@ -738,13 +734,16 @@ export class PerformanceUtils {
                 value: this.metrics.cpuUsage,
                 threshold: this.ALERT_THRESHOLDS.cpuUsage.warning,
                 timestamp: now
-            });
+            } as { type: string; severity: 'warning'; value: number; threshold: number; timestamp: number });
         }
-
         if (alerts.length > 0) {
             alerts.forEach(alert => {
                 this.alertCallbacks.forEach(callback => callback(alert));
             });
         }
+    }
+
+    static initialize(): void {
+        // No initialization needed
     }
 } 

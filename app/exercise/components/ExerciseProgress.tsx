@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import { ExerciseProgress as ExerciseProgressType, ExerciseGoal } from '@/types/exercise';
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from 'src/utils/logger';
 
 interface ExerciseProgressProps {
   exerciseId: string;
@@ -15,11 +17,7 @@ export const ExerciseProgress: React.FC<ExerciseProgressProps> = ({ exerciseId }
   const [goals, setGoals] = useState<ExerciseGoal[]>([]);
   const [currentGoal, setCurrentGoal] = useState<ExerciseGoal | null>(null);
 
-  useEffect(() => {
-    fetchProgressData();
-  }, [exerciseId]);
-
-  const fetchProgressData = async () => {
+  const _fetchProgressData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -46,12 +44,17 @@ export const ExerciseProgress: React.FC<ExerciseProgressProps> = ({ exerciseId }
       );
       setCurrentGoal(activeGoal || null);
     } catch (error) {
-      console.error('Error fetching progress data:', error);
+      logError();
+      _logWarn();
       setError(error instanceof Error ? error.message : 'An error occurred while fetching progress data');
     } finally {
       setLoading(false);
     }
-  };
+  }, [exerciseId]);
+
+  useEffect(() => {
+    _fetchProgressData();
+  }, [_fetchProgressData]);
 
   const addProgress = async (data: Partial<ExerciseProgressType>) => {
     setError(null);
@@ -99,7 +102,8 @@ export const ExerciseProgress: React.FC<ExerciseProgressProps> = ({ exerciseId }
         });
       }
     } catch (error) {
-      console.error('Error adding progress:', error);
+      logError();
+      _logWarn();
       setError(error instanceof Error ? error.message : 'An error occurred while adding progress');
     }
   };
@@ -108,9 +112,8 @@ export const ExerciseProgress: React.FC<ExerciseProgressProps> = ({ exerciseId }
     if (!currentGoal) return 0;
 
     // Validate exercise type compatibility
-    if (newProgress.exerciseType && currentGoal.exerciseType && 
-        newProgress.exerciseType !== currentGoal.exerciseType) {
-      console.warn('Exercise type mismatch between progress and goal');
+    if (newProgress.exerciseType !== currentGoal.exerciseType) {
+      _logWarn();
       return 0;
     }
 
@@ -168,7 +171,7 @@ export const ExerciseProgress: React.FC<ExerciseProgressProps> = ({ exerciseId }
           <p className="font-medium">Error</p>
           <p>{error}</p>
           <button
-            onClick={fetchProgressData}
+            onClick={_fetchProgressData}
             className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           >
             Retry
@@ -191,7 +194,7 @@ export const ExerciseProgress: React.FC<ExerciseProgressProps> = ({ exerciseId }
               reps: 0,
               weight: 0,
               duration: 0,
-              intensity: 'medium',
+              intensity: 2, // 2 = medium
             })}
             className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors"
           >

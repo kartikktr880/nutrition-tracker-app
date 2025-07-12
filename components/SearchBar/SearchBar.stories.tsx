@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { SearchBar } from './SearchBar';
 
-const meta: Meta<typeof SearchBar> = {
+const meta = {
   title: 'Components/SearchBar',
   component: SearchBar,
   parameters: {
@@ -20,28 +19,27 @@ const meta: Meta<typeof SearchBar> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof SearchBar>;
 
-export const Default: Story = {
+export const Default = {
   args: {
     placeholder: 'Search foods, meals, or recipes...',
   },
 };
 
-export const Minimal: Story = {
+export const Minimal = {
   args: {
     variant: 'minimal',
     placeholder: 'Quick search...',
   },
 };
 
-export const CustomPlaceholder: Story = {
+export const CustomPlaceholder = {
   args: {
     placeholder: 'Type to search...',
   },
 };
 
-export const WithCustomClass: Story = {
+export const WithCustomClass = {
   args: {
     className: 'max-w-md',
     placeholder: 'Search with custom width...',

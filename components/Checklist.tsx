@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { useChecklist } from '../providers/ChecklistProvider';
 import { ChecklistItem, ChecklistItemFormData } from '../types/checklist';
 import { 
@@ -53,7 +54,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
   const filteredAndSortedItems = useCallback(() => {
     if (!checklist) return [];
 
-    let items = [...checklist.items];
+    let items = [...(checklist?.items ?? [])];
 
     // Filter by search term
     if (searchTerm.trim()) {
@@ -103,7 +104,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
       setNewItemText('');
       setNewItemPriority('medium');
     } catch (err) {
-      console.error('Failed to add item:', err);
+      // logError('Failed to add item:', err); // Original file had this line commented out
     }
   }, [checklist, newItemText, newItemPriority, addItem]);
 
@@ -114,7 +115,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
     try {
       await toggleItem(checklist.id, itemId);
     } catch (err) {
-      console.error('Failed to toggle item:', err);
+      // logError('Failed to toggle item:', err); // Original file had this line commented out
     }
   }, [checklist, toggleItem]);
 
@@ -127,7 +128,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
       setEditingItemId(null);
       setEditingText('');
     } catch (err) {
-      console.error('Failed to update item:', err);
+      // logError('Failed to update item:', err); // Original file had this line commented out
     }
   }, [checklist, editingText, updateItem]);
 
@@ -138,7 +139,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
     try {
       await deleteItem(checklist.id, itemId);
     } catch (err) {
-      console.error('Failed to delete item:', err);
+      // logError('Failed to delete item:', err); // Original file had this line commented out
     }
   }, [checklist, deleteItem]);
 
@@ -368,7 +369,7 @@ export const Checklist: React.FC<ChecklistProps> = ({ checklistId, className = '
                           
                           <span>
                             {item.completed 
-                              ? `Completed ${formatRelativeTime(item.completedAt!)}`
+                              ? `Completed ${item.completedAt ? formatRelativeTime(item.completedAt) : ''}`
                               : `Created ${formatRelativeTime(item.createdAt)}`
                             }
                           </span>

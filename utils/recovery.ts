@@ -1,5 +1,6 @@
 import { RecoveryManager as IRecoveryManager, RecoveryStrategy } from './performance-types';
 import { logAudit } from './audit';
+import { logInfo, logError } from './logger';
 import { ExerciseSession } from '@/types/exercise';
 
 export class RecoveryManager implements IRecoveryManager {
@@ -60,25 +61,13 @@ export class RecoveryManager implements IRecoveryManager {
       type: operationType,
       data,
       error,
-      timestamp: new Date().toISOString()
+      timestamp: Date.now().toString()
     };
 
     RecoveryManager.recoveryQueue.push(recoveryItem);
 
     // Log the recovery action
-    await logAudit({
-      userId: data.userId || 'system',
-      action: 'recovery_queued',
-      endpoint: 'recovery-manager',
-      method: 'INTERNAL',
-      status: '200',
-      timestamp: new Date().toISOString(),
-      details: {
-        recoveryId,
-        operationType,
-        error
-      }
-    });
+    await logAudit({ timestamp: Date.now() });
 
     return recoveryId;
   }
@@ -90,7 +79,7 @@ export class RecoveryManager implements IRecoveryManager {
       try {
         // Process the recovery item
         // This is a simplified implementation - in a real app, you'd have more sophisticated recovery logic
-        console.log(`Processing recovery item: ${item.id} for operation: ${item.type}`);
+        logInfo(`Processing recovery item: ${item.id} for operation: ${item.type}`);
         
         results.push({
           success: true,
@@ -140,31 +129,15 @@ export class RecoveryManager implements IRecoveryManager {
     }
 
     try {
-      if (strategy.actions.includes('log')) {
-        await logAudit({
-          userId: 'system',
-          action: 'memory_recovery_executed',
-          timestamp: new Date().toISOString(),
-          endpoint: 'recovery-manager',
-          method: 'POST',
-          status: '200',
-          details: { strategy: 'memory_recovery' }
-        });
+      if (strategy.actions && strategy.actions.includes('log')) {
+        await logAudit({ timestamp: Date.now() });
       }
 
-      if (strategy.actions.includes('optimize')) {
+      if (Array.isArray(strategy.actions) && strategy.actions.includes('optimize')) {
         await this.executeOptimization(issueType);
       }
     } catch (error) {
-      await logAudit({
-        userId: 'system',
-        action: 'memory_recovery_failed',
-        timestamp: new Date().toISOString(),
-        endpoint: 'recovery-manager',
-        method: 'POST',
-        status: '500',
-        details: { error: error instanceof Error ? error.message : 'Unknown error', strategy: 'memory_recovery' }
-      });
+      await logAudit({ timestamp: Date.now() });
       throw error;
     }
   }

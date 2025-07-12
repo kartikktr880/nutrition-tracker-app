@@ -1,3 +1,5 @@
+import { logError, logWarn, logInfo as _logInfo, logDebug as _logDebug } from '../utils/logger';
+
 import { auditLogger } from './audit-logger';
 
 type NotificationChannel = 'browser' | 'email' | 'webhook';
@@ -38,11 +40,10 @@ class NotificationService {
 
   async initialize(): Promise<void> {
     try {
-      await auditLogger.initialize();
       this.cleanupOldNotifications();
       this.setupBrowserNotifications();
     } catch (error) {
-      console.error('Failed to initialize notification service:', error);
+      logError('Failed to initialize notification service:', error);
       throw error;
     }
   }
@@ -56,7 +57,7 @@ class NotificationService {
     if ('Notification' in window) {
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        console.warn('Browser notifications not permitted');
+        logWarn('Browser notifications not permitted');
       }
     }
   }
@@ -88,7 +89,7 @@ class NotificationService {
     } catch (error) {
       notification.status = 'failed';
       this.notifications.push(notification);
-      console.error('Failed to send notification:', error);
+      logError('Failed to send notification:', error);
       throw error;
     }
   }
@@ -121,11 +122,10 @@ class NotificationService {
 
   private async logNotification(notification: Notification): Promise<void> {
     await auditLogger.log({
-      category: 'system',
-      action: 'notification',
-      severity: notification.priority === 'high' ? 'warning' : 'info',
-      details: `Notification sent: ${notification.title}`,
-      metadata: {
+      category: 'notification',
+      message: `notification_sent: ${notification.id}`,
+      severity: 'info',
+      context: {
         notificationId: notification.id,
         channel: notification.channel,
         status: notification.status

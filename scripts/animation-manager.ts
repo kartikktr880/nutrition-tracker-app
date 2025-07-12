@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 interface AnimationProperties {
   [key: string]: string | number;
 }
@@ -43,7 +44,7 @@ export class AnimationManager {
         try {
           await this.animate(animation);
         } catch (error) {
-          console.error('Animation failed:', error);
+          logError('Animation failed:', error);
         }
       }
     }
@@ -56,7 +57,7 @@ export class AnimationManager {
       if (duration === 0) {
         // Apply properties immediately if duration is 0
         Object.entries(properties).forEach(([property, value]) => {
-          element.style[property as any] = value;
+          element.style[property as any] = String(value);
         });
         resolve();
         return;
@@ -77,7 +78,7 @@ export class AnimationManager {
       animation.onfinish = () => {
         // Apply final values to style
         Object.entries(properties).forEach(([property, value]) => {
-          element.style[property as any] = value;
+          element.style[property as any] = String(value);
         });
         resolve();
       };

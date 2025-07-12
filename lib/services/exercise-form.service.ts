@@ -2,7 +2,7 @@ import { ExerciseFormCheck, ExerciseFormTemplate } from '@/types/exercise';
 
 class ExerciseFormService {
   private static instance: ExerciseFormService;
-  private cache: Map<string, any>;
+  private cache: Map<string, unknown>;
 
   private constructor() {
     this.cache = new Map();
@@ -20,7 +20,11 @@ class ExerciseFormService {
     const cacheKey = `templates_${exerciseId || 'all'}`;
     
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      const result = this.cache.get(cacheKey);
+      if (Array.isArray(result)) {
+        return result as ExerciseFormTemplate[];
+      }
+      return [];
     }
 
     const response = await fetch(
@@ -57,7 +61,11 @@ class ExerciseFormService {
     const cacheKey = `checks_${exerciseId || 'all'}_${startDate?.toISOString()}_${endDate?.toISOString()}`;
     
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      const result = this.cache.get(cacheKey);
+      if (Array.isArray(result)) {
+        return result as ExerciseFormCheck[];
+      }
+      return [];
     }
 
     const response = await fetch(

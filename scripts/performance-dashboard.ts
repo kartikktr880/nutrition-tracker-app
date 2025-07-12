@@ -31,7 +31,7 @@ interface PerformanceData {
 
 export class PerformanceDashboard {
     private static instance: PerformanceDashboard;
-    private metrics: PerformanceData;
+    private metrics!: PerformanceData;
     private observers: Array<(type: string, data: any) => void> = [];
     private monitoringInterval: number | null = null;
     private readonly historySize = 60; // Store 60 seconds of history
@@ -103,7 +103,7 @@ export class PerformanceDashboard {
             // Log initialization
             LoggingUtils.log('info', 'Performance monitoring initialized');
         } catch (error) {
-            LoggingUtils.log('error', `Failed to initialize performance monitoring: ${error.message}`);
+            LoggingUtils.log('error', `Failed to initialize performance monitoring: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -181,7 +181,8 @@ export class PerformanceDashboard {
 
         // Update API response times
         resources.forEach(resource => {
-            if (resource.initiatorType === 'xmlhttprequest' || resource.initiatorType === 'fetch') {
+            if ('initiatorType' in resource &&
+                (resource.initiatorType === 'xmlhttprequest' || resource.initiatorType === 'fetch')) {
                 this.updateMetric('apiResponse', resource.duration);
             }
         });
@@ -198,8 +199,8 @@ export class PerformanceDashboard {
         if ('PerformanceObserver' in window) {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach(entry => {
-                    if ('value' in entry) {
-                        this.updateMetric('layoutShifts', entry.value);
+                    if ('value' in entry && typeof (entry as any).value === 'number') {
+                        this.updateMetric('layoutShifts', (entry as any).value);
                     }
                 });
             });
@@ -211,7 +212,7 @@ export class PerformanceDashboard {
         let count = 0;
         const elements = document.getElementsByTagName('*');
         for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
+            const element = elements[i] as HTMLElement;
             if (element.onclick) count++;
             if (element.onmouseover) count++;
             if (element.onmouseout) count++;
@@ -281,7 +282,8 @@ export class PerformanceDashboard {
         if ('PerformanceObserver' in window) {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach(entry => {
-                    if (entry.initiatorType === 'xmlhttprequest' || entry.initiatorType === 'fetch') {
+                    if ('initiatorType' in entry &&
+                        (entry.initiatorType === 'xmlhttprequest' || entry.initiatorType === 'fetch')) {
                         this.updateMetric('apiResponse', entry.duration);
                     }
                 });

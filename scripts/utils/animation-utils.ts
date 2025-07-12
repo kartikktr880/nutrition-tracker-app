@@ -72,7 +72,7 @@ export class AnimationUtils {
     private static previewContainer: HTMLElement | null = null;
 
     private static animationQueue: Map<Element, Array<{
-        preset: keyof typeof this.ANIMATION_PRESETS;
+        preset: keyof typeof AnimationUtils.ANIMATION_PRESETS;
         options?: Partial<KeyframeAnimationOptions>;
     }>> = new Map();
 
@@ -80,41 +80,41 @@ export class AnimationUtils {
 
     static animate(
         element: Element,
-        preset: keyof typeof this.ANIMATION_PRESETS,
+        preset: keyof typeof AnimationUtils.ANIMATION_PRESETS,
         options: Partial<KeyframeAnimationOptions> = {}
     ): Animation {
-        const presetConfig = this.ANIMATION_PRESETS[preset];
+        const presetConfig = AnimationUtils.ANIMATION_PRESETS[preset];
         const mergedOptions = {
             ...presetConfig.options,
             ...options
         };
 
-        const animation = element.animate(presetConfig.keyframes, mergedOptions);
-        this.activeAnimations.set(element, animation);
+        const animation = element.animate([...presetConfig.keyframes] as Keyframe[], mergedOptions);
+        AnimationUtils.activeAnimations.set(element, animation);
 
         animation.onfinish = () => {
-            this.activeAnimations.delete(element);
+            AnimationUtils.activeAnimations.delete(element);
         };
 
         return animation;
     }
 
     static stopAnimation(element: Element): void {
-        const animation = this.activeAnimations.get(element);
+        const animation = AnimationUtils.activeAnimations.get(element);
         if (animation) {
             animation.cancel();
-            this.activeAnimations.delete(element);
+            AnimationUtils.activeAnimations.delete(element);
         }
     }
 
     static stopAllAnimations(): void {
-        this.activeAnimations.forEach(animation => animation.cancel());
-        this.activeAnimations.clear();
+        AnimationUtils.activeAnimations.forEach(animation => animation.cancel());
+        AnimationUtils.activeAnimations.clear();
     }
 
-    static previewAnimation(preset: keyof typeof this.ANIMATION_PRESETS): void {
-        if (!this.previewContainer) {
-            this.createPreviewContainer();
+    static previewAnimation(preset: keyof typeof AnimationUtils.ANIMATION_PRESETS): void {
+        if (!AnimationUtils.previewContainer) {
+            AnimationUtils.createPreviewContainer();
         }
 
         const previewElement = document.createElement('div');
@@ -125,30 +125,32 @@ export class AnimationUtils {
         previewElement.style.borderRadius = '8px';
         previewElement.style.margin = '20px';
 
-        this.previewContainer.appendChild(previewElement);
-        this.animate(previewElement, preset);
+        if (AnimationUtils.previewContainer) {
+            AnimationUtils.previewContainer.appendChild(previewElement);
+        }
+        AnimationUtils.animate(previewElement, preset);
 
         // Remove preview element after animation
         setTimeout(() => {
             previewElement.remove();
-        }, this.ANIMATION_PRESETS[preset].options.duration + 100);
+        }, (AnimationUtils.ANIMATION_PRESETS[preset].options.duration ?? 300) + 100);
     }
 
     private static createPreviewContainer(): void {
-        this.previewContainer = document.createElement('div');
-        this.previewContainer.className = 'animation-preview-container';
-        this.previewContainer.style.position = 'fixed';
-        this.previewContainer.style.bottom = '20px';
-        this.previewContainer.style.right = '20px';
-        this.previewContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        this.previewContainer.style.padding = '20px';
-        this.previewContainer.style.borderRadius = '8px';
-        this.previewContainer.style.zIndex = '1000';
-        document.body.appendChild(this.previewContainer);
+        AnimationUtils.previewContainer = document.createElement('div');
+        AnimationUtils.previewContainer.className = 'animation-preview-container';
+        AnimationUtils.previewContainer.style.position = 'fixed';
+        AnimationUtils.previewContainer.style.bottom = '20px';
+        AnimationUtils.previewContainer.style.right = '20px';
+        AnimationUtils.previewContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        AnimationUtils.previewContainer.style.padding = '20px';
+        AnimationUtils.previewContainer.style.borderRadius = '8px';
+        AnimationUtils.previewContainer.style.zIndex = '1000';
+        document.body.appendChild(AnimationUtils.previewContainer);
     }
 
     static getAvailablePresets(): string[] {
-        return Object.keys(this.ANIMATION_PRESETS);
+        return Object.keys(AnimationUtils.ANIMATION_PRESETS);
     }
 
     static createCustomAnimation(
@@ -157,41 +159,46 @@ export class AnimationUtils {
         options: KeyframeAnimationOptions
     ): Animation {
         const animation = element.animate(keyframes, options);
-        this.activeAnimations.set(element, animation);
+        AnimationUtils.activeAnimations.set(element, animation);
 
         animation.onfinish = () => {
-            this.activeAnimations.delete(element);
+            AnimationUtils.activeAnimations.delete(element);
         };
 
         return animation;
     }
 
     static isAnimating(element: Element): boolean {
-        return this.activeAnimations.has(element);
+        return AnimationUtils.activeAnimations.has(element);
     }
 
     static getAnimationProgress(element: Element): number {
-        const animation = this.activeAnimations.get(element);
+        const animation = AnimationUtils.activeAnimations.get(element);
         if (!animation) return 0;
-        return animation.currentTime ? animation.currentTime / animation.effect!.getComputedTiming().duration : 0;
+        const currentTime = typeof animation.currentTime === 'number' ? animation.currentTime : 0;
+        const effect = animation.effect;
+        const duration = typeof effect?.getComputedTiming === 'function'
+            ? Number(effect.getComputedTiming().duration)
+            : 1;
+        return currentTime && duration ? currentTime / duration : 0;
     }
 
     static pauseAnimation(element: Element): void {
-        const animation = this.activeAnimations.get(element);
+        const animation = AnimationUtils.activeAnimations.get(element);
         if (animation) {
             animation.pause();
         }
     }
 
     static resumeAnimation(element: Element): void {
-        const animation = this.activeAnimations.get(element);
+        const animation = AnimationUtils.activeAnimations.get(element);
         if (animation) {
             animation.play();
         }
     }
 
     static reverseAnimation(element: Element): void {
-        const animation = this.activeAnimations.get(element);
+        const animation = AnimationUtils.activeAnimations.get(element);
         if (animation) {
             animation.reverse();
         }
@@ -199,26 +206,27 @@ export class AnimationUtils {
 
     static queueAnimation(
         element: Element,
-        preset: keyof typeof this.ANIMATION_PRESETS,
+        preset: keyof typeof AnimationUtils.ANIMATION_PRESETS,
         options?: Partial<KeyframeAnimationOptions>
     ): void {
-        if (!this.animationQueue.has(element)) {
-            this.animationQueue.set(element, []);
+        if (!AnimationUtils.animationQueue.has(element)) {
+            AnimationUtils.animationQueue.set(element, []);
         }
-
-        this.animationQueue.get(element)!.push({ preset, options });
-        this.processAnimationQueue(element);
+        AnimationUtils.animationQueue.get(element)!.push({ preset, options });
+        if (!AnimationUtils.isProcessingQueue) {
+            AnimationUtils.processAnimationQueue(element);
+        }
     }
 
     private static async processAnimationQueue(element: Element): Promise<void> {
-        if (this.isProcessingQueue || !this.animationQueue.has(element)) return;
+        if (AnimationUtils.isProcessingQueue || !AnimationUtils.animationQueue.has(element)) return;
 
-        this.isProcessingQueue = true;
-        const queue = this.animationQueue.get(element)!;
+        AnimationUtils.isProcessingQueue = true;
+        const queue = AnimationUtils.animationQueue.get(element)!;
 
         while (queue.length > 0) {
             const { preset, options } = queue[0];
-            const animation = this.animate(element, preset, options);
+            const animation = AnimationUtils.animate(element, preset, options);
 
             await new Promise<void>(resolve => {
                 animation.onfinish = () => {
@@ -228,20 +236,20 @@ export class AnimationUtils {
             });
         }
 
-        this.animationQueue.delete(element);
-        this.isProcessingQueue = false;
+        AnimationUtils.animationQueue.delete(element);
+        AnimationUtils.isProcessingQueue = false;
     }
 
     static clearAnimationQueue(element: Element): void {
-        this.animationQueue.delete(element);
-        this.stopAnimation(element);
+        AnimationUtils.animationQueue.delete(element);
+        AnimationUtils.stopAnimation(element);
     }
 
     static getQueuedAnimations(element: Element): number {
-        return this.animationQueue.get(element)?.length || 0;
+        return AnimationUtils.animationQueue.get(element)?.length || 0;
     }
 
     static isQueueProcessing(): boolean {
-        return this.isProcessingQueue;
+        return AnimationUtils.isProcessingQueue;
     }
 } 

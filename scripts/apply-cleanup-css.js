@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Apply Cleanup CSS to All Pages
  * This script injects the cleanup-scrolling.css file into all HTML pages
@@ -10,7 +11,7 @@ const path = require('path');
  * Find all HTML files in the directory and subdirectories
  */
 function findHtmlFiles(dir, fileList = []) {
-    console.log(`Searching for HTML files in: ${dir}`);
+    logInfo(`Searching for HTML files in: ${dir}`);
     
     try {
         const files = fs.readdirSync(dir);
@@ -27,15 +28,15 @@ function findHtmlFiles(dir, fileList = []) {
                         findHtmlFiles(filePath, fileList);
                     }
                 } else if (file.endsWith('.html')) {
-                    console.log(`Found HTML file: ${filePath}`);
+                    logInfo(`Found HTML file: ${filePath}`);
                     fileList.push(filePath);
                 }
             } catch (err) {
-                console.error(`Error accessing ${filePath}:`, err.message);
+                logError(`Error accessing ${filePath}:`, err.message);
             }
         });
     } catch (err) {
-        console.error(`Error reading directory ${dir}:`, err.message);
+        logError(`Error reading directory ${dir}:`, err.message);
     }
     
     return fileList;
@@ -45,14 +46,14 @@ function findHtmlFiles(dir, fileList = []) {
  * Inject cleanup CSS into an HTML file
  */
 function injectCleanupCSS(htmlFilePath) {
-    console.log(`Applying cleanup CSS to: ${htmlFilePath}`);
+    logInfo(`Applying cleanup CSS to: ${htmlFilePath}`);
     
     try {
         let htmlContent = fs.readFileSync(htmlFilePath, 'utf8');
         
         // Check if cleanup CSS is already applied
         if (htmlContent.includes('cleanup-scrolling.css')) {
-            console.log(`   Cleanup CSS already applied to ${htmlFilePath}`);
+            logInfo(`   Cleanup CSS already applied to ${htmlFilePath}`);
             return false;
         }
         
@@ -60,7 +61,7 @@ function injectCleanupCSS(htmlFilePath) {
         const headEndIndex = htmlContent.indexOf('</head>');
         
         if (headEndIndex === -1) {
-            console.log(`   No </head> tag found in ${htmlFilePath}`);
+            logInfo(`   No </head> tag found in ${htmlFilePath}`);
             return false;
         }
         
@@ -73,10 +74,10 @@ function injectCleanupCSS(htmlFilePath) {
             htmlContent.substring(headEndIndex);
         
         fs.writeFileSync(htmlFilePath, htmlContent, 'utf8');
-        console.log(`   Successfully applied cleanup CSS to ${htmlFilePath}`);
+        logInfo(`   Successfully applied cleanup CSS to ${htmlFilePath}`);
         return true;
     } catch (err) {
-        console.error(`Error modifying ${htmlFilePath}:`, err.message);
+        logError(`Error modifying ${htmlFilePath}:`, err.message);
         return false;
     }
 }
@@ -85,15 +86,15 @@ function injectCleanupCSS(htmlFilePath) {
  * Main function to find and modify HTML files
  */
 function main() {
-    console.log('Starting to apply cleanup CSS to all HTML pages...');
+    logInfo('Starting to apply cleanup CSS to all HTML pages...');
     
     // Start from the current directory
     const currentDir = process.cwd();
-    console.log(`Current working directory: ${currentDir}`);
+    logInfo(`Current working directory: ${currentDir}`);
     
     // Find all HTML files
     const htmlFiles = findHtmlFiles(currentDir);
-    console.log(`Found ${htmlFiles.length} HTML files`);
+    logInfo(`Found ${htmlFiles.length} HTML files`);
     
     // Keep track of modified files
     let modifiedCount = 0;
@@ -105,7 +106,7 @@ function main() {
         }
     });
     
-    console.log(`Applied cleanup CSS to ${modifiedCount} HTML files`);
+    logInfo(`Applied cleanup CSS to ${modifiedCount} HTML files`);
 }
 
 // Run the main function

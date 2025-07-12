@@ -1,18 +1,36 @@
-import { NextPage } from 'next';
 import Head from 'next/head';
-import MonitoringDashboard from '@/components/MonitoringDashboard';
+import React from 'react';
 
-const MonitoringPage: NextPage = () => {
+import { useAuth } from '../hooks/useAuth';
+
+const MonitoringPage: React.FC = () => {
+  const { user: _user } = useAuth();
+
   return (
     <>
       <Head>
-        <title>System Monitoring - Nutrition Tracker</title>
-        <meta name="description" content="System monitoring dashboard for Nutrition Tracker" />
+        <title>Monitoring - Nutrition Tracker</title>
+        <meta name="description" content="Monitor your nutrition progress" />
       </Head>
-
-      <main className="container mx-auto px-4 py-8">
-        <MonitoringDashboard />
-      </main>
+      <div className="monitoring-page">
+        <h1>Progress Monitoring</h1>
+        <div className="monitoring-content">
+          <div className="progress-charts">
+            <div className="chart-container">
+              <h3>Weekly Progress</h3>
+              <div className="chart-placeholder">
+                <p>Chart visualization will be implemented here</p>
+              </div>
+            </div>
+            <div className="chart-container">
+              <h3>Monthly Trends</h3>
+              <div className="chart-placeholder">
+                <p>Trend analysis will be implemented here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Activity Tracker JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -689,7 +690,7 @@ class ActivityTracker {
             const data = localStorage.getItem(key);
             return data ? JSON.parse(data) : null;
         } catch (e) {
-            console.error(`Error loading ${key} from storage:`, e);
+            logError(`Error loading ${key} from storage:`, e);
             return null;
         }
     }
@@ -698,7 +699,7 @@ class ActivityTracker {
         try {
             localStorage.setItem(key, JSON.stringify(data));
         } catch (e) {
-            console.error(`Error saving ${key} to storage:`, e);
+            logError(`Error saving ${key} to storage:`, e);
         }
     }
     

@@ -1,5 +1,6 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
+
 import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner';
 
 export interface LoadingOverlayProps {

@@ -1,3 +1,5 @@
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from '../utils/logger';
+
 import { auditLogger } from './audit-logger';
 import { notificationService } from './notification-service';
 
@@ -47,11 +49,11 @@ interface AlertConfig {
 
 type AuditLogCategory = 'system' | 'user' | 'security' | 'performance';
 
-interface AuditLogEntry {
+interface _AuditLogEntry {
   category: AuditLogCategory;
   action: string;
   severity: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 export class PerformanceAlertService {
@@ -95,25 +97,19 @@ export class PerformanceAlertService {
 
   async initialize(): Promise<void> {
     try {
-      await auditLogger.initialize();
       await notificationService.initialize();
       this.cleanupOldAlerts();
     } catch (error) {
-      console.error('Failed to initialize performance alert service:', error);
+      logError('Failed to initialize performance alert service:', error);
       throw error;
     }
   }
 
-  private cleanupOldAlerts(): void {
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-    this.alerts = this.alerts.filter(alert => alert.timestamp > oneDayAgo);
-  }
+  private config = { retentionPeriod: 24 * 60 * 60 * 1000 };
 
   private async cleanupOldAlerts(): Promise<void> {
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-    this.alerts = this.alerts.filter(alert => 
-      alert.timestamp > oneDayAgo || !alert.acknowledged
-    );
+    const cutoffTime = Date.now() - this.config.retentionPeriod;
+    this.alerts = this.alerts.filter(alert => alert.timestamp > cutoffTime);
   }
 
   checkMetrics(metrics: {
@@ -200,13 +196,12 @@ export class PerformanceAlertService {
       // Log to audit logger
       await auditLogger.log({
         category: 'system',
-        action: 'alert',
-        severity: alert.severity === 'critical' ? 'critical' : 'warning',
-        details: {
-          message: alert.message,
-          metric: alert.metric,
-          value: alert.value,
-          threshold: alert.threshold
+        message: `alert_triggered: ${alert.message}`,
+        severity: alert.severity === 'critical' ? 'error' : 'warning',
+        context: {
+          alertId: alert.id,
+          trend: alert.trend,
+          correlation: alert.correlation
         }
       });
 
@@ -282,7 +277,7 @@ export class PerformanceAlertService {
           alert.trend = trend;
         }
       } catch (error) {
-        console.error('Error analyzing trend:', error);
+        logError('Error analyzing trend:', error);
         // Continue processing even if trend analysis fails
       }
 
@@ -294,7 +289,7 @@ export class PerformanceAlertService {
           this.updateCorrelationGroup(correlation.groupId, alert);
         }
       } catch (error) {
-        console.error('Error checking correlations:', error);
+        logError('Error checking correlations:', error);
         // Continue processing even if correlation check fails
       }
 
@@ -302,10 +297,9 @@ export class PerformanceAlertService {
       if (alert.trend || alert.correlation) {
         await auditLogger.log({
           category: 'system',
-          action: 'analysis',
+          message: 'alert_analysis_completed',
           severity: 'info',
-          details: {
-            message: 'Alert analysis completed',
+          context: {
             alertId: alert.id,
             trend: alert.trend,
             correlation: alert.correlation
@@ -321,7 +315,7 @@ export class PerformanceAlertService {
       try {
         this.cleanupCorrelationGroups();
       } catch (error) {
-        console.error('Error cleaning up correlation groups:', error);
+        logError('Error cleaning up correlation groups:', error);
         // Attempt to force cleanup
         this.forceCleanupCorrelationGroups();
       }
@@ -329,7 +323,7 @@ export class PerformanceAlertService {
       // Cleanup if needed with lock
       await this.cleanupIfNeeded();
     } catch (error) {
-      console.error('Error handling alert:', error);
+      logError('Error handling alert:', error);
       throw error;
     }
   }
@@ -376,7 +370,7 @@ export class PerformanceAlertService {
 
   private validateSeverity(config: AlertConfig): void {
     if (config.trendAnalysis?.severity && 
-        !this.SEVERITY_LEVELS.includes(config.trendAnalysis.severity as any)) {
+        !this.SEVERITY_LEVELS.includes(config.trendAnalysis.severity as unknown as AlertThreshold['severity'])) {
       throw new Error('Invalid severity level');
     }
   }
@@ -419,7 +413,7 @@ export class PerformanceAlertService {
         prediction
       };
     } catch (error) {
-      console.error('Error analyzing trend:', error);
+      logError('Error analyzing trend:', error);
       return undefined;
     }
   }
@@ -446,7 +440,7 @@ export class PerformanceAlertService {
       const valueSpan = values[values.length - 1] - values[0];
       return valueSpan / timeSpan;
     } catch (error) {
-      console.error('Error calculating trend rate:', error);
+      logError('Error calculating trend rate:', error);
       return 0;
     }
   }
@@ -456,7 +450,7 @@ export class PerformanceAlertService {
       const lastValue = values[values.length - 1];
       return lastValue + (rate * horizon);
     } catch (error) {
-      console.error('Error predicting future value:', error);
+      logError('Error predicting future value:', error);
       return values[values.length - 1];
     }
   }
@@ -509,7 +503,7 @@ export class PerformanceAlertService {
         pattern
       };
     } catch (error) {
-      console.error('Error checking correlations:', error);
+      logError('Error checking correlations:', error);
       return undefined;
     }
   }
@@ -539,11 +533,27 @@ export class PerformanceAlertService {
     );
   }
 
-  getTrendAnalysis(metric: string): Alert['trend'][] {
+  getTrendAnalysis(metric: string): (Alert['trend'] | undefined)[] {
+    const allowedDirections = ['increasing', 'decreasing', 'stable'] as const;
+    function isAllowedDirection(direction: string): direction is 'increasing' | 'decreasing' | 'stable' {
+      return allowedDirections.includes(direction as 'increasing' | 'decreasing' | 'stable');
+    }
+    function toAllowedDirection(direction: string): 'increasing' | 'decreasing' | 'stable' {
+      if (isAllowedDirection(direction)) {
+        return direction;
+      }
+      return 'stable';
+    }
     return this.alerts
       .filter(a => a.metric === metric && a.trend)
-      .map(a => a.trend!)
-      .sort((a, b) => b.prediction - a.prediction);
+      .map(a => {
+        if (!a.trend) return undefined;
+        return {
+          ...a.trend,
+          direction: toAllowedDirection(a.trend.direction as string)
+        };
+      })
+      .sort((a, b) => (b?.prediction ?? 0) - (a?.prediction ?? 0));
   }
 
   getCorrelationGroups(): Map<string, Alert[]> {
@@ -573,7 +583,7 @@ export class PerformanceAlertService {
     const windowStart = now - this.RATE_LIMIT_WINDOW;
     
     // Cleanup old counts
-    for (const [timestamp, count] of this.alertCounts.entries()) {
+    for (const [timestamp, _count] of this.alertCounts.entries()) {
       if (timestamp < windowStart) {
         this.alertCounts.delete(timestamp);
       }

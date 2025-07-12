@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Enhanced Analytics Dashboard
  * Provides comprehensive visualization and analysis of nutrition data
@@ -129,7 +130,7 @@ class AnalyticsDashboard {
             const data = await this.fetchAnalyticsData(timeRange);
             this.updateDashboard(data);
         } catch (error) {
-            console.error('Error loading analytics data:', error);
+            logError('Error loading analytics data:', error);
             this.showError('Failed to load analytics data');
         }
     }
@@ -198,7 +199,7 @@ class AnalyticsDashboard {
     }
 
     handleError(error) {
-        console.error('Analytics Error:', error);
+        logError('Analytics Error:', error);
         
         let userMessage = this.errorMessages.SERVER_ERROR;
         

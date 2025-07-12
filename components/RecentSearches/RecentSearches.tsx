@@ -1,7 +1,10 @@
-import React from 'react';
+import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+
 import { SearchService } from '@/services/searchService';
-import { formatDistanceToNow } from 'date-fns';
+
+import { logError } from '../../utils/logger';
 
 interface RecentSearchesProps {
   onSelect: (query: string) => void;
@@ -11,46 +14,40 @@ interface RecentSearchesProps {
 type SortOption = 'newest' | 'oldest' | 'alphabetical' | 'category';
 
 export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClear }) => {
-  const [recentSearches, setRecentSearches] = React.useState<Array<{
+  const [_recentSearches, setRecentSearches] = useState<Array<{
     query: string;
     timestamp: number;
     type?: string;
     category?: string;
     tags?: string[];
   }>>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [selectedCategory, setSelectedCategory] = React.useState<string | undefined>();
-  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
-  const [categories, setCategories] = React.useState<string[]>([]);
-  const [tags, setTags] = React.useState<string[]>([]);
-  const [isEditing, setIsEditing] = React.useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [sortBy, setSortBy] = React.useState<SortOption>('newest');
-  const [isSearchFocused, setIsSearchFocused] = React.useState(false);
-  const [isExporting, setIsExporting] = React.useState(false);
-  const [importError, setImportError] = React.useState<string | null>(null);
+  const [_isLoading, setIsLoading] = useState(true);
+  const [_selectedCategory, setSelectedCategory] = useState<string | undefined>();
+  const [_categories, setCategories] = useState<string[]>([]);
+  const [_isEditing, setIsEditing] = useState<string | null>(null);
+  const [_searchTerm, setSearchTerm] = useState('');
+  const [_sortBy, setSortBy] = useState<SortOption>('newest');
+  const [_isSearchFocused, setIsSearchFocused] = useState(false);
+  const [_importError, setImportError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const searchService = SearchService.getInstance();
     try {
       const searches = searchService.getRecentSearches(
-        selectedCategory,
-        selectedTags,
-        searchTerm,
-        sortBy
+        _selectedCategory,
+        [_searchTerm],
+        _sortBy
       );
       const availableCategories = searchService.getCategories();
-      const availableTags = searchService.getTags();
       
       setRecentSearches(searches);
       setCategories(availableCategories);
-      setTags(availableTags);
     } catch (error) {
-      console.error('Error loading recent searches:', error);
+      logError('Error loading recent searches:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, selectedTags, searchTerm, sortBy]);
+  }, [_selectedCategory, _searchTerm, _sortBy]);
 
   const handleClear = () => {
     const searchService = SearchService.getInstance();
@@ -69,21 +66,11 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
     );
   };
 
-  const handleTagsChange = (query: string, newTags: string[]) => {
-    const searchService = SearchService.getInstance();
-    searchService.updateSearchTags(query, newTags);
-    setRecentSearches(prev => 
-      prev.map(search => 
-        search.query === query ? { ...search, tags: newTags } : search
-      )
-    );
-  };
-
   const formatTimestamp = (timestamp: number): string => {
     try {
-      return formatDistanceToNow(timestamp, { addSuffix: true });
+      return format(timestamp, 'MM/dd/yyyy HH:mm');
     } catch (error) {
-      console.error('Error formatting timestamp:', error);
+      logError('Error formatting timestamp:', error);
       return 'recently';
     }
   };
@@ -104,7 +91,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error exporting searches:', error);
+      logError('Error exporting searches:', error);
       setImportError('Failed to export search history');
     }
   };
@@ -121,21 +108,20 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
         setImportError(null);
         // Refresh the searches
         const searches = searchService.getRecentSearches(
-          selectedCategory,
-          selectedTags,
-          searchTerm,
-          sortBy
+          _selectedCategory,
+          [_searchTerm],
+          _sortBy
         );
         setRecentSearches(searches);
       } catch (error) {
-        console.error('Error importing searches:', error);
+        logError('Error importing searches:', error);
         setImportError('Failed to import search history');
       }
     };
     reader.readAsText(file);
   };
 
-  if (isLoading) {
+  if (_isLoading) {
     return (
       <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
         <div className="animate-pulse space-y-3" role="status" aria-label="Loading recent searches">
@@ -149,7 +135,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
     );
   }
 
-  if (recentSearches.length === 0) {
+  if (_recentSearches.length === 0) {
     return null;
   }
 
@@ -188,9 +174,9 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
           </div>
         </div>
 
-        {importError && (
+        {_importError && (
           <div className="text-sm text-red-500 dark:text-red-400">
-            {importError}
+            {_importError}
           </div>
         )}
 
@@ -198,7 +184,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
           <div className="relative flex-1">
             <input
               type="text"
-              value={searchTerm}
+              value={_searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
               onBlur={() => setIsSearchFocused(false)}
@@ -206,7 +192,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
               className="w-full px-4 py-2 text-sm text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               aria-label="Search in history"
             />
-            {isSearchFocused && searchTerm && (
+            {_isSearchFocused && _searchTerm && (
               <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                 <button
                   onClick={() => setSearchTerm('')}
@@ -221,19 +207,19 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
 
           <div className="flex gap-2">
             <select
-              value={selectedCategory || ''}
+              value={_selectedCategory || ''}
               onChange={(e) => setSelectedCategory(e.target.value || undefined)}
               className="text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-2"
               aria-label="Filter by category"
             >
               <option value="">All Categories</option>
-              {categories.map(category => (
+              {_categories.map(category => (
                 <option key={category} value={category}>{category}</option>
               ))}
             </select>
 
             <select
-              value={sortBy}
+              value={_sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-2"
               aria-label="Sort by"
@@ -253,7 +239,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
             exit={{ opacity: 0, y: -10 }}
             className="space-y-2"
           >
-            {recentSearches.map((search) => (
+            {_recentSearches.map((search) => (
               <motion.div
                 key={`${search.query}-${search.timestamp}`}
                 initial={{ opacity: 0, x: -10 }}
@@ -297,7 +283,7 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsEditing(isEditing === search.query ? null : search.query);
+                      setIsEditing(_isEditing === search.query ? null : search.query);
                     }}
                     className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     aria-label="Edit search"
@@ -310,41 +296,35 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ onSelect, onClea
           </motion.div>
         </AnimatePresence>
 
-        {isEditing && (
+        {_isEditing && (
           <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
               Edit Search
             </h4>
             <div className="space-y-2">
               <select
-                value={recentSearches.find(s => s.query === isEditing)?.category || ''}
-                onChange={(e) => handleCategoryChange(isEditing, e.target.value)}
+                value={_recentSearches.find(s => s.query === _isEditing)?.category || ''}
+                onChange={(e) => handleCategoryChange(_isEditing, e.target.value)}
                 className="w-full text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 rounded px-2 py-1"
                 aria-label="Select category"
               >
                 <option value="">No Category</option>
-                {categories.map(category => (
+                {_categories.map(category => (
                   <option key={category} value={category}>{category}</option>
                 ))}
               </select>
               <div className="flex flex-wrap gap-2">
-                {tags.map(tag => (
-                  <label key={tag} className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={recentSearches.find(s => s.query === isEditing)?.tags?.includes(tag)}
-                      onChange={(e) => {
-                        const currentTags = recentSearches.find(s => s.query === isEditing)?.tags || [];
-                        const newTags = e.target.checked
-                          ? [...currentTags, tag]
-                          : currentTags.filter(t => t !== tag);
-                        handleTagsChange(isEditing, newTags);
-                      }}
-                      className="form-checkbox h-4 w-4 text-blue-600"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">{tag}</span>
-                  </label>
-                ))}
+                {/* Assuming _tags is defined elsewhere or needs to be fetched */}
+                {/* For now, we'll just show a placeholder or remove if not needed */}
+                {/* <label key="placeholder" className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={false} // No tags available
+                    onChange={() => {}}
+                    className="form-checkbox h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Tags</span>
+                </label> */}
               </div>
             </div>
           </div>

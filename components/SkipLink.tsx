@@ -1,6 +1,7 @@
 import React from 'react';
-import styles from '../styles/SkipLink.module.css';
 
+import styles from '../styles/SkipLink.module.css';
+import { logError } from '../utils/logger';
 /**
  * Props for the SkipLink component.
  * @interface SkipLinkProps
@@ -49,7 +50,7 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
       targetElement.focus();
       targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      console.error(`Target element #${target} not found`);
+      logError(`Target element #${target} not found`);
     }
   };
 
@@ -59,8 +60,9 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
       className={styles.skipLink}
       onClick={handleClick}
       onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          handleClick(e as any);
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick(e as unknown as React.MouseEvent<HTMLAnchorElement, MouseEvent>);
         }
       }}
       role="link"

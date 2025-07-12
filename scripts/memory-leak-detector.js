@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 class MemoryLeakDetector {
     constructor() {
         this.snapshots = new Map();
@@ -12,7 +13,7 @@ class MemoryLeakDetector {
             this.setupEventListeners();
             this.startMonitoring();
         } else {
-            console.warn('Memory API not supported in this environment');
+            logWarn('Memory API not supported in this environment');
         }
     }
 
@@ -84,7 +85,7 @@ class MemoryLeakDetector {
             timeElapsed: current.timestamp - previous.timestamp
         };
 
-        console.warn('Potential memory leak detected:', report);
+        logWarn('Potential memory leak detected:', report);
         
         // Store report for analysis
         this.storeLeakReport(report);

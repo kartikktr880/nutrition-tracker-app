@@ -1,9 +1,9 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { PerformanceUtils } from './performance-utils';
 import { PerformanceVisualizer } from './performance-visualizer';
 import { PerformanceAlerts } from './performance-alerts';
 import { PerformanceHistory } from './performance-history';
 import { PerformanceAnalytics } from './performance-analytics';
-import { PerformanceRecommendations } from './performance-recommendations';
 import { PerformanceImpact } from './performance-impact';
 
 interface DashboardConfig {
@@ -68,7 +68,7 @@ export class PerformanceDashboard {
             await initFn();
             this.initializedComponents.add(componentName);
         } catch (error) {
-            console.error(`Failed to initialize ${componentName}:`, error);
+            logError(`Failed to initialize ${componentName}:`, error);
             throw error;
         }
     }
@@ -84,8 +84,7 @@ export class PerformanceDashboard {
             await this.initializeComponent('PerformanceVisualizer', () => PerformanceVisualizer.initialize(this.config.containerId));
             await this.initializeComponent('PerformanceAlerts', () => PerformanceAlerts.initialize(this.config.thresholds));
             await this.initializeComponent('PerformanceHistory', () => PerformanceHistory.initialize());
-            await this.initializeComponent('PerformanceRecommendations', () => PerformanceRecommendations.initialize());
-            await this.initializeComponent('PerformanceImpact', () => PerformanceImpact.initialize());
+            await this.initializeComponent('PerformanceImpact', () => { PerformanceImpact.initialize(); });
 
             // Start monitoring
             PerformanceAlerts.startMonitoring();
@@ -95,7 +94,7 @@ export class PerformanceDashboard {
         } catch (error) {
             // Cleanup any initialized components
             await this.cleanup();
-            console.error('Failed to start PerformanceDashboard:', error);
+            logError('Failed to start PerformanceDashboard:', error);
             throw error;
         }
     }
@@ -105,7 +104,6 @@ export class PerformanceDashboard {
             { name: 'PerformanceAlerts', fn: () => PerformanceAlerts.stopMonitoring() },
             { name: 'PerformanceVisualizer', fn: () => PerformanceVisualizer.destroy() },
             { name: 'PerformanceHistory', fn: () => PerformanceHistory.destroy() },
-            { name: 'PerformanceRecommendations', fn: () => PerformanceRecommendations.destroy() },
             { name: 'PerformanceImpact', fn: () => PerformanceImpact.destroy() }
         ];
 
@@ -114,7 +112,7 @@ export class PerformanceDashboard {
                 try {
                     await task.fn();
                 } catch (error) {
-                    console.error(`Error cleaning up ${task.name}:`, error);
+                    logError(`Error cleaning up ${task.name}:`, error);
                 }
             }
         }
@@ -149,25 +147,25 @@ export class PerformanceDashboard {
     private update(): void {
         try {
             // Get current metrics
-            const metrics = PerformanceUtils.getCurrentMetrics();
+            const metrics = PerformanceUtils.getMetrics();
             
             // Validate metrics
             if (!metrics) {
-                console.warn('No metrics available for update');
+                logWarn('No metrics available for update');
                 return;
             }
 
             // Validate metric values
             if (typeof metrics.fps !== 'number' || metrics.fps < 0) {
-                console.warn('Invalid FPS value:', metrics.fps);
+                logWarn('Invalid FPS value:', metrics.fps);
                 return;
             }
             if (typeof metrics.memoryUsage !== 'number' || metrics.memoryUsage < 0) {
-                console.warn('Invalid memory usage value:', metrics.memoryUsage);
+                logWarn('Invalid memory usage value:', metrics.memoryUsage);
                 return;
             }
             if (typeof metrics.cpuUsage !== 'number' || metrics.cpuUsage < 0 || metrics.cpuUsage > 100) {
-                console.warn('Invalid CPU usage value:', metrics.cpuUsage);
+                logWarn('Invalid CPU usage value:', metrics.cpuUsage);
                 return;
             }
             
@@ -175,24 +173,24 @@ export class PerformanceDashboard {
                 // Add to history
                 PerformanceHistory.addRecord();
             } catch (error) {
-                console.error('Failed to add record to history:', error);
+                logError('Failed to add record to history:', error);
             }
 
             try {
                 // Check alerts
-                PerformanceAlerts.checkMetrics(metrics);
+                PerformanceAlerts.checkMetrics();
             } catch (error) {
-                console.error('Failed to check metrics for alerts:', error);
+                logError('Failed to check metrics for alerts:', error);
             }
 
             try {
                 // Update visualizer
                 PerformanceVisualizer.update(metrics);
             } catch (error) {
-                console.error('Failed to update visualizer:', error);
+                logError('Failed to update visualizer:', error);
             }
         } catch (error) {
-            console.error('Error updating PerformanceDashboard:', error);
+            logError('Error updating PerformanceDashboard:', error);
         }
     }
 
@@ -204,10 +202,6 @@ export class PerformanceDashboard {
             throw new Error('timeRange.start must be less than timeRange.end');
         }
         return PerformanceAnalytics.generateReport(timeRange);
-    }
-
-    getCurrentMetrics() {
-        return PerformanceUtils.getCurrentMetrics();
     }
 
     getHistoricalData(timeRange: { start: number; end: number }) {
@@ -268,39 +262,6 @@ export class PerformanceDashboard {
             throw new Error('callback must be a function');
         }
         PerformanceAlerts.removeCallback(callback);
-    }
-
-    getPerformanceRecommendations(timeRange: { start: number; end: number }) {
-        if (!timeRange || typeof timeRange.start !== 'number' || typeof timeRange.end !== 'number') {
-            throw new Error('Invalid timeRange parameter');
-        }
-        if (timeRange.start > timeRange.end) {
-            throw new Error('timeRange.start must be less than timeRange.end');
-        }
-        return PerformanceRecommendations.getInstance().generateRecommendations(timeRange);
-    }
-
-    markRecommendationAsImplemented(id: string, performanceImprovement: { fps?: number; memory?: number; cpu?: number }) {
-        if (!id) {
-            throw new Error('id parameter is required');
-        }
-        if (!performanceImprovement) {
-            throw new Error('performanceImprovement parameter is required');
-        }
-        if (performanceImprovement.fps !== undefined && (typeof performanceImprovement.fps !== 'number' || performanceImprovement.fps < 0)) {
-            throw new Error('Invalid FPS improvement value');
-        }
-        if (performanceImprovement.memory !== undefined && (typeof performanceImprovement.memory !== 'number' || performanceImprovement.memory < 0)) {
-            throw new Error('Invalid memory improvement value');
-        }
-        if (performanceImprovement.cpu !== undefined && (typeof performanceImprovement.cpu !== 'number' || performanceImprovement.cpu < 0 || performanceImprovement.cpu > 100)) {
-            throw new Error('Invalid CPU improvement value');
-        }
-        PerformanceRecommendations.getInstance().markAsImplemented(id, performanceImprovement);
-    }
-
-    markRecommendationAsRejected(id: string) {
-        PerformanceRecommendations.getInstance().markAsRejected(id);
     }
 
     setOptimizationBaseline(optimizationId: string): void {

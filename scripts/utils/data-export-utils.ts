@@ -25,7 +25,6 @@ interface ImportOptions {
 
 export class DataExportUtils {
     private static instance: DataExportUtils;
-    private readonly logger = LoggingUtils.getInstance();
     private readonly supportedFormats = ['json', 'csv'];
     private readonly maxFileSize = 10 * 1024 * 1024; // 10MB
 
@@ -50,24 +49,33 @@ export class DataExportUtils {
             // Compress data if requested
             if (options.compress) {
                 const compressedData = await dataSecurityUtils.compressData(exportData);
-                exportData = this.arrayBufferToBase64(compressedData);
+                exportData = this.arrayBufferToBase64(compressedData.buffer as ArrayBuffer);
             }
             
             // Encrypt data if requested
             if (options.encrypt && options.password) {
                 const encryptedData = await dataSecurityUtils.encryptData(exportData, options.password);
-                exportData = this.arrayBufferToBase64(encryptedData);
+                exportData = this.arrayBufferToBase64(encryptedData.buffer as ArrayBuffer);
             }
 
             const blob = new Blob([exportData], { type: this.getMimeType(options) });
             return blob;
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'Data export' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'Data export' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'Data export' }
+                );
+            }
             throw error;
         }
     }
@@ -82,23 +90,32 @@ export class DataExportUtils {
             // Decrypt data if requested
             if (options.decrypt && options.password) {
                 const encryptedData = this.base64ToArrayBuffer(importData);
-                importData = await dataSecurityUtils.decryptData(encryptedData, options.password);
+                importData = await dataSecurityUtils.decryptData(new Uint8Array(encryptedData), options.password);
             }
             
             // Decompress data if requested
             if (options.decompress) {
                 const compressedData = this.base64ToArrayBuffer(importData);
-                importData = await dataSecurityUtils.decompressData(compressedData);
+                importData = await dataSecurityUtils.decompressData(new Uint8Array(compressedData));
             }
 
             return this.parseData(importData, options.format);
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'Data import' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'Data import' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'Data import' }
+                );
+            }
             throw error;
         }
     }
@@ -110,10 +127,10 @@ export class DataExportUtils {
         const data = {
             version: '1.0',
             timestamp: new Date().toISOString(),
-            nutritionData: await StorageUtils.getLocalItem('nutritionData'),
-            userPreferences: await StorageUtils.getLocalItem('userPreferences'),
-            mealPlans: await StorageUtils.getLocalItem('mealPlans'),
-            goals: await StorageUtils.getLocalItem('goals')
+            nutritionData: await StorageUtils.getData('nutritionData'),
+            userPreferences: await StorageUtils.getData('userPreferences'),
+            mealPlans: await StorageUtils.getData('mealPlans'),
+            goals: await StorageUtils.getData('goals')
         };
 
         return data;
@@ -146,8 +163,9 @@ export class DataExportUtils {
                 default:
                     throw new Error('Unsupported format');
             }
-        } catch (error) {
-            throw new Error(`Failed to parse ${format} data: ${error.message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to parse ${format} data: ${message}`);
         }
     }
 

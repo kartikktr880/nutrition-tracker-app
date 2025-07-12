@@ -1,11 +1,12 @@
-console.log("=== VISUAL ENHANCEMENTS SCRIPT LOADED ===");
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
+logInfo("=== VISUAL ENHANCEMENTS SCRIPT LOADED ===");
 
 /**
  * NutriTrack Visual Enhancements
  * Applies advanced visual improvements to highlighted problem areas
  */
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✨ Initializing Visual Enhancements');
+    logInfo('✨ Initializing Visual Enhancements');
     
     // Apply enhancements with a slight delay to ensure all elements are rendered
     setTimeout(enhanceVisuals, 300);
@@ -30,7 +31,7 @@ function enhanceHeroStats() {
     
     if (statNumbers.length === 0 || statContainers.length === 0) return;
     
-    console.log('✓ Enhancing hero statistics');
+    logInfo('✓ Enhancing hero statistics');
     
     // Add accent gradient bars to stat containers
     statContainers.forEach(container => {
@@ -95,7 +96,7 @@ function enhanceFeatureCards() {
     
     if (featureCards.length === 0) return;
     
-    console.log('✓ Enhancing feature cards');
+    logInfo('✓ Enhancing feature cards');
     
     // Ensure all feature icons have consistent styling
     featureIcons.forEach(icon => {
@@ -187,7 +188,7 @@ function enhanceTestimonials() {
     
     if (testimonialCards.length === 0) return;
     
-    console.log('✓ Enhancing testimonials');
+    logInfo('✓ Enhancing testimonials');
     
     // Add large quotation marks
     testimonialCards.forEach(card => {

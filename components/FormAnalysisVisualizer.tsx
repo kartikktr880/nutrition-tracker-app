@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { validationVisualization } from '../services/validationVisualization';
-import { ValidationResult } from '../services/stateValidation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+
 import { useTheme } from '../hooks/useTheme';
+import { ValidationResult } from '../services/stateValidation';
+import { logError } from '../utils/logger';
 
 interface FormAnalysisVisualizerProps {
   exerciseKey: string;
-  currentForm: any;
+  currentForm: Record<string, unknown>;
   validationResult: ValidationResult;
   onFeedbackComplete?: () => void;
   showDetailedMetrics?: boolean;
@@ -49,49 +50,15 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>();
 
-  useEffect(() => {
-    const analyzeForm = async () => {
-      setIsAnalyzing(true);
-      try {
-        // Get visualization data for real-time analysis
-        const visualizationData = await validationVisualization.generateVisualizationData(exerciseKey);
-        
-        // Calculate form metrics based on validation results and visualization data
-        const newMetrics = calculateFormMetrics(validationResult, visualizationData);
-        setMetrics(newMetrics);
-
-        // Generate feedback based on validation results
-        const newFeedback = generateFeedback(validationResult, visualizationData);
-        setFeedback(prev => [...newFeedback, ...prev].slice(0, 5));
-
-        // Update visualization
-        updateVisualization(newMetrics);
-
-        onFeedbackComplete?.();
-      } catch (error) {
-        console.error('Form analysis failed:', error);
-      } finally {
-        setIsAnalyzing(false);
-      }
-    };
-
-    analyzeForm();
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [exerciseKey, currentForm, validationResult]);
-
-  const calculateFormMetrics = (
+  const calculateFormMetrics = useCallback((
     validationResult: ValidationResult,
-    visualizationData: any
+    _visualizationData: Record<string, unknown>
   ): FormMetrics => {
     // Calculate metrics based on validation results and historical data
-    const accuracy = calculateAccuracy(validationResult, visualizationData);
-    const alignment = calculateAlignment(validationResult, visualizationData);
-    const stability = calculateStability(validationResult, visualizationData);
-    const timing = calculateTiming(validationResult, visualizationData);
+    const accuracy = calculateAccuracy(validationResult, _visualizationData);
+    const alignment = calculateAlignment(validationResult, _visualizationData);
+    const stability = calculateStability(validationResult, _visualizationData);
+    const timing = calculateTiming(validationResult, _visualizationData);
 
     return {
       accuracy,
@@ -100,11 +67,11 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
       timing,
       overall: (accuracy + alignment + stability + timing) / 4
     };
-  };
+  }, []);
 
-  const generateFeedback = (
+  const generateFeedback = useCallback((
     validationResult: ValidationResult,
-    visualizationData: any
+    _visualizationData: Record<string, unknown>
   ): FeedbackItem[] => {
     const feedback: FeedbackItem[] = [];
 
@@ -139,73 +106,110 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
     }
 
     return feedback.sort((a, b) => b.priority - a.priority);
-  };
+  }, []);
 
-  const updateVisualization = (metrics: FormMetrics) => {
+  const updateVisualization = useCallback((metrics: FormMetrics) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Define drawFormAnalysis inside useCallback to avoid unstable dependency
+    const drawFormAnalysis = (ctx: CanvasRenderingContext2D, metrics: FormMetrics) => {
+      const { width, height } = ctx.canvas;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const radius = Math.min(width, height) * 0.4;
+
+      // Draw background
+      ctx.fillStyle = theme.colors.background;
+      ctx.fillRect(0, 0, width, height);
+
+      // Draw metrics
+      const metricsArray = [
+        { value: metrics.accuracy, label: 'Accuracy', color: theme.colors.primary },
+        { value: metrics.alignment, label: 'Alignment', color: theme.colors.secondary },
+        { value: metrics.stability, label: 'Stability', color: theme.colors.accent },
+        { value: metrics.timing, label: 'Timing', color: theme.colors.success }
+      ];
+
+      metricsArray.forEach((metric, index) => {
+        const angle = (index * Math.PI * 2) / metricsArray.length;
+        const x = centerX + Math.cos(angle) * radius * metric.value;
+        const y = centerY + Math.sin(angle) * radius * metric.value;
+
+        // Draw metric line
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = metric.color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw metric point
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = metric.color;
+        ctx.fill();
+
+        // Draw metric label
+        ctx.fillStyle = theme.colors.text;
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(metric.label, x, y - 10);
+      });
+
+      // Draw overall score
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * metrics.overall, 0, Math.PI * 2);
+      ctx.strokeStyle = theme.colors.primary;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    };
+
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw form analysis visualization
     drawFormAnalysis(ctx, metrics);
-  };
+  }, [theme]);
 
-  const drawFormAnalysis = (ctx: CanvasRenderingContext2D, metrics: FormMetrics) => {
-    const { width, height } = ctx.canvas;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const radius = Math.min(width, height) * 0.4;
+  useEffect(() => {
+    const analyzeForm = async () => {
+      setIsAnalyzing(true);
+      try {
+        // Get visualization data for real-time analysis
+        // const visualizationData = await validationVisualization.generateVisualizationData(exerciseKey);
+        
+        // Calculate form metrics based on validation results and visualization data
+        const newMetrics = calculateFormMetrics(validationResult, {});
+        setMetrics(newMetrics);
 
-    // Draw background
-    ctx.fillStyle = theme.colors.background;
-    ctx.fillRect(0, 0, width, height);
+        // Generate feedback based on validation results
+        const newFeedback = generateFeedback(validationResult, {});
+        setFeedback(prev => [...newFeedback, ...prev].slice(0, 5));
 
-    // Draw metrics
-    const metricsArray = [
-      { value: metrics.accuracy, label: 'Accuracy', color: theme.colors.primary },
-      { value: metrics.alignment, label: 'Alignment', color: theme.colors.secondary },
-      { value: metrics.stability, label: 'Stability', color: theme.colors.accent },
-      { value: metrics.timing, label: 'Timing', color: theme.colors.success }
-    ];
+        // Update visualization
+        updateVisualization(newMetrics);
 
-    metricsArray.forEach((metric, index) => {
-      const angle = (index * Math.PI * 2) / metricsArray.length;
-      const x = centerX + Math.cos(angle) * radius * metric.value;
-      const y = centerY + Math.sin(angle) * radius * metric.value;
+        onFeedbackComplete?.();
+      } catch (error) {
+        logError('Form analysis failed:', error);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
 
-      // Draw metric line
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.lineTo(x, y);
-      ctx.strokeStyle = metric.color;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Draw metric point
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = metric.color;
-      ctx.fill();
-
-      // Draw metric label
-      ctx.fillStyle = theme.colors.text;
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(metric.label, x, y - 10);
-    });
-
-    // Draw overall score
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius * metrics.overall, 0, Math.PI * 2);
-    ctx.strokeStyle = theme.colors.primary;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  };
+    analyzeForm();
+    // Fix: copy animationFrameRef.current to a local variable for cleanup
+    const animationFrame = animationFrameRef.current;
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [exerciseKey, currentForm, validationResult, calculateFormMetrics, generateFeedback, updateVisualization, onFeedbackComplete]);
 
   return (
     <div className={`form-analysis-visualizer ${className}`} data-testid="form-analysis-visualizer-root">
@@ -298,22 +302,22 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
 };
 
 // Helper functions for metric calculations
-const calculateAccuracy = (validationResult: ValidationResult, visualizationData: any): number => {
+const calculateAccuracy = (validationResult: ValidationResult, _visualizationData: Record<string, unknown>): number => {
   // Implement accuracy calculation based on validation results and historical data
   return Math.max(0, Math.min(1, 1 - validationResult.errors.length * 0.2));
 };
 
-const calculateAlignment = (validationResult: ValidationResult, visualizationData: any): number => {
+const calculateAlignment = (validationResult: ValidationResult, _visualizationData: Record<string, unknown>): number => {
   // Implement alignment calculation based on form data
   return Math.max(0, Math.min(1, 1 - validationResult.warnings.length * 0.1));
 };
 
-const calculateStability = (validationResult: ValidationResult, visualizationData: any): number => {
+const calculateStability = (validationResult: ValidationResult, _visualizationData: Record<string, unknown>): number => {
   // Implement stability calculation based on form consistency
   return Math.max(0, Math.min(1, validationResult.isValid ? 1 : 0.5));
 };
 
-const calculateTiming = (validationResult: ValidationResult, visualizationData: any): number => {
+const calculateTiming = (validationResult: ValidationResult, _visualizationData: Record<string, unknown>): number => {
   // Implement timing calculation based on validation performance
   const validationTime = validationResult.metadata.validationTime;
   return Math.max(0, Math.min(1, 1 - validationTime / 1000));

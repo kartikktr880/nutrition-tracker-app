@@ -1,15 +1,16 @@
-import { performanceMonitor } from '../../utils/performance';
-import { recoveryManager } from './recovery';
 import { logAudit } from '../../utils/auditLog';
+import { performanceManager } from '../../utils/performance';
 import { PerformanceMetric } from '../../utils/performance-types';
+import { logError } from '../utils/logger';
+import { recoveryManager as _recoveryManager } from './recovery';
 
-interface EnhancedPerformanceMetric extends PerformanceMetric {
+export interface EnhancedPerformanceMetric extends PerformanceMetric {
   confidence: number;
   prediction?: number;
   trend?: 'increasing' | 'decreasing' | 'stable';
 }
 
-interface PerformanceInsight {
+export interface PerformanceInsight {
   type: string;
   description: string;
   severity: 'info' | 'warning' | 'critical';
@@ -47,7 +48,7 @@ class EnhancedPerformanceMonitor {
   private async collectEnhancedMetrics(): Promise<void> {
     try {
       const timestamp = new Date().toISOString();
-      const baseMetrics = Array.from(performanceMonitor.getAllMetrics().values()).flat();
+      const baseMetrics = Array.from(performanceManager.getMetrics().values()).flat();
 
       // Enhance metrics with additional analysis
       const enhancedMetrics = await Promise.all(
@@ -81,11 +82,11 @@ class EnhancedPerformanceMonitor {
     } catch (error) {
       let errorMessage = 'Unknown error';
       if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = (error as any).message;
+        errorMessage = (error as unknown as { message: string }).message;
       } else {
         errorMessage = String(error);
       }
-      console.error('Failed to collect enhanced metrics:', errorMessage);
+      logError();
       logAudit({
         userId: 'system',
         action: 'enhanced_metrics_collection_failed',
@@ -101,7 +102,7 @@ class EnhancedPerformanceMonitor {
     }
   }
 
-  private async calculateMetricConfidence(metric: PerformanceMetric): Promise<number> {
+  private async calculateMetricConfidence(_metric: PerformanceMetric): Promise<number> {
     // Implement confidence calculation based on:
     // - Historical data stability
     // - Measurement accuracy
@@ -109,7 +110,7 @@ class EnhancedPerformanceMonitor {
     return 0.95; // Placeholder implementation
   }
 
-  private async predictMetricValue(metric: PerformanceMetric): Promise<number | undefined> {
+  private async predictMetricValue(_metric: PerformanceMetric): Promise<number | undefined> {
     // Implement prediction using:
     // - Historical trends
     // - ML models
@@ -117,7 +118,7 @@ class EnhancedPerformanceMonitor {
     return undefined; // Placeholder implementation
   }
 
-  private async analyzeMetricTrend(metric: PerformanceMetric): Promise<'increasing' | 'decreasing' | 'stable'> {
+  private async analyzeMetricTrend(_metric: PerformanceMetric): Promise<'increasing' | 'decreasing' | 'stable'> {
     // Implement trend analysis using:
     // - Moving averages
     // - Statistical analysis
@@ -125,7 +126,7 @@ class EnhancedPerformanceMonitor {
     return 'stable'; // Placeholder implementation
   }
 
-  private async storeEnhancedMetrics(metrics: EnhancedPerformanceMetric[]): Promise<void> {
+  private async storeEnhancedMetrics(_metrics: EnhancedPerformanceMetric[]): Promise<void> {
     // Store metrics with proper error handling and validation
     try {
       // Implementation would depend on storage mechanism
@@ -133,11 +134,11 @@ class EnhancedPerformanceMonitor {
     } catch (error) {
       let errorMessage = 'Unknown error';
       if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = (error as any).message;
+        errorMessage = (error as unknown as { message: string }).message;
       } else {
         errorMessage = String(error);
       }
-      console.error('Failed to store enhanced metrics:', errorMessage);
+      logError();
       logAudit({
         userId: 'system',
         action: 'enhanced_metrics_storage_failed',
@@ -184,11 +185,11 @@ class EnhancedPerformanceMonitor {
     } catch (error) {
       let errorMessage = 'Unknown error';
       if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = (error as any).message;
+        errorMessage = (error as unknown as { message: string }).message;
       } else {
         errorMessage = String(error);
       }
-      console.error('Failed to analyze performance:', errorMessage);
+      logError();
       logAudit({
         userId: 'system',
         action: 'performance_analysis_failed',
@@ -204,7 +205,7 @@ class EnhancedPerformanceMonitor {
     }
   }
 
-  private async detectPerformancePatterns(): Promise<any[]> {
+  private async detectPerformancePatterns(): Promise<unknown[]> {
     // Implement pattern detection using:
     // - Time series analysis
     // - Pattern recognition
@@ -212,7 +213,7 @@ class EnhancedPerformanceMonitor {
     return []; // Placeholder implementation
   }
 
-  private async analyzeMetricCorrelations(): Promise<any[]> {
+  private async analyzeMetricCorrelations(): Promise<unknown[]> {
     // Implement correlation analysis using:
     // - Statistical correlation
     // - Causal analysis
@@ -220,7 +221,7 @@ class EnhancedPerformanceMonitor {
     return []; // Placeholder implementation
   }
 
-  private async detectAnomalies(): Promise<any[]> {
+  private async detectAnomalies(): Promise<unknown[]> {
     // Implement anomaly detection using:
     // - Statistical analysis
     // - ML models
@@ -257,11 +258,11 @@ class EnhancedPerformanceMonitor {
     } catch (error) {
       let errorMessage = 'Unknown error';
       if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = (error as any).message;
+        errorMessage = (error as unknown as { message: string }).message;
       } else {
         errorMessage = String(error);
       }
-      console.error('Failed to generate insights:', errorMessage);
+      logError();
       logAudit({
         userId: 'system',
         action: 'performance_insights_generation_failed',
@@ -311,3 +312,11 @@ class EnhancedPerformanceMonitor {
 }
 
 export const enhancedPerformanceMonitor = EnhancedPerformanceMonitor.getInstance(); 
+
+export const getPerformanceMetrics = async (): Promise<EnhancedPerformanceMetric[]> => {
+  return await enhancedPerformanceMonitor.getEnhancedMetrics();
+};
+
+export const getPerformanceTrends = async (): Promise<PerformanceInsight[]> => {
+  return await enhancedPerformanceMonitor.getInsights();
+}; 

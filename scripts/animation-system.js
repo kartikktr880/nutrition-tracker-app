@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Unified Animation System
  * Combines functionality from:
@@ -98,7 +99,7 @@ class AnimationSystem {
         animation.status = 'error';
         this.activeAnimations.delete(animation);
         performanceManager.untrackAnimation();
-        console.error('Animation error:', error);
+        logError('Animation error:', error);
         this.notifyObservers('animationError', { animation, error });
     }
 
@@ -156,7 +157,7 @@ class AnimationSystem {
         this.debug = true;
         this.addObserver((type, data) => {
             if (this.debug) {
-                console.log(`Animation ${type}:`, data);
+                logInfo(`Animation ${type}:`, data);
             }
         });
     }

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+
 import { exerciseDataService } from '@/lib/services/exercise-data.service';
 import { ExerciseSession, ExerciseProgress, ExerciseGoal } from '@/types/exercise';
 
@@ -94,7 +95,7 @@ export function useExerciseData() {
   }, []);
 
   // Offline Support
-  const queueSync = useCallback(async (operation: any) => {
+  const queueSync = useCallback(async (operation: unknown) => {
     setLoading(true);
     setError(null);
     try {

@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
+
 import { dataManagementService } from '../../lib/data-management-service';
+import { logError } from '../../utils/logger';
+
+// PrivacySettings interface copied from lib/data-management-service.ts
+interface PrivacySettings {
+  dataRetentionDays: number;
+  autoBackupEnabled: boolean;
+  backupFrequency: 'daily' | 'weekly' | 'monthly';
+  encryptionEnabled: boolean;
+  lastBackupDate?: number;
+}
 
 const DataManagement: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
@@ -8,14 +19,14 @@ const DataManagement: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [validationResults, setValidationResults] = useState<{ errors: string[], warnings: string[] } | null>(null);
   const [versionInfo, setVersionInfo] = useState<{ currentVersion: string; supportedVersions: string[] } | null>(null);
-  const [privacySettings, setPrivacySettings] = useState<any>(null);
+  const [privacySettings, setPrivacySettings] = useState<PrivacySettings | null>(null);
 
   useEffect(() => {
     setVersionInfo(dataManagementService.getVersionInfo());
     setPrivacySettings(dataManagementService.getPrivacySettings());
   }, []);
 
-  const handlePrivacySettingsChange = (settings: any) => {
+  const handlePrivacySettingsChange = (settings: PrivacySettings) => {
     dataManagementService.updatePrivacySettings(settings);
     setPrivacySettings(settings);
     setSuccess('Privacy settings updated successfully');
@@ -27,7 +38,7 @@ const DataManagement: React.FC = () => {
       setSuccess('Old data cleaned up successfully');
     } catch (err) {
       setError('Failed to cleanup old data');
-      console.error('Cleanup error:', err);
+      logError('Cleanup error:', err);
     }
   };
 
@@ -52,7 +63,7 @@ const DataManagement: React.FC = () => {
       setSuccess('Data exported successfully');
     } catch (err) {
       setError('Failed to export data');
-      console.error('Export error:', err);
+      logError('Export error:', err);
     } finally {
       setIsExporting(false);
     }
@@ -100,7 +111,7 @@ const DataManagement: React.FC = () => {
           window.location.reload();
         } catch (err) {
           setError('Failed to import data');
-          console.error('Import error:', err);
+          logError('Import error:', err);
         } finally {
           setIsImporting(false);
         }
@@ -108,7 +119,7 @@ const DataManagement: React.FC = () => {
       reader.readAsText(file);
     } catch (err) {
       setError('Failed to read file');
-      console.error('File read error:', err);
+      logError('File read error:', err);
       setIsImporting(false);
     }
   };
@@ -215,7 +226,7 @@ const DataManagement: React.FC = () => {
                     value={privacySettings.backupFrequency}
                     onChange={(e) => handlePrivacySettingsChange({
                       ...privacySettings,
-                      backupFrequency: e.target.value
+                      backupFrequency: e.target.value as 'daily' | 'weekly' | 'monthly'
                     })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   >

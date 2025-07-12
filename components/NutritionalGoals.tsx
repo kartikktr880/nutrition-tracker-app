@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { NutritionalGoals as NutritionalGoalsType } from '../types/nutrition';
-import { analytics } from '../services/analytics';
-import { storage } from '../services/storage';
-import { monitoring } from '../services/monitoring';
+
 import { useComponentLifecycle } from '../lib/hooks/useComponentLifecycle';
+import { analytics } from '../services/analytics';
+import { monitoring } from '../services/monitoring';
+import { storage } from '../services/storage';
+import { NutritionalGoals as NutritionalGoalsType } from '../types/nutrition';
+import { logWarn } from '../utils/logger';
 
 interface NutritionalGoalsProps {
   userId: string;
@@ -36,7 +38,7 @@ export const NutritionalGoals: React.FC<NutritionalGoalsProps> = ({ userId, onUp
   // Use component lifecycle hook
   useComponentLifecycle({
     onMemoryWarning: (usage, limit) => {
-      console.warn(`Memory usage warning in NutritionalGoals: ${usage}MB/${limit}MB`);
+      logWarn(`Memory usage warning in NutritionalGoals: ${usage}MB/${limit}MB`);
       analytics.trackEvent({
         category: 'Performance',
         action: 'memory_warning',
@@ -44,7 +46,7 @@ export const NutritionalGoals: React.FC<NutritionalGoalsProps> = ({ userId, onUp
       });
     },
     onPerformanceWarning: (metrics) => {
-      console.warn('Performance warning in NutritionalGoals:', metrics);
+      logWarn('Performance warning in NutritionalGoals:', metrics);
       analytics.trackEvent({
         category: 'Performance',
         action: 'performance_warning',
@@ -65,69 +67,30 @@ export const NutritionalGoals: React.FC<NutritionalGoalsProps> = ({ userId, onUp
   });
 
   useEffect(() => {
-    const initializeComponent = async () => {
+    const loadGoals = async () => {
       try {
-        await loadGoals();
-        
-        // Register monitoring metrics
-        monitoring.registerMetric({
-          name: 'nutrition_goals_updates',
-          type: 'counter',
-          description: 'Number of times nutrition goals are updated'
-        });
-        
-        monitoring.registerMetric({
-          name: 'goals_achievement_rate',
-          type: 'gauge',
-          unit: 'percent',
-          description: 'Percentage of nutrition goals achieved',
-          alertThresholds: {
-            warning: 50,
-            critical: 30
-          }
-        });
-
-        analytics.trackEvent({
-          category: 'NutritionalGoals',
-          action: 'component_initialized',
-          label: userId
-        });
+        const savedGoals = await storage.getItem<NutritionalGoalsType>(`goals_${userId}`);
+        if (savedGoals) {
+          setGoals(savedGoals);
+          analytics.trackEvent({
+            category: 'Goals',
+            action: 'load_goals',
+            label: userId
+          });
+        }
       } catch (err) {
-        const error = err instanceof Error ? err.message : 'Failed to initialize NutritionalGoals';
+        const error = err instanceof Error ? err.message : 'Failed to load goals';
         setError(error);
         analytics.trackError({
-          errorType: 'goals_init_error',
+          errorType: 'goals_load_error',
           errorMessage: error,
           context: { userId }
         });
+        throw err; // Re-throw to be caught by initializeComponent
       }
     };
-
-    initializeComponent();
+    loadGoals();
   }, [userId]);
-
-  const loadGoals = async () => {
-    try {
-      const savedGoals = await storage.getItem<NutritionalGoalsType>(`goals_${userId}`);
-      if (savedGoals) {
-        setGoals(savedGoals);
-        analytics.trackEvent({
-          category: 'Goals',
-          action: 'load_goals',
-          label: userId
-        });
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load goals';
-      setError(error);
-      analytics.trackError({
-        errorType: 'goals_load_error',
-        errorMessage: error,
-        context: { userId }
-      });
-      throw err; // Re-throw to be caught by initializeComponent
-    }
-  };
 
   const handleSave = async () => {
     setIsSaving(true);

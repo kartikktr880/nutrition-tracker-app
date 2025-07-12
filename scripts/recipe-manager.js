@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import dataManager from './data-manager.js';
 import foodDatabase from './food-db.js';
 
@@ -17,7 +18,7 @@ class RecipeManager {
             await this.loadRecipes();
             return true;
         } catch (error) {
-            console.error('Error initializing recipe manager:', error);
+            logError('Error initializing recipe manager:', error);
             return false;
         }
     }
@@ -31,7 +32,7 @@ class RecipeManager {
             this.recipes = recipes || [];
             return this.recipes;
         } catch (error) {
-            console.error('Error loading recipes:', error);
+            logError('Error loading recipes:', error);
             return [];
         }
     }
@@ -92,7 +93,7 @@ class RecipeManager {
         const recipe = this.getRecipe(id);
         
         if (!recipe) {
-            console.error('Recipe not found:', id);
+            logError('Recipe not found:', id);
             return;
         }
         
@@ -111,7 +112,7 @@ class RecipeManager {
         const recipe = this.getRecipe(id);
         
         if (!recipe) {
-            console.error('Recipe not found:', id);
+            logError('Recipe not found:', id);
             return;
         }
         
@@ -129,7 +130,7 @@ class RecipeManager {
             const index = this.recipes.findIndex(recipe => recipe.id === id);
             
             if (index === -1) {
-                console.error('Recipe not found:', id);
+                logError('Recipe not found:', id);
                 return false;
             }
             
@@ -141,7 +142,7 @@ class RecipeManager {
             
             return true;
         } catch (error) {
-            console.error('Error deleting recipe:', error);
+            logError('Error deleting recipe:', error);
             return false;
         }
     }
@@ -154,7 +155,7 @@ class RecipeManager {
     async saveRecipe(recipeData) {
         try {
             if (!this.currentRecipe) {
-                console.error('No current recipe to save');
+                logError('No current recipe to save');
                 return false;
             }
             
@@ -191,7 +192,7 @@ class RecipeManager {
             
             return true;
         } catch (error) {
-            console.error('Error saving recipe:', error);
+            logError('Error saving recipe:', error);
             return false;
         }
     }
@@ -202,7 +203,7 @@ class RecipeManager {
      */
     addIngredient(ingredient) {
         if (!this.currentRecipe) {
-            console.error('No current recipe');
+            logError('No current recipe');
             return;
         }
         
@@ -220,7 +221,7 @@ class RecipeManager {
      */
     removeIngredient(ingredientId) {
         if (!this.currentRecipe) {
-            console.error('No current recipe');
+            logError('No current recipe');
             return;
         }
         
@@ -237,7 +238,7 @@ class RecipeManager {
      */
     addInstruction(instruction) {
         if (!this.currentRecipe) {
-            console.error('No current recipe');
+            logError('No current recipe');
             return;
         }
         
@@ -250,7 +251,7 @@ class RecipeManager {
      */
     removeInstruction(index) {
         if (!this.currentRecipe || !this.currentRecipe.instructions[index]) {
-            console.error('Invalid instruction index');
+            logError('Invalid instruction index');
             return;
         }
         
@@ -321,7 +322,7 @@ class RecipeManager {
                         nutrition.fiber += (food.fiber || 0) * quantity;
                     }
                 } catch (error) {
-                    console.error('Error fetching food details:', error);
+                    logError('Error fetching food details:', error);
                 }
             } else if (ingredient.nutrition) {
                 // Use provided nutrition information
@@ -358,7 +359,7 @@ class RecipeManager {
             const recipe = this.getRecipe(recipeId);
             
             if (!recipe) {
-                console.error('Recipe not found:', recipeId);
+                logError('Recipe not found:', recipeId);
                 return false;
             }
             
@@ -383,7 +384,7 @@ class RecipeManager {
             
             return true;
         } catch (error) {
-            console.error('Error adding recipe to log:', error);
+            logError('Error adding recipe to log:', error);
             return false;
         }
     }

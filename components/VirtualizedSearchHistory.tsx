@@ -1,10 +1,12 @@
 import React, { useCallback, useMemo, useState, useRef } from 'react';
 import { FixedSizeList } from 'react-window';
-import { useSearchHistory, SearchHistoryItem } from '../hooks/useSearchHistory';
-import { LoadingSpinner } from './LoadingSpinner';
-import { ErrorBoundary } from './ErrorBoundary';
+
+import { useSearchHistory } from '../hooks/useSearchHistory';
 import { analytics } from '../services/analytics';
 import styles from '../styles/VirtualizedSearchHistory.module.css';
+
+import { ErrorBoundary } from './ErrorBoundary';
+import { LoadingSpinner } from './LoadingSpinner';
 
 interface VirtualizedSearchHistoryProps {
   onSelect: (query: string) => void;
@@ -35,7 +37,7 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
   height = 400,
   itemHeight = 50,
   className = '',
-  pageSize = 50
+  // pageSize removed because it is not used
 }) => {
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -53,17 +55,18 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
   } = useSearchHistory();
 
   // Handle infinite scroll
-  const handleScroll = useCallback(async ({ scrollOffset, scrollDirection }: { scrollOffset: number; scrollDirection: 'forward' | 'backward' }) => {
+  const handleScroll = useCallback(async ({ scrollOffset, scrollDirection: _scrollDirection }: { scrollOffset: number; scrollDirection: 'forward' | 'backward' }) => {
     const scrollThreshold = 100; // pixels from bottom
+    const listHeight = listRef.current?.props.height || 0;
     const isNearBottom = scrollOffset > lastScrollOffset.current && 
-      scrollOffset >= (listRef.current?.props.height || 0) - scrollThreshold;
+      scrollOffset >= (listHeight as number) - scrollThreshold;
 
     lastScrollOffset.current = scrollOffset;
 
     if (isNearBottom && hasMore && !isLoadingMore) {
       setIsLoadingMore(true);
       try {
-        await loadMore(page + 1, pageSize);
+        await loadMore();
         setPage(prev => prev + 1);
         
         analytics.trackEvent({
@@ -80,7 +83,7 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
         setIsLoadingMore(false);
       }
     }
-  }, [page, pageSize, hasMore, isLoadingMore, loadMore]);
+  }, [page, hasMore, isLoadingMore, loadMore]);
 
   // Memoize the row renderer for better performance
   const Row = useCallback(({ index, style }: { index: number; style: React.CSSProperties }) => {
@@ -145,7 +148,7 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
   // Handle retry on error
   const handleRetry = async () => {
     try {
-      await loadMore(1, pageSize);
+      await loadMore();
       setPage(1);
       
       analytics.trackEvent({
@@ -167,7 +170,7 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
   if (error && !isLoadingMore) {
     return (
       <div className={styles.error} role="alert">
-        <p>Error loading search history: {error.message}</p>
+        <p>Error loading search history: {error}</p>
         <button 
           className={styles.retryButton}
           onClick={handleRetry}

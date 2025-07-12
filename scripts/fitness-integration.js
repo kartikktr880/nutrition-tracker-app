@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Fitness Integration Module
  * 
@@ -46,7 +47,7 @@ class FitnessIntegration {
             try {
                 this.authorizedProviders = JSON.parse(savedProviders);
             } catch (e) {
-                console.error('Error loading authorized providers:', e);
+                logError('Error loading authorized providers:', e);
                 this.authorizedProviders = {};
             }
         }
@@ -185,8 +186,8 @@ class FitnessIntegration {
                 return;
             }
             
-            console.log(`Importing activity data from ${provider}...`);
-            console.log(`Date range: ${startDate.toISOString()} - ${endDate.toISOString()}`);
+            logInfo(`Importing activity data from ${provider}...`);
+            logInfo(`Date range: ${startDate.toISOString()} - ${endDate.toISOString()}`);
             
             // Simulate API call delay
             setTimeout(() => {
@@ -210,7 +211,7 @@ class FitnessIntegration {
     // Get activity data for date range
     getActivityData(startDate, endDate) {
         return new Promise((resolve) => {
-            console.log(`Getting activity data from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+            logInfo(`Getting activity data from ${startDate.toISOString()} to ${endDate.toISOString()}`);
             
             // Simulate API call delay
             setTimeout(() => {
@@ -289,7 +290,7 @@ class FitnessIntegration {
             try {
                 return JSON.parse(data);
             } catch (e) {
-                console.error(`Error parsing activity data for ${provider}:`, e);
+                logError(`Error parsing activity data for ${provider}:`, e);
                 return null;
             }
         }

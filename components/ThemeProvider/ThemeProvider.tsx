@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
+"use client";
 import { usePathname } from 'next/navigation';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+
 import '@/styles/theme-transitions.css';
 
 interface ThemeProviderProps {

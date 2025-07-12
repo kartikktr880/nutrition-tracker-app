@@ -100,7 +100,7 @@ export class PerformanceBenchmark {
                 return;
             }
 
-            const metrics = PerformanceUtils.getCurrentMetrics();
+            const metrics = PerformanceUtils.getMetrics();
             this.metrics.push(metrics);
         }, 1000);
 
@@ -181,7 +181,7 @@ export class PerformanceBenchmark {
         const significantChanges: string[] = [];
 
         // Compare metrics
-        Object.keys(current.metrics).forEach(metric => {
+        (Object.keys(current.metrics) as Array<keyof BenchmarkResult['metrics']>).forEach(metric => {
             const currentValue = current.metrics[metric].average;
             const baselineValue = baseline.metrics[metric].average;
             const change = ((currentValue - baselineValue) / baselineValue) * 100;

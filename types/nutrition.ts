@@ -27,6 +27,8 @@ export interface UserPreferences {
   allergies: string[];
   favoriteFoods: string[];
   dislikedFoods: string[];
+  mealSizePreference: 'small' | 'medium' | 'large';
+  additionalNotes?: string;
   mealTiming: {
     breakfast: string;
     lunch: string;
@@ -78,6 +80,7 @@ export interface GroceryList {
 }
 
 export interface GroceryItem {
+  id: string;
   name: string;
   amount: number;
   unit: string;
@@ -86,6 +89,7 @@ export interface GroceryItem {
   storeSection: string;
   priority: 'high' | 'medium' | 'low';
   notes?: string;
+  checked?: boolean;
 }
 
 export interface MealPrepPlan {

@@ -3,6 +3,7 @@ export interface Exercise {
   name: string;
   description: string;
   category: string;
+  type?: string;
   intensity: number; // MET value
   equipment: string[];
   muscleGroups: string[];
@@ -19,6 +20,7 @@ export interface ExerciseSession {
   id: string;
   userId: string;
   exerciseId: string;
+  type?: string;
   startTime: string;
   endTime: string;
   sets: number;
@@ -36,12 +38,19 @@ export interface ExerciseProgress {
   id: string;
   userId: string;
   exerciseId: string;
+  exerciseType?: string;
   date: string;
+  bodyFatPercentage?: number;
+  measurements?: {
+    chest: number;
+    waist: number;
+    hips: number;
+  };
   sets: number;
   reps: number;
   weight: number;
   duration: number;
-  intensity: 'low' | 'medium' | 'high';
+  intensity: number;
   notes?: string;
   createdAt: string;
   updatedAt: string;
@@ -51,6 +60,9 @@ export interface ExerciseGoal {
   id: string;
   userId: string;
   exerciseId: string;
+  type?: string;
+  target?: number;
+  exerciseType?: string;
   targetSets: number;
   targetReps: number;
   targetWeight: number;
@@ -103,10 +115,12 @@ export interface ExerciseFormCheck {
   date: Date;
   checklist: {
     item: string;
+    description?: string;
+    importance?: 'critical' | 'important' | 'optional';
     completed: boolean;
     notes?: string;
   }[];
-  overallScore: number;
+  score: number;
   feedback: string;
   videoUrl?: string;
   createdAt: Date;
@@ -127,4 +141,18 @@ export interface ExerciseFormTemplate {
   commonMistakes: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+// Type for recovery operations that matches the Prisma ExerciseSession model
+export interface RecoveryExerciseSession {
+  id?: string;
+  userId: string;
+  startTime: string;
+  endTime: string;
+  exercises: any; // Should match your JSON structure
+  totalDuration: number;
+  caloriesBurned: number;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
 } 

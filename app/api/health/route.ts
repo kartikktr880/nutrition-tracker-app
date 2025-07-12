@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+
+// eslint-disable-next-line import/no-named-as-default
 import healthMonitor from '@/lib/health-monitor';
-import { securityService } from '@/lib/security';
 import { performanceAlertService } from '@/lib/performance-alerts';
+import { securityService } from '@/lib/security';
+import { logError } from '@/utils/logger';
 
 export async function GET() {
   try {
@@ -26,7 +29,7 @@ export async function GET() {
       security: securityStatus
     });
   } catch (error: unknown) {
-    console.error('Health check failed:', error);
+    logError('Health check failed:', error);
     return NextResponse.json(
       { error: 'Health check failed' },
       { status: 500 }
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ results });
   } catch (error: unknown) {
-    console.error('Detailed health check failed:', error);
+    logError('Detailed health check failed:', error);
     return NextResponse.json(
       { error: 'Detailed health check failed' },
       { status: 500 }

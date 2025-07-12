@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import StringFormatter from './string-formatter.js';
 
 class RecipeCalculator {
@@ -476,7 +477,7 @@ class RecipeCalculator {
         totals.iron += (dbIngredient.iron || 0) * multiplier;
         totals.potassium += (dbIngredient.potassium || 0) * multiplier;
       } else {
-        console.log(`Ingredient not found in database: ${ingredient.name}`);
+        logInfo(`Ingredient not found in database: ${ingredient.name}`);
       }
     });
     

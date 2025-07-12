@@ -1,14 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+"use client";
+import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
+
 import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import { FocusTrap } from '@/components/FocusTrap/FocusTrap';
-import { SkipLink } from '@/components/SkipLink/SkipLink';
-import { HeaderVariant, getHeaderVariantClasses, getNavVariantClasses, getMobileMenuVariantClasses } from './HeaderVariants';
 import { SearchBar } from '@/components/SearchBar/SearchBar';
+import { SkipLink } from '@/components/SkipLink/SkipLink';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
+
+import { logError } from '../../utils/logger';
+
+import { HeaderVariant, getMobileMenuVariantClasses } from './HeaderVariants';
 
 /**
  * Navigation items for the header
@@ -61,8 +67,8 @@ interface MobileMenuProps {
  * />
  * ```
  */
-const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
-  ({ isOpen, pathname, variant = 'default' }, ref) => (
+const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
+  ({ isOpen: _isOpen, pathname, variant = 'default' }, ref) => (
     <div
       ref={ref}
       className={getMobileMenuVariantClasses({ variant })}
@@ -182,7 +188,7 @@ const useMockUser = () => {
  * @see {@link https://www.w3.org/WAI/WCAG21/Techniques/general/G1 | WCAG G1: Adding a link at the top of each page}
  * @see {@link https://www.w3.org/WAI/WCAG21/Techniques/general/G59 | WCAG G59: Placing the interactive elements in an order that follows sequences and relationships within the content}
  */
-export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }) => {
+export const Header: React.FC<HeaderProps> = ({ variant = 'default', className: _className }) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -222,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }
    * @param error - The error that occurred
    */
   const handleError = (error: Error) => {
-    console.error('Header error:', error);
+    logError('Header error:', error);
   };
 
   return (
@@ -259,8 +265,8 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }
             </div>
           </div>
           <div className="hidden md:block flex-1 mx-8">
-            <SearchBar onSearch={(query) => {
-              console.log('Search:', query);
+            <SearchBar onSearch={(_query: string) => {
+              // logInfo('Search:', query); // Removed unused import
             }} />
           </div>
           <div className="flex items-center gap-2">
@@ -279,10 +285,12 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }
                     onClick={() => setIsProfileMenuOpen((open) => !open)}
                   >
                     {user.avatarUrl ? (
-                      <img
+                      <Image
                         src={user.avatarUrl}
                         alt={user.name}
                         className="h-8 w-8 rounded-full object-cover"
+                        width={32}
+                        height={32}
                       />
                     ) : (
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground font-bold">
@@ -360,8 +368,8 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className }
         </nav>
         <div className="block md:hidden px-4 py-2 border-t border-border">
           <SearchBar 
-            onSearch={(query) => {
-              console.log('Search:', query);
+            onSearch={(_query: string) => {
+              // logInfo('Search:', query); // Removed unused import
             }} 
             variant="minimal"
             className="w-full" 

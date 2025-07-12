@@ -102,6 +102,59 @@ export function validateSessionData(session: ExerciseSession): string | null {
   }
 
   return null;
+}
+
+export function validateRecoverySessionData(session: import('@/types/exercise').RecoveryExerciseSession): string | null {
+  if (!session) {
+    return 'Session data is required';
+  }
+
+  // Required fields validation
+  const requiredFields = [
+    'userId', 'startTime', 'endTime', 'exercises', 'totalDuration', 'caloriesBurned'
+  ];
+
+  for (const field of requiredFields) {
+    if ((session as any)[field] === undefined || (session as any)[field] === null) {
+      return `${field} is required`;
+    }
+  }
+
+  // Date validation
+  const startTime = new Date(session.startTime);
+  const endTime = new Date(session.endTime);
+
+  if (isNaN(startTime.getTime())) {
+    return 'Invalid start time';
+  }
+
+  if (isNaN(endTime.getTime())) {
+    return 'Invalid end time';
+  }
+
+  if (endTime < startTime) {
+    return 'End time must be after start time';
+  }
+
+  // Numerical value validation
+  if (session.totalDuration < 0) {
+    return 'Total duration cannot be negative';
+  }
+
+  if (session.caloriesBurned < 0) {
+    return 'Calories burned cannot be negative';
+  }
+
+  // Notes validation (optional field)
+  if (session.notes && typeof session.notes !== 'string') {
+    return 'Notes must be a string';
+  }
+
+  if (session.notes && session.notes.length > 1000) {
+    return 'Notes exceed maximum length of 1000 characters';
+  }
+
+  return null;
 } 
 
 

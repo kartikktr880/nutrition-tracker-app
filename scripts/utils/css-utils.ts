@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 export class CSSUtils {
     private static state = {
         importantRules: new Map<string, Set<string>>(),
@@ -8,12 +9,11 @@ export class CSSUtils {
 
     static analyzeCSS(cssText: string): void {
         const rules = this.parseCSSRules(cssText);
-        
-        rules.forEach(rule => {
-            if (rule.type === 'media') {
-                this.analyzeMediaQuery(rule);
-            } else if (rule.type === 'style') {
-                this.analyzeStyleRule(rule);
+        Array.from(rules).forEach(rule => {
+            if (typeof window.CSSMediaRule !== 'undefined' && rule instanceof window.CSSMediaRule) {
+                this.analyzeMediaQuery(rule as CSSMediaRule);
+            } else if (typeof window.CSSStyleRule !== 'undefined' && rule instanceof window.CSSStyleRule) {
+                this.analyzeStyleRule(rule as CSSStyleRule);
             }
         });
     }
@@ -24,7 +24,7 @@ export class CSSUtils {
             styleSheet.replaceSync(cssText);
             return Array.from(styleSheet.cssRules);
         } catch (error) {
-            console.error('Error parsing CSS:', error);
+            logError('Error parsing CSS:', error);
             return [];
         }
     }
@@ -61,28 +61,32 @@ export class CSSUtils {
         if (!this.state.importantRules.has(selector)) {
             this.state.importantRules.set(selector, new Set());
         }
-        this.state.importantRules.get(selector).add(declarations);
+        const set = this.state.importantRules.get(selector);
+        if (set) set.add(declarations);
     }
 
     private static addMediaQuery(mediaQuery: string, selector: string): void {
         if (!this.state.mediaQueries.has(mediaQuery)) {
             this.state.mediaQueries.set(mediaQuery, new Set());
         }
-        this.state.mediaQueries.get(mediaQuery).add(selector);
+        const set = this.state.mediaQueries.get(mediaQuery);
+        if (set) set.add(selector);
     }
 
     private static addThemeOverride(selector: string, declarations: string): void {
         if (!this.state.themeOverrides.has(selector)) {
             this.state.themeOverrides.set(selector, new Set());
         }
-        this.state.themeOverrides.get(selector).add(declarations);
+        const set = this.state.themeOverrides.get(selector);
+        if (set) set.add(declarations);
     }
 
     private static addTemporaryRule(selector: string, declarations: string): void {
         if (!this.state.temporaryRules.has(selector)) {
             this.state.temporaryRules.set(selector, new Set());
         }
-        this.state.temporaryRules.get(selector).add(declarations);
+        const set = this.state.temporaryRules.get(selector);
+        if (set) set.add(declarations);
     }
 
     static getImportantRules(): Map<string, Set<string>> {

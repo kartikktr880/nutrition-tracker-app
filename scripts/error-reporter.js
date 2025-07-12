@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Error Reporter
  * Provides centralized error reporting and analytics capabilities
@@ -122,7 +123,7 @@ class ErrorReporter {
             // Clear saved queue
             this.clearSavedQueue();
         } catch (error) {
-            console.warn('Error reporting failed:', error);
+            logWarn('Error reporting failed:', error);
             // Restore queue on failure
             this.loadSavedQueue();
         } finally {
@@ -180,7 +181,7 @@ class ErrorReporter {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
         } catch (error) {
-            console.warn('Failed to send error report:', error);
+            logWarn('Failed to send error report:', error);
             throw error;
         }
     }
@@ -192,7 +193,7 @@ class ErrorReporter {
         try {
             localStorage.setItem('errorReportQueue', JSON.stringify(this.reportQueue));
         } catch (e) {
-            console.warn('Could not save error report queue:', e);
+            logWarn('Could not save error report queue:', e);
         }
     }
 
@@ -206,7 +207,7 @@ class ErrorReporter {
                 this.reportQueue = JSON.parse(saved);
             }
         } catch (e) {
-            console.warn('Could not load error report queue:', e);
+            logWarn('Could not load error report queue:', e);
         }
     }
 

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { PerformanceUtils } from './performance-utils';
 
 export interface AlertThreshold {
@@ -56,19 +57,19 @@ export class PerformanceAlerts {
         this.thresholds = { ...this.DEFAULT_THRESHOLDS };
     }
 
-    private static startMonitoring(): void {
+    static startMonitoring(): void {
         if (this.isMonitoring) return;
 
         this.isMonitoring = true;
         setInterval(() => this.checkMetrics(), this.checkInterval);
     }
 
-    private static stopMonitoring(): void {
+    static stopMonitoring(): void {
         this.isMonitoring = false;
     }
 
-    private static checkMetrics(): void {
-        const metrics = PerformanceUtils.getCurrentMetrics();
+    static checkMetrics(): void {
+        const metrics = PerformanceUtils.getMetrics();
         if (!metrics) return;
 
         // Check FPS
@@ -98,7 +99,7 @@ export class PerformanceAlerts {
             try {
                 callback(metric, value, threshold);
             } catch (error) {
-                console.error(`Error in performance alert callback: ${error}`);
+                logError(`Error in performance alert callback: ${error}`);
             }
         });
     }

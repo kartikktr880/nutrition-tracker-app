@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { Chart } from 'chart.js';
 import { registerables } from 'chart.js';
 
@@ -114,7 +115,7 @@ class AnalyticsService {
       await this.loadData();
       this.setupDataRefresh();
     } catch (error) {
-      console.error('Failed to initialize analytics service:', error);
+      logError('Failed to initialize analytics service:', error as Error | undefined);
       throw new Error('Analytics service initialization failed');
     }
   }
@@ -128,7 +129,7 @@ class AnalyticsService {
       this.data = await response.json();
       this.validateData(this.data);
     } catch (error) {
-      console.error('Error loading analytics data:', error);
+      logError('Error loading analytics data:', error as Error | undefined);
       throw new Error('Failed to load analytics data');
     }
   }
@@ -161,7 +162,7 @@ class AnalyticsService {
         await this.loadData();
         this.updateCharts();
       } catch (error) {
-        console.error('Failed to refresh analytics data:', error);
+        logError('Failed to refresh analytics data:', error as Error | undefined);
       }
     }, this.cacheTimeout);
   }
@@ -221,7 +222,7 @@ class AnalyticsService {
       try {
         chart.update();
       } catch (error) {
-        console.error('Failed to update chart:', error);
+        logError('Failed to update chart:', error as Error | undefined);
       }
     });
   }
@@ -250,7 +251,7 @@ class AnalyticsService {
 
       return await response.blob();
     } catch (error) {
-      console.error('Error generating report:', error);
+      logError('Error generating report:', error as Error | undefined);
       throw new Error('Failed to generate report');
     }
   }
@@ -263,7 +264,7 @@ class AnalyticsService {
       }
       return await response.blob();
     } catch (error) {
-      console.error('Error exporting data:', error);
+      logError('Error exporting data:', error as Error | undefined);
       throw new Error('Failed to export data');
     }
   }
@@ -272,6 +273,67 @@ class AnalyticsService {
     this.charts.forEach(chart => chart.destroy());
     this.charts.clear();
     this.dataCache.clear();
+  }
+
+  public async trackSearch(data: { query: string; resultCount?: number; success?: boolean; timestamp?: number }): Promise<void> {
+    try {
+      const searchData = {
+        query: data.query,
+        resultCount: data.resultCount || 0,
+        success: data.success !== false,
+        timestamp: data.timestamp || Date.now()
+      };
+
+      // In a real app, this would send to analytics service
+      logInfo('Search tracked:', searchData);
+      
+      // Store locally for offline analytics
+      const searches = this.dataCache.get('searches') || [];
+      searches.push(searchData);
+      this.dataCache.set('searches', searches.slice(-100)); // Keep last 100 searches
+    } catch (error) {
+      logError('Failed to track search:', error as Error | undefined);
+    }
+  }
+
+  public async trackClick(data: { element: string; page: string; timestamp?: number }): Promise<void> {
+    try {
+      const clickData = {
+        element: data.element,
+        page: data.page,
+        timestamp: data.timestamp || Date.now()
+      };
+
+      // In a real app, this would send to analytics service
+      logInfo('Click tracked:', clickData);
+      
+      // Store locally for offline analytics
+      const clicks = this.dataCache.get('clicks') || [];
+      clicks.push(clickData);
+      this.dataCache.set('clicks', clicks.slice(-100)); // Keep last 100 clicks
+    } catch (error) {
+      logError('Failed to track click:', error as Error | undefined);
+    }
+  }
+
+  public async trackError(data: { errorType: string; errorMessage: string; timestamp?: number }): Promise<void> {
+    try {
+      const errorData = {
+        errorType: data.errorType,
+        errorMessage: data.errorMessage,
+        timestamp: data.timestamp || Date.now()
+      };
+
+      // In a real app, this would send to analytics service
+      logInfo('Error tracked:', errorData);
+      
+      // Store locally for offline analytics
+      const errors = this.dataCache.get('errors') || [];
+      errors.push(errorData);
+      this.dataCache.set('errors', errors.slice(-50)); // Keep last 50 errors
+    } catch (error) {
+      logError('Failed to track error:', error as Error | undefined);
+    }
   }
 }
 

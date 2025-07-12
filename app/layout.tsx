@@ -1,32 +1,19 @@
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
-import { Header } from '@/components/Header/Header';
-import '@/styles/globals.css';
+import React from 'react';
 
-const inter = Inter({ subsets: ['latin'] });
+import { Header } from '../components/Header/Header';
+import { ThemeProvider } from '../components/ThemeProvider/ThemeProvider';
 
-export const metadata = {
-  title: 'NutriTrack - Your Nutrition Companion',
-  description: 'Track your nutrition, meals, and health goals with ease.',
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <ThemeProvider>
+      <div className="app-layout">
+        <Header />
+        <main className="main-content">
+          {children}
+        </main>
+      </div>
+    </ThemeProvider>
+  );
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider>
-          <div className="min-h-screen bg-white dark:bg-gray-900">
-            <Header />
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              {children}
-            </main>
-          </div>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-} 
+export default Layout; 

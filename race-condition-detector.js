@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -221,8 +222,8 @@ app.get('/health', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Race Condition Detector running on http://localhost:${PORT}`);
-    console.log('Health check available at /health');
-    console.log('Operation monitoring available at /operations');
-    console.log('Environment:', process.env.NODE_ENV || 'development');
+    logInfo(`Race Condition Detector running on http://localhost:${PORT}`);
+    logInfo('Health check available at /health');
+    logInfo('Operation monitoring available at /operations');
+    logInfo('Environment:', process.env.NODE_ENV || 'development');
 }); 

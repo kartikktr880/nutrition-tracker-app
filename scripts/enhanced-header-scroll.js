@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Enhanced Header Scroll Behavior
  * Improved header visibility management during scrolling
@@ -31,7 +32,7 @@
         header = document.querySelector(config.headerSelector);
         
         if (!header) {
-            console.warn('Enhanced header scroll: Header element not found');
+            logWarn('Enhanced header scroll: Header element not found');
             return;
         }
         
@@ -50,7 +51,7 @@
         // Add CSS class to indicate script is active
         document.documentElement.classList.add('enhanced-header-active');
         
-        console.log('Enhanced header scroll initialized');
+        logInfo('Enhanced header scroll initialized');
     }
     
     /**

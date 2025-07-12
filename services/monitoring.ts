@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { analytics } from './analytics';
 
 interface MetricValue {
@@ -42,11 +43,83 @@ const DEFAULT_OPTIONS: Required<MonitoringOptions> = {
   aggregationInterval: 60000, // 1 minute
   retentionPeriod: 24 * 60 * 60 * 1000, // 24 hours
   alertCallback: (alert) => {
-    console.warn(`[${alert.level.toUpperCase()}] ${alert.message}`);
+    logWarn(`[${alert.level.toUpperCase()}] ${alert.message}`);
   }
 };
 
+export interface MonitoringData {
+  userId: string;
+  metrics: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    water: number;
+  };
+  trends: {
+    weekly: Record<string, number>;
+    monthly: Record<string, number>;
+  };
+  goals: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    water: number;
+  };
+  progress: {
+    caloriesProgress: number;
+    proteinProgress: number;
+    carbsProgress: number;
+    fatProgress: number;
+    waterProgress: number;
+  };
+}
+
+export const getMonitoringData = async (userId: string): Promise<MonitoringData> => {
+  // Mock implementation - replace with actual API call
+  return {
+    userId,
+    metrics: {
+      calories: 1850,
+      protein: 120,
+      carbs: 200,
+      fat: 65,
+      water: 6
+    },
+    trends: {
+      weekly: {
+        calories: 1850,
+        protein: 120,
+        carbs: 200,
+        fat: 65
+      },
+      monthly: {
+        calories: 1800,
+        protein: 115,
+        carbs: 195,
+        fat: 60
+      }
+    },
+    goals: {
+      calories: 2000,
+      protein: 150,
+      carbs: 250,
+      fat: 70,
+      water: 8
+    },
+    progress: {
+      caloriesProgress: 92.5,
+      proteinProgress: 80,
+      carbsProgress: 80,
+      fatProgress: 92.9,
+      waterProgress: 75
+    }
+  };
+};
+
 class MonitoringService {
+  private static instance: MonitoringService;
   private metrics: Map<string, MetricConfig> = new Map();
   private values: Map<string, MetricValue[]> = new Map();
   private aggregations: Map<string, MetricValue[]> = new Map();
@@ -55,8 +128,19 @@ class MonitoringService {
   private aggregationInterval: NodeJS.Timeout | null = null;
 
   constructor(options: MonitoringOptions = {}) {
-    this.options = { ...DEFAULT_OPTIONS, ...options };
+    this.options = {
+      aggregationInterval: options.aggregationInterval || 60000,
+      retentionPeriod: options.retentionPeriod || 24 * 60 * 60 * 1000,
+      alertCallback: options.alertCallback || (() => { /* intentionally empty */ })
+    };
     this.startAggregation();
+  }
+
+  public static getInstance(): MonitoringService {
+    if (!MonitoringService.instance) {
+      MonitoringService.instance = new MonitoringService();
+    }
+    return MonitoringService.instance;
   }
 
   registerMetric(config: MetricConfig): void {
@@ -79,7 +163,7 @@ class MonitoringService {
   track(metricName: string, value: number, tags?: Record<string, string>): void {
     const config = this.metrics.get(metricName);
     if (!config) {
-      console.warn(`Unregistered metric: ${metricName}`);
+      logWarn(`Unregistered metric: ${metricName}`);
       return;
     }
 
@@ -106,7 +190,7 @@ class MonitoringService {
     analytics.trackPerformance({
       name: metricName,
       value,
-      unit: config.unit,
+      unit: config.unit as 'count' | 'ms' | 'bytes' | undefined,
       tags
     });
   }
@@ -270,6 +354,27 @@ class MonitoringService {
       this.aggregationInterval = null;
     }
   }
+
+  recordError(message: string, error: Error | string, context?: Record<string, any>): void {
+    const errorValue = typeof error === 'string' ? error : error.message;
+    this.track('error', 1, {
+      message,
+      error: errorValue,
+      ...context
+    });
+  }
+
+  recordOperationLatency(operation: string, duration: number, context?: Record<string, any>): void {
+    this.track('operation_latency', duration, {
+      operation,
+      ...context
+    });
+  }
+
+  handleApiRequest(req: any, res: any): Promise<void> {
+    // Implementation for handling API requests
+    return Promise.resolve();
+  }
 }
 
 export const monitoringService = MonitoringService.getInstance();
@@ -284,4 +389,6 @@ export const recordError = (message: string, error: Error | string, context?: Re
 
 export const recordOperationLatency = (operation: string, duration: number, context?: Record<string, any>) => {
   monitoringService.recordOperationLatency(operation, duration, context);
-}; 
+};
+
+export const monitoring = MonitoringService.getInstance(); 

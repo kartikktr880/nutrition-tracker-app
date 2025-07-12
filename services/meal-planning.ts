@@ -1,9 +1,10 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import AIRecommendationService from './ai-recommendation';
 import { prisma } from '@/lib/prisma';
 import { withRetry } from '@/lib/retry';
 import mealPlanLimiter from '@/lib/rate-limiter';
 import { recordOperationLatency, recordError } from '@/lib/monitoring';
-import type { Goals } from '@prisma/client';
+import { NutritionalGoals, MealPlanV2, GroceryList, MealPrepPlan } from '../types/nutrition';
 
 // Cache configuration
 const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
@@ -208,7 +209,7 @@ export class MealPlanningService {
 
       return mealPlan;
     } catch (error) {
-      recordError('generate_meal_plan', error instanceof Error ? error.name : 'Unknown');
+      recordError('generate_meal_plan', error instanceof Error ? error : new Error("Unknown error"));
       throw error;
     }
   }
@@ -298,7 +299,7 @@ export class MealPlanningService {
         data: nutritionLogs
       });
     } catch (error) {
-      console.error('Error saving meal plan:', error);
+      logError('Error saving meal plan:', error instanceof Error ? error : new Error("Unknown error"));
       throw new Error('Failed to save meal plan');
     }
   }
@@ -321,7 +322,7 @@ export class MealPlanningService {
       const duration = Date.now() - startTime;
       recordOperationLatency('meal_plan_cache_warming', duration);
     } catch (error) {
-      recordError('meal_plan_cache_warming', error instanceof Error ? error.name : 'Unknown');
+      recordError('meal_plan_cache_warming', error instanceof Error ? error : new Error("Unknown error"));
       throw error;
     } finally {
       this.isWarming = false;
@@ -345,12 +346,12 @@ export class MealPlanningService {
       const duration = Date.now() - startTime;
       recordOperationLatency('meal_plan_cache_invalidation', duration);
     } catch (error) {
-      recordError('meal_plan_cache_invalidation', error instanceof Error ? error.name : 'Unknown');
+      recordError('meal_plan_cache_invalidation', error instanceof Error ? error : new Error("Unknown error"));
       throw error;
     }
   }
 
-  public async updateUserGoals(userId: string, goals: Partial<Goals>): Promise<void> {
+  public async updateUserGoals(userId: string, goals: Partial<NutritionalGoals>): Promise<void> {
     const startTime = Date.now();
     try {
       // Update goals in database
@@ -360,18 +361,13 @@ export class MealPlanningService {
           update: goals,
           create: {
             userId,
-            calories: goals.calories ?? 2000,
+            calories: (goals as any).calories ?? 2000,
             protein: goals.protein ?? 150,
             carbs: goals.carbs ?? 250,
             fat: goals.fat ?? 70,
             ...goals
           }
         });
-      }, {
-        maxAttempts: 3,
-        initialDelay: 1000,
-        maxDelay: 5000,
-        backoffFactor: 2
       });
 
       // Invalidate caches after successful update
@@ -380,8 +376,8 @@ export class MealPlanningService {
       const duration = Date.now() - startTime;
       recordOperationLatency('update_goals', duration);
     } catch (error) {
-      recordError('update_goals', error instanceof Error ? error.name : 'Unknown');
+      recordError('update_goals', error instanceof Error ? error : new Error("Unknown error"));
       throw error;
     }
   }
-} 
+}

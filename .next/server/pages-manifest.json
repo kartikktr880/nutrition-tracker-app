@@ -1,1 +1,20 @@
-{}
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/analytics": "pages/analytics.js",
+  "/api/analytics/data": "pages/api/analytics/data.js",
+  "/api/analytics/export": "pages/api/analytics/export.js",
+  "/api/analytics/report": "pages/api/analytics/report.js",
+  "/api/data-portability": "pages/api/data-portability.js",
+  "/api/grocery-list": "pages/api/grocery-list.js",
+  "/api/meal-prep": "pages/api/meal-prep.js",
+  "/api/monitoring": "pages/api/monitoring.js",
+  "/api/nutritional-goals": "pages/api/nutritional-goals.js",
+  "/api/recommendations/meals": "pages/api/recommendations/meals.js",
+  "/api/user-preferences": "pages/api/user-preferences.js",
+  "/checklists": "pages/checklists.js",
+  "/dashboard": "pages/dashboard.js",
+  "/meal-planning": "pages/meal-planning.js",
+  "/monitoring": "pages/monitoring.js",
+  "/_document": "pages/_document.js"
+}

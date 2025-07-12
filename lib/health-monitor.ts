@@ -82,13 +82,22 @@ class HealthMonitor {
   }
 
   private async getMemoryUsage(): Promise<{ used: number; total: number; limit: number }> {
-    if (typeof performance !== 'undefined' && 'memory' in performance) {
-      const memory = (performance as any).memory as PerformanceMemory;
-      return {
-        used: memory.usedJSHeapSize,
-        total: memory.totalJSHeapSize,
-        limit: memory.jsHeapSizeLimit
-      };
+    if (typeof performance !== 'undefined' && typeof (performance as unknown as { memory?: unknown }).memory === 'object') {
+      const memoryUnknown = (performance as unknown as { memory?: unknown }).memory;
+      if (
+        memoryUnknown &&
+        typeof memoryUnknown === 'object' &&
+        'usedJSHeapSize' in memoryUnknown &&
+        'totalJSHeapSize' in memoryUnknown &&
+        'jsHeapSizeLimit' in memoryUnknown
+      ) {
+        const memory = memoryUnknown as PerformanceMemory;
+        return {
+          used: memory.usedJSHeapSize,
+          total: memory.totalJSHeapSize,
+          limit: memory.jsHeapSizeLimit
+        };
+      }
     }
     return { used: 0, total: 0, limit: 0 };
   }

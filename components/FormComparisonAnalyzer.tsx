@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { useTheme } from '@/hooks/useTheme';
 import { ValidationResult } from '@/services/stateValidation';
-import { validationVisualization } from '@/services/validationVisualization';
+import { logError } from '@/utils/logger';
 
 interface FormComparisonAnalyzerProps {
   exerciseKey: string;
-  currentForm: any;
+  currentForm: Record<string, unknown>;
   validationResult: ValidationResult;
-  idealFormPattern?: any;
+  idealFormPattern?: Record<string, unknown>;
   historicalData?: FormHistoryEntry[];
   onComparisonComplete?: (comparison: FormComparison) => void;
   className?: string;
@@ -17,7 +18,7 @@ interface FormComparisonAnalyzerProps {
 interface FormHistoryEntry {
   timestamp: number;
   metrics: FormMetrics;
-  formData: any;
+  formData: Record<string, unknown>;
   validationResult: ValidationResult;
 }
 
@@ -63,32 +64,31 @@ export const FormComparisonAnalyzer: React.FC<FormComparisonAnalyzerProps> = ({
 }) => {
   const theme = useTheme();
   const [comparison, setComparison] = useState<FormComparison | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [_isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'all'>('week');
 
   useEffect(() => {
     const analyzeForm = async () => {
       setIsAnalyzing(true);
       try {
-        const visualizationData = await validationVisualization.generateVisualizationData(exerciseKey);
+        // const visualizationData = await validationVisualization.generateVisualizationData(exerciseKey);
         const newComparison = await generateComparison(
           currentForm,
           validationResult,
           idealFormPattern,
-          historicalData,
-          visualizationData
+          historicalData
         );
         setComparison(newComparison);
         onComparisonComplete?.(newComparison);
       } catch (error) {
-        console.error('Form comparison failed:', error);
+        logError('Form comparison failed:', error);
       } finally {
         setIsAnalyzing(false);
       }
     };
 
     analyzeForm();
-  }, [exerciseKey, currentForm, validationResult, idealFormPattern, historicalData]);
+  }, [exerciseKey, currentForm, validationResult, idealFormPattern, historicalData, onComparisonComplete]);
 
   const filteredHistoricalData = useMemo(() => {
     const now = Date.now();
@@ -242,11 +242,10 @@ export const FormComparisonAnalyzer: React.FC<FormComparisonAnalyzerProps> = ({
 
 // Helper functions
 const generateComparison = async (
-  currentForm: any,
+  currentForm: Record<string, unknown>,
   validationResult: ValidationResult,
-  idealFormPattern: any,
-  historicalData: FormHistoryEntry[],
-  visualizationData: any
+  idealFormPattern: Record<string, unknown> | undefined,
+  historicalData: FormHistoryEntry[]
 ): Promise<FormComparison> => {
   // Calculate form similarity
   const similarity = calculateFormSimilarity(currentForm, idealFormPattern);
@@ -272,39 +271,40 @@ const generateComparison = async (
   };
 };
 
-const calculateFormSimilarity = (current: any, ideal: any): number => {
+const calculateFormSimilarity = (current: Record<string, unknown>, ideal: Record<string, unknown> | undefined): number => {
   if (!ideal) return 1; // If no ideal pattern, assume perfect
   // Implement form similarity calculation
   return 0.85; // Placeholder
 };
 
-const analyzeImprovements = (current: any, history: FormHistoryEntry[]): string[] => {
+const analyzeImprovements = (current: Record<string, unknown>, history: FormHistoryEntry[]): string[] => {
   if (!history.length) return ['No historical data available'];
   // Implement improvement analysis
   return ['Improved form stability', 'Better alignment'];
 };
 
-const analyzeRegressions = (current: any, history: FormHistoryEntry[]): string[] => {
+const analyzeRegressions = (current: Record<string, unknown>, history: FormHistoryEntry[]): string[] => {
   if (!history.length) return [];
   // Implement regression analysis
   return ['Timing needs attention'];
 };
 
 const generateRecommendations = (
-  current: any,
+  current: Record<string, unknown>,
   validation: ValidationResult,
   history: FormHistoryEntry[]
 ): string[] => {
-  // Generate recommendations based on current form and history
   const recommendations: string[] = [];
-  
+
   if (validation.errors.length > 0) {
     recommendations.push('Focus on correcting form errors first');
   }
-  
+
   if (history.length > 0) {
     const lastEntry = history[history.length - 1];
-    if (lastEntry.metrics.overall > current.metrics.overall) {
+    const lastMetrics = lastEntry.metrics as FormMetrics;
+    const currentMetrics = current.metrics as FormMetrics | undefined;
+    if (lastMetrics && currentMetrics && lastMetrics.overall > currentMetrics.overall) {
       recommendations.push('Try to maintain previous form quality');
     }
   }
@@ -312,7 +312,7 @@ const generateRecommendations = (
   return recommendations;
 };
 
-const calculateTrendAnalysis = (history: FormHistoryEntry[]): TrendAnalysis => {
+const calculateTrendAnalysis = (_history: FormHistoryEntry[]): TrendAnalysis => {
   // Implement trend analysis calculation
   return {
     accuracy: { current: 0.8, average: 0.75, trend: 'improving', change: 0.05 },
@@ -323,10 +323,11 @@ const calculateTrendAnalysis = (history: FormHistoryEntry[]): TrendAnalysis => {
   };
 };
 
-const getSimilarityColor = (similarity: number, theme: any): string => {
-  if (similarity >= 0.9) return theme.colors.success;
-  if (similarity >= 0.7) return theme.colors.warning;
-  return theme.colors.error;
+const getSimilarityColor = (similarity: number, _theme: Record<string, unknown>): string => {
+  const colors = { success: '#28a745', warning: '#ffc107', error: '#dc3545' };
+  if (similarity >= 0.8) return colors.success;
+  if (similarity >= 0.6) return colors.warning;
+  return colors.error;
 };
 
 const capitalizeFirst = (str: string): string => {

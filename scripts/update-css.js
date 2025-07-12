@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 const fs = require('fs');
 const path = require('path');
 
@@ -50,12 +51,12 @@ function updateFile(filePath) {
 
         if (modified) {
             fs.writeFileSync(filePath, content, 'utf8');
-            console.log(`Updated: ${filePath}`);
+            logInfo(`Updated: ${filePath}`);
             return true;
         }
         return false;
     } catch (error) {
-        console.error(`Error updating ${filePath}:`, error);
+        logError(`Error updating ${filePath}:`, error);
         return false;
     }
 }
@@ -66,10 +67,10 @@ function removeOldFiles() {
         try {
             if (fs.existsSync(file)) {
                 fs.unlinkSync(file);
-                console.log(`Removed: ${file}`);
+                logInfo(`Removed: ${file}`);
             }
         } catch (error) {
-            console.error(`Error removing ${file}:`, error);
+            logError(`Error removing ${file}:`, error);
         }
     });
 }
@@ -106,10 +107,10 @@ try {
 
     removeOldFiles();
 
-    console.log(`\nCSS update completed successfully!`);
-    console.log(`Updated ${updatedCount} HTML files`);
-    console.log(`Removed ${filesToRemove.length} old CSS files`);
+    logInfo(`\nCSS update completed successfully!`);
+    logInfo(`Updated ${updatedCount} HTML files`);
+    logInfo(`Removed ${filesToRemove.length} old CSS files`);
 } catch (error) {
-    console.error('Error during CSS update:', error);
+    logError('Error during CSS update:', error);
     process.exit(1);
 } 

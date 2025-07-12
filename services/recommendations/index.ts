@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { prisma } from '../../lib/prisma';
 import { getSession } from 'next-auth/react';
 import { AIRecommendationEngine } from './aiEngine';
@@ -172,12 +173,12 @@ class RecommendationService {
 
         return recommendations;
       } catch (error) {
-        console.error('Error getting meal recommendations:', error);
+        logError('Error getting meal recommendations:', error instanceof Error ? error : new Error(String(error)));
         if (error instanceof Error && error.message.includes('Database query timeout')) {
           // Return cached data if available, even if expired
           const cached = this.cache.get(cacheKey);
           if (cached) {
-            console.warn('Using expired cache due to database timeout');
+            logWarn('Using expired cache due to database timeout');
             return cached.recommendations.slice(0, count);
           }
         }
@@ -224,19 +225,17 @@ class RecommendationService {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        return await prisma.nutritionLog.findMany({
-          where: {
-            userId,
-            date: {
-              gte: thirtyDaysAgo
-            }
-          },
-          orderBy: {
-            date: 'desc'
-          }
+        const logs = await prisma.nutritionLog.findMany({
+          where: { userId },
+          orderBy: { date: 'desc' },
+          take: 100
         });
+        return logs.map(log => ({
+          ...log,
+          satisfactionRating: log.satisfactionRating === null ? undefined : log.satisfactionRating,
+        }));
       } catch (error) {
-        console.error('Error fetching nutrition history:', error);
+        logError('Error fetching nutrition history:', error instanceof Error ? error : new Error(String(error)));
         if (this.isDatabaseError(error)) {
           throw error; // Let retry logic handle it
         }
@@ -252,7 +251,7 @@ class RecommendationService {
           where: { userId }
         });
       } catch (error) {
-        console.error('Error fetching user goals:', error);
+        logError('Error fetching user goals:', error instanceof Error ? error : new Error(String(error)));
         if (this.isDatabaseError(error)) {
           throw error; // Let retry logic handle it
         }
@@ -268,7 +267,7 @@ class RecommendationService {
           where: { userId }
         });
       } catch (error) {
-        console.error('Error fetching user preferences:', error);
+        logError('Error fetching user preferences:', error);
         if (this.isDatabaseError(error)) {
           throw error; // Let retry logic handle it
         }

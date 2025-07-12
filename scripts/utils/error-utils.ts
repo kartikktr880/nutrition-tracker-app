@@ -117,12 +117,7 @@ export class ErrorUtils {
         };
 
         // Log error
-        LoggingUtils.log('error', `Error occurred: ${error.message}`, {
-            category,
-            severity,
-            stack: error.stack,
-            additionalInfo
-        });
+        LoggingUtils.log('error', `Error occurred: ${error.message}`);
 
         // Add to history
         this.addToHistory(context);
@@ -156,7 +151,7 @@ export class ErrorUtils {
                     LoggingUtils.log('warn', `Error recovery failed: ${error.message}`);
                 }
             } catch (recoveryError) {
-                LoggingUtils.log('error', `Error during recovery attempt: ${recoveryError.message}`);
+                LoggingUtils.log('error', `Error during recovery attempt: ${recoveryError instanceof Error ? recoveryError.message : String(recoveryError)}`);
                 context.recoverySuccessful = false;
             }
         }

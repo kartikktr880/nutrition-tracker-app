@@ -15,7 +15,7 @@ export const useBarcodeScanner = (): UseBarcodeScannerResult => {
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
-  const { addFoodEntry } = useFoodLog();
+  const { addFoodItem } = useFoodLog();
 
   const startScanning = useCallback(() => {
     if (!('BarcodeDetector' in window)) {
@@ -36,12 +36,18 @@ export const useBarcodeScanner = (): UseBarcodeScannerResult => {
       const result = await barcodeService.lookupBarcode(barcode);
       
       if (result.success && result.data) {
-        await addFoodEntry({
+        const foodItem = {
           name: result.data.name,
           brand: result.data.brand,
           nutrition: result.data.nutrition,
-          timestamp: Date.now()
-        });
+          calories: result.data.nutrition?.calories || 0,
+          protein: result.data.nutrition?.protein || 0,
+          carbs: result.data.nutrition?.carbs || 0,
+          fat: result.data.nutrition?.fat || 0,
+          quantity: 1,
+          unit: 'serving'
+        };
+        await addFoodItem(foodItem);
         
         showToast('Food added successfully', 'success');
         stopScanning();
@@ -53,7 +59,7 @@ export const useBarcodeScanner = (): UseBarcodeScannerResult => {
       setError('Failed to process barcode');
       showToast('Error processing barcode', 'error');
     }
-  }, [addFoodEntry, showToast, stopScanning]);
+  }, [addFoodItem, showToast, stopScanning]);
 
   return {
     isScanning,

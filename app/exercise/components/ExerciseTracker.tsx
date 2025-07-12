@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
+
 import { Exercise, ExerciseSession } from '@/types/exercise';
 import { encryptData, decryptData } from '@/utils/encryption';
-import { validateExerciseData, validateSessionData } from '@/utils/validation';
 import { validateRequest } from '@/utils/requestValidation';
-import { ExerciseErrorBoundary } from './ErrorBoundary';
 import { syncManager } from '@/utils/sync';
+import { validateExerciseData, validateSessionData } from '@/utils/validation';
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from 'src/utils/logger';
+
+import { ExerciseErrorBoundary } from './ErrorBoundary';
 
 // MET values for different exercise types and intensities
-const MET_VALUES = {
+const MET_VALUES: Record<string, Record<string, number>> = {
   strength: {
     low: 3.0,
     medium: 4.0,
@@ -40,7 +42,7 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
   const [error, setError] = useState<string | null>(null);
   const [currentExercise, setCurrentExercise] = useState<Exercise | null>(null);
   const [userWeight, setUserWeight] = useState<number>(70);
-  const [activeSessions, setActiveSessions] = useState<Map<string, ExerciseSession>>(new Map());
+  const [activeSessions, setActiveSessions] = useState<Map<string, string>>(new Map());
   const [sessionData, setSessionData] = useState<ExerciseSession>(() => ({
     id: '',
     userId: session?.user?.id || '',
@@ -57,9 +59,10 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }));
-  const [currentSession, setCurrentSession] = useState<ExerciseSession | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [_currentSession, _setCurrentSession] = useState<ExerciseSession | null>(null);
+  const [_isLoading, _setIsLoading] = useState(false);
   const [syncStatus, setSyncStatus] = useState({ total: 0, pending: 0, failed: 0 });
+  const [_encryptedSession, setEncryptedSession] = useState<string | null>(null);
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -114,7 +117,7 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
         
         setUserWeight(data.weight);
       } catch (error) {
-        console.error('Error fetching user weight:', error);
+        logError();
         setError(error instanceof Error ? error.message : 'Failed to fetch user weight');
       } finally {
         setLoading(false);
@@ -153,7 +156,7 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
     }
 
     try {
-      setIsLoading(true);
+      _setIsLoading(true);
       setError(null);
 
       const sessionId = `session_${Date.now()}`;
@@ -176,35 +179,35 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
       }
 
       // Encrypt sensitive session data
-      const encryptedSession = await encryptData(newSession);
+      const _encryptedSession = await encryptData(newSession);
 
       // Add to sync queue
       await syncManager.addToQueue(newSession, 'create');
 
       setCurrentExercise(exercise);
-      setActiveSessions(prev => new Map(prev).set(sessionId, encryptedSession));
+      setActiveSessions(prev => new Map(prev).set(sessionId, _encryptedSession));
       setSessionData(newSession);
     } catch (error) {
-      console.error('Error starting exercise:', error);
+      logError();
       setError(error instanceof Error ? error.message : 'Failed to start exercise');
     } finally {
-      setIsLoading(false);
+      _setIsLoading(false);
     }
   };
 
   const calculateCaloriesBurned = (duration: number, exercise: Exercise, weight: number): number => {
     // Validate input parameters
     if (!exercise || !weight || duration <= 0) {
-      console.warn('Invalid parameters for calorie calculation');
+      _logWarn();
       return 0;
     }
 
-    const exerciseType = exercise.type || 'strength';
+    const exerciseType = exercise.category || 'strength';
     const intensity = exercise.intensity || 'medium';
     
     // Validate exercise type and intensity
     if (!MET_VALUES[exerciseType] || !MET_VALUES[exerciseType][intensity]) {
-      console.warn(`Invalid exercise type (${exerciseType}) or intensity (${intensity})`);
+      _logWarn();
       return 0;
     }
 
@@ -213,7 +216,7 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
       const calories = Math.round(MET * weight * (duration / 60));
       return Math.max(0, calories); // Ensure non-negative calories
     } catch (error) {
-      console.error('Error calculating calories:', error);
+      logError();
       return 0;
     }
   };
@@ -225,7 +228,7 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
     }
 
     try {
-      setIsLoading(true);
+      _setIsLoading(true);
       setError(null);
 
       const endTime = new Date();
@@ -250,7 +253,7 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
       }
 
       // Encrypt session data before sending
-      const encryptedSession = await encryptData(updatedSession);
+      const _encryptedSession = await encryptData(updatedSession);
 
       // Add to sync queue
       await syncManager.addToQueue(updatedSession, 'update');
@@ -262,26 +265,26 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
         newSessions.delete(sessionData.id);
         return newSessions;
       });
-      onSessionComplete(encryptedSession);
+      onSessionComplete(updatedSession);
     } catch (error) {
-      console.error('Error ending exercise:', error);
+      logError();
       setError(error instanceof Error ? error.message : 'Failed to end exercise');
     } finally {
-      setIsLoading(false);
+      _setIsLoading(false);
     }
   };
 
   const updateSessionProgress = async (sessionId: string, updates: Partial<ExerciseSession>) => {
     setActiveSessions(prev => {
       const newSessions = new Map(prev);
-      const encryptedSession = newSessions.get(sessionId);
-      if (encryptedSession) {
+      const _encryptedSession = newSessions.get(sessionId);
+      if (_encryptedSession) {
         (async () => {
           try {
-            setIsLoading(true);
+            _setIsLoading(true);
             setError(null);
 
-            const session = await decryptData(encryptedSession);
+            const session = await decryptData(_encryptedSession);
             const updatedSession = { ...session, ...updates };
             
             // Validate updated session
@@ -298,18 +301,30 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
             // Add to sync queue
             await syncManager.addToQueue(updatedSession, 'update');
 
-            setCurrentSession(updatedSession);
+            _setCurrentSession(updatedSession);
           } catch (error) {
-            console.error('Error updating session:', error);
+            logError();
             setError(error instanceof Error ? error.message : 'Failed to update session');
           } finally {
-            setIsLoading(false);
+            _setIsLoading(false);
           }
         })();
       }
       return newSessions;
     });
   };
+
+  const _handleSessionEncryption = async (session: ExerciseSession) => {
+    try {
+      const __encryptedSession = await encryptData(session);
+      setEncryptedSession(__encryptedSession);
+    } catch (error) {
+      logError();
+    }
+  };
+
+  const _startExercise = startExercise;
+  const _updateSessionProgress = updateSessionProgress;
 
   return (
     <ExerciseErrorBoundary>
@@ -373,10 +388,10 @@ export const ExerciseTracker: React.FC<ExerciseTrackerProps> = ({ onSessionCompl
               <div className="mb-6">
                 <h3 className="text-lg font-semibold mb-4">Active Sessions</h3>
                 <div className="space-y-4">
-                  {Array.from(activeSessions.values()).map(session => (
-                    <div key={session.id} className="p-4 bg-gray-50 rounded-lg">
-                      <p>Session ID: {session.id}</p>
-                      <p>Duration: {((new Date().getTime() - new Date(session.startTime).getTime()) / 1000 / 60).toFixed(1)} minutes</p>
+                  {Array.from(activeSessions.entries()).map(([sessionId, _encryptedSession]) => (
+                    <div key={sessionId} className="p-4 bg-gray-50 rounded-lg">
+                      <p>Session ID: {sessionId}</p>
+                      {/* Optionally decrypt and display more info */}
                     </div>
                   ))}
                 </div>

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { analytics } from '../services/analytics';
-import { storage } from '../services/storage';
-import { monitoring } from '../services/monitoring';
-import type { Recipe, FoodItem } from '../types/nutrition';
+import Image from 'next/image';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import { useComponentLifecycle } from '../lib/hooks/useComponentLifecycle';
+import { analytics } from '../services/analytics';
+import { monitoring } from '../services/monitoring';
+import { storage } from '../services/storage';
+import type { Recipe, FoodItem } from '../types/nutrition';
+import { logWarn } from '../utils/logger';
 
 interface RecipeManagerProps {
   userId: string;
@@ -36,7 +39,7 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
   // Use component lifecycle hook
   useComponentLifecycle({
     onMemoryWarning: (usage, limit) => {
-      console.warn(`Memory usage warning in RecipeManager: ${usage}MB/${limit}MB`);
+      logWarn(`Memory usage warning in RecipeManager: ${usage}MB/${limit}MB`);
       analytics.trackEvent({
         category: 'Performance',
         action: 'memory_warning',
@@ -44,7 +47,7 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
       });
     },
     onPerformanceWarning: (metrics) => {
-      console.warn('Performance warning in RecipeManager:', metrics);
+      logWarn('Performance warning in RecipeManager:', metrics);
       analytics.trackEvent({
         category: 'Performance',
         action: 'performance_warning',
@@ -63,6 +66,48 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
     rateLimit: 50,
     rateLimitWindow: 60 * 1000 // 1 minute
   });
+
+  const loadRecipes = useCallback(async () => {
+    try {
+      const savedRecipes = await storage.getItem<Recipe[]>(`recipes_${userId}`);
+      if (savedRecipes) {
+        setRecipes(savedRecipes);
+        analytics.trackEvent({
+          category: 'Recipe',
+          action: 'load_recipes'
+        });
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Failed to load recipes';
+      setError(error);
+      analytics.trackError({
+        errorType: 'recipes_load_error',
+        errorMessage: error,
+        context: { userId }
+      });
+    }
+  }, [userId]);
+
+  const loadFoodItems = useCallback(async () => {
+    try {
+      const savedFoodItems = await storage.getItem<FoodItem[]>(`food_items_${userId}`);
+      if (savedFoodItems) {
+        setFoodItems(savedFoodItems);
+        analytics.trackEvent({
+          category: 'FoodItem',
+          action: 'load_food_items'
+        });
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Failed to load food items';
+      setError(error);
+      analytics.trackError({
+        errorType: 'food_items_load_error',
+        errorMessage: error,
+        context: { userId }
+      });
+    }
+  }, [userId]);
 
   useEffect(() => {
     const initializeComponent = async () => {
@@ -97,49 +142,7 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
     };
 
     initializeComponent();
-  }, [userId]);
-
-  const loadRecipes = async () => {
-    try {
-      const savedRecipes = await storage.getItem<Recipe[]>(`recipes_${userId}`);
-      if (savedRecipes) {
-        setRecipes(savedRecipes);
-        analytics.trackEvent({
-          category: 'Recipe',
-          action: 'load_recipes'
-        });
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load recipes';
-      setError(error);
-      analytics.trackError({
-        errorType: 'recipes_load_error',
-        errorMessage: error,
-        context: { userId }
-      });
-    }
-  };
-
-  const loadFoodItems = async () => {
-    try {
-      const savedFoodItems = await storage.getItem<FoodItem[]>(`food_items_${userId}`);
-      if (savedFoodItems) {
-        setFoodItems(savedFoodItems);
-        analytics.trackEvent({
-          category: 'FoodItem',
-          action: 'load_food_items'
-        });
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load food items';
-      setError(error);
-      analytics.trackError({
-        errorType: 'food_items_load_error',
-        errorMessage: error,
-        context: { userId }
-      });
-    }
-  };
+  }, [userId, loadRecipes, loadFoodItems]);
 
   const calculateTotalNutrition = (ingredients: Recipe['ingredients']): Recipe['totalNutrition'] => {
     const total = {
@@ -565,9 +568,11 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
         {filteredRecipes.map((recipe) => (
           <div key={recipe.id} className="bg-white rounded-lg shadow">
             {recipe.image && (
-              <img
+              <Image
                 src={recipe.image}
                 alt={recipe.name}
+                width={600}
+                height={300}
                 className="w-full h-48 object-cover rounded-t-lg"
               />
             )}

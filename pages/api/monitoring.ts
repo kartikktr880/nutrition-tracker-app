@@ -1,16 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MonitoringService } from '@/services/monitoring';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+import { getMonitoringData } from '../../services/monitoring';
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ message: 'Method not allowed' });
   }
 
   try {
-    const monitoringService = MonitoringService.getInstance();
-    await monitoringService.handleApiRequest(req, res);
+    const { userId } = req.query;
+    const data = await getMonitoringData(userId as string);
+    res.status(200).json(data);
   } catch (error) {
-    console.error('Monitoring API error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 } 

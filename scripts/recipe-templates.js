@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { auth } from './auth-core.js';
 import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { app } from './firebase-config.js';
@@ -28,7 +29,7 @@ class RecipeTemplates {
 
             this.updateTemplatesList();
         } catch (error) {
-            console.error('Error loading templates:', error);
+            logError('Error loading templates:', error);
         }
     }
 
@@ -72,7 +73,7 @@ class RecipeTemplates {
             await this.loadTemplates();
             this.showNotification('Recipe template saved successfully!');
         } catch (error) {
-            console.error('Error saving template:', error);
+            logError('Error saving template:', error);
             this.showNotification('Error saving template', 'error');
         }
     }
@@ -154,7 +155,7 @@ class RecipeTemplates {
                 });
             }
         } catch (error) {
-            console.error('Error updating template usage:', error);
+            logError('Error updating template usage:', error);
         }
     }
 
@@ -217,7 +218,7 @@ class RecipeTemplates {
 
     showNotification(message, type = 'success') {
         // Implementation depends on your notification system
-        console.log(`${type}: ${message}`);
+        logInfo(`${type}: ${message}`);
     }
 }
 

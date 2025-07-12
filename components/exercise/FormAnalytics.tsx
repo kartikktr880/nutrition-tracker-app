@@ -1,10 +1,12 @@
+import {
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle2,
+  Info,
+  ArrowUpRight,
+  ArrowDownRight,
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   LineChart,
   Line,
@@ -14,14 +16,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import {
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  ArrowUpRight,
-  ArrowDownRight,
-} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormAnalyticsProps {
   checks: ExerciseFormCheck[];
@@ -39,30 +39,30 @@ export function FormAnalytics({ checks, exerciseName }: FormAnalyticsProps) {
   const [insights, setInsights] = useState<FormInsight[]>([]);
   const [completionRate, setCompletionRate] = useState(0);
   const [criticalItemsRate, setCriticalItemsRate] = useState(0);
-  const [trendData, setTrendData] = useState<any[]>([]);
+  const [trendData, setTrendData] = useState<{ date: string; completionRate: number }[]>([]);
+  // const [_totalChecks, setTotalChecks] = useState<number>(0); // Removed unused state
 
   useEffect(() => {
     if (checks.length === 0) return;
 
     // Calculate completion rates
-    const totalChecks = checks.length;
-    const totalItems = checks.reduce((sum, check) => sum + check.checklist.length, 0);
+    const totalItems = checks.reduce((sum, check: ExerciseFormCheck) => sum + check.checklist.length, 0);
     const completedItems = checks.reduce(
-      (sum, check) => sum + check.checklist.filter((item) => item.completed).length,
+      (sum, check: ExerciseFormCheck) => sum + check.checklist.filter((item: { completed: boolean }) => item.completed).length,
       0
     );
     const criticalItems = checks.reduce(
-      (sum, check) =>
+      (sum, check: ExerciseFormCheck) =>
         sum +
         check.checklist.filter(
-          (item) => item.importance === 'critical' && item.completed
+          (item: { importance?: string; completed: boolean }) => item.importance === 'critical' && item.completed
         ).length,
       0
     );
     const totalCriticalItems = checks.reduce(
-      (sum, check) =>
+      (sum, check: ExerciseFormCheck) =>
         sum +
-        check.checklist.filter((item) => item.importance === 'critical').length,
+        check.checklist.filter((item: { importance?: string }) => item.importance === 'critical').length,
       0
     );
 
@@ -73,10 +73,10 @@ export function FormAnalytics({ checks, exerciseName }: FormAnalyticsProps) {
     const sortedChecks = [...checks].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
-    const trendData = sortedChecks.map((check) => ({
+    const trendData = sortedChecks.map((check: ExerciseFormCheck) => ({
       date: new Date(check.date).toLocaleDateString(),
       completionRate:
-        (check.checklist.filter((item) => item.completed).length /
+        (check.checklist.filter((item: { completed: boolean }) => item.completed).length /
           check.checklist.length) *
         100,
     }));
@@ -115,8 +115,8 @@ export function FormAnalytics({ checks, exerciseName }: FormAnalyticsProps) {
     // Consistency insight
     const recentChecks = checks.slice(-3);
     const recentCompletionRates = recentChecks.map(
-      (check) =>
-        (check.checklist.filter((item) => item.completed).length /
+      (check: ExerciseFormCheck) =>
+        (check.checklist.filter((item: { completed: boolean }) => item.completed).length /
           check.checklist.length) *
         100
     );
@@ -136,7 +136,7 @@ export function FormAnalytics({ checks, exerciseName }: FormAnalyticsProps) {
     }
 
     setInsights(newInsights);
-  }, [checks]);
+  }, [checks, completionRate, criticalItemsRate]);
 
   const getInsightIcon = (type: FormInsight['type']) => {
     switch (type) {

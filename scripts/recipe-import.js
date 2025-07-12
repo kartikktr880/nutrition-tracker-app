@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { auth } from './auth-core.js';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { app } from './firebase-config.js';
@@ -142,7 +143,7 @@ class RecipeImport {
                 preview.innerHTML = '<div class="error">Could not detect recipe format. Please check your input.</div>';
             }
         } catch (error) {
-            console.error('Error previewing recipe:', error);
+            logError('Error previewing recipe:', error);
             preview.innerHTML = '<div class="error">Error analyzing recipe. Please try again.</div>';
         }
     }
@@ -236,7 +237,7 @@ class RecipeImport {
             this.closeImportModal(modal);
             this.showSuccessMessage('Recipe imported successfully!');
         } catch (error) {
-            console.error('Error importing recipe:', error);
+            logError('Error importing recipe:', error);
             this.showErrorMessage('Failed to import recipe. Please try again.');
         }
     }
@@ -247,12 +248,12 @@ class RecipeImport {
 
     showSuccessMessage(message) {
         // Implementation depends on your notification system
-        console.log('Success:', message);
+        logInfo('Success:', message);
     }
 
     showErrorMessage(message) {
         // Implementation depends on your notification system
-        console.error('Error:', message);
+        logError('Error:', message);
     }
 
     // Helper methods

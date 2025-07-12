@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { logWarn } from '../../utils/logger';
+
 /**
  * Props for the SkipLink component
  */
@@ -74,7 +76,7 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
     const targetElement = document.getElementById(target);
     
     if (!targetElement) {
-      console.warn(`SkipLink: Target element with id "${target}" not found`);
+      logWarn(`SkipLink: Target element with id "${target}" not found`);
       return;
     }
 
@@ -97,10 +99,10 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
    * Handles keyboard events (Enter and Space keys)
    * Prevents default behavior and triggers the click handler
    */
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLAnchorElement>) => {
+  const _handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLAnchorElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleClick(e as any);
+      handleClick(e as unknown as React.MouseEvent<HTMLAnchorElement, MouseEvent>);
     }
   }, [handleClick]);
 
@@ -125,7 +127,12 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
       href={`#${target}`}
       className={`sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-md shadow-lg transition-all duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${className}`.trim()}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick(e as unknown as React.MouseEvent<HTMLAnchorElement, MouseEvent>);
+        }
+      }}
       onFocus={handleFocus}
       onBlur={handleBlur}
     >

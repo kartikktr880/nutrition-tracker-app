@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Social Sharing Module
  * Handles social sharing functionality for the Nutrition Tracker app
@@ -51,11 +52,11 @@ class SocialSharing {
                 case this.platforms.COPY_LINK:
                     return this.copyShareLink(content);
                 default:
-                    console.error('Unknown sharing platform:', platform);
+                    logError('Unknown sharing platform:', platform);
                     return false;
             }
         } catch (error) {
-            console.error('Error sharing content:', error);
+            logError('Error sharing content:', error);
             return false;
         }
     }
@@ -68,7 +69,7 @@ class SocialSharing {
     async nativeShare(content) {
         try {
             if (!navigator.share) {
-                console.error('Web Share API not supported');
+                logError('Web Share API not supported');
                 return false;
             }
             
@@ -82,7 +83,7 @@ class SocialSharing {
             await navigator.share(shareData);
             return true;
         } catch (error) {
-            console.error('Error using native share:', error);
+            logError('Error using native share:', error);
             return false;
         }
     }
@@ -100,7 +101,7 @@ class SocialSharing {
             this.openShareWindow(shareUrl, 'Facebook');
             return true;
         } catch (error) {
-            console.error('Error sharing to Facebook:', error);
+            logError('Error sharing to Facebook:', error);
             return false;
         }
     }
@@ -121,7 +122,7 @@ class SocialSharing {
             this.openShareWindow(shareUrl, 'Twitter');
             return true;
         } catch (error) {
-            console.error('Error sharing to Twitter:', error);
+            logError('Error sharing to Twitter:', error);
             return false;
         }
     }
@@ -142,7 +143,7 @@ class SocialSharing {
             this.openShareWindow(shareUrl, 'Pinterest');
             return true;
         } catch (error) {
-            console.error('Error sharing to Pinterest:', error);
+            logError('Error sharing to Pinterest:', error);
             return false;
         }
     }
@@ -164,7 +165,7 @@ class SocialSharing {
             window.location.href = mailtoUrl;
             return true;
         } catch (error) {
-            console.error('Error sharing via email:', error);
+            logError('Error sharing via email:', error);
             return false;
         }
     }
@@ -185,7 +186,7 @@ class SocialSharing {
             this.openShareWindow(shareUrl, 'WhatsApp');
             return true;
         } catch (error) {
-            console.error('Error sharing to WhatsApp:', error);
+            logError('Error sharing to WhatsApp:', error);
             return false;
         }
     }
@@ -202,7 +203,7 @@ class SocialSharing {
             await navigator.clipboard.writeText(url);
             return true;
         } catch (error) {
-            console.error('Error copying link:', error);
+            logError('Error copying link:', error);
             
             // Fallback for browsers that don't support clipboard API
             try {
@@ -214,7 +215,7 @@ class SocialSharing {
                 document.body.removeChild(textarea);
                 return true;
             } catch (fallbackError) {
-                console.error('Error with clipboard fallback:', fallbackError);
+                logError('Error with clipboard fallback:', fallbackError);
                 return false;
             }
         }
@@ -355,7 +356,7 @@ class SocialSharing {
         // Find the share modal element
         const modal = document.getElementById('share-modal');
         if (!modal) {
-            console.error('Share modal element not found');
+            logError('Share modal element not found');
             return;
         }
         

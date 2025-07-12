@@ -121,11 +121,12 @@ class MemoryManager {
   }
 
   private async collectMemoryMetrics(): Promise<MemoryMetrics> {
-    if (performance.memory) {
+    if ('memory' in performance) {
+      const memory = (performance as any).memory;
       const metrics: MemoryMetrics = {
-        totalJSHeapSize: performance.memory.totalJSHeapSize,
-        usedJSHeapSize: performance.memory.usedJSHeapSize,
-        jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
+        totalJSHeapSize: memory.totalJSHeapSize,
+        usedJSHeapSize: memory.usedJSHeapSize,
+        jsHeapSizeLimit: memory.jsHeapSizeLimit,
         timestamp: new Date()
       };
       return metrics;
@@ -309,7 +310,7 @@ class MemoryManager {
     }
   }
 
-  private forceGarbageCollection() {
+  public forceGarbageCollection() {
     if (window.gc) {
       try {
         window.gc();
@@ -417,6 +418,15 @@ class MemoryManager {
     this.isProfiling = false;
 
     this.forceGarbageCollection();
+  }
+
+  public setCacheTTL(key: string, ttl: number): Promise<void> {
+    // Implementation for setting cache TTL
+    const entry = this.cache.get(key);
+    if (entry) {
+      entry.timestamp = new Date(Date.now() + ttl);
+    }
+    return Promise.resolve();
   }
 }
 

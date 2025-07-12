@@ -1,26 +1,10 @@
-import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
+import { AlertCircle, ArrowDownRight, ArrowUpRight, Award, Calendar, Clock, Info, Minus, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import { Badge } from '@/components/ui/badge';
-import {
-  TrendingUp,
-  AlertCircle,
-  Info,
-  Target,
-  BarChart3,
-  Calendar,
-  Clock,
-  Award,
-  ArrowUpRight,
-  ArrowDownRight,
-  Minus,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Card } from '@/components/ui/card';
+import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormProgressionAnalysisProps {
   checks: ExerciseFormCheck[];
@@ -48,6 +32,19 @@ interface ProgressionMetrics {
     lastUpdate: Date;
   };
 }
+
+type ChecklistItemWithMetrics = {
+  item: string;
+  description: string;
+  importance: 'critical' | 'important' | 'optional';
+  completed: boolean;
+  metrics?: {
+    efficiency?: number;
+    stability?: number;
+    consistency?: number;
+    alignment?: number;
+  };
+};
 
 export function FormProgressionAnalysis({
   checks,
@@ -83,6 +80,19 @@ export function FormProgressionAnalysis({
     const { bestAreas, improvementAreas } = analyzeAreas(checks);
     const timeBasedAnalysis = analyzeTimeBasedPerformance(checks);
     const dayBasedAnalysis = analyzeDayBasedPerformance(checks);
+    const calculateRealTimeMetrics = (check: ExerciseFormCheck) => {
+      const now = new Date();
+      const accuracy = calculateFormAccuracy(check);
+      const stability = calculateFormStability(check);
+      const efficiency = calculateMovementEfficiency(check);
+
+      return {
+        currentAccuracy: accuracy,
+        formStability: stability,
+        movementEfficiency: efficiency,
+        lastUpdate: now
+      };
+    };
     const realTimeMetrics = calculateRealTimeMetrics(currentCheck);
 
     setMetrics({
@@ -97,7 +107,20 @@ export function FormProgressionAnalysis({
     });
 
     // Track performance metrics
-    trackPerformanceMetrics(realTimeMetrics);
+    // if (window.performanceMonitor) {
+    //   window.performanceMonitor.trackExerciseMetric('formTrackingAccuracy', {
+    //     value: realTimeMetrics.currentAccuracy,
+    //     timestamp: Date.now()
+    //   });
+    //   window.performanceMonitor.trackExerciseMetric('formStability', {
+    //     value: realTimeMetrics.formStability,
+    //     timestamp: Date.now()
+    //   });
+    //   window.performanceMonitor.trackExerciseMetric('movementEfficiency', {
+    //     value: realTimeMetrics.movementEfficiency,
+    //     timestamp: Date.now()
+    //   });
+    // }
   }, [checks, currentCheck]);
 
   const calculateWeeklyProgress = (checks: ExerciseFormCheck[]): number => {
@@ -105,7 +128,7 @@ export function FormProgressionAnalysis({
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     
     const recentChecks = checks.filter(
-      (check) => new Date(check.timestamp) >= oneWeekAgo
+      (check) => new Date((check.date ?? Date.now())) >= oneWeekAgo
     );
     
     if (recentChecks.length === 0) return 0;
@@ -123,7 +146,7 @@ export function FormProgressionAnalysis({
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
     
     const recentChecks = checks.filter(
-      (check) => new Date(check.timestamp) >= oneMonthAgo
+      (check) => new Date((check.date ?? Date.now())) >= oneMonthAgo
     );
     
     if (recentChecks.length === 0) return 0;
@@ -139,7 +162,7 @@ export function FormProgressionAnalysis({
   const calculateConsistencyStreak = (checks: ExerciseFormCheck[]): number => {
     let streak = 0;
     const sortedChecks = [...checks].sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      (a, b) => new Date((b.date ?? Date.now())).getTime() - new Date((a.date ?? Date.now())).getTime()
     );
     
     for (const check of sortedChecks) {
@@ -198,7 +221,7 @@ export function FormProgressionAnalysis({
     };
     
     checks.forEach((check) => {
-      const hour = new Date(check.timestamp).getHours();
+      const hour = new Date((check.date ?? Date.now())).getHours();
       let timeOfDay: keyof typeof timeBasedScores;
       
       if (hour >= 5 && hour < 12) {
@@ -231,7 +254,7 @@ export function FormProgressionAnalysis({
     const dayCounts: { [key: string]: number } = {};
     
     checks.forEach((check) => {
-      const day = new Date(check.timestamp).toLocaleDateString('en-US', { weekday: 'long' });
+      const day = new Date((check.date ?? Date.now())).toLocaleDateString('en-US', { weekday: 'long' });
       const completed = check.checklist.filter((item) => item.completed).length;
       const score = (completed / check.checklist.length) * 100;
       
@@ -246,20 +269,6 @@ export function FormProgressionAnalysis({
     return dayScores;
   };
 
-  const calculateRealTimeMetrics = (check: ExerciseFormCheck) => {
-    const now = new Date();
-    const accuracy = calculateFormAccuracy(check);
-    const stability = calculateFormStability(check);
-    const efficiency = calculateMovementEfficiency(check);
-
-    return {
-      currentAccuracy: accuracy,
-      formStability: stability,
-      movementEfficiency: efficiency,
-      lastUpdate: now
-    };
-  };
-
   const calculateFormAccuracy = (check: ExerciseFormCheck): number => {
     const completed = check.checklist.filter(item => item.completed).length;
     const total = check.checklist.length;
@@ -270,21 +279,18 @@ export function FormProgressionAnalysis({
     try {
       // Calculate stability based on form consistency with weighted metrics
       const stabilityScores = check.checklist.map(item => {
-        if (!item.metrics) return 0;
-        
+        const metrics = (item as ChecklistItemWithMetrics).metrics;
+        if (!metrics) return 0;
         // Weight different aspects of stability
         const weights = {
           stability: 0.4,
           consistency: 0.3,
           alignment: 0.3
         };
-        
-        const metrics = item.metrics;
-        const weightedScore = 
-          (metrics.stability || 0) * weights.stability +
-          (metrics.consistency || 0) * weights.consistency +
-          (metrics.alignment || 0) * weights.alignment;
-          
+        const weightedScore =
+          (metrics.stability ?? 0) * weights.stability +
+          (metrics.consistency ?? 0) * weights.consistency +
+          (metrics.alignment ?? 0) * weights.alignment;
         return weightedScore;
       });
       
@@ -294,7 +300,7 @@ export function FormProgressionAnalysis({
       
       return validScores.reduce((sum, score) => sum + score, 0) / validScores.length;
     } catch (error) {
-      console.error('Error calculating form stability:', error);
+      // logError('Error calculating form stability:', error);
       return 0;
     }
   };
@@ -302,28 +308,13 @@ export function FormProgressionAnalysis({
   const calculateMovementEfficiency = (check: ExerciseFormCheck): number => {
     // Calculate movement efficiency based on form metrics
     const efficiencyScores = check.checklist.map(item => {
-      if (!item.metrics) return 0;
-      return item.metrics.efficiency || 0;
+      const metrics = (item as ChecklistItemWithMetrics).metrics;
+      if (metrics && typeof metrics.efficiency === 'number') {
+        return metrics.efficiency;
+      }
+      return 0;
     });
     return efficiencyScores.reduce((sum, score) => sum + score, 0) / efficiencyScores.length;
-  };
-
-  const trackPerformanceMetrics = (metrics: any) => {
-    // Track metrics in performance monitor
-    if (window.performanceMonitor) {
-      window.performanceMonitor.trackExerciseMetric('formTrackingAccuracy', {
-        value: metrics.currentAccuracy,
-        timestamp: Date.now()
-      });
-      window.performanceMonitor.trackExerciseMetric('formStability', {
-        value: metrics.formStability,
-        timestamp: Date.now()
-      });
-      window.performanceMonitor.trackExerciseMetric('movementEfficiency', {
-        value: metrics.movementEfficiency,
-        timestamp: Date.now()
-      });
-    }
   };
 
   const getProgressIcon = (progress: number) => {
@@ -343,16 +334,11 @@ export function FormProgressionAnalysis({
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Form Progression Analysis</h3>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Info className="w-5 h-5 text-gray-400" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Detailed analysis of your form progression patterns</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip content="This section provides an overview and tips for your form progression analysis.">
+          <TooltipTrigger>
+            <Info className="w-5 h-5 text-gray-400" />
+          </TooltipTrigger>
+        </Tooltip>
       </div>
 
       <div className="space-y-6">

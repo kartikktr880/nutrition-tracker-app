@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 const express = require('express');
 const v8 = require('v8');
 const path = require('path');
@@ -152,8 +153,8 @@ app.get('/health', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Memory Leak Detector running on http://localhost:${PORT}`);
-    console.log('Health check available at /health');
-    console.log('Memory monitoring available at /memory');
-    console.log('Environment:', process.env.NODE_ENV || 'development');
+    logInfo(`Memory Leak Detector running on http://localhost:${PORT}`);
+    logInfo('Health check available at /health');
+    logInfo('Memory monitoring available at /memory');
+    logInfo('Environment:', process.env.NODE_ENV || 'development');
 }); 

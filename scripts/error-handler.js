@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Enhanced Error Handler
  * Provides comprehensive error handling and recovery strategies
@@ -161,7 +162,7 @@ class ErrorHandler {
       try {
         observer(errorData);
         } catch (e) {
-        console.error('Error in error observer:', e);
+        logError('Error in error observer:', e);
       }
     });
   }

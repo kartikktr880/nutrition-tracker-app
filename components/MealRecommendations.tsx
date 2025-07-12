@@ -1,6 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Card, CardContent, Typography, Grid, Chip, CircularProgress, Box, Button, Skeleton } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import React, { useCallback, useEffect, useState } from 'react';
 
 interface MealRecommendation {
   id: string;
@@ -21,7 +19,6 @@ interface MealRecommendationsProps {
 const MealCard: React.FC<{ meal: MealRecommendation; onSelect?: (meal: MealRecommendation) => void }> = ({ meal, onSelect }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const theme = useTheme();
 
   const handleSelect = async () => {
     if (onSelect) {
@@ -38,108 +35,64 @@ const MealCard: React.FC<{ meal: MealRecommendation; onSelect?: (meal: MealRecom
   };
 
   return (
-    <Card 
-      sx={{ 
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        cursor: onSelect ? 'pointer' : 'default',
-        transition: 'transform 0.2s',
-        '&:hover': {
-          transform: onSelect ? 'scale(1.02)' : 'none',
-          boxShadow: theme.shadows[4]
-        },
-        position: 'relative'
-      }}
+    <div 
+      className={`bg-white rounded-lg shadow-md p-4 h-full flex flex-col cursor-pointer transition-transform hover:scale-105 relative ${
+        onSelect ? 'hover:shadow-lg' : ''
+      }`}
       onClick={handleSelect}
     >
       {isLoading && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-            zIndex: 1
-          }}
-        >
-          <CircularProgress size={24} />
-        </Box>
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+        </div>
       )}
       {error && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            zIndex: 1,
-            p: 2
-          }}
-        >
-          <Typography color="error" align="center">
-            {error}
-          </Typography>
-        </Box>
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 z-10 p-4">
+          <p className="text-red-500 text-center text-sm">{error}</p>
+        </div>
       )}
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          {meal.name}
-        </Typography>
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold mb-2">{meal.name}</h3>
         
-        <Box mb={2}>
-          <Typography variant="body2" color="text.secondary">
-            {meal.calories} calories
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+        <div className="mb-4">
+          <p className="text-gray-600 text-sm">{meal.calories} calories</p>
+          <p className="text-gray-600 text-sm">
             Protein: {meal.protein}g | Carbs: {meal.carbs}g | Fat: {meal.fat}g
-          </Typography>
-        </Box>
+          </p>
+        </div>
 
-        <Box display="flex" flexWrap="wrap" gap={1}>
-          <Chip 
-            label={`${Math.round(meal.confidence * 100)}% match`}
-            color="primary"
-            size="small"
-          />
+        <div className="flex flex-wrap gap-2">
+          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+            {Math.round(meal.confidence * 100)}% match
+          </span>
           {meal.reason.split(', ').map((reason, index) => (
-            <Chip
+            <span
               key={index}
-              label={reason}
-              variant="outlined"
-              size="small"
-            />
+              className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded border"
+            >
+              {reason}
+            </span>
           ))}
-        </Box>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 
 const MealCardSkeleton = () => (
-  <Card sx={{ height: '100%' }}>
-    <CardContent>
-      <Skeleton variant="text" width="60%" height={32} />
-      <Box mb={2}>
-        <Skeleton variant="text" width="40%" />
-        <Skeleton variant="text" width="80%" />
-      </Box>
-      <Box display="flex" gap={1}>
-        <Skeleton variant="rounded" width={80} height={24} />
-        <Skeleton variant="rounded" width={120} height={24} />
-      </Box>
-    </CardContent>
-  </Card>
+  <div className="bg-white rounded-lg shadow-md p-4 h-full">
+    <div className="animate-pulse">
+      <div className="h-6 bg-gray-200 rounded w-3/5 mb-2"></div>
+      <div className="space-y-2 mb-4">
+        <div className="h-4 bg-gray-200 rounded w-2/5"></div>
+        <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+      </div>
+      <div className="flex gap-2">
+        <div className="h-6 bg-gray-200 rounded w-20"></div>
+        <div className="h-6 bg-gray-200 rounded w-24"></div>
+      </div>
+    </div>
+  </div>
 );
 
 const MealRecommendations: React.FC<MealRecommendationsProps> = ({ mealType, onSelect }) => {
@@ -150,26 +103,25 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ mealType, onS
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isMounted, setIsMounted] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const theme = useTheme();
 
-  const validateRecommendations = (data: any): MealRecommendation[] => {
+  const validateRecommendations = (data: unknown): MealRecommendation[] => {
     if (!Array.isArray(data)) {
       throw new Error('Invalid response format');
     }
 
-    return data.map((item: any) => {
+    return data.map((item: Record<string, unknown>) => {
       if (!item.id || !item.name || typeof item.calories !== 'number') {
         throw new Error('Invalid meal data format');
       }
       return {
-        id: item.id,
-        name: item.name,
-        calories: item.calories,
-        protein: item.protein || 0,
-        carbs: item.carbs || 0,
-        fat: item.fat || 0,
-        confidence: item.confidence || 0,
-        reason: item.reason || ''
+        id: item.id as string,
+        name: item.name as string,
+        calories: item.calories as number,
+        protein: (item.protein as number) || 0,
+        carbs: (item.carbs as number) || 0,
+        fat: (item.fat as number) || 0,
+        confidence: (item.confidence as number) || 0,
+        reason: (item.reason as string) || ''
       };
     });
   };
@@ -275,27 +227,27 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ mealType, onS
 
   if (loading && !isRefreshing) {
     return (
-      <Grid container spacing={2}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {[1, 2, 3, 4, 5, 6].map((index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <div key={index} className="col-span-1">
             <MealCardSkeleton />
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="200px" gap={2}>
-        <Typography color="error">{error}</Typography>
+      <div className="flex flex-col items-center justify-center min-h-[200px] gap-4">
+        <p className="text-red-500">{error}</p>
         {retryCount < 3 ? (
-          <Typography variant="body2" color="text.secondary">
+          <p className="text-gray-600 text-sm">
             Retrying... ({retryCount + 1}/3)
-          </Typography>
+          </p>
         ) : (
-          <Button 
-            variant="contained" 
+          <button 
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               setRetryCount(0);
               fetchRecommendations();
@@ -303,41 +255,39 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ mealType, onS
             disabled={isRefreshing}
           >
             {isRefreshing ? 'Retrying...' : 'Retry'}
-          </Button>
+          </button>
         )}
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h6">
+    <div className="flex flex-col">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">
           Recommended Meals
           {lastUpdated && (
-            <Typography component="span" variant="caption" color="text.secondary" ml={1}>
+            <span className="text-gray-600 text-sm ml-2">
               (Last updated: {lastUpdated.toLocaleTimeString()})
-            </Typography>
+            </span>
           )}
-        </Typography>
-        <Button
-          variant="outlined"
-          size="small"
+        </h2>
+        <button
+          className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-sm"
           onClick={handleRefresh}
           disabled={isRefreshing}
-          startIcon={isRefreshing ? <CircularProgress size={16} /> : null}
         >
           {isRefreshing ? 'Refreshing...' : 'Refresh'}
-        </Button>
-      </Box>
-      <Grid container spacing={2}>
+        </button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {recommendations.map((meal) => (
-          <Grid item xs={12} sm={6} md={4} key={meal.id}>
+          <div key={meal.id} className="col-span-1">
             <MealCard meal={meal} onSelect={onSelect} />
-          </Grid>
+          </div>
         ))}
-      </Grid>
-    </Box>
+      </div>
+    </div>
   );
 };
 

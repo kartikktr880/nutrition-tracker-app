@@ -47,6 +47,7 @@ class DatabaseErrorHandler {
   private healthCheckInterval: NodeJS.Timeout | null = null;
   private readonly HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
   private fallbackCache: Map<string, any> = new Map();
+  private failureCounts: Map<string, number> = new Map();
 
   private constructor() {
     this.initializeConnectionPool();
@@ -190,25 +191,18 @@ class DatabaseErrorHandler {
     operation: () => Promise<T>,
     retryConfig: RetryConfig = this.defaultRetryConfig
   ): Promise<T> {
-    let lastError: DatabaseError;
-    let attempt = 0;
-
-    while (attempt < retryConfig.maxRetries) {
+    let lastError: Error | null = null;
+    
+    for (let attempt = 1; attempt <= retryConfig.maxRetries; attempt++) {
       try {
-        const startTime = Date.now();
-        const result = await operation();
-        const duration = Date.now() - startTime;
-        
-        recordOperationLatency('database_operation', duration);
-        return result;
+        return await operation();
       } catch (error) {
-        lastError = error as DatabaseError;
+        lastError = error instanceof Error ? error : new Error(String(error));
         
-        if (!this.isRetryableError(lastError)) {
+        if (!this.isRetryableError(lastError as DatabaseError)) {
           throw lastError;
         }
 
-        attempt++;
         if (attempt === retryConfig.maxRetries) {
           break;
         }
@@ -221,11 +215,7 @@ class DatabaseErrorHandler {
       }
     }
 
-    recordError('database_operation_failed', JSON.stringify({
-      error: lastError,
-      attempts: attempt,
-      operation: operation.name
-    }));
+    recordError('database_operation_failed', new Error(`Database operation failed after ${retryConfig.maxRetries} attempts`));
 
     throw lastError;
   }
@@ -298,11 +288,7 @@ class DatabaseErrorHandler {
       circuitBreaker.failureCount = 0;
     }, this.circuitBreakerConfig.resetTimeout);
 
-    recordError('circuit_breaker_tripped', {
-      dbType,
-      timestamp: new Date(),
-      failureCount: circuitBreaker.failureCount
-    });
+    recordError('circuit_breaker_tripped', new Error(`Circuit breaker tripped for ${dbType}`));
   }
 
   private resetCircuitBreaker(dbType: string) {
@@ -325,11 +311,7 @@ class DatabaseErrorHandler {
       });
       return result;
     } catch (error) {
-      recordError('fallback_operation_failed', {
-        dbType,
-        error,
-        timestamp: new Date()
-      });
+      recordError('fallback_operation_failed', new Error(`Fallback operation failed for ${dbType}`));
       throw error;
     }
   }
@@ -363,7 +345,7 @@ class DatabaseErrorHandler {
       const results: T[] = [];
       
       try {
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
           for (const operation of operations) {
             const result = await operation();
             results.push(result);
@@ -372,10 +354,7 @@ class DatabaseErrorHandler {
         
         return results;
       } catch (error) {
-        recordError('database_transaction_failed', {
-          error,
-          operations: operations.map(op => op.name)
-        });
+        recordError('database_transaction_failed', new Error(`Transaction failed: ${error}`));
         throw error;
       }
     }, config);
@@ -388,7 +367,7 @@ class DatabaseErrorHandler {
       });
       return true;
     } catch (error) {
-      recordError('database_connection_check_failed', { error });
+      recordError('database_connection_check_failed', new Error(`Connection check failed: ${error}`));
       return false;
     }
   }
@@ -399,11 +378,7 @@ class DatabaseErrorHandler {
 
   private handleConnectionError(dbType: string, error: DatabaseError) {
     this.updateConnectionStatus(dbType, false, error);
-    recordError(`database_connection_error_${dbType}`, JSON.stringify({
-      error,
-      dbType,
-      timestamp: new Date()
-    }));
+    recordError('database_connection_failed', new Error(`Database connection failed: ${dbType}`));
 
     auditLogger.log({
       category: 'database',
@@ -446,6 +421,41 @@ class DatabaseErrorHandler {
       this.handleConnectionError(dbType, error as DatabaseError);
       return false;
     }
+  }
+
+  private async handleConnectionFailure(dbType: string): Promise<void> {
+    let lastError: Error | null = null;
+    
+    try {
+      // Attempt to reconnect
+      await this.attemptReconnection(dbType);
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      
+      // Log the failure
+      await this.logFailure({
+        dbType,
+        timestamp: new Date(),
+        failureCount: this.failureCounts.get(dbType) || 0
+      });
+      
+      // Update failure count
+      this.failureCounts.set(dbType, (this.failureCounts.get(dbType) || 0) + 1);
+    }
+
+    if (lastError) {
+      throw lastError;
+    }
+  }
+
+  private async attemptReconnection(dbType: string): Promise<void> {
+    // Dummy reconnection logic
+    return;
+  }
+
+  private async logFailure(info: { dbType: string; timestamp: Date; failureCount: number }): Promise<void> {
+    // Dummy log logic
+    return;
   }
 }
 

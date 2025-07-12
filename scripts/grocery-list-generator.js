@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 class GroceryListGenerator {
     constructor() {
         this.cache = new Map();
@@ -37,7 +38,7 @@ class GroceryListGenerator {
             try {
                 this.savedLists = JSON.parse(savedLists);
             } catch (e) {
-                console.error('Error loading saved grocery lists:', e);
+                logError('Error loading saved grocery lists:', e);
                 this.savedLists = [];
             }
         } else {

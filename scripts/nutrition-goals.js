@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 class NutritionGoals {
   constructor() {
     this.goals = {
@@ -796,7 +797,7 @@ class NutritionGoals {
             this.showShareModal(content);
           }
         } catch (e) {
-          console.error('Error loading achievement share component:', e);
+          logError('Error loading achievement share component:', e);
           this.showToast('Could not load sharing component', 'error');
         }
         

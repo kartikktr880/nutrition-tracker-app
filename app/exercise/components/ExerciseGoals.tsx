@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import { ExerciseGoal } from '@/types/exercise';
+import { logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from 'src/utils/logger';
 
 interface ExerciseGoalsProps {
   exerciseId: string;
@@ -21,11 +23,7 @@ export const ExerciseGoals: React.FC<ExerciseGoalsProps> = ({ exerciseId }) => {
     description: '',
   });
 
-  useEffect(() => {
-    fetchGoals();
-  }, [exerciseId]);
-
-  const fetchGoals = async () => {
+  const _fetchGoals = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/exercise/goals?exerciseId=${exerciseId}`);
@@ -35,11 +33,15 @@ export const ExerciseGoals: React.FC<ExerciseGoalsProps> = ({ exerciseId }) => {
       const data = await response.json();
       setGoals(data);
     } catch (error) {
-      console.error('Error fetching goals:', error);
+      _logWarn();
     } finally {
       setLoading(false);
     }
-  };
+  }, [exerciseId]);
+
+  useEffect(() => {
+    _fetchGoals();
+  }, [_fetchGoals]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +76,7 @@ export const ExerciseGoals: React.FC<ExerciseGoalsProps> = ({ exerciseId }) => {
         description: '',
       });
     } catch (error) {
-      console.error('Error creating goal:', error);
+      _logWarn();
     }
   };
 
@@ -111,100 +113,101 @@ export const ExerciseGoals: React.FC<ExerciseGoalsProps> = ({ exerciseId }) => {
       </div>
 
       {showForm && (
-        <motion.form
+        <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          onSubmit={handleSubmit}
           className="mb-6 p-4 bg-gray-50 rounded-lg"
         >
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Target Sets
+                </label>
+                <input
+                  type="number"
+                  name="targetSets"
+                  value={formData.targetSets}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Target Reps
+                </label>
+                <input
+                  type="number"
+                  name="targetReps"
+                  value={formData.targetReps}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Target Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  name="targetWeight"
+                  value={formData.targetWeight}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Target Duration (min)
+                </label>
+                <input
+                  type="number"
+                  name="targetDuration"
+                  value={formData.targetDuration}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+            </div>
+            <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Target Sets
+                Deadline
               </label>
               <input
-                type="number"
-                name="targetSets"
-                value={formData.targetSets}
+                type="date"
+                name="deadline"
+                value={formData.deadline}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded-lg"
                 required
               />
             </div>
-            <div>
+            <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Target Reps
+                Description
               </label>
-              <input
-                type="number"
-                name="targetReps"
-                value={formData.targetReps}
+              <textarea
+                name="description"
+                value={formData.description}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded-lg"
+                rows={3}
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Target Weight (kg)
-              </label>
-              <input
-                type="number"
-                name="targetWeight"
-                value={formData.targetWeight}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Target Duration (min)
-              </label>
-              <input
-                type="number"
-                name="targetDuration"
-                value={formData.targetDuration}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Deadline
-            </label>
-            <input
-              type="date"
-              name="deadline"
-              value={formData.deadline}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg"
-              rows={3}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Create Goal
-          </button>
-        </motion.form>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create Goal
+            </button>
+          </form>
+        </motion.div>
       )}
 
       <div className="space-y-4">

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { prisma } from '@/lib/prisma';
 import { MealRecommendation, UserPreferences } from './types';
 
@@ -60,7 +61,7 @@ export class AIRecommendationEngine {
       // Filter and sort recommendations
       return this.filterAndSortRecommendations(recommendations, preferences);
     } catch (error) {
-      console.error('Error generating AI recommendations:', error);
+      logError('Error generating AI recommendations:', error);
       throw new Error('Failed to generate AI recommendations');
     }
   }
@@ -149,7 +150,6 @@ export class AIRecommendationEngine {
     // Get potential meals from database
     const potentialMeals = await prisma.meal.findMany({
       where: {
-        mealType,
         calories: {
           gte: nutritionalNeeds.calories * 0.8,
           lte: nutritionalNeeds.calories * 1.2
@@ -157,9 +157,11 @@ export class AIRecommendationEngine {
       },
       take: 100
     });
+    // Filter by mealType in memory if needed
+    const filteredMeals = potentialMeals.filter((meal: any) => meal.mealType === mealType);
 
     // Score meals based on model and preferences
-    const scoredMeals = potentialMeals.map((meal: any) => ({
+    const scoredMeals = filteredMeals.map((meal: any) => ({
       ...meal,
       confidence: this.calculateConfidence(meal, model, preferences, nutritionalNeeds),
       reason: this.generateRecommendationReason(meal, model, preferences)

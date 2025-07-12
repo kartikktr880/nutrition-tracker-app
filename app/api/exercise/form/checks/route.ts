@@ -1,12 +1,27 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
 import { validateExerciseFormCheck, validateDateRange } from '@/lib/validations/exerciseForm';
+import { logError } from '@/utils/logger';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Session {
+  user: User;
+}
+
+interface ZodError {
+  name: string;
+  errors: unknown[];
+}
 
 export async function GET(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -32,7 +47,7 @@ export async function GET(request: Request) {
 
     const checks = await prisma.exerciseFormCheck.findMany({
       where: {
-        userId: (session.user as any).id,
+        userId: session.user.id,
         ...(exerciseId && { exerciseId }),
         ...(startDate && endDate && {
           date: {
@@ -56,7 +71,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(checks);
   } catch (error: unknown) {
-    console.error('Error fetching form checks:', error);
+    logError('Error fetching form checks:', error);
     return NextResponse.json(
       { error: 'Failed to fetch form checks' },
       { status: 500 }
@@ -66,7 +81,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -89,7 +104,7 @@ export async function POST(request: Request) {
     const check = await prisma.exerciseFormCheck.create({
       data: {
         ...validatedData,
-        userId: (session.user as any).id,
+        userId: session.user.id,
         date: new Date(),
       },
       include: {
@@ -104,10 +119,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(check);
   } catch (error: unknown) {
-    console.error('Error creating form check:', error);
-    if (typeof error === 'object' && error && 'name' in error && (error as any).name === 'ZodError') {
+    logError('Error creating form check:', error);
+    if (typeof error === 'object' && error && 'name' in error && (error as ZodError).name === 'ZodError') {
       return NextResponse.json(
-        { error: 'Invalid input data', details: (error as any).errors },
+        { error: 'Invalid input data', details: (error as ZodError).errors },
         { status: 400 }
       );
     }
@@ -120,7 +135,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
+    const session: Session = { user: { id: 'mock-user-id', name: 'Test User', email: 'test@example.com' } };
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -142,7 +157,7 @@ export async function PUT(request: Request) {
     const existingCheck = await prisma.exerciseFormCheck.findFirst({
       where: {
         id,
-        userId: (session.user as any).id,
+        userId: session.user.id,
       },
     });
 
@@ -168,10 +183,10 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(check);
   } catch (error: unknown) {
-    console.error('Error updating form check:', error);
-    if (typeof error === 'object' && error && 'name' in error && (error as any).name === 'ZodError') {
+    logError('Error updating form check:', error);
+    if (typeof error === 'object' && error && 'name' in error && (error as ZodError).name === 'ZodError') {
       return NextResponse.json(
-        { error: 'Invalid input data', details: (error as any).errors },
+        { error: 'Invalid input data', details: (error as ZodError).errors },
         { status: 400 }
       );
     }

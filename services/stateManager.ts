@@ -455,7 +455,15 @@ class StateManager {
       // Update in-memory state
       this.states.set(key, {
         value: record.value,
-        metadata: record.metadata
+        metadata: {
+          timestamp: new Date(record.metadata.timestamp),
+          version: record.metadata.version,
+          checksum: record.metadata.checksum,
+          size: record.metadata.size,
+          lastModified: new Date(record.metadata.lastModified),
+          lastAccessed: new Date(record.metadata.lastAccessed),
+          accessCount: record.metadata.accessCount
+        }
       });
 
       return record.value as T;

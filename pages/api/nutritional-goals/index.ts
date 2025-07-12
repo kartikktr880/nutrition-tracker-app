@@ -1,91 +1,36 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
-import { prisma } from '../../../lib/prisma';
+
+import { getNutritionalGoals, updateNutritionalGoals } from '../../../services/nutritional-goals';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSession({ req });
+  const { method } = req;
 
-  if (!session) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const userId = session.user.id;
-
-  switch (req.method) {
+  switch (method) {
     case 'GET':
       try {
-        const goals = await prisma.nutritionalGoals.findUnique({
-          where: { userId },
-        });
-
-        if (!goals) {
-          return res.status(404).json({ error: 'Nutritional goals not found' });
-        }
-
-        return res.status(200).json(goals);
+        const { userId } = req.query;
+        const goals = await getNutritionalGoals(userId as string);
+        res.status(200).json(goals);
       } catch (error) {
-        console.error('Error fetching nutritional goals:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
       }
+      break;
 
-    case 'PUT':
+    case 'POST':
       try {
-        const {
-          calories,
-          protein,
-          carbohydrates,
-          fats,
-          fiber,
-          sugar,
-          sodium,
-          vitaminA,
-          vitaminC,
-          calcium,
-          iron,
-        } = req.body;
-
-        const updatedGoals = await prisma.nutritionalGoals.upsert({
-          where: { userId },
-          update: {
-            calories,
-            protein,
-            carbohydrates,
-            fats,
-            fiber,
-            sugar,
-            sodium,
-            vitaminA,
-            vitaminC,
-            calcium,
-            iron,
-          },
-          create: {
-            userId,
-            calories,
-            protein,
-            carbohydrates,
-            fats,
-            fiber,
-            sugar,
-            sodium,
-            vitaminA,
-            vitaminC,
-            calcium,
-            iron,
-          },
-        });
-
-        return res.status(200).json(updatedGoals);
+        const { userId, goals } = req.body;
+        const updatedGoals = await updateNutritionalGoals(userId, goals);
+        res.status(200).json(updatedGoals);
       } catch (error) {
-        console.error('Error updating nutritional goals:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
       }
+      break;
 
     default:
-      res.setHeader('Allow', ['GET', 'PUT']);
-      return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Method ${method} Not Allowed`);
   }
 } 

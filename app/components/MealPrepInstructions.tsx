@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { barcodeService } from '../../lib/barcode-service';
 
 interface MealPrepInstructionsProps {
@@ -87,26 +88,17 @@ const MealPrepInstructions: React.FC<MealPrepInstructionsProps> = ({ barcode, on
           <div className="text-sm text-gray-600 mb-2">
             Duration: {formatTime(instructions.steps[activeStep].duration)}
           </div>
-          {instructions.steps[activeStep].equipment && (
-            <div className="mb-2">
+          {instructions.steps[activeStep].equipment?.map((item: string, index: number) => (
+            <div className="mb-2" key={index}>
               <span className="text-gray-600">Equipment needed:</span>
               <ul className="list-disc list-inside ml-2">
-                {instructions.steps[activeStep].equipment.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
+                <li>{item}</li>
               </ul>
             </div>
-          )}
-          {instructions.steps[activeStep].tips && (
-            <div>
-              <span className="text-gray-600">Tips:</span>
-              <ul className="list-disc list-inside ml-2">
-                {instructions.steps[activeStep].tips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          ))}
+          {instructions.steps[activeStep].tips?.map((tip: string, index: number) => (
+            <div key={index} className="text-sm text-gray-600">{tip}</div>
+          ))}
         </div>
       </div>
 
@@ -114,7 +106,7 @@ const MealPrepInstructions: React.FC<MealPrepInstructionsProps> = ({ barcode, on
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-medium mb-2">Equipment Needed</h3>
           <ul className="list-disc list-inside">
-            {instructions.equipment.map((item, index) => (
+            {instructions.equipment.map((item: string, index: number) => (
               <li key={index}>{item}</li>
             ))}
           </ul>
@@ -131,7 +123,7 @@ const MealPrepInstructions: React.FC<MealPrepInstructionsProps> = ({ barcode, on
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-medium mb-2">Reheating Instructions</h3>
           <ul className="list-disc list-inside">
-            {instructions.reheating.map((instruction, index) => (
+            {instructions.reheating.map((instruction: string, index: number) => (
               <li key={index}>{instruction}</li>
             ))}
           </ul>

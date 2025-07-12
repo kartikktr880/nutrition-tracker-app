@@ -1,8 +1,12 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
+
 import { FocusTrap } from '@/components/FocusTrap/FocusTrap';
 import { SearchService, type SearchResult } from '@/services/searchService';
+
+import { logError } from '../../utils/logger';
+
 import { SearchBarErrorBoundary } from './SearchBarErrorBoundary';
 
 interface SearchBarProps {
@@ -55,7 +59,7 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
       setResults(searchResults);
       onSearch(searchQuery);
     } catch (error) {
-      console.error('Search failed:', error);
+      logError('Search failed:', error);
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -107,7 +111,6 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
           placeholder={placeholder}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-label="Search"
-          aria-expanded={isOpen}
           aria-controls="search-results"
           role="searchbox"
         />
@@ -143,47 +146,46 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
         </button>
       </form>
 
-      <AnimatePresence>
-        {isOpen && (query || results.length > 0) && (
-          <FocusTrap active={isOpen} onEscape={() => setIsOpen(false)}>
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="absolute left-0 right-0 top-full mt-1 rounded-md border bg-popover p-2 shadow-md"
-              id="search-results"
-              role="listbox"
-            >
-              {results.length > 0 ? (
-                <ul className="space-y-1">
-                  {results.map((result) => (
-                    <li
-                      key={result.id}
-                      className="rounded-md px-2 py-1.5 text-sm hover:bg-accent cursor-pointer"
-                      role="option"
-                    >
-                      <div className="font-medium">{result.name}</div>
-                      {result.description && (
-                        <div className="text-xs text-muted-foreground">{result.description}</div>
-                      )}
-                      {result.calories && (
-                        <div className="mt-1 text-xs text-muted-foreground">
-                          {result.calories} cal | P: {result.protein}g | C: {result.carbs}g | F: {result.fat}g
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="text-sm text-muted-foreground">
-                  {isLoading ? 'Searching...' : `Press Enter to search for "${query}"`}
-                </div>
-              )}
-            </motion.div>
-          </FocusTrap>
-        )}
-      </AnimatePresence>
+      {isOpen && (query || results.length > 0) && (
+        <FocusTrap active={isOpen} onEscape={() => setIsOpen(false)}>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute left-0 right-0 top-full mt-1 rounded-md border bg-popover p-2 shadow-md"
+            id="search-results"
+            role="listbox"
+          >
+            {results.length > 0 ? (
+              <ul className="space-y-1">
+                {results.map((result) => (
+                  <li
+                    key={result.id}
+                    className="rounded-md px-2 py-1.5 text-sm hover:bg-accent cursor-pointer"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <div className="font-medium">{result.name}</div>
+                    {result.description && (
+                      <div className="text-xs text-muted-foreground">{result.description}</div>
+                    )}
+                    {result.calories && (
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {result.calories} cal | P: {result.protein}g | C: {result.carbs}g | F: {result.fat}g
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                {isLoading ? 'Searching...' : `Press Enter to search for "${query}"`}
+              </div>
+            )}
+          </motion.div>
+        </FocusTrap>
+      )}
     </div>
   );
 };

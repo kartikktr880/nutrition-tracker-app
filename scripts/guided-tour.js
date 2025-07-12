@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Guided Tour Manager
  * Provides interactive walkthroughs for new users
@@ -267,7 +268,7 @@ class GuidedTour {
         
         // If target element doesn't exist, move to the next step
         if (!targetElement && step.target) {
-            console.warn(`Target element "${step.target}" not found. Skipping to next step.`);
+            logWarn(`Target element "${step.target}" not found. Skipping to next step.`);
             this.next();
             return;
         }
@@ -727,7 +728,7 @@ class TourManager {
         if (this.tours[tourName]) {
             this.tours[tourName].start();
         } else {
-            console.warn(`Tour "${tourName}" not found.`);
+            logWarn(`Tour "${tourName}" not found.`);
         }
     }
     
@@ -739,7 +740,7 @@ class TourManager {
         if (this.tours[tourName]) {
             localStorage.removeItem(this.tours[tourName].options.storageKey);
         } else {
-            console.warn(`Tour "${tourName}" not found.`);
+            logWarn(`Tour "${tourName}" not found.`);
         }
     }
     

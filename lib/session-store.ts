@@ -1,6 +1,9 @@
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { openDB, DBSchema as _DBSchema, IDBPDatabase } from 'idb';
+
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from '../utils/logger';
 
 interface SessionData {
+  id: string;
   userId: string;
   createdAt: number;
   lastActivity: number;
@@ -49,7 +52,7 @@ class SessionStore {
 
       this.isInitialized = true;
     } catch (error) {
-      console.error('Failed to initialize session store:', error);
+      logError('Failed to initialize session store:', error);
       throw error;
     }
   }
@@ -58,9 +61,9 @@ class SessionStore {
     if (!this.db) throw new Error('Session store not initialized');
 
     try {
-      await this.db.put('sessions', { id: sessionId, ...data });
+      await this.db.put('sessions', { ...data, id: sessionId });
     } catch (error) {
-      console.error('Failed to set session:', error);
+      logError('Failed to set session:', error);
       throw error;
     }
   }
@@ -69,9 +72,11 @@ class SessionStore {
     if (!this.db) throw new Error('Session store not initialized');
 
     try {
-      return await this.db.get('sessions', sessionId);
+      const session = await this.db.get('sessions', sessionId);
+      if (session && !session.id) session.id = sessionId;
+      return session;
     } catch (error) {
-      console.error('Failed to get session:', error);
+      logError('Failed to get session:', error);
       throw error;
     }
   }
@@ -82,7 +87,7 @@ class SessionStore {
     try {
       await this.db.delete('sessions', sessionId);
     } catch (error) {
-      console.error('Failed to delete session:', error);
+      logError('Failed to delete session:', error);
       throw error;
     }
   }
@@ -92,9 +97,17 @@ class SessionStore {
 
     try {
       const index = this.db.transaction('sessions').store.index('by-userId');
-      return await index.getAll(userId);
+      const sessions = await index.getAll(userId);
+      // Ensure all sessions have an id field
+      return sessions.map((s: unknown) => {
+        if (typeof s === 'object' && s !== null && 'id' in s) {
+          return { ...(s as SessionData), id: (s as SessionData).id || '' };
+        }
+        // Fallback for unexpected structure
+        return { id: '', userId: '', createdAt: 0, lastActivity: 0, loginAttempts: 0, isLocked: false };
+      });
     } catch (error) {
-      console.error('Failed to get sessions by user ID:', error);
+      logError('Failed to get sessions by user ID:', error);
       throw error;
     }
   }
@@ -111,7 +124,7 @@ class SessionStore {
       await Promise.all(expiredSessions.map(key => tx.store.delete(key)));
       await tx.done;
     } catch (error) {
-      console.error('Failed to cleanup expired sessions:', error);
+      logError('Failed to cleanup expired sessions:', error);
       throw error;
     }
   }
@@ -126,7 +139,7 @@ class SessionStore {
         await this.setSession(sessionId, session);
       }
     } catch (error) {
-      console.error('Failed to update session activity:', error);
+      logError('Failed to update session activity:', error);
       throw error;
     }
   }
@@ -136,19 +149,12 @@ class SessionStore {
       throw new Error('Database not initialized');
     }
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(['sessions'], 'readonly');
-      const store = transaction.objectStore('sessions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        resolve(request.result as SessionData[]);
-      };
-
-      request.onerror = () => {
-        reject(new Error('Failed to get all sessions'));
-      };
-    });
+    try {
+      return await this.db.getAll('sessions');
+    } catch (error) {
+      logError('Failed to get all sessions:', error);
+      throw error;
+    }
   }
 }
 

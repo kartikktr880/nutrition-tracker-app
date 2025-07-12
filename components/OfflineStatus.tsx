@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import OfflineService from '@/services/offline';
 
 export const OfflineStatus: React.FC = () => {
@@ -86,7 +87,7 @@ export const OfflineStatus: React.FC = () => {
 
         {!isOnline && (
           <div className="mt-2 text-sm text-yellow-600 dark:text-yellow-400">
-            Changes will be synced when you're back online
+            Changes will be synced when you&apos;re back online
           </div>
         )}
       </div>

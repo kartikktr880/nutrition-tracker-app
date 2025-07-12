@@ -1,17 +1,8 @@
+import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from 'chart.js';
 import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
+
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { useTheme } from '@/hooks/useTheme';
 
 // Register Chart.js components
 ChartJS.register(
@@ -24,6 +15,14 @@ ChartJS.register(
   Legend
 );
 
+interface NutritionDataPoint {
+  date: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
 interface AnalyticsDashboardProps {
   userId: string;
 }
@@ -35,7 +34,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ userId }
     period: selectedPeriod,
     autoRefresh: true
   });
-  const { isDarkMode } = useTheme();
+  const isDarkMode = false; // Simple fallback
 
   if (loading) {
     return (
@@ -48,7 +47,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ userId }
   if (error) {
     return (
       <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-        <p className="text-red-600 dark:text-red-400">{error}</p>
+        <p className="text-red-600 dark:text-red-400">{String(error)}</p>
         <button
           onClick={refresh}
           className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
@@ -68,29 +67,29 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ userId }
   }
 
   const chartData = {
-    labels: data.nutrition[selectedPeriod].map((item: any) => item.date),
+    labels: data.nutrition[selectedPeriod].map((item: NutritionDataPoint) => item.date),
     datasets: [
       {
         label: 'Calories',
-        data: data.nutrition[selectedPeriod].map((item: any) => item.calories),
+        data: data.nutrition[selectedPeriod].map((item: NutritionDataPoint) => item.calories),
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
       },
       {
         label: 'Protein',
-        data: data.nutrition[selectedPeriod].map((item: any) => item.protein),
+        data: data.nutrition[selectedPeriod].map((item: NutritionDataPoint) => item.protein),
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.1
       },
       {
         label: 'Carbs',
-        data: data.nutrition[selectedPeriod].map((item: any) => item.carbs),
+        data: data.nutrition[selectedPeriod].map((item: NutritionDataPoint) => item.carbs),
         borderColor: 'rgb(54, 162, 235)',
         tension: 0.1
       },
       {
         label: 'Fat',
-        data: data.nutrition[selectedPeriod].map((item: any) => item.fat),
+        data: data.nutrition[selectedPeriod].map((item: NutritionDataPoint) => item.fat),
         borderColor: 'rgb(255, 206, 86)',
         tension: 0.1
       }
@@ -197,9 +196,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ userId }
             <div key={key}>
               <div className="flex justify-between mb-1">
                 <span className="capitalize">{key}</span>
-                <span>{value}%</span>
+                <span>{String(value)}%</span>
               </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-primary h-2 rounded-full"
                   style={{ width: `${value}%` }}

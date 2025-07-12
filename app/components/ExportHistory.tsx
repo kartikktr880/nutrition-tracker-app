@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from 'react';
+
 import { exportService } from '../../lib/export-service';
+import { logError } from '../../utils/logger';
+
+// ExportHistory interface copied from lib/export-service.ts
+interface ExportHistory {
+  id: string;
+  scheduleId?: string;
+  templateId?: string;
+  timestamp: number;
+  status: 'success' | 'failed';
+  format: 'json' | 'csv' | 'pdf' | 'excel';
+  sections: {
+    barcodeHistory: boolean;
+    barcodeFavorites: boolean;
+    mealPlans: boolean;
+    nutritionalGoals: boolean;
+    goalProgress: boolean;
+    dietaryPreferences: boolean;
+    groceryList: boolean;
+    mealPrepTemplates: boolean;
+  };
+  error?: string;
+  fileSize?: number;
+  recipients?: string[];
+}
+type ExportItem = ExportHistory;
 
 interface ExportHistoryProps {
   onClose: () => void;
 }
 
 const ExportHistory: React.FC<ExportHistoryProps> = ({ onClose }) => {
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<ExportItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +45,7 @@ const ExportHistory: React.FC<ExportHistoryProps> = ({ onClose }) => {
       const historyData = exportService.getExportHistory();
       setHistory(historyData);
     } catch (error) {
-      console.error('Error loading export history:', error);
+      logError('Error loading export history:', error);
     }
     setIsLoading(false);
   };

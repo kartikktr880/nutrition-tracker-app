@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Barcode Scanner Module for Nutrition Tracker
  * Handles barcode scanning using the device camera and QuaggaJS library
@@ -70,13 +71,13 @@ class BarcodeScanner {
      */
     async initialize(elementId) {
         if (this.isInitialized) {
-            console.log('Barcode scanner already initialized');
+            logInfo('Barcode scanner already initialized');
             return true;
         }
 
         this.scannerElement = document.getElementById(elementId);
         if (!this.scannerElement) {
-            console.error(`Element with ID ${elementId} not found`);
+            logError(`Element with ID ${elementId} not found`);
             return false;
         }
 
@@ -103,7 +104,7 @@ class BarcodeScanner {
             } else {
                 this.showError(`Error initializing barcode scanner: ${error.message}`);
             }
-            console.error('Error initializing barcode scanner:', error);
+            logError('Error initializing barcode scanner:', error);
             return false;
         }
     }
@@ -129,12 +130,12 @@ class BarcodeScanner {
      */
     async start(callback) {
         if (!this.isInitialized) {
-            console.error('Barcode scanner not initialized');
+            logError('Barcode scanner not initialized');
             return false;
         }
 
         if (this.isScanning) {
-            console.log('Barcode scanner already running');
+            logInfo('Barcode scanner already running');
             return true;
         }
 
@@ -179,7 +180,7 @@ class BarcodeScanner {
                 locate: true
             }, (err) => {
                 if (err) {
-                    console.error('Error starting barcode scanner:', err);
+                    logError('Error starting barcode scanner:', err);
                     this.showError(`Error starting scanner: ${err.message}`);
                     return;
                 }
@@ -196,7 +197,7 @@ class BarcodeScanner {
             
             return true;
         } catch (error) {
-            console.error('Error starting barcode scanner:', error);
+            logError('Error starting barcode scanner:', error);
             this.showError(`Error starting scanner: ${error.message}`);
             return false;
         }
@@ -318,7 +319,7 @@ class BarcodeScanner {
                 oscillator.stop();
             }, 100);
         } catch (error) {
-            console.error('Error playing beep sound:', error);
+            logError('Error playing beep sound:', error);
         }
     }
 
@@ -389,7 +390,7 @@ class BarcodeScanner {
                 return null;
             }
         } catch (error) {
-            console.error(`Error looking up barcode ${barcode}:`, error);
+            logError(`Error looking up barcode ${barcode}:`, error);
             return null;
         }
     }
@@ -410,7 +411,7 @@ class BarcodeScanner {
      */
     saveToLocalDatabase(productData) {
         // This is a placeholder - in a real app, you would save to IndexedDB or other local storage
-        console.log('Saving product to local database:', productData);
+        logInfo('Saving product to local database:', productData);
     }
     
     /**

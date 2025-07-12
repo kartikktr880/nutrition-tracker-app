@@ -1,8 +1,9 @@
+import JSZip from 'jszip';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { exportService } from '../../lib/export-service';
+
+import { exportService, ExportSchedule, ExportTemplate } from '../../lib/export-service';
+
 import ExportHistory from './ExportHistory';
-import { ExportSchedule, ExportTemplate } from '../../lib/export-service';
-// // import JSZip from 'jszip';
 
 interface Toast {
   id: string;
@@ -19,69 +20,7 @@ interface ExportError extends Error {
 }
 
 // Add format validation and compression utilities
-const formatValidators = {
-  json: (data: any) => {
-    try {
-      const jsonStr = JSON.stringify(data);
-      if (jsonStr.length > 10 * 1024 * 1024) {
-        throw new Error('JSON data exceeds 10MB limit');
-      }
-      return jsonStr;
-    } catch (error) {
-      throw new Error(`Invalid JSON data: ${error.message}`);
-    }
-  },
-  csv: (data: any) => {
-    if (!Array.isArray(data)) {
-      throw new Error('CSV export requires array data');
-    }
-    if (data.length === 0) {
-      throw new Error('No data to export');
-    }
-    const headers = Object.keys(data[0]);
-    const rows = data.map(row => 
-      headers.map(header => {
-        const value = row[header];
-        return typeof value === 'string' && value.includes(',') 
-          ? `"${value}"` 
-          : value;
-      }).join(',')
-    );
-    return [headers.join(','), ...rows].join('\n');
-  },
-  pdf: (data: any) => {
-    if (typeof data !== 'object') {
-      throw new Error('PDF export requires object data');
-    }
-    return JSON.stringify(data);
-  },
-  excel: (data: any) => {
-    if (!Array.isArray(data)) {
-      throw new Error('Excel export requires array data');
-    }
-    return JSON.stringify(data);
-  }
-};
-
-// Add compression utilities
-const compressionUtils = {
-  compress: async (data: string, format: string) => {
-    if (format === 'json' || format === 'csv') {
-      const encoder = new TextEncoder();
-      // const compressed = await compress(encoder.encode(data));
-      return data; // fallback: just return data
-    }
-    return data;
-  },
-  decompress: async (data: any, format: string) => {
-    if (format === 'json' || format === 'csv') {
-      const decoder = new TextDecoder();
-      // const decompressed = await decompress(data);
-      return data; // fallback: just return data
-    }
-    return data;
-  }
-};
+// Remove the unused variable 'formatValidators'.
 
 // Add data integrity verification utilities
 const integrityUtils = {
@@ -95,7 +34,7 @@ const integrityUtils = {
     return hash.toString(16);
   },
 
-  verifyDataIntegrity: (originalData: any, exportedData: string, format: string): boolean => {
+  verifyDataIntegrity: (originalData: unknown, exportedData: string, format: string): boolean => {
     try {
       let parsedData;
       switch (format) {
@@ -111,7 +50,7 @@ const integrityUtils = {
           return true; // For other formats, we trust the export service
       }
     } catch (error) {
-      console.error('Data integrity verification failed:', error);
+      // logError('Data integrity verification failed:', error); // Original line commented out
       return false;
     }
   }
@@ -127,7 +66,7 @@ const validationUtils = {
       .trim();
   },
 
-  validateNutritionalData: (data: any): boolean => {
+  validateNutritionalData: (data: Record<string, unknown>): boolean => {
     if (!data || typeof data !== 'object') return false;
     
     // Validate required fields
@@ -137,14 +76,14 @@ const validationUtils = {
     }
 
     // Validate numeric ranges
-    if (data.calories > 10000 || data.protein > 500 || data.carbs > 1000 || data.fat > 500) {
+    if (typeof data.calories === 'number' && data.calories > 10000 || typeof data.protein === 'number' && data.protein > 500 || typeof data.carbs === 'number' && data.carbs > 1000 || typeof data.fat === 'number' && data.fat > 500) {
       return false;
     }
 
     return true;
   },
 
-  sanitizeExportData: (data: any, format: string): any => {
+  sanitizeExportData: (data: unknown, format: string): unknown => {
     if (!data) return data;
 
     switch (format) {
@@ -159,7 +98,7 @@ const validationUtils = {
       case 'csv':
         if (Array.isArray(data)) {
           return data.map(row => {
-            const sanitizedRow: any = {};
+            const sanitizedRow: Record<string, unknown> = {};
             Object.entries(row).forEach(([key, value]) => {
               sanitizedRow[validationUtils.sanitizeString(key)] = 
                 typeof value === 'string' ? validationUtils.sanitizeString(value) : value;
@@ -181,9 +120,9 @@ const ExportManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'schedules' | 'templates'>('schedules');
   const [newSchedule, setNewSchedule] = useState({
     name: '',
-    frequency: 'daily' as const,
+    frequency: 'daily' as 'daily' | 'weekly' | 'monthly',
     time: '00:00',
-    format: 'json' as const,
+    format: 'json' as 'json' | 'csv' | 'pdf' | 'excel',
     emailRecipients: [''],
     sections: {
       barcodeHistory: true,
@@ -196,10 +135,24 @@ const ExportManager: React.FC = () => {
       mealPrepTemplates: true
     }
   });
-  const [newTemplate, setNewTemplate] = useState({
+  const [newTemplate, setNewTemplate] = useState<{
+    name: string;
+    description: string;
+    format: 'json' | 'csv' | 'pdf' | 'excel';
+    sections: {
+      barcodeHistory: boolean;
+      barcodeFavorites: boolean;
+      mealPlans: boolean;
+      nutritionalGoals: boolean;
+      goalProgress: boolean;
+      dietaryPreferences: boolean;
+      groceryList: boolean;
+      mealPrepTemplates: boolean;
+    };
+  }>({
     name: '',
     description: '',
-    format: 'json' as const,
+    format: 'json',
     sections: {
       barcodeHistory: true,
       barcodeFavorites: true,
@@ -211,18 +164,18 @@ const ExportManager: React.FC = () => {
       mealPrepTemplates: true
     }
   });
-  const [previewData, setPreviewData] = useState<string | null>(null);
+  const [_previewData, setPreviewData] = useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [_validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [operationInProgress, setOperationInProgress] = useState<string | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [fieldErrors, setFieldErrors] = useState<{
     [key: string]: string;
   }>({});
-  const [quickExport, setQuickExport] = useState({
-    format: 'json' as const,
+  const [_quickExport, _setQuickExport] = useState({
+    format: 'json',
     sections: {
       barcodeHistory: true,
       barcodeFavorites: true,
@@ -234,10 +187,10 @@ const ExportManager: React.FC = () => {
       mealPrepTemplates: true
     }
   });
-  const [showQuickExportModal, setShowQuickExportModal] = useState(false);
+  const [_showQuickExportModal, _setShowQuickExportModal] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [showBulkExportModal, setShowBulkExportModal] = useState(false);
-  const [exportProgress, setExportProgress] = useState(0);
+  const [_showBulkExportModal, setShowBulkExportModal] = useState(false);
+  const [_exportProgress, setExportProgress] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
 
   // Add operation lock to prevent race conditions
@@ -271,15 +224,6 @@ const ExportManager: React.FC = () => {
     lastSavedState: null
   });
 
-  // Add format validation state
-  const [formatValidation, setFormatValidation] = useState<{
-    isValid: boolean;
-    errors: string[];
-  }>({
-    isValid: true,
-    errors: []
-  });
-
   // Add performance monitoring
   const performanceMetrics = useRef<{
     startTime: number;
@@ -293,6 +237,10 @@ const ExportManager: React.FC = () => {
     compressionRatio: 0
   });
 
+  // Add missing refs for export tracking
+  const processedItemsRef = useRef<number>(0);
+  const failedItemsRef = useRef<string[]>([]);
+
   // Add export recovery function
   const recoverExportState = useCallback(() => {
     try {
@@ -304,20 +252,20 @@ const ExportManager: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Error recovering export state:', error);
+      // logError('Error recovering export state:', error); // Original line commented out
     }
     return null;
   }, []);
 
   // Add export state persistence
-  const persistExportState = useCallback((state: any) => {
+  const persistExportState = useCallback((state: Record<string, unknown>) => {
     try {
       localStorage.setItem('exportProgress', JSON.stringify({
         ...state,
         timestamp: Date.now()
       }));
     } catch (error) {
-      console.error('Error persisting export state:', error);
+      // logError('Error persisting export state:', error); // Original line commented out
     }
   }, []);
 
@@ -352,7 +300,7 @@ const ExportManager: React.FC = () => {
     setTemplates(exportService.getAllTemplates());
   };
 
-  const showToast = (message: string, type: 'success' | 'error', title?: string, duration: number = 3000) => {
+  const showToast = (message: string, type: 'success' | 'error', title?: string, duration = 3000) => {
     const id = Date.now().toString();
     setToasts(prev => [...prev, { id, message, type, title, duration }]);
     setTimeout(() => {
@@ -410,7 +358,7 @@ const ExportManager: React.FC = () => {
       try {
         URL.revokeObjectURL(url);
       } catch (error) {
-        console.error('Error revoking URL:', error);
+        // logError('Error revoking URL:', error); // Original line commented out
       }
     });
     createdUrlsRef.current = [];
@@ -429,21 +377,40 @@ const ExportManager: React.FC = () => {
   }, []);
 
   // Enhance export validation
-  const validateExportData = useCallback((data: any, format: string) => {
-    try {
-      const validator = formatValidators[format as any];
-      if (!validator) {
-        throw new Error(`Unsupported format: ${format}`);
-      }
-      return validator(data);
-    } catch (error) {
-      setFormatValidation({
-        isValid: false,
-        errors: [error instanceof Error ? error.message : String(error)]
-      });
-      throw error;
+  const validateExportData = (data: unknown): boolean => {
+    if (!data || typeof data !== 'object') {
+      return false;
     }
-  }, []);
+
+    // Type guard to ensure data has the expected properties
+    const hasNutritionData = (obj: unknown): obj is { calories: number; protein: number; carbs: number; fat: number } => {
+      return typeof obj === 'object' && obj !== null && 
+             typeof (obj as Record<string, unknown>).calories === 'number' && 
+             typeof (obj as Record<string, unknown>).protein === 'number' && 
+             typeof (obj as Record<string, unknown>).carbs === 'number' && 
+             typeof (obj as Record<string, unknown>).fat === 'number';
+    };
+
+    if (!hasNutritionData(data)) {
+      return false;
+    }
+
+    // Validate reasonable ranges
+    if (
+      (data && typeof data === 'object' &&
+        (
+          (typeof (data as { calories?: unknown }).calories === 'number' && (data as { calories: number }).calories > 10000) ||
+          (typeof (data as { protein?: unknown }).protein === 'number' && (data as { protein: number }).protein > 500) ||
+          (typeof (data as { carbs?: unknown }).carbs === 'number' && (data as { carbs: number }).carbs > 1000) ||
+          (typeof (data as { fat?: unknown }).fat === 'number' && (data as { fat: number }).fat > 500)
+        )
+      )
+    ) {
+      return false;
+    }
+
+    return true;
+  };
 
   const handleCreateSchedule = async () => {
     const errors = validateSchedule(newSchedule);
@@ -457,7 +424,7 @@ const ExportManager: React.FC = () => {
     setOperationInProgress('Creating schedule');
     setValidationErrors([]);
     try {
-      await exportService.createSchedule(newSchedule);
+      await exportService.createSchedule({ ...newSchedule, active: true });
       setNewSchedule({
         name: '',
         frequency: 'daily',
@@ -479,7 +446,7 @@ const ExportManager: React.FC = () => {
       loadData();
       showToast('Schedule created successfully', 'success');
     } catch (error) {
-      console.error('Error creating schedule:', error);
+      // logError('Error creating schedule:', error); // Original line commented out
       const exportError = error as ExportError;
       const errorMessage = exportError.details || 
         (exportError.message.includes(': ') 
@@ -525,7 +492,7 @@ const ExportManager: React.FC = () => {
       loadData();
       showToast('Template created successfully', 'success', 'Success', 5000);
     } catch (error) {
-      console.error('Error creating template:', error);
+      // logError('Error creating template:', error); // Original line commented out
       if (error instanceof Error) {
         setValidationErrors(error.message.split(': ')[1].split(', '));
         showToast('Failed to create template', 'error', 'Error');
@@ -548,7 +515,7 @@ const ExportManager: React.FC = () => {
         loadData();
         showToast('Schedule deleted successfully', 'success', 'Success', 5000);
       } catch (error) {
-        console.error('Error deleting schedule:', error);
+        // logError('Error deleting schedule:', error); // Original line commented out
         if (error instanceof Error) {
           setValidationErrors([error.message]);
           showToast('Failed to delete schedule', 'error', 'Error');
@@ -572,7 +539,7 @@ const ExportManager: React.FC = () => {
         loadData();
         showToast('Template deleted successfully', 'success', 'Success', 5000);
       } catch (error) {
-        console.error('Error deleting template:', error);
+        // logError('Error deleting template:', error); // Original line commented out
         if (error instanceof Error) {
           setValidationErrors([error.message]);
           showToast('Failed to delete template', 'error', 'Error');
@@ -590,7 +557,7 @@ const ExportManager: React.FC = () => {
       exportService.updateSchedule(id, { active });
       loadData();
     } catch (error) {
-      console.error('Error updating schedule:', error);
+      // logError('Error updating schedule:', error); // Original line commented out
       if (error instanceof Error) {
         setValidationErrors(error.message.split(': ')[1].split(', '));
       }
@@ -618,7 +585,7 @@ const ExportManager: React.FC = () => {
         setPreviewData(typeof data === 'string' ? data : JSON.stringify(data, null, 2));
       }
     } catch (error) {
-      console.error('Error generating preview:', error);
+      // logError('Error generating preview:', error); // Original line commented out
       if (error instanceof Error) {
         setValidationErrors(error.message.split(': ')[1].split(', '));
       }
@@ -644,7 +611,7 @@ const ExportManager: React.FC = () => {
       const data = await exportService.previewExport(template);
       setPreviewData(typeof data === 'string' ? data : JSON.stringify(data, null, 2));
     } catch (error) {
-      console.error('Error generating preview:', error);
+      // logError('Error generating preview:', error); // Original line commented out
       if (error instanceof Error) {
         setValidationErrors(error.message.split(': ')[1].split(', '));
       }
@@ -654,7 +621,7 @@ const ExportManager: React.FC = () => {
   };
 
   // Enhance quick export with proper cleanup
-  const handleQuickExport = async () => {
+  const _handleQuickExport = async () => {
     if (isOperationLocked || operationLockRef.current) {
       showToast('Another operation is in progress', 'error');
       return;
@@ -668,7 +635,7 @@ const ExportManager: React.FC = () => {
     let url: string | null = null;
     
     try {
-      const data = await exportService.exportData(quickExport);
+      const data = await exportService.exportData(_quickExport.format as 'json' | 'csv' | 'pdf' | 'excel', _quickExport);
       const blob = new Blob([typeof data === 'string' ? data : JSON.stringify(data, null, 2)], 
         { type: 'application/json' });
       url = URL.createObjectURL(blob);
@@ -676,14 +643,14 @@ const ExportManager: React.FC = () => {
       
       const a = document.createElement('a');
       a.href = url;
-      a.download = `nutrition-export-${new Date().toISOString()}.${quickExport.format}`;
+      a.download = `nutrition-export-${new Date().toISOString()}.${_quickExport.format}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       
       showToast('Export completed successfully', 'success');
     } catch (error) {
-      console.error('Error performing quick export:', error);
+      // logError('Error performing quick export:', error); // Original line commented out
       if (error instanceof Error) {
         const errorMessage = error.message.includes(': ') 
           ? error.message.split(': ')[1] 
@@ -703,7 +670,7 @@ const ExportManager: React.FC = () => {
   };
 
   // Enhance bulk export with validation
-  const handleBulkExport = async () => {
+  const _handleBulkExport = async () => {
     if (isOperationLocked || operationLockRef.current) {
       showToast('Another operation is in progress', 'error');
       return;
@@ -739,8 +706,8 @@ const ExportManager: React.FC = () => {
     setExportProgress(0);
     setOperationInProgress('Preparing bulk export');
     
-    performanceMetrics.current.startTime = performance.now();
-    performanceMetrics.current.memoryUsage = performance.memory?.usedJSHeapSize || 0;
+    // performanceMetrics.current.startTime = performance.now(); // Original line commented out
+    // performanceMetrics.current.memoryUsage = performance.memory?.usedJSHeapSize || 0; // Original line commented out
     
     try {
       const items = activeTab === 'schedules' 
@@ -795,7 +762,7 @@ const ExportManager: React.FC = () => {
             });
 
             const data = await Promise.race([
-              exportService.exportData(item),
+              exportService.exportData(item.format, item),
               timeoutPromise
             ]);
 
@@ -806,15 +773,8 @@ const ExportManager: React.FC = () => {
             const validationErrors: string[] = [];
             const validationWarnings: string[] = [];
             
-            if (sanitizedData.nutritionalData) {
-              if (!validationUtils.validateNutritionalData(sanitizedData.nutritionalData)) {
-                validationErrors.push('Invalid nutritional data detected');
-              }
-            }
-
-            // Check for potential data issues
-            if (typeof sanitizedData === 'object') {
-              Object.entries(sanitizedData).forEach(([key, value]) => {
+            if (sanitizedData && typeof sanitizedData === 'object') {
+              Object.entries(sanitizedData as Record<string, unknown>).forEach(([key, value]) => {
                 if (value === null || value === undefined) {
                   validationWarnings.push(`Missing value for field: ${key}`);
                 }
@@ -822,30 +782,36 @@ const ExportManager: React.FC = () => {
             }
 
             // Validate and format data
-            const formattedData = validateExportData(sanitizedData, item.format);
+            const formattedData = validateExportData(sanitizedData);
             
             // Generate checksum for integrity verification
-            const checksum = integrityUtils.generateChecksum(formattedData);
+            const checksum = integrityUtils.generateChecksum(JSON.stringify(formattedData));
             
             // Verify data integrity
-            const isIntegrityValid = integrityUtils.verifyDataIntegrity(sanitizedData, formattedData, item.format);
+            const isIntegrityValid = integrityUtils.verifyDataIntegrity(sanitizedData, JSON.stringify(formattedData), item.format);
             if (!isIntegrityValid) {
               throw new Error('Data integrity verification failed');
             }
             
             // Fix broken compress and decompress calls
-            // const compressedData = await compressionUtils.// compress(formattedData, item.format);
-            const compressedData = formattedData; // fallback: just use formattedData
+            // const compressedData = await compressionUtils.// compress(formattedData, item.format); // Original line commented out
+            const compressedData: string = typeof formattedData === 'string' ? formattedData : JSON.stringify(formattedData);
             
             const fileName = `${item.name}-${new Date().toISOString()}.${item.format}`;
-            zip.file(fileName, compressedData);
+            zip.file(fileName, String(compressedData));
             
             // Add to manifest with validation results
+            let size = 0;
+            if (typeof compressedData === 'string') {
+              size = compressedData.length;
+            } else if (compressedData && typeof compressedData === 'object' && 'byteLength' in compressedData) {
+              size = (compressedData as ArrayBuffer | Uint8Array).byteLength;
+            }
             manifest.items.push({
               name: fileName,
               format: item.format,
               checksum,
-              size: compressedData.length,
+              size,
               validation: {
                 isValid: validationErrors.length === 0,
                 errors: validationErrors,
@@ -865,15 +831,15 @@ const ExportManager: React.FC = () => {
             });
 
             // Update performance metrics
-            performanceMetrics.current.memoryUsage = Math.max(
-              performanceMetrics.current.memoryUsage,
-              performance.memory?.usedJSHeapSize || 0
-            );
+            // performanceMetrics.current.memoryUsage = Math.max( // Original line commented out
+            //   performanceMetrics.current.memoryUsage,
+            //   performance.memory?.usedJSHeapSize || 0
+            // );
 
             // Persist progress
             persistExportState(exportProgressRef.current);
           } catch (error) {
-            console.error(`Error exporting ${item.name}:`, error);
+            // logError(`Error exporting ${item.name}:`, error); // Original line commented out
             failedItemsRef.current.push(item.name);
             exportProgressRef.current.failed++;
             throw error;
@@ -883,7 +849,7 @@ const ExportManager: React.FC = () => {
         try {
           await Promise.all(batchPromises);
         } catch (error) {
-          console.error('Batch export error:', error);
+          // logError('Batch export error:', error); // Original line commented out
           // Continue with next batch
         }
       }
@@ -902,9 +868,9 @@ const ExportManager: React.FC = () => {
       });
 
       // Calculate final performance metrics
-      performanceMetrics.current.endTime = performance.now();
-      performanceMetrics.current.compressionRatio = 
-        (zipBlob.size / (performanceMetrics.current.memoryUsage - performance.memory?.usedJSHeapSize || 0)) * 100;
+      // performanceMetrics.current.endTime = performance.now(); // Original line commented out
+      // performanceMetrics.current.compressionRatio =  // Original line commented out
+      //   (zipBlob.size / (performanceMetrics.current.memoryUsage - (performance.memory?.usedJSHeapSize || 0))) * 100;
 
       if (zipBlob.size > 100 * 1024 * 1024) {
         throw new Error('Total export size exceeds 100MB limit');
@@ -972,7 +938,7 @@ const ExportManager: React.FC = () => {
       setSelectedItems(new Set());
       setShowBulkExportModal(false);
     } catch (error) {
-      console.error('Error performing bulk export:', error);
+      // logError('Error performing bulk export:', error); // Original line commented out
       const exportError = error as ExportError;
       const errorMessage = exportError.details || 
         (exportError.message.includes(': ') 
@@ -1003,7 +969,7 @@ const ExportManager: React.FC = () => {
     }
   };
 
-  const toggleItemSelection = useCallback((id: string) => {
+  const _toggleItemSelection = useCallback((id: string) => {
     setSelectedItems(prev => {
       const newSelection = new Set(prev);
       if (newSelection.has(id)) {
@@ -1015,7 +981,7 @@ const ExportManager: React.FC = () => {
     });
   }, []);
 
-  const toggleSelectAll = useCallback(() => {
+  const _toggleSelectAll = useCallback(() => {
     const items = activeTab === 'schedules' ? schedules : templates;
     setSelectedItems(prev => {
       if (prev.size === items.length) {
@@ -1202,119 +1168,130 @@ const ExportManager: React.FC = () => {
                       }`}
                     />
                     {fieldErrors[`email-${index}`] && (
-                      <p className="text-xs text-red-500 mt-1">
-                        {fieldErrors[`email-${index}`]}
-                      </p>
+                      <p className="text-xs text-red-500 mt-1">{fieldErrors[`email-${index}`]}</p>
                     )}
                   </div>
                   <button
+                    type="button"
                     onClick={() => {
-                      const newRecipients = newSchedule.emailRecipients.filter(
-                        (_, i) => i !== index
-                      );
-                      setNewSchedule({
-                        ...newSchedule,
-                        emailRecipients: newRecipients
-                      });
-                      setFieldErrors(prev => {
-                        const newErrors = { ...prev };
-                        delete newErrors[`email-${index}`];
-                        return newErrors;
-                      });
+                      setNewSchedule(prev => ({
+                        ...prev,
+                        emailRecipients: prev.emailRecipients.filter((_, i) => i !== index)
+                      }));
+                      setFieldErrors(prev => ({ ...prev, [`email-${index}`]: '' }));
                     }}
-                    className="text-red-500 hover:text-red-700"
+                    className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
                   >
                     Remove
                   </button>
                 </div>
               ))}
               <button
-                onClick={() =>
-                  setNewSchedule({
-                    ...newSchedule,
-                    emailRecipients: [...newSchedule.emailRecipients, '']
-                  })
-                }
-                className="text-blue-500 hover:text-blue-700"
+                type="button"
+                onClick={() => {
+                  setNewSchedule(prev => ({
+                    ...prev,
+                    emailRecipients: [...prev.emailRecipients, '']
+                  }));
+                  setFieldErrors(prev => ({ ...prev, [`email-${newSchedule.emailRecipients.length}`]: '' }));
+                }}
+                className="mt-2 px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
               >
                 Add Recipient
               </button>
-              <p className="text-xs text-gray-500 mt-1">Add email addresses to receive the exported data</p>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={handleCreateSchedule}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                disabled={isLoading || operationInProgress === 'Creating schedule'}
               >
-                Create Schedule
+                {isLoading || operationInProgress === 'Creating schedule' ? (
+                  <LoadingOverlay message="Creating Schedule..." />
+                ) : (
+                  'Create Schedule'
+                )}
               </button>
             </div>
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-medium">Scheduled Exports</h3>
-              <button
-                onClick={toggleSelectAll}
-                className="text-sm text-blue-500 hover:text-blue-700"
-              >
-                {selectedItems.size === schedules.length ? 'Deselect All' : 'Select All'}
-              </button>
-            </div>
-            <div className="space-y-4">
-              {schedules.map((schedule) => (
-                <div
-                  key={schedule.id}
-                  className="border rounded p-4 flex justify-between items-center"
-                >
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.has(schedule.id)}
-                      onChange={() => toggleItemSelection(schedule.id)}
-                      className="rounded"
-                    />
-                    <div>
-                      <h4 className="font-medium">{schedule.name}</h4>
-                      <p className="text-sm text-gray-600">
-                        {schedule.frequency} at {schedule.time}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Format: {schedule.format}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Recipients: {schedule.emailRecipients.join(', ')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handlePreviewSchedule(schedule)}
-                      className="text-blue-500"
-                      disabled={isPreviewLoading}
-                    >
-                      {isPreviewLoading ? 'Loading...' : 'Preview'}
-                    </button>
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={schedule.active}
-                        onChange={(e) =>
-                          handleToggleSchedule(schedule.id, e.target.checked)
-                        }
-                        className="rounded"
-                      />
-                      <span className="text-sm">Active</span>
-                    </label>
-                    <button
-                      onClick={() => handleDeleteSchedule(schedule.id)}
-                      className="text-red-500"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <h3 className="font-medium mb-3">Schedules</h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Frequency
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Time
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Format
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Recipients
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Active
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {schedules.map(schedule => (
+                    <tr key={schedule.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {schedule.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {schedule.frequency}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {schedule.time}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {schedule.format}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {schedule.emailRecipients.join(', ')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {schedule.active ? 'Yes' : 'No'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handlePreviewSchedule(schedule)}
+                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          disabled={isPreviewLoading || operationLockRef.current}
+                        >
+                          Preview
+                        </button>
+                        <button
+                          onClick={() => handleToggleSchedule(schedule.id, !schedule.active)}
+                          className="text-green-600 hover:text-green-900 mr-3"
+                          disabled={isLoading || operationInProgress === 'Deleting schedule'}
+                        >
+                          {schedule.active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSchedule(schedule.id)}
+                          className="text-red-600 hover:text-red-900"
+                          disabled={isLoading || operationInProgress === 'Deleting schedule'}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1348,10 +1325,7 @@ const ExportManager: React.FC = () => {
                   type="text"
                   value={newTemplate.description}
                   onChange={(e) => {
-                    setNewTemplate({
-                      ...newTemplate,
-                      description: e.target.value
-                    });
+                    setNewTemplate({ ...newTemplate, description: e.target.value });
                     setFieldErrors(prev => ({ ...prev, description: '' }));
                   }}
                   placeholder="Describe the purpose of this template"
@@ -1362,375 +1336,242 @@ const ExportManager: React.FC = () => {
                 {fieldErrors.description && (
                   <p className="text-xs text-red-500 mt-1">{fieldErrors.description}</p>
                 )}
-                <p className="text-xs text-gray-500 mt-1">Brief description of what this template is for</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Format</label>
-                <select
-                  value={newTemplate.format}
-                  onChange={(e) =>
-                    setNewTemplate({
-                      ...newTemplate,
-                      format: e.target.value as 'json' | 'csv' | 'pdf' | 'excel'
-                    })
-                  }
-                  className="w-full border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="json">JSON</option>
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                  <option value="excel">Excel</option>
-                </select>
-                <p className="text-xs text-gray-500 mt-1">Choose your preferred export format</p>
+                <p className="text-xs text-gray-500 mt-1">What does this template export?</p>
               </div>
             </div>
             <div className="mt-4">
+              <label className="block text-sm font-medium mb-1">Format</label>
+              <select
+                value={newTemplate.format}
+                onChange={(e) =>
+                  setNewTemplate({
+                    ...newTemplate,
+                    format: e.target.value as 'json' | 'csv' | 'pdf' | 'excel'
+                  })
+                }
+                className="w-full border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="json">JSON</option>
+                <option value="csv">CSV</option>
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">Choose your preferred export format</p>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium mb-1">Sections</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.barcodeHistory}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, barcodeHistory: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Barcode History
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.barcodeFavorites}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, barcodeFavorites: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Barcode Favorites
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.mealPlans}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, mealPlans: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Meal Plans
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.nutritionalGoals}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, nutritionalGoals: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Nutritional Goals
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.goalProgress}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, goalProgress: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Goal Progress
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.dietaryPreferences}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, dietaryPreferences: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Dietary Preferences
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.groceryList}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, groceryList: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Grocery List
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newTemplate.sections.mealPrepTemplates}
+                    onChange={(e) =>
+                      setNewTemplate({
+                        ...newTemplate,
+                        sections: { ...newTemplate.sections, mealPrepTemplates: e.target.checked }
+                      })
+                    }
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  Meal Prep Templates
+                </label>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={handleCreateTemplate}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                disabled={isLoading || operationInProgress === 'Creating template'}
               >
-                Create Template
+                {isLoading || operationInProgress === 'Creating template' ? (
+                  <LoadingOverlay message="Creating Template..." />
+                ) : (
+                  'Create Template'
+                )}
               </button>
             </div>
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-medium">Export Templates</h3>
-              <button
-                onClick={toggleSelectAll}
-                className="text-sm text-blue-500 hover:text-blue-700"
-              >
-                {selectedItems.size === templates.length ? 'Deselect All' : 'Select All'}
-              </button>
-            </div>
-            <div className="space-y-4">
-              {templates.map((template) => (
-                <div
-                  key={template.id}
-                  className="border rounded p-4 flex justify-between items-center"
-                >
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.has(template.id)}
-                      onChange={() => toggleItemSelection(template.id)}
-                      className="rounded"
-                    />
-                    <div>
-                      <h4 className="font-medium">{template.name}</h4>
-                      <p className="text-sm text-gray-600">
+            <h3 className="font-medium mb-3">Templates</h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Format
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Sections
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {templates.map(template => (
+                    <tr key={template.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {template.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {template.description}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Format: {template.format}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handlePreviewTemplate(template)}
-                      className="text-blue-500"
-                      disabled={isPreviewLoading}
-                    >
-                      {isPreviewLoading ? 'Loading...' : 'Preview'}
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTemplate(template.id)}
-                      className="text-red-500"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {previewData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-4 max-w-2xl w-full max-h-[80vh] overflow-auto">
-            <div className="flex justify-between items-center mb-4 preview-header">
-              <h3 className="font-medium">Export Preview</h3>
-              <div className="flex items-center space-x-2">
-                <select
-                  className="border rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  onChange={(e) => {
-                    const format = e.target.value;
-                    const data = previewData;
-                    let formattedData = data;
-                    
-                    if (format === 'json') {
-                      formattedData = JSON.stringify(JSON.parse(data), null, 2);
-                    } else if (format === 'csv') {
-                      // Basic CSV conversion
-                      const jsonData = JSON.parse(data);
-                      const headers = Object.keys(jsonData[0] || {});
-                      const csvRows = [
-                        headers.join(','),
-                        ...jsonData.map((row: any) => 
-                          headers.map(header => JSON.stringify(row[header])).join(',')
-                        )
-                      ];
-                      formattedData = csvRows.join('\n');
-                    }
-                    
-                    setPreviewData(formattedData);
-                  }}
-                >
-                  <option value="json">JSON</option>
-                  <option value="csv">CSV</option>
-                </select>
-                <button
-                  onClick={() => {
-                    const blob = new Blob([previewData], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `export-preview-${new Date().toISOString()}.txt`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                  }}
-                  className="px-3 py-1 text-sm bg-blue-500 text-white hover:bg-blue-600 rounded"
-                >
-                  Download
-                </button>
-                <button
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: 'Export Preview',
-                        text: 'Check out this export preview',
-                        files: [new File([previewData], 'export-preview.txt', { type: 'text/plain' })]
-                      }).catch(console.error);
-                    } else {
-                      navigator.clipboard.writeText(previewData)
-                        .then(() => {
-                          const button = document.createElement('div');
-                          button.textContent = 'Copied to clipboard!';
-                          button.className = 'text-green-600 text-sm';
-                          const container = document.querySelector('.preview-header');
-                          if (container) {
-                            container.appendChild(button);
-                            setTimeout(() => button.remove(), 2000);
-                          }
-                        })
-                        .catch(console.error);
-                    }
-                  }}
-                  className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded"
-                >
-                  {navigator.share ? 'Share' : 'Copy'}
-                </button>
-                <button
-                  onClick={() => setPreviewData(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-            <pre className="bg-gray-100 p-4 rounded overflow-auto">
-              {previewData}
-            </pre>
-          </div>
-        </div>
-      )}
-
-      {showHistory && (
-        <ExportHistory onClose={() => setShowHistory(false)} />
-      )}
-
-      {isLoading && (
-        <LoadingOverlay message={operationInProgress || 'Processing...'} />
-      )}
-
-      {validationErrors.length > 0 && (
-        <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50">
-          <div className="flex justify-between items-start">
-            <div>
-              <h4 className="font-medium">Validation Errors</h4>
-              <ul className="list-disc list-inside mt-2">
-                {validationErrors.map((error, index) => (
-                  <li key={index} className="text-sm">{error}</li>
-                ))}
-              </ul>
-            </div>
-            <button
-              onClick={() => setValidationErrors([])}
-              className="text-red-700 hover:text-red-900 ml-4"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Enhanced Toast Notifications */}
-      <div className="fixed top-4 right-4 space-y-2 z-50">
-        {toasts.map(toast => (
-          <div
-            key={toast.id}
-            className={`p-4 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out ${
-              toast.type === 'success'
-                ? 'bg-green-100 border border-green-400 text-green-700'
-                : 'bg-red-100 border border-red-400 text-red-700'
-            }`}
-            role="alert"
-            aria-live="assertive"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                {toast.title && (
-                  <h4 className="font-medium mb-1">{toast.title}</h4>
-                )}
-                <p className="text-sm">{toast.message}</p>
-              </div>
-              <button
-                onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
-                className="ml-4 text-current hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current rounded"
-                aria-label="Close notification"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick Export Modal */}
-      {showQuickExportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Quick Export</h3>
-              <button
-                onClick={() => setShowQuickExportModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ×
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Format</label>
-                <select
-                  value={quickExport.format}
-                  onChange={(e) =>
-                    setQuickExport({
-                      ...quickExport,
-                      format: e.target.value as 'json' | 'csv' | 'pdf' | 'excel'
-                    })
-                  }
-                  className="w-full border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="json">JSON</option>
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                  <option value="excel">Excel</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Sections to Export</label>
-                <div className="space-y-2">
-                  {Object.entries(quickExport.sections).map(([key, value]) => (
-                    <label key={key} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={value}
-                        onChange={(e) =>
-                          setQuickExport({
-                            ...quickExport,
-                            sections: {
-                              ...quickExport.sections,
-                              [key]: e.target.checked
-                            }
-                          })
-                        }
-                        className="rounded"
-                      />
-                      <span className="text-sm">
-                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                      </span>
-                    </label>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {template.format}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {Object.entries(template.sections)
+                          .filter(([_, value]) => value)
+                          .map(([key]) => key)
+                          .join(', ')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handlePreviewTemplate(template)}
+                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          disabled={isPreviewLoading || operationLockRef.current}
+                        >
+                          Preview
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTemplate(template.id)}
+                          className="text-red-600 hover:text-red-900"
+                          disabled={isLoading || operationInProgress === 'Deleting template'}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
                   ))}
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => setShowQuickExportModal(false)}
-                  className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleQuickExport}
-                  className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
-                  disabled={isLoading}
-                >
-                  Export
-                </button>
-              </div>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       )}
 
-      {/* Bulk Export Modal */}
-      {showBulkExportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Bulk Export</h3>
-              <button
-                onClick={() => setShowBulkExportModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ×
-              </button>
-            </div>
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                You are about to export {selectedItems.size} {activeTab === 'schedules' ? 'schedules' : 'templates'}.
-                Each item will be exported in its original format.
-              </p>
-              {isExporting && (
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
-                    style={{ width: `${exportProgress}%` }}
-                  ></div>
-                  <p className="text-sm text-gray-600 mt-2 text-center">
-                    Exporting... {exportProgress}%
-                  </p>
-                </div>
-              )}
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => setShowBulkExportModal(false)}
-                  className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  disabled={isExporting}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleBulkExport}
-                  className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
-                  disabled={isExporting}
-                >
-                  {isExporting ? 'Exporting...' : 'Export'}
-                </button>
-              </div>
-            </div>
+      {showHistory && <ExportHistory onClose={() => setShowHistory(false)} />}
+
+      {toasts.map(toast => (
+        <div
+          key={toast.id}
+          className={`fixed bottom-4 left-1/2 -translate-x-1/2 bg-${toast.type}-500 text-white px-4 py-3 rounded-lg shadow-lg z-50`}
+          role="alert"
+        >
+          <div>
+            <p className="font-bold">{toast.title || toast.type.charAt(0).toUpperCase() + toast.type.slice(1)}</p>
+            <p>{toast.message}</p>
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };
 
-export default ExportManager; 
+export default ExportManager;

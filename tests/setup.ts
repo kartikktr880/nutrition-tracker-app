@@ -18,8 +18,8 @@ HTMLElement.prototype.scrollIntoView = vi.fn();
 
 // Mock performance API
 vi.spyOn(performance, 'now').mockImplementation(() => 1000);
-vi.spyOn(performance, 'mark').mockImplementation(() => {});
-vi.spyOn(performance, 'measure').mockImplementation(() => {});
+vi.spyOn(performance, 'mark').mockImplementation(() => ({} as PerformanceMark));
+vi.spyOn(performance, 'measure').mockImplementation(() => ({} as PerformanceMeasure));
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -71,7 +71,7 @@ Element.prototype.animate = vi.fn().mockImplementation((keyframes, options) => {
     play: function() { playState = 'running'; },
     pause: function() { playState = 'paused'; },
     cancel: function() { playState = 'finished'; },
-    finish: function() { playState = 'finished'; if (typeof this.onfinish === 'function') this.onfinish(); },
+    finish: function() { playState = 'finished'; if (typeof this.onfinish === 'function') (this.onfinish as (() => void))(); },
     reverse: vi.fn(),
     updatePlaybackRate: vi.fn(),
     addEventListener: vi.fn(),

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
 import { MealPlan, UserPreferences, NutritionalGoals } from '@/types/meal-plan';
+import { logError } from '@/utils/logger';
 
 export async function POST(req: Request) {
   try {
@@ -31,15 +31,14 @@ export async function POST(req: Request) {
         startDate: new Date(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
         meals: mealPlan.meals,
-        nutritionalGoals: mealPlan.nutritionalGoals,
-        preferences: mealPlan.preferences,
-        totalNutritionalInfo: mealPlan.totalNutritionalInfo,
+        preferences: JSON.parse(JSON.stringify(mealPlan.preferences)),
+        goals: JSON.parse(JSON.stringify(mealPlan.nutritionalGoals)),
       },
     });
 
     return NextResponse.json(savedPlan);
   } catch (error: unknown) {
-    console.error('Error generating meal plan:', error);
+    logError('Error generating meal plan:', error);
     return NextResponse.json(
       { error: 'Failed to generate meal plan' },
       { status: 500 }

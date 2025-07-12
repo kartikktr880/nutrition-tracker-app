@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Script Loader
  * Manages script loading order and dependencies
@@ -63,7 +64,7 @@ class ScriptLoader {
             try {
                 await this.loadScript(script.src, script.dependencies || []);
             } catch (error) {
-                console.error(`Error loading script ${script.src}:`, error);
+                logError(`Error loading script ${script.src}:`, error);
                 // Continue loading other scripts even if one fails
             }
         }

@@ -1,61 +1,60 @@
-import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ValidationAnalytics } from '../services/validationAnalytics';
+import { useRef, useState, useEffect } from 'react';
+
+interface CurrentMetrics {
+  accuracy: number;
+  alignment: number;
+  stability: number;
+  timing: number;
+  consistency: number;
+}
 
 interface PerformanceMetricsVisualizerProps {
-  exerciseKey: string;
-  currentMetrics: {
-    accuracy: number;
-    stability: number;
-    alignment: number;
-    timing: number;
-    consistency: number;
-  };
+  metrics: CurrentMetrics;
   historicalData?: {
-    timestamp: number;
-    metrics: typeof currentMetrics;
-  }[];
-  onMetricSelect?: (metric: keyof typeof currentMetrics) => void;
+    trends: Array<{
+      metric: keyof CurrentMetrics;
+      trend: number;
+      confidence: number;
+    }>;
+  };
+  onMetricSelect?: (metric: keyof CurrentMetrics) => void;
 }
 
 interface MetricTrend {
-  metric: keyof typeof currentMetrics;
-  value: number;
-  trend: 'improving' | 'stable' | 'declining';
-  change: number;
+  metric: keyof CurrentMetrics;
+  trend: number;
+  confidence: number;
 }
 
 const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> = ({
-  exerciseKey,
-  currentMetrics,
-  historicalData = [],
+  metrics,
+  historicalData = { trends: [] },
   onMetricSelect
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [selectedMetric, setSelectedMetric] = useState<keyof typeof currentMetrics>('accuracy');
+  const _canvasRef = useRef<HTMLCanvasElement>(null);
+  const [selectedMetric, setSelectedMetric] = useState<keyof CurrentMetrics>('accuracy');
   const [trends, setTrends] = useState<MetricTrend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const calculateTrends = () => {
-      const newTrends: MetricTrend[] = Object.entries(currentMetrics).map(([metric, value]) => {
-        const historicalValues = historicalData
-          .map(data => data.metrics[metric as keyof typeof currentMetrics])
-          .filter(Boolean);
+      const newTrends: MetricTrend[] = Object.entries(metrics).map(([metric, value]) => {
+        const historicalValues = historicalData?.trends
+          ?.map((t: { metric: string; trend: number; confidence: number }) => t.metric === metric ? t.trend : null)
+          .filter(Boolean) || [];
 
-        const average = historicalValues.length > 0
-          ? historicalValues.reduce((sum, val) => sum + val, 0) / historicalValues.length
-          : value;
+        const average = historicalValues && historicalValues.length > 0
+          ? historicalValues.filter(val => val !== null).reduce((sum: number, val: number | null) => sum + (val || 0), 0) / historicalValues.filter(val => val !== null).length
+          : 0;
 
         const change = ((value - average) / average) * 100;
-        const trend: 'improving' | 'stable' | 'declining' = 
-          change > 5 ? 'improving' : change < -5 ? 'declining' : 'stable';
+        const trendValue = change > 5 ? 1 : change < -5 ? 0 : 0.5;
 
         return {
-          metric: metric as keyof typeof currentMetrics,
-          value,
-          trend,
-          change
+          metric: metric as keyof CurrentMetrics,
+          trend: trendValue,
+          confidence: Math.abs(change)
         };
       });
 
@@ -64,11 +63,11 @@ const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> 
     };
 
     calculateTrends();
-  }, [currentMetrics, historicalData]);
+  }, [metrics, historicalData]);
 
   useEffect(() => {
     const drawMetrics = () => {
-      const canvas = canvasRef.current;
+      const canvas = _canvasRef.current;
       if (!canvas) return;
 
       const ctx = canvas.getContext('2d');
@@ -101,7 +100,7 @@ const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> 
         );
 
         // Draw value
-        const valueWidth = barWidth * trend.value;
+        const valueWidth = barWidth * trend.trend;
         ctx.fillStyle = getMetricColor(trend.metric, trend.trend);
         ctx.fillRect(
           (canvas.width - barWidth) / 2,
@@ -123,17 +122,17 @@ const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> 
         // Draw value
         ctx.textAlign = 'right';
         ctx.fillText(
-          `${Math.round(trend.value * 100)}%`,
+          `${Math.round(trend.confidence)}%`,
           (canvas.width + barWidth) / 2 + 50,
           y + barHeight - 2
         );
 
         // Draw trend indicator
-        if (trend.change !== 0) {
-          const trendSymbol = trend.trend === 'improving' ? '↑' : '↓';
-          ctx.fillStyle = trend.trend === 'improving' ? 'var(--success-color)' : 'var(--error-color)';
+        if (trend.confidence !== 0) {
+          const trendSymbol = trend.trend === 1 ? '↑' : trend.trend === 0 ? '↓' : '↔';
+          ctx.fillStyle = trend.trend === 1 ? 'var(--success-color)' : trend.trend === 0 ? 'var(--error-color)' : 'var(--warning-color)';
           ctx.fillText(
-            `${trendSymbol} ${Math.abs(Math.round(trend.change))}%`,
+            `${trendSymbol} ${Math.abs(Math.round(trend.confidence))}%`,
             (canvas.width + barWidth) / 2 + 100,
             y + barHeight - 2
           );
@@ -144,19 +143,19 @@ const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> 
     drawMetrics();
   }, [trends, selectedMetric]);
 
-  const getMetricColor = (metric: keyof typeof currentMetrics, trend: MetricTrend['trend']) => {
+  const getMetricColor = (metric: keyof CurrentMetrics, trend: MetricTrend['trend']) => {
     const colors = {
       accuracy: {
         improving: 'var(--success-color)',
         stable: 'var(--primary-color)',
         declining: 'var(--error-color)'
       },
-      stability: {
+      alignment: {
         improving: 'var(--success-color)',
         stable: 'var(--primary-color)',
         declining: 'var(--error-color)'
       },
-      alignment: {
+      stability: {
         improving: 'var(--success-color)',
         stable: 'var(--primary-color)',
         declining: 'var(--error-color)'
@@ -173,14 +172,14 @@ const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> 
       }
     };
 
-    return colors[metric][trend];
+    return colors[metric][trend === 1 ? 'improving' : trend === 0.5 ? 'stable' : 'declining'];
   };
 
-  const formatMetricName = (metric: keyof typeof currentMetrics): string => {
+  const formatMetricName = (metric: keyof CurrentMetrics): string => {
     return metric.charAt(0).toUpperCase() + metric.slice(1);
   };
 
-  const handleMetricClick = (metric: keyof typeof currentMetrics) => {
+  const handleMetricClick = (metric: keyof CurrentMetrics) => {
     setSelectedMetric(metric);
     onMetricSelect?.(metric);
   };
@@ -218,10 +217,10 @@ const PerformanceMetricsVisualizer: React.FC<PerformanceMetricsVisualizerProps> 
 
       <div className="metrics-canvas-container">
         <canvas
-          ref={canvasRef}
+          ref={_canvasRef}
           className="metrics-canvas"
           onClick={(e) => {
-            const canvas = canvasRef.current;
+            const canvas = _canvasRef.current;
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();

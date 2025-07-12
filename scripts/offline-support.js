@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Offline Support Module
 // Provides offline capabilities and synchronization for the Nutrition Tracker app
 
@@ -35,7 +36,7 @@ class OfflineSupport {
     // Register service worker if supported
     this.registerServiceWorker();
     
-    console.log('Offline Support initialized');
+    logInfo('Offline Support initialized');
   }
   
   initEventListeners() {
@@ -51,7 +52,7 @@ class OfflineSupport {
     const wasOnline = this.isOnline;
     this.isOnline = isOnline;
     
-    console.log(`Network status changed: ${isOnline ? 'online' : 'offline'}`);
+    logInfo(`Network status changed: ${isOnline ? 'online' : 'offline'}`);
     
     // Update UI
     this.updateOnlineStatus();
@@ -195,13 +196,13 @@ class OfflineSupport {
   // Queue an operation to be executed when back online
   queueOperation(operation) {
     if (!operation || !operation.type) {
-      console.error('Invalid operation:', operation);
+      logError('Invalid operation:', operation);
       return false;
     }
     
     // Check if we have too many pending operations
     if (this.pendingOperations.length >= this.securityConfig.maxPendingOperations) {
-      console.error('Too many pending operations');
+      logError('Too many pending operations');
       return false;
     }
     
@@ -211,7 +212,7 @@ class OfflineSupport {
     
     // Validate operation data
     if (!this.validateOperation(operation)) {
-      console.error('Invalid operation data:', operation);
+      logError('Invalid operation data:', operation);
       return false;
     }
     
@@ -221,7 +222,7 @@ class OfflineSupport {
     // Save to localStorage
     this.savePendingOperations();
     
-    console.log(`Operation queued for later execution:`, operation);
+    logInfo(`Operation queued for later execution:`, operation);
     
     return operation.id;
   }
@@ -236,7 +237,7 @@ class OfflineSupport {
     try {
       localStorage.setItem('pendingOperations', JSON.stringify(this.pendingOperations));
     } catch (error) {
-      console.error('Failed to save pending operations:', error);
+      logError('Failed to save pending operations:', error);
     }
   }
   
@@ -246,7 +247,7 @@ class OfflineSupport {
       const storedOperations = localStorage.getItem('pendingOperations');
       this.pendingOperations = storedOperations ? JSON.parse(storedOperations) : [];
     } catch (error) {
-      console.error('Failed to load pending operations:', error);
+      logError('Failed to load pending operations:', error);
       this.pendingOperations = [];
     }
   }
@@ -254,16 +255,16 @@ class OfflineSupport {
   // Sync all pending operations with the server
   async syncPendingOperations() {
     if (this.pendingOperations.length === 0) {
-      console.log('No pending operations to sync');
+      logInfo('No pending operations to sync');
       return { success: true, synced: 0 };
     }
     
     if (!this.isOnline) {
-      console.log('Cannot sync while offline');
+      logInfo('Cannot sync while offline');
       return { success: false, error: 'Offline' };
     }
     
-    console.log(`Syncing ${this.pendingOperations.length} pending operations...`);
+    logInfo(`Syncing ${this.pendingOperations.length} pending operations...`);
     
     const successfulOperations = [];
     const failedOperations = [];
@@ -274,7 +275,7 @@ class OfflineSupport {
         // Check operation age
         const operationAge = Date.now() - new Date(operation.timestamp).getTime();
         if (operationAge > this.securityConfig.maxOperationAge) {
-          console.warn('Operation too old, skipping:', operation);
+          logWarn('Operation too old, skipping:', operation);
           failedOperations.push({ ...operation, error: 'Operation too old' });
           continue;
         }
@@ -303,7 +304,7 @@ class OfflineSupport {
           successfulOperations.push(operation);
         }
       } catch (error) {
-        console.error('Failed to process operation:', error);
+        logError('Failed to process operation:', error);
         failedOperations.push({ ...operation, error: error.message });
       }
     }
@@ -321,7 +322,7 @@ class OfflineSupport {
   
   // Process a single operation
   async processOperation(operation) {
-    console.log(`Processing operation: ${operation.type}`, operation);
+    logInfo(`Processing operation: ${operation.type}`, operation);
     
     switch (operation.type) {
       case 'createDocument':
@@ -460,10 +461,10 @@ class OfflineSupport {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
         .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
+          logInfo('Service Worker registered with scope:', registration.scope);
         })
         .catch(error => {
-          console.error('Service Worker registration failed:', error);
+          logError('Service Worker registration failed:', error);
         });
     }
   }
@@ -484,7 +485,7 @@ class OfflineSupport {
       
       return value;
     } catch (error) {
-      console.error(`Error retrieving cached data for ${key}:`, error);
+      logError(`Error retrieving cached data for ${key}:`, error);
       return null;
     }
   }
@@ -500,7 +501,7 @@ class OfflineSupport {
       localStorage.setItem(`cache_${key}`, JSON.stringify(data));
       return true;
     } catch (error) {
-      console.error(`Error caching data for ${key}:`, error);
+      logError(`Error caching data for ${key}:`, error);
       return false;
     }
   }

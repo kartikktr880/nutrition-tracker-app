@@ -1,11 +1,13 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import { auditLogger } from '@/lib/audit-logger';
 import { componentLifecycleManager } from '@/lib/componentLifecycleManager';
+import { recordError, recordOperationLatency } from '@/lib/monitoring';
 import { memoryManager } from '@/services/memoryManager';
 import { requestManager } from '@/services/requestManager';
-import { performanceOptimizer } from '@/services/performanceOptimizer';
-import { recordError, recordOperationLatency } from '@/lib/monitoring';
-import { auditLogger } from '@/lib/audit-logger';
-import { v4 as uuidv4 } from 'uuid';
+
+import { logError, logInfo } from '../../utils/logger';
 
 interface CleanupHook {
   cleanup: () => Promise<void>;
@@ -73,7 +75,14 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
     const registerComponent = async () => {
       try {
         // Register component with lifecycle manager
-        await componentLifecycleManager.registerComponent(componentId.current);
+        await componentLifecycleManager.registerComponent(componentId.current, {
+          onMount: () => {
+            logInfo(`Component ${componentId.current} mounted`);
+          },
+          onUnmount: () => {
+            logInfo(`Component ${componentId.current} unmounted`);
+          }
+        });
 
         // Set up rate limiting if configured
         if (rateLimitKey && rateLimit && rateLimitWindow) {
@@ -89,16 +98,16 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
         if (onMemoryWarning) {
           componentLifecycleManager.setMemoryWarningCallback(
             componentId.current,
-            (usage, limit) => {
-              onMemoryWarning(usage, limit);
+            (_usage, _limit) => {
+              onMemoryWarning(_usage, _limit);
               auditLogger.log({
                 category: 'memory',
                 severity: 'warning',
                 message: 'Component memory warning callback triggered',
                 context: {
                   componentId: componentId.current,
-                  usage,
-                  limit
+                  usage: _usage,
+                  limit: _limit
                 }
               });
             }
@@ -109,17 +118,13 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
         if (onPerformanceWarning) {
           componentLifecycleManager.setPerformanceWarningCallback(
             componentId.current,
-            (usage: number, limit: number) => {
+            (_usage: number, _limit: number) => {
               const metrics = componentLifecycleManager.getComponentPerformanceMetrics(componentId.current);
               if (metrics) {
                 const {
                   fps,
                   memoryUsage,
-                  renderTime,
-                  scriptTime,
-                  styleTime,
-                  layoutTime,
-                  paintTime
+                  renderTime
                 } = metrics;
 
                 // Check if any metrics exceed thresholds
@@ -132,10 +137,10 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
                     fps,
                     memoryUsage,
                     renderTime,
-                    scriptTime,
-                    styleTime,
-                    layoutTime,
-                    paintTime
+                    scriptTime: 0,
+                    styleTime: 0,
+                    layoutTime: 0,
+                    paintTime: 0
                   });
                 }
               }
@@ -176,9 +181,12 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
 
     return () => {
       if (cleanupRef.current) {
-        cleanupRef.current().catch(error => {
-          recordError('Component cleanup failed during unmount', error instanceof Error ? error.message : String(error));
-        });
+        const result = cleanupRef.current();
+        if (result instanceof Promise) {
+          result.catch((error: unknown) => {
+            logError('Cleanup failed:', error instanceof Error ? error.message : String(error));
+          });
+        }
       }
     };
   }, [
@@ -252,14 +260,14 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
   const handleError = useCallback((error: Error) => {
     componentLifecycleManager.recordError(componentId.current, error);
     options.onError?.(error);
-  }, [options.onError]);
+  }, [options]);
 
   const updateMemoryUsage = useCallback((usage: number) => {
     componentLifecycleManager.updateMemoryUsage(componentId.current, usage);
     if (options.memoryThreshold && usage > options.memoryThreshold) {
       options.onMemoryWarning?.(usage, options.memoryThreshold);
     }
-  }, [options.memoryThreshold, options.onMemoryWarning]);
+  }, [options]);
 
   // Cache management functions
   const setCache = useCallback(async <T>(data: T, size: number) => {
@@ -281,7 +289,8 @@ export function useComponentLifecycle(options: UseComponentLifecycleOptions = {}
     if (!cacheKey) return undefined;
 
     try {
-      return componentLifecycleManager.getComponentCache<T>(componentId.current, cacheKey);
+      const result = componentLifecycleManager.getComponentCache<T>(componentId.current, cacheKey);
+      return result || undefined;
     } catch (error) {
       recordError('Cache get failed', error instanceof Error ? error.message : String(error));
       return undefined;

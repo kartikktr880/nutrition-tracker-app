@@ -1,27 +1,11 @@
-import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
+import { Trophy, Info, Target, Star, Medal, Award, Crown, Sparkles, Lock } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import {
-  Trophy,
-  Info,
-  Target,
-  Star,
-  Medal,
-  Award,
-  Crown,
-  Sparkles,
-  CheckCircle2,
-  Lock,
-  Unlock,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormAchievementSystemProps {
   checks: ExerciseFormCheck[];
@@ -55,7 +39,6 @@ interface AchievementMetrics {
 
 export function FormAchievementSystem({
   checks,
-  currentCheck,
 }: FormAchievementSystemProps) {
   const [metrics, setMetrics] = useState<AchievementMetrics>({
     achievements: [],
@@ -66,14 +49,136 @@ export function FormAchievementSystem({
   });
 
   useEffect(() => {
-    if (!currentCheck || !checks.length) return;
+    if (!checks || checks.length === 0) return;
 
-    const achievements = generateAchievements(checks, currentCheck);
+    const generateAchievements = (
+      checks: ExerciseFormCheck[]
+    ): Achievement[] => {
+      const achievements: Achievement[] = [];
+
+      // Consistency Achievements
+      achievements.push(
+        {
+          id: 'consistency_3',
+          title: 'Form Master Beginner',
+          description: 'Maintain 80% form consistency for 3 days',
+          type: 'consistency',
+          icon: <Star className="w-6 h-6 text-yellow-500" />,
+          progress: calculateConsistencyProgress(checks, 3),
+          completed: calculateConsistencyProgress(checks, 3) >= 100,
+          requirements: {
+            type: 'days',
+            value: 3,
+            current: Math.min(calculateConsistencyProgress(checks, 3) / 100 * 3, 3),
+          },
+        },
+        {
+          id: 'consistency_7',
+          title: 'Form Master Intermediate',
+          description: 'Maintain 80% form consistency for 7 days',
+          type: 'consistency',
+          icon: <Medal className="w-6 h-6 text-blue-500" />,
+          progress: calculateConsistencyProgress(checks, 7),
+          completed: calculateConsistencyProgress(checks, 7) >= 100,
+          requirements: {
+            type: 'days',
+            value: 7,
+            current: Math.min(calculateConsistencyProgress(checks, 7) / 100 * 7, 7),
+          },
+        },
+        {
+          id: 'consistency_30',
+          title: 'Form Master Expert',
+          description: 'Maintain 80% form consistency for 30 days',
+          type: 'consistency',
+          icon: <Crown className="w-6 h-6 text-purple-500" />,
+          progress: calculateConsistencyProgress(checks, 30),
+          completed: calculateConsistencyProgress(checks, 30) >= 100,
+          requirements: {
+            type: 'days',
+            value: 30,
+            current: Math.min(calculateConsistencyProgress(checks, 30) / 100 * 30, 30),
+          },
+        }
+      );
+
+      // Mastery Achievements
+      achievements.push(
+        {
+          id: 'mastery_upper',
+          title: 'Upper Body Form Master',
+          description: 'Achieve 90% form score in upper body exercises',
+          type: 'mastery',
+          icon: <Target className="w-6 h-6 text-red-500" />,
+          progress: calculateAreaMastery(checks, 'upper_body'),
+          completed: calculateAreaMastery(checks, 'upper_body') >= 90,
+          requirements: {
+            type: 'score',
+            value: 90,
+            current: calculateAreaMastery(checks, 'upper_body'),
+          },
+        },
+        {
+          id: 'mastery_lower',
+          title: 'Lower Body Form Master',
+          description: 'Achieve 90% form score in lower body exercises',
+          type: 'mastery',
+          icon: <Target className="w-6 h-6 text-green-500" />,
+          progress: calculateAreaMastery(checks, 'lower_body'),
+          completed: calculateAreaMastery(checks, 'lower_body') >= 90,
+          requirements: {
+            type: 'score',
+            value: 90,
+            current: calculateAreaMastery(checks, 'lower_body'),
+          },
+        }
+      );
+
+      // Milestone Achievements
+      achievements.push(
+        {
+          id: 'milestone_100',
+          title: 'Century Club',
+          description: 'Complete 100 form checks',
+          type: 'milestone',
+          icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+          progress: (checks.length / 100) * 100,
+          completed: checks.length >= 100,
+          requirements: {
+            type: 'checks',
+            value: 100,
+            current: checks.length,
+          },
+        }
+      );
+
+      // Special Achievements
+      achievements.push(
+        {
+          id: 'special_perfect',
+          title: 'Perfect Form',
+          description: 'Achieve 100% form score in any check',
+          type: 'special',
+          icon: <Sparkles className="w-6 h-6 text-purple-500" />,
+          progress: hasPerfectScore(checks) ? 100 : 0,
+          completed: hasPerfectScore(checks),
+          requirements: {
+            type: 'perfect',
+            value: 1,
+            current: hasPerfectScore(checks) ? 1 : 0,
+          },
+        }
+      );
+
+      return achievements;
+    };
+
+    const achievements = generateAchievements(checks);
     const completedAchievements = achievements.filter(a => a.completed).length;
     const nextAchievement = achievements.find(a => !a.completed);
     const recentUnlocks = achievements
       .filter(a => a.completed && a.unlockedAt)
-      .sort((a, b) => b.unlockedAt!.getTime() - a.unlockedAt!.getTime())
+      .sort((a, b) => (b.unlockedAt?.getTime() ?? 0) - (a.unlockedAt?.getTime() ?? 0))
       .slice(0, 3);
     const streakAchievements = achievements.filter(a => 
       a.type === 'consistency' && a.completed
@@ -87,130 +192,7 @@ export function FormAchievementSystem({
       recentUnlocks,
       streakAchievements,
     });
-  }, [checks, currentCheck]);
-
-  const generateAchievements = (
-    checks: ExerciseFormCheck[],
-    currentCheck: ExerciseFormCheck
-  ): Achievement[] => {
-    const achievements: Achievement[] = [];
-
-    // Consistency Achievements
-    achievements.push(
-      {
-        id: 'consistency_3',
-        title: 'Form Master Beginner',
-        description: 'Maintain 80% form consistency for 3 days',
-        type: 'consistency',
-        icon: <Star className="w-6 h-6 text-yellow-500" />,
-        progress: calculateConsistencyProgress(checks, 3),
-        completed: calculateConsistencyProgress(checks, 3) >= 100,
-        requirements: {
-          type: 'days',
-          value: 3,
-          current: Math.min(calculateConsistencyProgress(checks, 3) / 100 * 3, 3),
-        },
-      },
-      {
-        id: 'consistency_7',
-        title: 'Form Master Intermediate',
-        description: 'Maintain 80% form consistency for 7 days',
-        type: 'consistency',
-        icon: <Medal className="w-6 h-6 text-blue-500" />,
-        progress: calculateConsistencyProgress(checks, 7),
-        completed: calculateConsistencyProgress(checks, 7) >= 100,
-        requirements: {
-          type: 'days',
-          value: 7,
-          current: Math.min(calculateConsistencyProgress(checks, 7) / 100 * 7, 7),
-        },
-      },
-      {
-        id: 'consistency_30',
-        title: 'Form Master Expert',
-        description: 'Maintain 80% form consistency for 30 days',
-        type: 'consistency',
-        icon: <Crown className="w-6 h-6 text-purple-500" />,
-        progress: calculateConsistencyProgress(checks, 30),
-        completed: calculateConsistencyProgress(checks, 30) >= 100,
-        requirements: {
-          type: 'days',
-          value: 30,
-          current: Math.min(calculateConsistencyProgress(checks, 30) / 100 * 30, 30),
-        },
-      }
-    );
-
-    // Mastery Achievements
-    achievements.push(
-      {
-        id: 'mastery_upper',
-        title: 'Upper Body Form Master',
-        description: 'Achieve 90% form score in upper body exercises',
-        type: 'mastery',
-        icon: <Target className="w-6 h-6 text-red-500" />,
-        progress: calculateAreaMastery(checks, 'upper_body'),
-        completed: calculateAreaMastery(checks, 'upper_body') >= 90,
-        requirements: {
-          type: 'score',
-          value: 90,
-          current: calculateAreaMastery(checks, 'upper_body'),
-        },
-      },
-      {
-        id: 'mastery_lower',
-        title: 'Lower Body Form Master',
-        description: 'Achieve 90% form score in lower body exercises',
-        type: 'mastery',
-        icon: <Target className="w-6 h-6 text-green-500" />,
-        progress: calculateAreaMastery(checks, 'lower_body'),
-        completed: calculateAreaMastery(checks, 'lower_body') >= 90,
-        requirements: {
-          type: 'score',
-          value: 90,
-          current: calculateAreaMastery(checks, 'lower_body'),
-        },
-      }
-    );
-
-    // Milestone Achievements
-    achievements.push(
-      {
-        id: 'milestone_100',
-        title: 'Century Club',
-        description: 'Complete 100 form checks',
-        type: 'milestone',
-        icon: <Trophy className="w-6 h-6 text-yellow-500" />,
-        progress: (checks.length / 100) * 100,
-        completed: checks.length >= 100,
-        requirements: {
-          type: 'checks',
-          value: 100,
-          current: checks.length,
-        },
-      }
-    );
-
-    // Special Achievements
-    achievements.push(
-      {
-        id: 'special_perfect',
-        title: 'Perfect Form',
-        description: 'Achieve 100% form score in any check',
-        type: 'special',
-        icon: <Sparkles className="w-6 h-6 text-purple-500" />,
-        progress: hasPerfectScore(checks) ? 100 : 0,
-        completed: hasPerfectScore(checks),
-        requirements: {
-          type: 'perfect',
-          value: 1,
-          current: hasPerfectScore(checks) ? 1 : 0,
-        },
-      }
-    );
-
-    return achievements;
-  };
+  }, [checks]);
 
   const calculateConsistencyProgress = (checks: ExerciseFormCheck[], days: number): number => {
     const recentChecks = checks.slice(-days);
@@ -265,13 +247,10 @@ export function FormAchievementSystem({
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Form Achievements</h3>
         <TooltipProvider>
-          <Tooltip>
+          <Tooltip content="Achievement unlocked!">
             <TooltipTrigger>
               <Info className="w-5 h-5 text-gray-400" />
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Track your form improvement achievements</p>
-            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

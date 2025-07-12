@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { analytics } from '../services/analytics';
-import { storage } from '../services/storage';
-import { monitoring } from '../services/monitoring';
-import type { MealPlan, Recipe, FoodItem, DietaryRestrictions } from '../types/nutrition';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import { useComponentLifecycle } from '../lib/hooks/useComponentLifecycle';
+import { analytics } from '../services/analytics';
+import { monitoring } from '../services/monitoring';
+import { storage } from '../services/storage';
+import type { MealPlanV2 as MealPlan, Recipe, Meal } from '../types/nutrition';
+import { logWarn } from '../utils/logger';
 
 interface MealPlannerProps {
   userId: string;
@@ -16,12 +18,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
   const [selectedPlan, setSelectedPlan] = useState<MealPlan | null>(null);
   const [isCreatingPlan, setIsCreatingPlan] = useState(false);
   const [newPlan, setNewPlan] = useState<Partial<MealPlan>>({
-    meals: {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      snacks: []
-    },
+    meals: [],
     restrictions: {
       allergies: [],
       intolerances: [],
@@ -34,7 +31,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
   // Use component lifecycle hook
   useComponentLifecycle({
     onMemoryWarning: (usage, limit) => {
-      console.warn(`Memory usage warning in MealPlanner: ${usage}MB/${limit}MB`);
+      logWarn(`Memory usage warning in MealPlanner: ${usage}MB/${limit}MB`);
       analytics.trackEvent({
         category: 'Performance',
         action: 'memory_warning',
@@ -42,7 +39,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
       });
     },
     onPerformanceWarning: (metrics) => {
-      console.warn('Performance warning in MealPlanner:', metrics);
+      logWarn('Performance warning in MealPlanner:', metrics);
       analytics.trackEvent({
         category: 'Performance',
         action: 'performance_warning',
@@ -61,6 +58,48 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
     rateLimit: 30,
     rateLimitWindow: 60 * 1000 // 1 minute
   });
+
+  const loadMealPlans = useCallback(async () => {
+    try {
+      const savedPlans = await storage.getItem<MealPlan[]>(`meal_plans_${userId}`);
+      if (savedPlans) {
+        setMealPlans(savedPlans);
+        analytics.trackEvent({
+          category: 'MealPlan',
+          action: 'load_plans'
+        });
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Failed to load meal plans';
+      setError(error);
+      analytics.trackError({
+        errorType: 'meal_plans_load_error',
+        errorMessage: error,
+        context: { userId }
+      });
+    }
+  }, [userId]);
+
+  const loadRecipes = useCallback(async () => {
+    try {
+      const savedRecipes = await storage.getItem<Recipe[]>(`recipes_${userId}`);
+      if (savedRecipes) {
+        setRecipes(savedRecipes);
+        analytics.trackEvent({
+          category: 'Recipe',
+          action: 'load_recipes'
+        });
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Failed to load recipes';
+      setError(error);
+      analytics.trackError({
+        errorType: 'recipes_load_error',
+        errorMessage: error,
+        context: { userId }
+      });
+    }
+  }, [userId]);
 
   useEffect(() => {
     const initializeComponent = async () => {
@@ -96,49 +135,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
     };
 
     initializeComponent();
-  }, [userId]);
-
-  const loadMealPlans = async () => {
-    try {
-      const savedPlans = await storage.getItem<MealPlan[]>(`meal_plans_${userId}`);
-      if (savedPlans) {
-        setMealPlans(savedPlans);
-        analytics.trackEvent({
-          category: 'MealPlan',
-          action: 'load_plans'
-        });
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load meal plans';
-      setError(error);
-      analytics.trackError({
-        errorType: 'meal_plans_load_error',
-        errorMessage: error,
-        context: { userId }
-      });
-    }
-  };
-
-  const loadRecipes = async () => {
-    try {
-      const savedRecipes = await storage.getItem<Recipe[]>(`recipes_${userId}`);
-      if (savedRecipes) {
-        setRecipes(savedRecipes);
-        analytics.trackEvent({
-          category: 'Recipe',
-          action: 'load_recipes'
-        });
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load recipes';
-      setError(error);
-      analytics.trackError({
-        errorType: 'recipes_load_error',
-        errorMessage: error,
-        context: { userId }
-      });
-    }
-  };
+  }, [userId, loadMealPlans, loadRecipes]);
 
   const handleCreatePlan = async () => {
     try {
@@ -157,7 +154,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
           carbs: 40,
           fat: 30
         },
-        meals: newPlan.meals as Required<MealPlan>['meals'],
+        meals: newPlan.meals || [],
         restrictions: newPlan.restrictions as Required<MealPlan>['restrictions']
       };
 
@@ -166,12 +163,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
       setMealPlans(updatedPlans);
       setIsCreatingPlan(false);
       setNewPlan({
-        meals: {
-          breakfast: [],
-          lunch: [],
-          dinner: [],
-          snacks: []
-        },
+        meals: [],
         restrictions: {
           allergies: [],
           intolerances: [],
@@ -224,16 +216,35 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
     }
   };
 
-  const handleAddRecipeToPlan = async (recipe: Recipe, mealType: keyof MealPlan['meals']) => {
+  const handleAddRecipeToPlan = async (recipe: Recipe, mealType: string) => {
     try {
       if (!selectedPlan) return;
 
+      // Convert recipe to meal format
+      const newMeal: Meal = {
+        id: recipe.id,
+        name: recipe.name,
+        calories: recipe.totalNutrition.calories,
+        protein: recipe.totalNutrition.macros.protein,
+        carbs: recipe.totalNutrition.macros.carbs,
+        fat: recipe.totalNutrition.macros.fat,
+        ingredients: recipe.ingredients.map(ing => ({
+          name: ing.foodItem.name,
+          amount: ing.quantity,
+          unit: ing.unit,
+          category: 'main'
+        })),
+        instructions: recipe.instructions,
+        prepTime: recipe.prepTime,
+        cookTime: recipe.cookTime,
+        servings: recipe.servings,
+        tags: recipe.tags,
+        nutritionalScore: 85 // Default score
+      };
+
       const updatedPlan = {
         ...selectedPlan,
-        meals: {
-          ...selectedPlan.meals,
-          [mealType]: [...selectedPlan.meals[mealType], recipe.id]
-        }
+        meals: [...selectedPlan.meals, newMeal]
       };
 
       const updatedPlans = mealPlans.map(plan =>
@@ -261,16 +272,13 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
     }
   };
 
-  const handleRemoveRecipeFromPlan = async (recipeId: string, mealType: keyof MealPlan['meals']) => {
+  const handleRemoveRecipeFromPlan = async (recipeId: string, mealType: string) => {
     try {
       if (!selectedPlan) return;
 
       const updatedPlan = {
         ...selectedPlan,
-        meals: {
-          ...selectedPlan.meals,
-          [mealType]: selectedPlan.meals[mealType].filter(id => id !== recipeId)
-        }
+        meals: selectedPlan.meals.filter(meal => meal.id !== recipeId)
       };
 
       const updatedPlans = mealPlans.map(plan =>
@@ -298,7 +306,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
     }
   };
 
-  const getRecipeById = (id: string): Recipe | undefined => {
+  const _getRecipeById = (id: string): Recipe | undefined => {
     return recipes.find(recipe => recipe.id === id);
   };
 
@@ -369,10 +377,9 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
               </label>
               <input
                 type="date"
-                value={newPlan.startDate || ''}
-                onChange={(e) => setNewPlan({ ...newPlan, startDate: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300"
-                required
+                value={newPlan.startDate ? newPlan.startDate.toISOString().split('T')[0] : ''}
+                onChange={(e) => setNewPlan({ ...newPlan, startDate: new Date(e.target.value) })}
+                className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
 
@@ -382,10 +389,9 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
               </label>
               <input
                 type="date"
-                value={newPlan.endDate || ''}
-                onChange={(e) => setNewPlan({ ...newPlan, endDate: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300"
-                required
+                value={newPlan.endDate ? newPlan.endDate.toISOString().split('T')[0] : ''}
+                onChange={(e) => setNewPlan({ ...newPlan, endDate: new Date(e.target.value) })}
+                className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
 
@@ -401,7 +407,11 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
                     value={newPlan.macroRatios?.protein || 30}
                     onChange={(e) => setNewPlan({
                       ...newPlan,
-                      macroRatios: { ...(newPlan.macroRatios || {}), protein: +e.target.value }
+                      macroRatios: { 
+                        protein: +e.target.value,
+                        carbs: newPlan.macroRatios?.carbs || 40,
+                        fat: newPlan.macroRatios?.fat || 30
+                      }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
                     min="0"
@@ -417,7 +427,11 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
                     value={newPlan.macroRatios?.carbs || 40}
                     onChange={(e) => setNewPlan({
                       ...newPlan,
-                      macroRatios: { ...(newPlan.macroRatios || {}), carbs: +e.target.value }
+                      macroRatios: { 
+                        protein: newPlan.macroRatios?.protein || 30,
+                        carbs: +e.target.value,
+                        fat: newPlan.macroRatios?.fat || 30
+                      }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
                     min="0"
@@ -433,7 +447,11 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
                     value={newPlan.macroRatios?.fat || 30}
                     onChange={(e) => setNewPlan({
                       ...newPlan,
-                      macroRatios: { ...(newPlan.macroRatios || {}), fat: +e.target.value }
+                      macroRatios: { 
+                        protein: newPlan.macroRatios?.protein || 30,
+                        carbs: newPlan.macroRatios?.carbs || 40,
+                        fat: +e.target.value
+                      }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
                     min="0"
@@ -448,170 +466,150 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({ userId, onPlanCreated 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Allergies (comma-separated)
+                    Allergies
                   </label>
                   <input
                     type="text"
-                    value={newPlan.restrictions?.allergies.join(', ') || ''}
+                    value={newPlan.restrictions?.allergies?.join(', ') || ''}
                     onChange={(e) => setNewPlan({
                       ...newPlan,
                       restrictions: {
-                        ...(newPlan.restrictions || {}),
-                        allergies: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+                        allergies: e.target.value.split(',').map(s => s.trim()).filter(Boolean),
+                        intolerances: newPlan.restrictions?.intolerances || [],
+                        preferences: newPlan.restrictions?.preferences || [],
+                        excludedFoods: newPlan.restrictions?.excludedFoods || []
                       }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
+                    placeholder="e.g., nuts, shellfish"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Intolerances (comma-separated)
+                    Intolerances
                   </label>
                   <input
                     type="text"
-                    value={newPlan.restrictions?.intolerances.join(', ') || ''}
+                    value={newPlan.restrictions?.intolerances?.join(', ') || ''}
                     onChange={(e) => setNewPlan({
                       ...newPlan,
                       restrictions: {
-                        ...(newPlan.restrictions || {}),
-                        intolerances: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+                        allergies: newPlan.restrictions?.allergies || [],
+                        intolerances: e.target.value.split(',').map(s => s.trim()).filter(Boolean),
+                        preferences: newPlan.restrictions?.preferences || [],
+                        excludedFoods: newPlan.restrictions?.excludedFoods || []
                       }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
+                    placeholder="e.g., lactose, gluten"
                   />
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 flex justify-end space-x-2">
-            <button
-              onClick={() => setIsCreatingPlan(false)}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleCreatePlan}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Create Plan
-            </button>
+            <div className="col-span-2 flex gap-2">
+              <button
+                onClick={handleCreatePlan}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Create Plan
+              </button>
+              <button
+                onClick={() => setIsCreatingPlan(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="text-lg font-medium mb-4">Meal Plans</h3>
-            {mealPlans.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">No meal plans created yet.</p>
-            ) : (
-              <div className="space-y-2">
-                {mealPlans.map((plan) => (
-                  <div
-                    key={plan.id}
-                    className={`p-3 rounded-lg cursor-pointer ${
-                      selectedPlan?.id === plan.id
-                        ? 'bg-blue-50 border border-blue-200'
-                        : 'bg-gray-50 hover:bg-gray-100'
-                    }`}
-                    onClick={() => setSelectedPlan(plan)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{plan.name}</h4>
-                        <p className="text-sm text-gray-500">
-                          {new Date(plan.startDate).toLocaleDateString()} - {new Date(plan.endDate).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeletePlan(plan.id);
-                        }}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Delete
-                      </button>
-                    </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Meal Plans</h3>
+          <div className="space-y-2">
+            {mealPlans.map(plan => (
+              <div
+                key={plan.id}
+                className={`p-4 border rounded cursor-pointer ${
+                  selectedPlan?.id === plan.id ? 'border-green-500 bg-green-50' : 'border-gray-300'
+                }`}
+                onClick={() => setSelectedPlan(plan)}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-medium">{plan.name}</h4>
+                    <p className="text-sm text-gray-600">
+                      {plan.startDate.toLocaleDateString()} - {plan.endDate.toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-600">{plan.dailyCalories} calories/day</p>
                   </div>
-                ))}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeletePlan(plan.id);
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </div>
 
         {selectedPlan && (
-          <div className="md:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h3 className="text-xl font-semibold">{selectedPlan.name}</h3>
-                  <p className="text-gray-500">
-                    {selectedPlan.dailyCalories} calories/day • {selectedPlan.macroRatios.protein}% protein,{' '}
-                    {selectedPlan.macroRatios.carbs}% carbs, {selectedPlan.macroRatios.fat}% fat
-                  </p>
-                </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-4">{selectedPlan.name}</h3>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium mb-2">Meals</h4>
+                {selectedPlan.meals.length === 0 ? (
+                  <p className="text-gray-500">No meals added yet</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedPlan.meals.map((meal) => (
+                      <div key={meal.id} className="p-3 border rounded">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h5 className="font-medium">{meal.name}</h5>
+                            <p className="text-sm text-gray-600">{meal.calories} calories</p>
+                          </div>
+                          <button
+                            onClick={() => handleRemoveRecipeFromPlan(meal.id, 'meal')}
+                            className="text-red-500 hover:text-red-700 text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-6">
-                {(['breakfast', 'lunch', 'dinner', 'snacks'] as const).map((mealType) => (
-                  <div key={mealType} className="space-y-2">
-                    <h4 className="text-lg font-medium capitalize">{mealType}</h4>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      {selectedPlan.meals[mealType].length === 0 ? (
-                        <p className="text-gray-500 text-center py-2">No recipes added yet.</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {selectedPlan.meals[mealType].map((recipeId) => {
-                            const recipe = getRecipeById(recipeId);
-                            if (!recipe) return null;
-
-                            return (
-                              <div key={recipe.id} className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
-                                <div>
-                                  <p className="font-medium">{recipe.name}</p>
-                                  <p className="text-sm text-gray-500">
-                                    {recipe.totalNutrition.calories} kcal • {recipe.prepTime + recipe.cookTime} min
-                                  </p>
-                                </div>
-                                <button
-                                  onClick={() => handleRemoveRecipeFromPlan(recipe.id, mealType)}
-                                  className="text-red-600 hover:text-red-800"
-                                >
-                                  Remove
-                                </button>
-                              </div>
-                            );
-                          })}
+              <div>
+                <h4 className="font-medium mb-2">Available Recipes</h4>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {recipes.map(recipe => (
+                    <div key={recipe.id} className="p-3 border rounded">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h5 className="font-medium">{recipe.name}</h5>
+                          <p className="text-sm text-gray-600">{recipe.totalNutrition.calories} calories</p>
                         </div>
-                      )}
-
-                      <div className="mt-4">
-                        <select
-                          className="block w-full rounded-md border-gray-300"
-                          onChange={(e) => {
-                            const recipe = recipes.find(r => r.id === e.target.value);
-                            if (recipe) {
-                              handleAddRecipeToPlan(recipe, mealType);
-                              e.target.value = '';
-                            }
-                          }}
-                          value=""
+                        <button
+                          onClick={() => handleAddRecipeToPlan(recipe, 'meal')}
+                          className="bg-green-500 text-white px-2 py-1 rounded text-sm hover:bg-green-600"
                         >
-                          <option value="">Add a recipe...</option>
-                          {recipes.map((recipe) => (
-                            <option key={recipe.id} value={recipe.id}>
-                              {recipe.name} ({recipe.totalNutrition.calories} kcal)
-                            </option>
-                          ))}
-                        </select>
+                          Add
+                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +8,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -98,13 +98,13 @@ export default function MonitoringDashboard() {
   }
 
   const securityScoreData = {
-    labels: data.security.scoreHistory?.map(entry => 
-      new Date(entry.timestamp).toLocaleTimeString()
+    labels: (data.security as unknown as { scoreHistory: Array<{ timestamp: string; score: number }> })?.scoreHistory?.map((entry: { timestamp: string; score: number }) =>
+      new Date(entry.timestamp).toLocaleDateString()
     ) || [],
     datasets: [
       {
         label: 'Security Score',
-        data: data.security.scoreHistory?.map(entry => entry.score) || [],
+        data: (data.security as unknown as { scoreHistory: Array<{ timestamp: string; score: number }> })?.scoreHistory?.map((entry: { timestamp: string; score: number }) => entry.score) || [],
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
       },

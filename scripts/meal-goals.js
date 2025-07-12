@@ -1,1 +1,2 @@
-// Meal Goals Tracker JS\nconst mealGoals = {\n  defaults: {\n    breakfast: { calories: 400, protein: 20, carbs: 45, fat: 15 },\n    lunch: { calories: 600, protein: 30, carbs: 70, fat: 20 },\n    dinner: { calories: 650, protein: 35, carbs: 75, fat: 22 }\n  },\n  init() { console.log('Meal goals initialized'); }\n};\n\nmealGoals.init();
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
+// Meal Goals Tracker JS\nconst mealGoals = {\n  defaults: {\n    breakfast: { calories: 400, protein: 20, carbs: 45, fat: 15 },\n    lunch: { calories: 600, protein: 30, carbs: 70, fat: 20 },\n    dinner: { calories: 650, protein: 35, carbs: 75, fat: 22 }\n  },\n  init() { logInfo('Meal goals initialized'); }\n};\n\nmealGoals.init();

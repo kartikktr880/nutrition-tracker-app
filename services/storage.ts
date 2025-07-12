@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { SearchHistoryItem } from '../hooks/useSearchHistory';
 import { analytics } from './analytics';
 import { compress, decompress } from 'lz-string';
@@ -43,7 +44,7 @@ const DEFAULT_OPTIONS: Required<StorageOptions> = {
   quota: {
     max: 5 * 1024 * 1024, // 5MB default quota
     onQuotaExceeded: (quota) => {
-      console.warn('Storage quota exceeded:', quota);
+      logWarn('Storage quota exceeded:', quota as any);
     }
   }
 };
@@ -302,7 +303,7 @@ class StorageService {
         success++;
       } catch (error) {
         failed++;
-        console.error(`Failed to sync item ${key}:`, error);
+        logError(`Failed to sync item ${key}:`, error as Error | undefined);
       }
     }
 
@@ -371,7 +372,7 @@ class StorageService {
         }
       }
     } catch (error) {
-      console.error('Failed to load from localStorage:', error);
+      logError('Failed to load from localStorage:', error as Error | undefined);
       analytics.trackError({
         errorType: 'storage_load_error',
         errorMessage: error instanceof Error ? error.message : 'Failed to load from localStorage'
@@ -384,7 +385,7 @@ class StorageService {
       const data = Array.from(this.storage.entries());
       localStorage.setItem('app_storage', JSON.stringify(data));
     } catch (error) {
-      console.error('Failed to save to localStorage:', error);
+      logError('Failed to save to localStorage:', error as Error | undefined);
       analytics.trackError({
         errorType: 'storage_save_error',
         errorMessage: error instanceof Error ? error.message : 'Failed to save to localStorage'
@@ -405,6 +406,78 @@ class StorageService {
       category: 'Storage',
       action: 'offline'
     });
+  }
+
+  /**
+   * Add search item to history
+   */
+  async addSearchItem(item: { id: string; query: string; timestamp: number }): Promise<void> {
+    const history = this.loadSearchHistory();
+    history.unshift(item);
+    
+    // Keep only last 50 items
+    if (history.length > 50) {
+      history.splice(50);
+    }
+    
+    await this.saveSearchHistory(history);
+  }
+
+  /**
+   * Remove search item from history
+   */
+  async removeSearchItem(id: string): Promise<void> {
+    const history = this.loadSearchHistory();
+    const filtered = history.filter(item => item.id !== id);
+    await this.saveSearchHistory(filtered);
+  }
+
+  /**
+   * Clear search history
+   */
+  async clearSearchHistory(): Promise<void> {
+    await this.saveSearchHistory([]);
+  }
+
+  /**
+   * Load recent searches
+   */
+  async loadRecentSearches(): Promise<Array<{ id: string; query: string; timestamp: number }>> {
+    try {
+      const stored = localStorage.getItem('recent_searches');
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      logError('Failed to load recent searches:', error as Error | undefined);
+      return [];
+    }
+  }
+
+  /**
+   * Add recent search
+   */
+  async addRecentSearch(query: string): Promise<void> {
+    const recent = await this.loadRecentSearches();
+    const newItem = { id: crypto.randomUUID(), query, timestamp: Date.now() };
+    recent.unshift(newItem);
+    
+    // Keep only last 20 items
+    if (recent.length > 20) {
+      recent.splice(20);
+    }
+    
+    await this.saveRecentSearches(recent);
+  }
+
+  /**
+   * Save recent searches
+   */
+  private async saveRecentSearches(searches: Array<{ id: string; query: string; timestamp: number }>): Promise<void> {
+    try {
+      localStorage.setItem('recent_searches', JSON.stringify(searches));
+    } catch (error) {
+      logError('Failed to save recent searches:', error as Error | undefined);
+      throw error;
+    }
   }
 }
 

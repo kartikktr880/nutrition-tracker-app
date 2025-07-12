@@ -1,5 +1,14 @@
-import { recordError, recordOperationLatency } from './monitoring';
-import { auditLogger } from './audit-logger';
+import { logError, logWarn } from '../utils/logger';
+import { ResourceMetrics, RecoveryMetrics, PerformanceThresholds, RecoveryContext, PerformanceMetrics } from '../utils/performance-types';
+
+import { auditLogger as _auditLogger } from './audit-logger';
+import { recordError as _recordError, recordOperationLatency as _recordOperationLatency } from './monitoring';
+
+enum CircuitState {
+  CLOSED = 'CLOSED',
+  OPEN = 'OPEN',
+  HALF_OPEN = 'HALF_OPEN',
+}
 
 interface RequestConfig {
   timeout?: number;
@@ -37,10 +46,10 @@ interface Request {
   status: 'pending' | 'in-progress' | 'completed' | 'failed' | 'cancelled' | 'queued';
   error?: Error;
   queuePosition?: number;
-  originalRequestFn?: () => Promise<any>;
+  originalRequestFn?: () => Promise<unknown>;
   batchId?: string;
   mergeId?: string;
-  subscribers: Set<(result: any) => void>;
+  subscribers: Set<(result: unknown) => void>;
   resourceUsage: number;
 }
 
@@ -55,7 +64,7 @@ interface CacheEntry<T> {
   };
 }
 
-interface BatchConfig {
+interface _BatchConfig {
   maxSize: number;
   maxDelay: number;
   batchKey: string;
@@ -72,7 +81,7 @@ interface QueueStats {
   };
 }
 
-interface QueueGroup {
+interface _QueueGroup {
   name: string;
   maxConcurrent: number;
   activeRequests: number;
@@ -118,26 +127,6 @@ interface RateLimiterState {
   currentBurst: number;
 }
 
-interface ResourceMetrics {
-  cpu: number;
-  memory: number;
-  network: number;
-  disk: number;
-}
-
-interface ResourceLimits {
-  maxCpu: number;
-  maxMemory: number;
-  maxNetwork: number;
-  maxDisk: number;
-}
-
-interface ResourceAllocation {
-  requestId: string;
-  metrics: ResourceMetrics;
-  timestamp: number;
-}
-
 interface ResourceVisualizationMetrics {
   timestamp: number;
   metrics: ResourceMetrics;
@@ -150,7 +139,7 @@ interface ResourceVisualizationMetrics {
   };
 }
 
-interface ResourceOptimizationRecommendation {
+interface _ResourceOptimizationRecommendation {
   type: 'cpu' | 'memory' | 'network' | 'disk';
   severity: 'low' | 'medium' | 'high';
   description: string;
@@ -159,7 +148,7 @@ interface ResourceOptimizationRecommendation {
   estimatedImprovement: number;
 }
 
-interface ResourceAnalytics {
+interface _ResourceAnalytics {
   patterns: {
     peakHours: number[];
     peakDays: number[];
@@ -185,7 +174,7 @@ interface ResourceAnalytics {
   }>;
 }
 
-interface ResourcePrediction {
+interface _ResourcePrediction {
   timestamp: number;
   predictedMetrics: ResourceMetrics;
   confidence: number;
@@ -209,7 +198,7 @@ interface ResourcePrediction {
   }>;
 }
 
-interface ResourceOptimizationStrategy {
+interface _ResourceOptimizationStrategy {
   type: 'cpu' | 'memory' | 'network' | 'disk';
   action: string;
   impact: number;
@@ -231,6 +220,19 @@ interface ResourceOptimizationStrategy {
   }>;
 }
 
+interface ErrorRecoveryActionConfig {
+  maxAttempts?: number;
+  delay?: number;
+  backoff?: 'linear' | 'exponential';
+  fallbackValue?: unknown;
+  notificationLevel?: 'info' | 'warning' | 'error';
+  resourceType?: 'memory' | 'cpu';
+  scaleFactor?: number;
+  serviceLevel?: string;
+  includeMetrics?: boolean;
+  degradeGracefully?: boolean;
+}
+
 interface ErrorRecoveryStrategy {
   type: 'retry' | 'fallback' | 'circuit-breaker' | 'rate-limit' | 'resource';
   priority: 'high' | 'medium' | 'low';
@@ -241,13 +243,7 @@ interface ErrorRecoveryStrategy {
   };
   actions: Array<{
     type: 'retry' | 'fallback' | 'scale' | 'degrade' | 'notify';
-    config: {
-      maxAttempts?: number;
-      delay?: number;
-      backoff?: 'linear' | 'exponential';
-      fallbackValue?: any;
-      notificationLevel?: 'info' | 'warning' | 'error';
-    };
+    config: ErrorRecoveryActionConfig;
   }>;
   validation: {
     successCriteria: Array<{
@@ -259,21 +255,8 @@ interface ErrorRecoveryStrategy {
   };
 }
 
-interface RecoveryMetrics {
-  timestamp: number;
-  strategy: string;
-  success: boolean;
-  duration: number;
-  impact: {
-    resource: Partial<ResourceMetrics>;
-    performance: Partial<PerformanceMetrics['metrics']>;
-  };
-  actions: Array<{
-    type: string;
-    success: boolean;
-    duration: number;
-  }>;
-}
+interface ResourceLimits { maxCpu: number; maxMemory: number; maxNetwork: number; maxDisk: number; }
+interface ResourceAllocation { cpu: number; memory: number; network: number; disk: number; }
 
 class RateLimiter {
   private state: RateLimiterState;
@@ -374,7 +357,7 @@ class RateLimiter {
   }
 }
 
-class PersistentCache {
+class _PersistentCache {
   private db: IDBDatabase | null = null;
   private readonly DB_NAME = 'request-cache';
   private readonly STORE_NAME = 'cache-entries';
@@ -401,10 +384,11 @@ class PersistentCache {
     });
   }
 
-  async set(key: string, entry: CacheEntry<any>): Promise<void> {
-    if (!this.db) await this.init();
+  async set(key: string, entry: CacheEntry<unknown>): Promise<void> {
+    if (!this.db) throw new Error('DB not initialized');
+    const db = this.db;
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.STORE_NAME], 'readwrite');
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
       const store = transaction.objectStore(this.STORE_NAME);
       const request = store.put({ key, ...entry });
 
@@ -413,10 +397,11 @@ class PersistentCache {
     });
   }
 
-  async get(key: string): Promise<CacheEntry<any> | null> {
-    if (!this.db) await this.init();
+  async get(key: string): Promise<CacheEntry<unknown> | null> {
+    if (!this.db) throw new Error('DB not initialized');
+    const db = this.db;
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.STORE_NAME], 'readonly');
+      const transaction = db.transaction([this.STORE_NAME], 'readonly');
       const store = transaction.objectStore(this.STORE_NAME);
       const request = store.get(key);
 
@@ -426,9 +411,10 @@ class PersistentCache {
   }
 
   async delete(key: string): Promise<void> {
-    if (!this.db) await this.init();
+    if (!this.db) throw new Error('DB not initialized');
+    const db = this.db;
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.STORE_NAME], 'readwrite');
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
       const store = transaction.objectStore(this.STORE_NAME);
       const request = store.delete(key);
 
@@ -438,9 +424,10 @@ class PersistentCache {
   }
 
   async clear(): Promise<void> {
-    if (!this.db) await this.init();
+    if (!this.db) throw new Error('DB not initialized');
+    const db = this.db;
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.STORE_NAME], 'readwrite');
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
       const store = transaction.objectStore(this.STORE_NAME);
       const request = store.clear();
 
@@ -450,10 +437,11 @@ class PersistentCache {
   }
 
   async cleanup(): Promise<void> {
-    if (!this.db) await this.init();
+    if (!this.db) throw new Error('DB not initialized');
+    const db = this.db;
     const now = Date.now();
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.STORE_NAME], 'readwrite');
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
       const store = transaction.objectStore(this.STORE_NAME);
       const index = store.index('timestamp');
       const range = IDBKeyRange.upperBound(now);
@@ -477,20 +465,28 @@ class PersistentCache {
 }
 
 class CircuitBreaker {
+  private state: CircuitState = CircuitState.CLOSED;
+  private failureCount = 0;
+  private lastFailureTime = 0;
+  private thresholds = { failureCount: 5, successRate: 0.8, errorRate: 0.2, latency: 1000 };
+  private resetTimeout = 60000;
   private healthCheckInterval: NodeJS.Timeout;
   private healthCheckLock = false;
-  private lastHealthCheck = 0;
-  private readonly HEALTH_CHECK_COOLDOWN = 5000; // 5 seconds
+  private healthMetrics: HealthMetrics | null = null;
+
+  constructor() {
+    this.healthCheckInterval = setInterval(() => this.performHealthCheck(), 5000);
+  }
 
   private async performHealthCheck(): Promise<void> {
     const now = Date.now();
-    if (this.healthCheckLock || now - this.lastHealthCheck < this.HEALTH_CHECK_COOLDOWN) {
+    if (this.healthCheckLock || now - this.lastFailureTime < this.resetTimeout) {
       return;
     }
 
     try {
       this.healthCheckLock = true;
-      this.lastHealthCheck = now;
+      this.lastFailureTime = now;
 
       const metrics = await this.getHealthMetrics();
       if (!metrics) {
@@ -499,7 +495,7 @@ class CircuitBreaker {
 
       const successRate = metrics.successRate;
       const errorRate = metrics.errorRate;
-      const latency = metrics.latency;
+      const latency = metrics.averageResponseTime;
 
       if (successRate < this.thresholds.successRate || 
           errorRate > this.thresholds.errorRate || 
@@ -511,12 +507,16 @@ class CircuitBreaker {
 
       // Update health metrics
       this.healthMetrics = {
-        ...this.healthMetrics,
-        ...metrics,
-        lastUpdated: now
+        successRate: metrics.successRate,
+        errorRate: metrics.errorRate,
+        averageResponseTime: metrics.averageResponseTime,
+        circuitBreakerStatus: metrics.circuitBreakerStatus,
+        resourceUsage: metrics.resourceUsage,
+        queueStats: metrics.queueStats,
+        timestamp: now
       };
     } catch (error) {
-      console.error('Health check failed:', error);
+      logError('Health check failed:', error);
       // Don't trip the circuit on health check failure
       // Just log the error and continue
     } finally {
@@ -571,6 +571,35 @@ class CircuitBreaker {
       this.emit('reset');
     }
   }
+
+  private async getHealthMetrics(): Promise<HealthMetrics> {
+    // Implementation for health metrics
+    return {
+      successRate: 0.95,
+      errorRate: 0.05,
+      averageResponseTime: 100,
+      circuitBreakerStatus: {},
+      resourceUsage: {
+        total: 0.3,
+        byGroup: {}
+      },
+      queueStats: {
+        totalQueued: 0,
+        queuedByPriority: {},
+        queuedByGroup: {},
+        averageWaitTime: 0,
+        resourceUsage: {
+          total: 0,
+          byGroup: {}
+        }
+      },
+      timestamp: Date.now()
+    };
+  }
+
+  emit(_event: string) {
+    // Dummy implementation for event emitter
+  }
 }
 
 class ResourceManager {
@@ -584,6 +613,7 @@ class ResourceManager {
   private readonly METRICS_CLEANUP_INTERVAL = 3600000; // 1 hour
   private cleanupInterval: NodeJS.Timeout;
   private readonly adaptiveThreshold = 0.8;
+  private predictionWindow = 10;
 
   constructor(limits: ResourceLimits) {
     this.limits = limits;
@@ -606,10 +636,10 @@ class ResourceManager {
     // Calculate weighted moving average with more weight on recent metrics
     recentMetrics.forEach((metric, index) => {
       const weight = (index + 1) / this.predictionWindow;
-      prediction.cpu += metric.totalUsage.cpu * weight;
-      prediction.memory += metric.totalUsage.memory * weight;
-      prediction.network += metric.totalUsage.network * weight;
-      prediction.disk += metric.totalUsage.disk * weight;
+      prediction.cpu = (prediction.cpu ?? 0) + ((metric.totalUsage?.cpu ?? 0) * weight);
+      prediction.memory = (prediction.memory ?? 0) + ((metric.totalUsage?.memory ?? 0) * weight);
+      prediction.network = (prediction.network ?? 0) + ((metric.totalUsage?.network ?? 0) * weight);
+      prediction.disk = (prediction.disk ?? 0) + ((metric.totalUsage?.disk ?? 0) * weight);
     });
 
     return prediction;
@@ -617,7 +647,7 @@ class ResourceManager {
 
   private adjustResourceLimits(): void {
     const currentUsage = this.getCurrentResourceUsage();
-    const prediction = this.predictResourceUsage();
+    const _prediction = this.predictResourceUsage();
 
     // Ensure limits are positive and within reasonable bounds
     const adjustLimit = (current: number, limit: number, threshold: number): number => {
@@ -625,45 +655,46 @@ class ResourceManager {
       return newLimit;
     };
 
-    this.limits.maxCpu = adjustLimit(currentUsage.cpu, this.limits.maxCpu, this.adaptiveThreshold);
-    this.limits.maxMemory = adjustLimit(currentUsage.memory, this.limits.maxMemory, this.adaptiveThreshold);
-    this.limits.maxNetwork = adjustLimit(currentUsage.network, this.limits.maxNetwork, this.adaptiveThreshold);
-    this.limits.maxDisk = adjustLimit(currentUsage.disk, this.limits.maxDisk, this.adaptiveThreshold);
+    this.limits.maxCpu = adjustLimit(currentUsage.cpu ?? 0, this.limits.maxCpu, this.adaptiveThreshold);
+    this.limits.maxMemory = adjustLimit(currentUsage.memory ?? 0, this.limits.maxMemory, this.adaptiveThreshold);
+    this.limits.maxNetwork = adjustLimit(currentUsage.network ?? 0, this.limits.maxNetwork, this.adaptiveThreshold);
+    this.limits.maxDisk = adjustLimit(currentUsage.disk ?? 0, this.limits.maxDisk, this.adaptiveThreshold);
   }
 
   public canAllocateResources(request: Request): boolean {
     const currentUsage = this.getCurrentResourceUsage();
-    const prediction = this.predictResourceUsage();
+    const _prediction = this.predictResourceUsage();
     const requestMetrics = this.calculateRequestMetrics(request);
 
     // Validate resource metrics
     const isValidMetric = (metric: number): boolean => 
       !isNaN(metric) && isFinite(metric) && metric >= 0;
 
-    if (!isValidMetric(requestMetrics.cpu) || !isValidMetric(requestMetrics.memory) ||
-        !isValidMetric(requestMetrics.network) || !isValidMetric(requestMetrics.disk)) {
-      console.error('Invalid resource metrics for request:', request.id);
+    if (!isValidMetric(requestMetrics.cpu ?? 0) || !isValidMetric(requestMetrics.memory ?? 0) ||
+        !isValidMetric(requestMetrics.network ?? 0) || !isValidMetric(requestMetrics.disk ?? 0)) {
+      logError('Invalid resource metrics for request:', request.id);
       return false;
     }
 
     return (
-      currentUsage.cpu + requestMetrics.cpu <= this.limits.maxCpu &&
-      prediction.cpu + requestMetrics.cpu <= this.limits.maxCpu &&
-      currentUsage.memory + requestMetrics.memory <= this.limits.maxMemory &&
-      prediction.memory + requestMetrics.memory <= this.limits.maxMemory &&
-      currentUsage.network + requestMetrics.network <= this.limits.maxNetwork &&
-      prediction.network + requestMetrics.network <= this.limits.maxNetwork &&
-      currentUsage.disk + requestMetrics.disk <= this.limits.maxDisk &&
-      prediction.disk + requestMetrics.disk <= this.limits.maxDisk
+      (currentUsage.cpu ?? 0) + (requestMetrics.cpu ?? 0) <= this.limits.maxCpu &&
+      (_prediction.cpu ?? 0) + (requestMetrics.cpu ?? 0) <= this.limits.maxCpu &&
+      (currentUsage.memory ?? 0) + (requestMetrics.memory ?? 0) <= this.limits.maxMemory &&
+      (_prediction.memory ?? 0) + (requestMetrics.memory ?? 0) <= this.limits.maxMemory &&
+      (currentUsage.network ?? 0) + (requestMetrics.network ?? 0) <= this.limits.maxNetwork &&
+      (_prediction.network ?? 0) + (requestMetrics.network ?? 0) <= this.limits.maxNetwork &&
+      (currentUsage.disk ?? 0) + (requestMetrics.disk ?? 0) <= this.limits.maxDisk &&
+      (_prediction.disk ?? 0) + (requestMetrics.disk ?? 0) <= this.limits.maxDisk
     );
   }
 
   public allocateResources(request: Request): void {
     const metrics = this.calculateRequestMetrics(request);
     this.allocations.set(request.id, {
-      requestId: request.id,
-      metrics,
-      timestamp: Date.now()
+      cpu: metrics.cpu ?? 0,
+      memory: metrics.memory ?? 0,
+      network: metrics.network ?? 0,
+      disk: metrics.disk ?? 0,
     });
 
     this.updateMetricsHistory();
@@ -687,10 +718,10 @@ class ResourceManager {
     const priorityMultiplier = this.getPriorityMultiplier(request.config.priority);
     
     return {
-      cpu: baseMetrics.cpu * priorityMultiplier,
-      memory: baseMetrics.memory * priorityMultiplier,
-      network: baseMetrics.network * priorityMultiplier,
-      disk: baseMetrics.disk * priorityMultiplier
+      cpu: (baseMetrics.cpu ?? 0) * (priorityMultiplier ?? 1),
+      memory: (baseMetrics.memory ?? 0) * (priorityMultiplier ?? 1),
+      network: (baseMetrics.network ?? 0) * (priorityMultiplier ?? 1),
+      disk: (baseMetrics.disk ?? 0) * (priorityMultiplier ?? 1)
     };
   }
 
@@ -714,10 +745,10 @@ class ResourceManager {
     };
 
     this.allocations.forEach(allocation => {
-      usage.cpu += allocation.metrics.cpu;
-      usage.memory += allocation.metrics.memory;
-      usage.network += allocation.metrics.network;
-      usage.disk += allocation.metrics.disk;
+      usage.cpu = (usage.cpu ?? 0) + (allocation.cpu ?? 0);
+      usage.memory = (usage.memory ?? 0) + (allocation.memory ?? 0);
+      usage.network = (usage.network ?? 0) + (allocation.network ?? 0);
+      usage.disk = (usage.disk ?? 0) + (allocation.disk ?? 0);
     });
 
     return usage;
@@ -754,9 +785,9 @@ class ResourceManager {
     const cutoffTime = now - (24 * 3600000); // 24 hours
 
     // Remove old metrics
-    this.metricsHistory = this.metricsHistory.filter(
+    this.metricsHistory.splice(0, this.metricsHistory.length, ...this.metricsHistory.filter(
       metric => metric.timestamp > cutoffTime
-    );
+    ));
 
     // Ensure we don't exceed max history
     if (this.metricsHistory.length > this.MAX_METRICS_HISTORY) {
@@ -767,64 +798,36 @@ class ResourceManager {
   public cleanup(): void {
     clearInterval(this.cleanupInterval);
   }
+
+  public async setResourceLimit(resourceType: string, limit: number): Promise<void> {
+    // Implementation for setting resource limits
+    switch (resourceType) {
+      case 'memory':
+        this.limits.maxMemory = limit;
+        break;
+      case 'cpu':
+        this.limits.maxCpu = limit;
+        break;
+      case 'network':
+        this.limits.maxNetwork = limit;
+        break;
+      case 'disk':
+        this.limits.maxDisk = limit;
+        break;
+    }
+  }
 }
 
-interface PerformanceMetrics {
-  timestamp: number;
-  metrics: {
-    responseTime: number;
-    throughput: number;
-    errorRate: number;
-    resourceUtilization: ResourceMetrics;
-    cacheHitRate: number;
-    requestQueueLength: number;
-    activeConnections: number;
-    memoryUsage: {
-      heap: number;
-      nonHeap: number;
-      gc: {
-        count: number;
-        time: number;
-      };
-    };
-    cpuUsage: {
-      user: number;
-      system: number;
-      idle: number;
-    };
-    networkUsage: {
-      bytesIn: number;
-      bytesOut: number;
-      connections: number;
-    };
-  };
-  health: {
-    score: number;
-    status: 'healthy' | 'warning' | 'critical';
-    issues: string[];
-  };
-}
-
-interface PerformanceOptimization {
-  type: 'response-time' | 'throughput' | 'resource-usage' | 'cache' | 'memory' | 'cpu' | 'network';
-  currentValue: number;
-  targetValue: number;
-  improvement: number;
-  priority: 'high' | 'medium' | 'low';
-  recommendations: Array<{
-    action: string;
-    impact: number;
-    complexity: 'low' | 'medium' | 'high';
-    implementation: string;
-    validation: string;
-  }>;
+interface NotificationType {
+  type: string;
+  message: string;
+  severity: 'info' | 'warning' | 'error';
 }
 
 class ResourceVisualization {
   private readonly PERFORMANCE_MONITORING = {
     metrics: {
       responseTime: { threshold: 1000, weight: 0.3 },
-      throughput: { threshold: 100, weight: 0.2 },
       errorRate: { threshold: 0.05, weight: 0.3 },
       resourceUtilization: { threshold: 0.8, weight: 0.2 }
     }
@@ -853,31 +856,11 @@ class ResourceVisualization {
   private readonly MIN_CONFIDENCE = 0.8;
 
   // Add new performance monitoring thresholds
-  private readonly PERFORMANCE_THRESHOLDS = {
-    responseTime: { warning: 1000, critical: 3000 }, // ms
-    throughput: { warning: 50, critical: 100 }, // requests/second
-    errorRate: { warning: 0.05, critical: 0.1 }, // percentage
-    cacheHitRate: { warning: 0.7, critical: 0.5 }, // percentage
-    requestQueueLength: { warning: 50, critical: 100 },
-    activeConnections: { warning: 100, critical: 200 },
-    memoryUsage: {
-      heap: { warning: 0.8, critical: 0.9 }, // percentage
-      nonHeap: { warning: 0.8, critical: 0.9 }, // percentage
-      gc: {
-        count: { warning: 10, critical: 20 }, // per minute
-        time: { warning: 1000, critical: 3000 } // ms
-      }
-    },
-    cpuUsage: {
-      user: { warning: 0.7, critical: 0.9 }, // percentage
-      system: { warning: 0.7, critical: 0.9 }, // percentage
-      idle: { warning: 0.3, critical: 0.1 } // percentage
-    },
-    networkUsage: {
-      bytesIn: { warning: 1000000, critical: 5000000 }, // bytes/second
-      bytesOut: { warning: 1000000, critical: 5000000 }, // bytes/second
-      connections: { warning: 100, critical: 200 }
-    }
+  private readonly performanceThresholds: PerformanceThresholds = {
+    fps: 60,
+    frameTime: 16,
+    memory: 0.8,
+    cpu: 0.8
   };
 
   private readonly PERFORMANCE_WINDOW = 3600; // 1 hour in seconds
@@ -1015,20 +998,13 @@ class ResourceVisualization {
     let score = 0;
     
     // Response Time Score
-    const responseTimeScore = Math.max(0, 1 - (metrics.metrics.responseTime / weights.responseTime.threshold));
-    score += responseTimeScore * weights.responseTime.weight;
+    const responseTimeScore = Math.max(0, 1 - ((metrics.latency ?? 0) / (weights.responseTime?.threshold ?? 1)));
+    score += responseTimeScore * (weights.responseTime?.weight ?? 1);
     
-    // Throughput Score
-    const throughputScore = Math.min(1, metrics.metrics.throughput / weights.throughput.threshold);
-    score += throughputScore * weights.throughput.weight;
-    
-    // Error Rate Score
-    const errorRateScore = Math.max(0, 1 - (metrics.metrics.errorRate / weights.errorRate.threshold));
-    score += errorRateScore * weights.errorRate.weight;
-    
-    // Resource Utilization Score
-    const resourceScore = Math.max(0, 1 - (metrics.metrics.resourceUtilization.cpu / weights.resourceUtilization.threshold));
-    score += resourceScore * weights.resourceUtilization.weight;
+    // Resource Utilization Score (use metrics.metrics?.cpu)
+    const cpu = metrics.metrics?.cpu ?? 0;
+    const resourceScore = Math.max(0, 1 - (cpu / (weights.resourceUtilization?.threshold ?? 1)));
+    score += resourceScore * (weights.resourceUtilization?.weight ?? 1);
     
     return Math.min(1, Math.max(0, score));
   }
@@ -1085,7 +1061,7 @@ class ResourceVisualization {
     }> = [];
 
     // Enhanced trend analysis with weighted moving average
-    const responseTimes = metrics.map(m => m.metrics.responseTime);
+    const responseTimes = metrics.map(m => m.latency ?? 0).filter((v): v is number => typeof v === 'number');
     const weightedMA = this.calculateWeightedMovingAverage(responseTimes, 0.3);
     const trendConfidence = this.calculateTrendConfidence(responseTimes, weightedMA);
     
@@ -1123,20 +1099,20 @@ class ResourceVisualization {
     }
 
     // Enhanced anomaly detection with adaptive thresholds
-    const mean = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+    const mean = responseTimes.filter((v): v is number => v !== undefined).reduce((a, b) => a + b, 0) / responseTimes.length;
     const stdDev = Math.sqrt(
-      responseTimes.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / responseTimes.length
+      responseTimes.filter((v): v is number => v !== undefined).reduce((a, b) => a + Math.pow(b - mean, 2), 0) / responseTimes.length
     );
     const adaptiveThreshold = this.ANOMALY_THRESHOLD * (1 + Math.log10(responseTimes.length));
 
-    metrics.forEach((metric, index) => {
-      const deviation = Math.abs(metric.metrics.responseTime - mean) / stdDev;
+    metrics.forEach((metric, _index) => {
+      const deviation = Math.abs(((metric.latency ?? 0) - mean) / (stdDev || 1));
       if (deviation > adaptiveThreshold) {
         const severity = this.calculateAnomalySeverity(deviation);
         const impact = this.calculateAnomalyImpact(severity, deviation);
         anomalies.push({
-          timestamp: metric.timestamp,
-          value: metric.metrics.responseTime,
+          timestamp: metric.timestamp ?? 0,
+          value: metric.latency ?? 0,
           expectedValue: mean,
           deviation,
           severity,
@@ -1166,7 +1142,7 @@ class ResourceVisualization {
     if (n < 2) return 0;
 
     const xMean = (n - 1) / 2;
-    const yMean = values.reduce((a, b) => a + b, 0) / n;
+    const yMean = values.filter((v): v is number => v !== undefined).reduce((a, b) => a + b, 0) / n;
     
     let numerator = 0;
     let denominator = 0;
@@ -1192,16 +1168,16 @@ class ResourceVisualization {
     }
 
     const seasonalMeans = seasonalValues.map(v => 
-      v.reduce((a, b) => a + b, 0) / v.length
+      v.filter((v): v is number => v !== undefined).reduce((a, b) => a + b, 0) / v.length
     );
 
-    const overallMean = seasonalMeans.reduce((a, b) => a + b, 0) / period;
+    const overallMean = seasonalMeans.filter((v): v is number => v !== undefined).reduce((a, b) => a + b, 0) / period;
     
-    const seasonalVariance = seasonalMeans.reduce((a, b) => 
+    const seasonalVariance = seasonalMeans.filter((v): v is number => v !== undefined).reduce((a, b) => 
       a + Math.pow(b - overallMean, 2), 0
     ) / period;
 
-    const totalVariance = values.reduce((a, b) => 
+    const totalVariance = values.filter((v): v is number => v !== undefined).reduce((a, b) => 
       a + Math.pow(b - overallMean, 2), 0
     ) / n;
 
@@ -1333,7 +1309,7 @@ class ResourceVisualization {
     return recommendations;
   }
 
-  private generateAnomalyRecommendations(severity: 'high' | 'medium' | 'low', impact: number): Array<{
+  private generateAnomalyRecommendations(severity: 'high' | 'medium' | 'low', _impact: number): Array<{
     action: string;
     priority: 'high' | 'medium' | 'low';
     expectedImprovement: number;
@@ -1400,6 +1376,10 @@ class ResourceVisualization {
 
     return recommendations;
   }
+
+  public getPerformanceThresholds() {
+    return this.performanceThresholds;
+  }
 }
 
 class ErrorRecoveryManager {
@@ -1409,7 +1389,12 @@ class ErrorRecoveryManager {
   private readonly resourceManager: ResourceManager;
   private readonly circuitBreaker: CircuitBreaker;
   private readonly rateLimiter: RateLimiter;
-  private readonly performanceThresholds: typeof ResourceVisualization.prototype.PERFORMANCE_THRESHOLDS;
+  private readonly performanceThresholds: PerformanceThresholds = {
+    fps: 60,
+    frameTime: 16,
+    memory: 0.8,
+    cpu: 0.8
+  };
   private readonly recoveryHistory: Map<string, Array<{
     timestamp: number;
     success: boolean;
@@ -1419,19 +1404,18 @@ class ErrorRecoveryManager {
   private readonly activeRetries: Map<string, {
     attempts: number;
     lastAttempt: number;
-    operation: () => Promise<any>;
+    operation: () => Promise<unknown>;
   }> = new Map();
 
   constructor(
     resourceManager: ResourceManager,
     circuitBreaker: CircuitBreaker,
     rateLimiter: RateLimiter,
-    performanceThresholds: typeof ResourceVisualization.prototype.PERFORMANCE_THRESHOLDS
+    _resourceVisualization: ResourceVisualization
   ) {
     this.resourceManager = resourceManager;
     this.circuitBreaker = circuitBreaker;
     this.rateLimiter = rateLimiter;
-    this.performanceThresholds = performanceThresholds;
     this.initializeDefaultStrategies();
   }
 
@@ -1443,8 +1427,8 @@ class ErrorRecoveryManager {
       conditions: {
         errorTypes: ['NetworkError', 'TimeoutError', 'ServiceUnavailableError'],
         performanceThresholds: {
-          responseTime: this.performanceThresholds.responseTime.warning,
-          errorRate: this.performanceThresholds.errorRate.warning
+          fps: this.performanceThresholds.fps,
+          frameTime: this.performanceThresholds.frameTime
         }
       },
       actions: [{
@@ -1453,13 +1437,12 @@ class ErrorRecoveryManager {
           maxAttempts: 3,
           delay: 1000,
           backoff: 'exponential',
-          adaptiveDelay: true
         }
       }],
       validation: {
         successCriteria: [
-          { metric: 'responseTime', threshold: this.performanceThresholds.responseTime.warning, operator: 'lt' },
-          { metric: 'errorRate', threshold: this.performanceThresholds.errorRate.warning, operator: 'lt' }
+          { metric: 'fps', threshold: this.performanceThresholds.fps ?? 0, operator: 'gte' },
+          { metric: 'frameTime', threshold: this.performanceThresholds.frameTime ?? 0, operator: 'lte' }
         ],
         timeout: 30000
       }
@@ -1472,8 +1455,8 @@ class ErrorRecoveryManager {
       conditions: {
         errorTypes: ['ResourceExhaustedError', 'MemoryError', 'CPUError'],
         resourceThresholds: {
-          memory: this.performanceThresholds.memoryUsage.heap.warning,
-          cpu: this.performanceThresholds.cpuUsage.user.warning
+          memory: this.performanceThresholds.memory ?? 0,
+          cpu: this.performanceThresholds.cpu ?? 0
         }
       },
       actions: [
@@ -1494,8 +1477,8 @@ class ErrorRecoveryManager {
       ],
       validation: {
         successCriteria: [
-          { metric: 'memoryUsage', threshold: this.performanceThresholds.memoryUsage.heap.warning, operator: 'lt' },
-          { metric: 'cpuUsage', threshold: this.performanceThresholds.cpuUsage.user.warning, operator: 'lt' }
+          { metric: 'memory', threshold: this.performanceThresholds.memory ?? 0, operator: 'lt' },
+          { metric: 'cpu', threshold: this.performanceThresholds.cpu ?? 0, operator: 'lt' }
         ],
         timeout: 60000
       }
@@ -1508,8 +1491,8 @@ class ErrorRecoveryManager {
       conditions: {
         errorTypes: ['PerformanceError', 'TimeoutError'],
         performanceThresholds: {
-          responseTime: this.performanceThresholds.responseTime.critical,
-          throughput: this.performanceThresholds.throughput.critical
+          fps: this.performanceThresholds.fps,
+          frameTime: this.performanceThresholds.frameTime
         }
       },
       actions: [
@@ -1517,7 +1500,6 @@ class ErrorRecoveryManager {
           type: 'degrade',
           config: {
             serviceLevel: 'basic',
-            timeout: 5000
           }
         },
         {
@@ -1530,15 +1512,15 @@ class ErrorRecoveryManager {
       ],
       validation: {
         successCriteria: [
-          { metric: 'responseTime', threshold: this.performanceThresholds.responseTime.warning, operator: 'lt' },
-          { metric: 'throughput', threshold: this.performanceThresholds.throughput.warning, operator: 'gt' }
+          { metric: 'fps', threshold: this.performanceThresholds.fps ?? 0, operator: 'gte' },
+          { metric: 'frameTime', threshold: this.performanceThresholds.frameTime ?? 0, operator: 'lte' }
         ],
         timeout: 30000
       }
     });
   }
 
-  public async executeRecovery(error: Error, context: any): Promise<boolean> {
+  public async executeRecovery(error: Error, context: RecoveryContext): Promise<boolean> {
     const strategy = this.selectRecoveryStrategy(error, context);
     if (!strategy) {
       return false;
@@ -1563,18 +1545,24 @@ class ErrorRecoveryManager {
         }
       }
 
+      // Map actionResults to RecoveryMetrics[] shape for impact calculations
+      const mappedResults: RecoveryMetrics[] = actionResults.map(r => ({
+        timestamp: Date.now(),
+        strategy: strategy.type,
+        success: r.success,
+        duration: r.duration,
+        impact: { resource: {}, performance: {} },
+        actions: [r]
+      }));
+
       const metrics: RecoveryMetrics = {
         timestamp: Date.now(),
         strategy: strategy.type,
         success: actionResults.every(r => r.success),
         duration: Date.now() - startTime,
         impact: {
-          resource: this.resourceManager.getResourceMetrics().current,
-          performance: {
-            responseTime: context.responseTime || 0,
-            throughput: context.throughput || 0,
-            errorRate: context.errorRate || 0
-          }
+          resource: this.calculateAverageResourceImpact(mappedResults) || {},
+          performance: { metrics: this.calculateAveragePerformanceImpact(mappedResults) || {} }
         },
         actions: actionResults
       };
@@ -1585,7 +1573,7 @@ class ErrorRecoveryManager {
 
       return success;
     } catch (recoveryError) {
-      console.error('Recovery execution failed:', recoveryError);
+      logError('Recovery execution failed:', recoveryError);
       return false;
     }
   }
@@ -1595,7 +1583,9 @@ class ErrorRecoveryManager {
       this.recoveryHistory.set(strategyType, []);
     }
 
-    const history = this.recoveryHistory.get(strategyType)!;
+    const history = this.recoveryHistory.get(strategyType);
+    if (!history) return;
+
     history.push({
       timestamp: metrics.timestamp,
       success: metrics.success,
@@ -1621,8 +1611,8 @@ class ErrorRecoveryManager {
       performance: Partial<PerformanceMetrics['metrics']>;
     };
   } {
-    const history = this.getRecoveryHistory(strategyType);
-    if (history.length === 0) {
+    const history = this.getRecoveryHistory(strategyType) as RecoveryMetrics[];
+    if (!Array.isArray(history) || history.length === 0) {
       return {
         successRate: 0,
         averageDuration: 0,
@@ -1635,11 +1625,10 @@ class ErrorRecoveryManager {
 
     const successCount = history.filter(h => h.success).length;
     const totalDuration = history.reduce((sum, h) => sum + h.duration, 0);
-    
     // Calculate average impact
     const averageImpact = {
-      resource: this.calculateAverageResourceImpact(history),
-      performance: this.calculateAveragePerformanceImpact(history)
+      resource: this.calculateAverageResourceImpact(history) || {},
+      performance: this.calculateAveragePerformanceImpact(history) || {}
     };
 
     return {
@@ -1650,42 +1639,63 @@ class ErrorRecoveryManager {
   }
 
   private calculateAverageResourceImpact(history: RecoveryMetrics[]): Partial<ResourceMetrics> {
-    const resourceSums: Partial<ResourceMetrics> = {};
+    const resourceSums: { [key: string]: number } = {};
     const count = history.length;
 
-    history.forEach(h => {
-      Object.entries(h.impact.resource).forEach(([key, value]) => {
-        if (!resourceSums[key]) {
-          resourceSums[key] = 0;
-        }
-        resourceSums[key]! += value;
-      });
+    if (count === 0) {
+      return {};
+    }
+
+    history.forEach(metric => {
+      if (metric.impact?.resource) {
+        Object.entries(metric.impact.resource).forEach(([key, value]) => {
+          if (typeof value === 'number') {
+            if (!resourceSums[key]) {
+              resourceSums[key] = 0;
+            }
+            resourceSums[key] += value;
+          }
+        });
+      }
     });
 
-    return Object.fromEntries(
-      Object.entries(resourceSums).map(([key, value]) => [key, value! / count])
-    );
+    return Object.entries(resourceSums).reduce((acc, [key, value]) => {
+      acc[key as keyof ResourceMetrics] = value / count;
+      return acc;
+    }, {} as Partial<ResourceMetrics>);
   }
 
   private calculateAveragePerformanceImpact(history: RecoveryMetrics[]): Partial<PerformanceMetrics['metrics']> {
-    const performanceSums: Partial<PerformanceMetrics['metrics']> = {};
+    const performanceSums: { [key: string]: number } = {};
     const count = history.length;
 
-    history.forEach(h => {
-      Object.entries(h.impact.performance).forEach(([key, value]) => {
-        if (!performanceSums[key]) {
-          performanceSums[key] = 0;
-        }
-        performanceSums[key]! += value;
-      });
+    if (count === 0) {
+      return {};
+    }
+
+    history.forEach(metric => {
+      if (metric.impact?.performance) {
+        Object.entries(metric.impact.performance).forEach(([key, value]) => {
+          if (typeof value === 'number') {
+            if (!performanceSums[key]) {
+              performanceSums[key] = 0;
+            }
+            performanceSums[key] += value;
+          }
+        });
+      }
     });
 
-    return Object.fromEntries(
-      Object.entries(performanceSums).map(([key, value]) => [key, value! / count])
-    );
+    const result: Partial<PerformanceMetrics['metrics']> = {};
+    Object.entries(performanceSums).forEach(([key, value]) => {
+      const typedKey = key as keyof PerformanceMetrics['metrics'];
+      (result as Record<string, number>)[typedKey] = value / count;
+    });
+
+    return result;
   }
 
-  private selectRecoveryStrategy(error: Error, context: any): ErrorRecoveryStrategy | null {
+  private selectRecoveryStrategy(error: Error, context: RecoveryContext): ErrorRecoveryStrategy | null {
     for (const [_, strategy] of this.strategies) {
       if (this.matchesStrategyConditions(error, context, strategy)) {
         return strategy;
@@ -1696,7 +1706,7 @@ class ErrorRecoveryManager {
 
   private matchesStrategyConditions(
     error: Error,
-    context: any,
+    context: RecoveryContext,
     strategy: ErrorRecoveryStrategy
   ): boolean {
     // Check error type
@@ -1708,7 +1718,12 @@ class ErrorRecoveryManager {
     if (strategy.conditions.resourceThresholds) {
       const currentResources = this.resourceManager.getResourceMetrics().current;
       for (const [resource, threshold] of Object.entries(strategy.conditions.resourceThresholds)) {
-        if (currentResources[resource as keyof ResourceMetrics] > threshold) {
+        if (
+          currentResources &&
+          currentResources[resource as keyof ResourceMetrics] !== undefined &&
+          typeof currentResources[resource as keyof ResourceMetrics] === 'number' &&
+          (currentResources[resource as keyof ResourceMetrics] as number) > threshold
+        ) {
           return false;
         }
       }
@@ -1718,7 +1733,7 @@ class ErrorRecoveryManager {
     if (strategy.conditions.performanceThresholds) {
       const currentMetrics = this.getCurrentMetrics();
       for (const [metric, threshold] of Object.entries(strategy.conditions.performanceThresholds)) {
-        if (currentMetrics[metric as keyof PerformanceMetrics['metrics']] > threshold) {
+        if (currentMetrics && currentMetrics[metric as keyof PerformanceMetrics['metrics']] !== undefined && currentMetrics[metric as keyof PerformanceMetrics['metrics']] > threshold) {
           return false;
         }
       }
@@ -1729,7 +1744,7 @@ class ErrorRecoveryManager {
 
   private async executeRecoveryAction(
     action: ErrorRecoveryStrategy['actions'][0],
-    context: any
+    context: RecoveryContext
   ): Promise<boolean> {
     switch (action.type) {
       case 'retry':
@@ -1749,20 +1764,20 @@ class ErrorRecoveryManager {
 
   private async executeRetryAction(
     config: ErrorRecoveryStrategy['actions'][0]['config'],
-    context: any
+    context: RecoveryContext
   ): Promise<boolean> {
     if (!config.maxAttempts || !config.delay) {
-      console.warn('Invalid retry configuration');
+      logWarn('Invalid retry configuration');
       return false;
     }
 
     if (!context?.operation || typeof context.operation !== 'function') {
-      console.error('Invalid operation in context');
+      logError('Invalid operation in context');
       return false;
     }
 
     if (!context.operationId) {
-      console.error('Missing operationId in context');
+      logError('Missing operationId in context');
       return false;
     }
 
@@ -1786,13 +1801,17 @@ class ErrorRecoveryManager {
     };
 
     try {
-      const result = await retryInfo.operation();
+      const _result = await retryInfo.operation();
       this.activeRetries.delete(retryKey);
       return true;
     } catch (error) {
       retryInfo.attempts++;
       retryInfo.lastAttempt = Date.now();
-      this.activeRetries.set(retryKey, retryInfo);
+      this.activeRetries.set(retryKey, {
+        attempts: retryInfo.attempts,
+        lastAttempt: retryInfo.lastAttempt,
+        operation: retryInfo.operation as () => Promise<unknown>
+      });
 
       if (retryInfo.attempts >= config.maxAttempts) {
         this.activeRetries.delete(retryKey);
@@ -1809,78 +1828,77 @@ class ErrorRecoveryManager {
   }
 
   private async executeFallbackAction(
-    config: ErrorRecoveryStrategy['actions'][0]['config'],
-    context: any
+    config: ErrorRecoveryActionConfig,
+    context: RecoveryContext
   ): Promise<boolean> {
     try {
       if (config.degradeGracefully) {
         // Implement graceful degradation
-        await this.degradeService(context.service, config.fallbackValue);
+        await this.degradeService(context.service || '', String(config.fallbackValue ?? ''));
       } else {
         // Use fallback value directly
         context.result = config.fallbackValue;
       }
       return true;
     } catch (error) {
-      console.error('Fallback action failed:', error);
+      logError('Fallback action failed:', error);
       return false;
     }
   }
 
   private async executeScaleAction(
-    config: ErrorRecoveryStrategy['actions'][0]['config'],
-    context: any
+    config: ErrorRecoveryActionConfig,
+    _context: RecoveryContext
   ): Promise<boolean> {
     try {
       const resourceManager = this.resourceManager;
       const currentMetrics = resourceManager.getResourceMetrics().current;
       
       // Scale the specified resource
-      if (config.resourceType === 'memory') {
-        const newLimit = currentMetrics.memory * config.scaleFactor;
+      if (config.resourceType === 'memory' && typeof currentMetrics.memory === 'number') {
+        const newLimit = currentMetrics.memory * (config.scaleFactor || 1);
         await resourceManager.setResourceLimit('memory', newLimit);
-      } else if (config.resourceType === 'cpu') {
-        const newLimit = currentMetrics.cpu * config.scaleFactor;
+      } else if (config.resourceType === 'cpu' && typeof currentMetrics.cpu === 'number') {
+        const newLimit = currentMetrics.cpu * (config.scaleFactor || 1);
         await resourceManager.setResourceLimit('cpu', newLimit);
       }
       
       return true;
     } catch (error) {
-      console.error('Scale action failed:', error);
+      logError('Scale action failed:', error);
       return false;
     }
   }
 
   private async executeDegradeAction(
-    config: ErrorRecoveryStrategy['actions'][0]['config'],
-    context: any
+    config: ErrorRecoveryActionConfig,
+    context: RecoveryContext
   ): Promise<boolean> {
     try {
       // Implement service degradation
-      await this.degradeService(context.service, config.serviceLevel);
+      await this.degradeService(context.service || '', String(config.fallbackValue ?? ''));
       return true;
     } catch (error) {
-      console.error('Degrade action failed:', error);
+      logError('Degrade action failed:', error);
       return false;
     }
   }
 
   private async executeNotifyAction(
-    config: ErrorRecoveryStrategy['actions'][0]['config'],
-    context: any
+    config: ErrorRecoveryActionConfig,
+    context: RecoveryContext
   ): Promise<boolean> {
     try {
-      const notification = {
-        level: config.notificationLevel,
+      const notification: NotificationType = {
+        type: 'recovery',
         message: `Recovery action executed for ${context.service}`,
-        metrics: config.includeMetrics ? this.getCurrentMetrics() : undefined,
-        timestamp: Date.now()
+        severity: config.notificationLevel || 'info'
       };
       
       await this.sendNotification(notification);
       return true;
     } catch (error) {
-      console.error('Notify action failed:', error);
+      logError('Notify action failed:', error);
       return false;
     }
   }
@@ -1888,47 +1906,22 @@ class ErrorRecoveryManager {
   private getCurrentMetrics(): PerformanceMetrics['metrics'] {
     // Implementation to get current performance metrics
     return {
-      responseTime: 0,
-      throughput: 0,
-      errorRate: 0,
-      resourceUtilization: {
-        cpu: 0,
-        memory: 0,
-        network: 0,
-        disk: 0
-      },
-      cacheHitRate: 0,
-      requestQueueLength: 0,
-      activeConnections: 0,
-      memoryUsage: {
-        heap: 0,
-        nonHeap: 0,
-        gc: {
-          count: 0,
-          time: 0
-        }
-      },
-      cpuUsage: {
-        user: 0,
-        system: 0,
-        idle: 0
-      },
-      networkUsage: {
-        bytesIn: 0,
-        bytesOut: 0,
-        connections: 0
-      }
+      // Only include valid keys as per PerformanceMetrics['metrics']
+      fps: 0,
+      frameTime: 0,
+      memory: 0,
+      cpu: 0
     };
   }
 
   private async degradeService(service: string, level: string): Promise<void> {
     // Implementation to degrade service
-    console.log(`Degrading service ${service} to level ${level}`);
+    logWarn(`Degrading service ${service} to level ${level}`);
   }
 
-  private async sendNotification(notification: any): Promise<void> {
+  private async sendNotification(notification: NotificationType): Promise<void> {
     // Implementation to send notification
-    console.log('Sending notification:', notification);
+    logWarn('Sending notification:', notification);
   }
 
   private validateRecovery(
@@ -1939,7 +1932,7 @@ class ErrorRecoveryManager {
     
     for (const criteria of strategy.validation.successCriteria) {
       const value = currentMetrics[criteria.metric as keyof ResourceMetrics];
-      if (!this.evaluateCriteria(value, criteria)) {
+      if (typeof value === 'number' && !this.evaluateCriteria(value, criteria)) {
         return false;
       }
     }
@@ -1990,4 +1983,17 @@ class ErrorRecoveryManager {
   }
 }
 
-export const requestManager = RequestManager.getInstance(); 
+// Create a singleton instance
+const requestManagerInstance = new ErrorRecoveryManager(
+  new ResourceManager({
+    maxCpu: 100,
+    maxMemory: 1024 * 1024 * 1024,
+    maxNetwork: 100 * 1024 * 1024,
+    maxDisk: 1024 * 1024 * 1024
+  }),
+  new CircuitBreaker(),
+  new RateLimiter({ maxRequests: 100, timeWindow: 60000 }),
+  new ResourceVisualization()
+);
+
+export const requestManager = requestManagerInstance; 

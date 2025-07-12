@@ -1,187 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import { MealPrepPlan as MealPrepPlanType, MealPrepStep } from '../types/nutrition';
+import React, { useState } from 'react';
+
+import { MealPrepPlan as MealPrepPlanType } from '../types/nutrition';
 
 interface MealPrepPlanProps {
-  userId: string;
+  plan: MealPrepPlanType;
+  onUpdate?: (plan: MealPrepPlanType) => void;
+  onDelete?: (planId: string) => void;
 }
 
-export const MealPrepPlan: React.FC<MealPrepPlanProps> = ({ userId }) => {
-  const [mealPrepPlan, setMealPrepPlan] = useState<MealPrepPlanType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const MealPrepPlan: React.FC<MealPrepPlanProps> = ({
+  plan,
+  onUpdate,
+  onDelete
+}) => {
   const [expandedMeals, setExpandedMeals] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    const fetchMealPrepPlan = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/meal-prep');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch meal prep plan');
-        }
-
-        const data = await response.json();
-        setMealPrepPlan(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMealPrepPlan();
-  }, [userId]);
+  const [selectedMeals, setSelectedMeals] = useState<Set<string>>(new Set());
 
   const toggleMealExpansion = (mealId: string) => {
-    setExpandedMeals(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(mealId)) {
-        newSet.delete(mealId);
-      } else {
-        newSet.add(mealId);
-      }
-      return newSet;
-    });
-  };
-
-  const updateStepStatus = async (mealId: string, stepId: string, completed: boolean) => {
-    if (!mealPrepPlan) return;
-
-    try {
-      const updatedMeals = mealPrepPlan.meals.map(meal => {
-        if (meal.id === mealId) {
-          return {
-            ...meal,
-            prepSteps: meal.prepSteps.map(step =>
-              step.id === stepId ? { ...step, completed } : step
-            ),
-          };
-        }
-        return meal;
-      });
-
-      const response = await fetch('/api/meal-prep', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mealPrepPlan: {
-            ...mealPrepPlan,
-            meals: updatedMeals,
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update meal prep plan');
-      }
-
-      setMealPrepPlan({
-        ...mealPrepPlan,
-        meals: updatedMeals,
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update meal prep plan');
+    const newExpanded = new Set(expandedMeals);
+    if (newExpanded.has(mealId)) {
+      newExpanded.delete(mealId);
+    } else {
+      newExpanded.add(mealId);
     }
+    setExpandedMeals(newExpanded);
   };
 
-  if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
-  }
+  const toggleMealSelection = (mealId: string) => {
+    const newSelected = new Set(selectedMeals);
+    if (newSelected.has(mealId)) {
+      newSelected.delete(mealId);
+    } else {
+      newSelected.add(mealId);
+    }
+    setSelectedMeals(newSelected);
+  };
 
-  if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
-  }
-
-  if (!mealPrepPlan) {
-    return <div className="text-center">No meal prep plan found</div>;
-  }
+  const totalPrepTime = plan.meals.reduce((total, meal) => total + meal.prepTime + meal.cookTime, 0);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Meal Prep Plan</h2>
-        <div className="text-gray-600">
-          Total Prep Time: {mealPrepPlan.totalPrepTime} minutes
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Meal Prep Plan</h2>
+          <p className="text-gray-600">Total Prep Time: {totalPrepTime} minutes</p>
+        </div>
+        <div className="flex space-x-2">
+          {onUpdate && (
+            <button
+              onClick={() => onUpdate(plan)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Edit Plan
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(plan.id)}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Delete Plan
+            </button>
+          )}
         </div>
       </div>
 
       <div className="space-y-4">
-        {mealPrepPlan.meals.map((meal) => (
-          <div key={meal.id} className="border rounded-lg p-4">
-            <div
-              className="flex items-center justify-between cursor-pointer"
-              onClick={() => toggleMealExpansion(meal.id)}
-            >
-              <div>
-                <h3 className="text-xl font-semibold">{meal.name}</h3>
-                <p className="text-sm text-gray-500">
-                  Prep Time: {meal.prepTime} minutes | Servings: {meal.servings}
-                </p>
+        {plan.meals.map((meal) => (
+          <div
+            key={meal.id}
+            className={`border rounded-lg p-4 ${
+              selectedMeals.has(meal.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={selectedMeals.has(meal.id)}
+                  onChange={() => toggleMealSelection(meal.id)}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">{meal.name}</h3>
+                  <p className="text-sm text-gray-600">
+                    Prep: {meal.prepTime}min | Cook: {meal.cookTime}min | Servings: {meal.servings}
+                  </p>
+                </div>
               </div>
               <button
-                className="text-gray-500 hover:text-gray-700"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleMealExpansion(meal.id);
-                }}
+                onClick={() => toggleMealExpansion(meal.id)}
+                className="text-blue-500 hover:text-blue-700"
               >
                 {expandedMeals.has(meal.id) ? '▼' : '▶'}
               </button>
             </div>
 
             {expandedMeals.has(meal.id) && (
-              <div className="mt-4 space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium">Ingredients:</h4>
+              <div className="mt-4 space-y-3">
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Ingredients:</h4>
                   <ul className="list-disc list-inside space-y-1">
                     {meal.ingredients.map((ingredient, index) => (
-                      <li key={index} className="text-gray-700">
+                      <li key={index} className="text-sm text-gray-600">
                         {ingredient.amount} {ingredient.unit} {ingredient.name}
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="space-y-2">
-                  <h4 className="font-medium">Prep Steps:</h4>
-                  <div className="space-y-2">
-                    {meal.prepSteps.map((step) => (
-                      <div
-                        key={step.id}
-                        className="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={step.completed}
-                          onChange={(e) => updateStepStatus(meal.id, step.id, e.target.checked)}
-                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <div>
-                          <p className={`${step.completed ? 'line-through text-gray-500' : ''}`}>
-                            {step.description}
-                          </p>
-                          {step.tips && (
-                            <p className="text-sm text-gray-500 mt-1">💡 {step.tips}</p>
-                          )}
-                        </div>
-                      </div>
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Instructions:</h4>
+                  <ol className="list-decimal list-inside space-y-1">
+                    {meal.instructions.map((instruction, index) => (
+                      <li key={index} className="text-sm text-gray-600">
+                        {instruction}
+                      </li>
                     ))}
-                  </div>
+                  </ol>
                 </div>
 
-                {meal.storageInstructions && (
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium text-blue-800">Storage Instructions:</h4>
-                    <p className="text-blue-700 mt-1">{meal.storageInstructions}</p>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Calories:</span> {meal.calories}
                   </div>
-                )}
+                  <div>
+                    <span className="font-medium">Protein:</span> {meal.protein}g
+                  </div>
+                  <div>
+                    <span className="font-medium">Carbs:</span> {meal.carbs}g
+                  </div>
+                  <div>
+                    <span className="font-medium">Fat:</span> {meal.fat}g
+                  </div>
+                </div>
               </div>
             )}
           </div>
         ))}
+      </div>
+
+      <div className="mt-6 pt-4 border-t border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">Prep Schedule</h3>
+        <div className="space-y-3">
+          {plan.prepSchedule.map((day, index) => (
+            <div key={index} className="bg-gray-50 p-3 rounded">
+              <h4 className="font-medium text-gray-700">{day.day}</h4>
+              <ul className="mt-2 space-y-1">
+                {day.tasks.map((task, taskIndex) => (
+                  <li key={taskIndex} className="text-sm text-gray-600">
+                    • {task.task} ({task.estimatedTime}min)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

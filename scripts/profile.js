@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { auth, db } from './auth-core.js';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
@@ -123,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             }
         } catch (error) {
-            console.error('Error loading profile:', error);
+            logError('Error loading profile:', error);
             showError('Failed to load profile data. Please try again later.');
         } finally {
             loadingSpinner.style.display = 'none';
@@ -169,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             showSuccess('Profile picture updated successfully!');
         } catch (error) {
-            console.error('Error uploading profile picture:', error);
+            logError('Error uploading profile picture:', error);
             showError('Failed to upload profile picture. Please try again.');
         } finally {
             loadingSpinner.style.display = 'none';
@@ -197,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             showSuccess('Basic information updated successfully!');
         } catch (error) {
-            console.error('Error updating basic info:', error);
+            logError('Error updating basic info:', error);
             showError('Failed to update basic information. Please try again.');
         } finally {
             loadingSpinner.style.display = 'none';
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             showSuccess('Physical information updated successfully!');
         } catch (error) {
-            console.error('Error updating physical info:', error);
+            logError('Error updating physical info:', error);
             showError('Failed to update physical information. Please try again.');
         } finally {
             loadingSpinner.style.display = 'none';
@@ -266,7 +267,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             showSuccess('Goals updated successfully!');
         } catch (error) {
-            console.error('Error updating goals:', error);
+            logError('Error updating goals:', error);
             showError(error.message || 'Failed to update goals. Please try again.');
         } finally {
             loadingSpinner.style.display = 'none';
@@ -301,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             showSuccess('Preferences updated successfully!');
         } catch (error) {
-            console.error('Error updating preferences:', error);
+            logError('Error updating preferences:', error);
             showError('Failed to update preferences. Please try again.');
         } finally {
             loadingSpinner.style.display = 'none';

@@ -1,34 +1,38 @@
-import React, { useState } from 'react';
-// import { Box, Typography, Tabs, Tab } from '@mui/material';
-import MealRecommendations from '@/components/MealRecommendations';
+import Head from 'next/head';
+import React from 'react';
 
-const Dashboard = () => {
-  const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('lunch');
+import { useAuth } from '../hooks/useAuth';
+
+const DashboardPage: React.FC = () => {
+  const { user } = useAuth();
 
   return (
-    <div>
-      {/* <Typography variant="h5" gutterBottom>
-        Nutrition Dashboard
-      </Typography> */}
-      {/* <Tabs
-        value={selectedMealType}
-        onChange={(_: any, newValue: any) => setSelectedMealType(newValue)}
-        sx={{ mb: 2 }}
-      >
-        <Tab label="Breakfast" value="breakfast" />
-        <Tab label="Lunch" value="lunch" />
-        <Tab label="Dinner" value="dinner" />
-        <Tab label="Snacks" value="snack" />
-      </Tabs> */}
-      <MealRecommendations 
-        mealType={selectedMealType}
-        onSelect={(meal) => {
-          // Handle meal selection - you can add this to the user's meal plan
-          console.log('Selected meal:', meal);
-        }}
-      />
-    </div>
+    <>
+      <Head>
+        <title>Dashboard - Nutrition Tracker</title>
+        <meta name="description" content="Your nutrition tracking dashboard" />
+      </Head>
+      <div className="dashboard-page">
+        <h1>Welcome, {user?.name || 'User'}!</h1>
+        <div className="dashboard-content">
+          <div className="quick-stats">
+            <div className="stat-card">
+              <h3>Today&apos;s Calories</h3>
+              <p>1,850 / 2,000</p>
+            </div>
+            <div className="stat-card">
+              <h3>Water Intake</h3>
+              <p>6 / 8 glasses</p>
+            </div>
+            <div className="stat-card">
+              <h3>Meals Logged</h3>
+              <p>3</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
-export default Dashboard; 
+export default DashboardPage; 

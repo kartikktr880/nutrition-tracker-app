@@ -19,6 +19,16 @@ interface StateRecord {
   };
 }
 
+interface StateMetadata {
+  timestamp: number;
+  version: number;
+  checksum: string;
+  size: number;
+  lastModified: number;
+  lastAccessed: number;
+  accessCount: number;
+}
+
 class StatePersistence {
   private static instance: StatePersistence;
   private db: IDBDatabase | null = null;
@@ -132,10 +142,16 @@ class StatePersistence {
         request.onsuccess = () => {
           const result = request.result as StateRecord | undefined;
           if (result) {
-            // Convert timestamps back to Date objects
-            result.metadata.timestamp = new Date(result.metadata.timestamp);
-            result.metadata.lastModified = new Date(result.metadata.lastModified);
-            result.metadata.lastAccessed = new Date(result.metadata.lastAccessed);
+            // Ensure timestamps are numbers
+            result.metadata.timestamp = typeof result.metadata.timestamp === 'number' 
+              ? result.metadata.timestamp 
+              : new Date(result.metadata.timestamp).getTime();
+            result.metadata.lastModified = typeof result.metadata.lastModified === 'number'
+              ? result.metadata.lastModified
+              : new Date(result.metadata.lastModified).getTime();
+            result.metadata.lastAccessed = typeof result.metadata.lastAccessed === 'number'
+              ? result.metadata.lastAccessed
+              : new Date(result.metadata.lastAccessed).getTime();
 
             recordOperationLatency('state_retrieve', 0, {
               key,
@@ -245,6 +261,34 @@ class StatePersistence {
       recordError('State size calculation failed', error instanceof Error ? error.message : String(error));
       return 0;
     }
+  }
+
+  private deserializeMetadata(metadata: any): StateMetadata {
+    const result = { ...metadata };
+    
+    // Convert timestamps to numbers if they're Date objects
+    if (result.timestamp instanceof Date) {
+      result.timestamp = result.timestamp.getTime();
+    }
+    if (result.lastModified instanceof Date) {
+      result.lastModified = result.lastModified.getTime();
+    }
+    if (result.lastAccessed instanceof Date) {
+      result.lastAccessed = result.lastAccessed.getTime();
+    }
+    
+    // Convert numbers to Date objects if they're timestamps
+    if (typeof result.timestamp === 'number') {
+      result.timestamp = new Date(result.timestamp);
+    }
+    if (typeof result.lastModified === 'number') {
+      result.lastModified = new Date(result.lastModified);
+    }
+    if (typeof result.lastAccessed === 'number') {
+      result.lastAccessed = new Date(result.lastAccessed);
+    }
+    
+    return result;
   }
 }
 

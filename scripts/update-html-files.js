@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Update HTML Files Script
  * Updates all HTML files to use the new consolidated systems
@@ -76,7 +77,7 @@ const initScript = `
 
 // Process HTML files
 function processHtmlFile(filePath) {
-    console.log(`Processing ${filePath}...`);
+    logInfo(`Processing ${filePath}...`);
     
     let content = fs.readFileSync(filePath, 'utf8');
     
@@ -103,7 +104,7 @@ function processHtmlFile(filePath) {
     
     // Write updated content
     fs.writeFileSync(filePath, content, 'utf8');
-    console.log(`Updated ${filePath}`);
+    logInfo(`Updated ${filePath}`);
 }
 
 // Get all HTML files
@@ -114,4 +115,4 @@ const htmlFiles = fs.readdirSync('.')
 // Process each HTML file
 htmlFiles.forEach(processHtmlFile);
 
-console.log('HTML files update complete!'); 
+logInfo('HTML files update complete!'); 

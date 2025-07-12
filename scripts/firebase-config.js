@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBqaqMiGkPNocVLpYYTrsybLFrW7JliPpI",
@@ -28,7 +29,7 @@ function initializeAuth() {
     return new Promise((resolve) => {
         firebaseAuth.onAuthStateChanged((user) => {
             if (user) {
-                console.log("User is signed in:", user.displayName);
+                logInfo("User is signed in:", user.displayName);
                 // Store minimal user info in localStorage for backward compatibility
                 localStorage.setItem('currentUser', JSON.stringify({
                     uid: user.uid,
@@ -36,7 +37,7 @@ function initializeAuth() {
                     email: user.email
                 }));
             } else {
-                console.log("User is signed out");
+                logInfo("User is signed out");
                 // Clear user from localStorage
                 localStorage.removeItem('currentUser');
             }
@@ -66,7 +67,7 @@ async function registerUser(email, password, displayName) {
         
         return { success: true, user: userCredential.user };
     } catch (error) {
-        console.error("Error registering user:", error);
+        logError("Error registering user:", error);
         return { success: false, error: error.message };
     }
 }
@@ -76,7 +77,7 @@ async function loginUser(email, password) {
         const userCredential = await firebaseAuth.signInWithEmailAndPassword(email, password);
         return { success: true, user: userCredential.user };
     } catch (error) {
-        console.error("Error logging in:", error);
+        logError("Error logging in:", error);
         return { success: false, error: error.message };
     }
 }
@@ -86,7 +87,7 @@ async function logoutUser() {
         await firebaseAuth.signOut();
         return { success: true };
     } catch (error) {
-        console.error("Error logging out:", error);
+        logError("Error logging out:", error);
         return { success: false, error: error.message };
     }
 }
@@ -103,7 +104,7 @@ async function getUserProfile(userId) {
             return { success: false, error: "User profile not found" };
         }
     } catch (error) {
-        console.error("Error getting user profile:", error);
+        logError("Error getting user profile:", error);
         return { success: false, error: error.message };
     }
 }
@@ -114,7 +115,7 @@ async function updateUserProfile(userId, profileData) {
         await docRef.update(profileData);
         return { success: true };
     } catch (error) {
-        console.error("Error updating user profile:", error);
+        logError("Error updating user profile:", error);
         return { success: false, error: error.message };
     }
 }
@@ -143,7 +144,7 @@ async function saveFoodLog(userId, date, foodLog) {
         
         return { success: true };
     } catch (error) {
-        console.error("Error saving food log:", error);
+        logError("Error saving food log:", error);
         return { success: false, error: error.message };
     }
 }
@@ -159,7 +160,7 @@ async function getFoodLog(userId, date) {
             return { success: true, data: { breakfast: [], lunch: [], dinner: [], snacks: [] } };
         }
     } catch (error) {
-        console.error("Error getting food log:", error);
+        logError("Error getting food log:", error);
         return { success: false, error: error.message };
     }
 }
@@ -211,7 +212,7 @@ async function saveFoodHistory(userId, date, foodLog) {
         
         return { success: true };
     } catch (error) {
-        console.error("Error saving food history:", error);
+        logError("Error saving food history:", error);
         return { success: false, error: error.message };
     }
 }
@@ -233,7 +234,7 @@ async function getFoodHistory(userId, days = 30) {
             return { success: true, data: [] };
         }
     } catch (error) {
-        console.error("Error getting food history:", error);
+        logError("Error getting food history:", error);
         return { success: false, error: error.message };
     }
 }
@@ -270,7 +271,7 @@ async function saveFavorite(userId, meal) {
         
         return { success: true };
     } catch (error) {
-        console.error("Error saving favorite:", error);
+        logError("Error saving favorite:", error);
         return { success: false, error: error.message };
     }
 }
@@ -289,7 +290,7 @@ async function removeFavorite(userId, mealId) {
         
         return { success: true };
     } catch (error) {
-        console.error("Error removing favorite:", error);
+        logError("Error removing favorite:", error);
         return { success: false, error: error.message };
     }
 }
@@ -306,7 +307,7 @@ async function getFavorites(userId) {
             return { success: true, data: [] };
         }
     } catch (error) {
-        console.error("Error getting favorites:", error);
+        logError("Error getting favorites:", error);
         return { success: false, error: error.message };
     }
 }

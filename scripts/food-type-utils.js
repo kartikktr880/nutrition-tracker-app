@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Food Type Utilities
 // This module consolidates food type related functions from across the codebase
 
@@ -167,7 +168,7 @@ export class FoodTypeUtils {
      */
     findFoodType(ingredientName) {
         if (!ingredientName || typeof ingredientName !== 'string') {
-            console.warn('Invalid ingredient name provided to findFoodType');
+            logWarn('Invalid ingredient name provided to findFoodType');
             return null;
         }
 
@@ -401,7 +402,7 @@ export class FoodTypeUtils {
      */
     getNutritionInfo(ingredientName, amount = 100, unit = 'g') {
         if (!ingredientName) {
-            console.error('Invalid ingredient name provided');
+            logError('Invalid ingredient name provided');
             return null;
         }
 
@@ -442,7 +443,7 @@ export class FoodTypeUtils {
         if (unit !== 'g') {
             const multiplier = this.getUnitMultiplier(unit, portionInfo);
             if (multiplier === null) {
-                console.error(`Unsupported unit: ${unit}`);
+                logError(`Unsupported unit: ${unit}`);
                 return null;
             }
             amountInGrams = amount * multiplier;

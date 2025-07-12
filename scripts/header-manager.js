@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Header Manager
  * Consolidated module for handling all header-related functionality
@@ -33,7 +34,7 @@ class HeaderManager {
         try {
             this.headers = Array.from(document.querySelectorAll('.premium-header'));
             if (this.headers.length === 0) {
-                console.warn('HeaderManager: No premium-header elements found');
+                logWarn('HeaderManager: No premium-header elements found');
                 return;
             }
 
@@ -41,7 +42,7 @@ class HeaderManager {
             this.setupEventListeners();
             this.handleHeaderScroll();
         } catch (error) {
-            console.error('HeaderManager initialization failed:', error);
+            logError('HeaderManager initialization failed:', error);
         }
     }
 
@@ -194,7 +195,7 @@ class HeaderManager {
 
             this.lastScrollTop = scrollTop;
         } catch (error) {
-            console.error('Error handling header scroll:', error);
+            logError('Error handling header scroll:', error);
         }
     }
 }

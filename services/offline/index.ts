@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 interface SyncOperation {
   id: string;
   type: 'create' | 'update' | 'delete';
@@ -65,7 +66,7 @@ class OfflineService {
         this.syncQueue = JSON.parse(queue);
       }
     } catch (error) {
-      console.error('Failed to load sync queue:', error);
+      logError('Failed to load sync queue:', error as Error | undefined);
     }
   }
 
@@ -73,7 +74,7 @@ class OfflineService {
     try {
       localStorage.setItem('syncQueue', JSON.stringify(this.syncQueue));
     } catch (error) {
-      console.error('Failed to save sync queue:', error);
+      logError('Failed to save sync queue:', error as Error | undefined);
     }
   }
 
@@ -183,7 +184,7 @@ class OfflineService {
         }
       }
     } catch (error) {
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Request timeout');
       }
       throw error;
@@ -227,41 +228,25 @@ class OfflineService {
     await this.saveSyncQueue();
   }
 
-  private async processSyncQueue(): Promise<void> {
-    if (this.syncInProgress || !this.isOnline || this.syncQueue.length === 0) {
+  public async processSyncQueue(): Promise<void> {
+    if (this.syncInProgress || !this.isOnline) {
       return;
     }
 
     this.syncInProgress = true;
 
     try {
-      // Sort operations by priority and timestamp
-      const sortedOperations = [...this.syncQueue].sort((a, b) => {
-        const priorityOrder = { high: 0, normal: 1, low: 2 };
-        const aPriority = priorityOrder[a.priority || 'normal'];
-        const bPriority = priorityOrder[b.priority || 'normal'];
-        
-        if (aPriority !== bPriority) {
-          return aPriority - bPriority;
+      while (this.syncQueue.length > 0) {
+        const operation = this.syncQueue.shift();
+        if (operation) {
+          await this.processOperation(operation);
         }
-        return a.timestamp - b.timestamp;
-      });
-
-      // Process operations in batches
-      for (let i = 0; i < sortedOperations.length; i += this.batchSize) {
-        const batch = sortedOperations.slice(i, i + this.batchSize);
-        await Promise.all(batch.map(op => this.processOperation(op)));
       }
-
-      // Clean up completed operations
-      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-      this.syncQueue = this.syncQueue.filter(op => 
-        op.status !== 'completed' || op.timestamp > oneDayAgo
-      );
-      await this.saveSyncQueue();
-
+    } catch (error) {
+      logError('Error processing sync queue:', error as Error | undefined);
     } finally {
       this.syncInProgress = false;
+      await this.saveSyncQueue();
     }
   }
 
@@ -279,7 +264,7 @@ class OfflineService {
       await this.executeOperation(operation);
       operation.status = 'completed';
     } catch (error) {
-      console.error(`Operation failed: ${operation.id}`, error);
+      logError(`Operation failed: ${operation.id}`, error as Error | undefined);
       operation.status = 'failed';
     }
 
@@ -307,7 +292,7 @@ class OfflineService {
       };
       localStorage.setItem('syncQueueBackup', JSON.stringify(backup));
     } catch (error) {
-      console.error('Failed to backup sync queue:', error);
+      logError('Failed to backup sync queue:', error as Error | undefined);
     }
   }
 
@@ -323,7 +308,27 @@ class OfflineService {
         }
       }
     } catch (error) {
-      console.error('Failed to restore sync queue:', error);
+      logError('Failed to restore sync queue:', error as Error | undefined);
+    }
+  }
+
+  public getState(): { isOnline: boolean; queueSize: number; syncInProgress: boolean } {
+    return {
+      isOnline: this.isOnline,
+      queueSize: this.syncQueue.length,
+      syncInProgress: this.syncInProgress
+    };
+  }
+
+  public async resolveConflict(conflictIndex: number, resolution: 'server' | 'client' | 'manual'): Promise<void> {
+    // This is a simplified implementation
+    // In a real app, you would handle the actual conflict resolution
+    logInfo(`Resolving conflict ${conflictIndex} with resolution: ${resolution}`);
+    
+    // Remove the conflict from the queue
+    if (conflictIndex >= 0 && conflictIndex < this.syncQueue.length) {
+      this.syncQueue.splice(conflictIndex, 1);
+      await this.saveSyncQueue();
     }
   }
 }

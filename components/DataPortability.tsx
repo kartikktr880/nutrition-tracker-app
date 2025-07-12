@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
 
 export const DataPortability: React.FC = () => {
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleExport = async (format: 'json' | 'csv') => {
-    if (!user) return;
-
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -34,21 +30,20 @@ export const DataPortability: React.FC = () => {
       setSuccess('Data exported successfully');
     } catch (err) {
       setError('Failed to export data. Please try again.');
-      console.error('Export error:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!user || !event.target.files?.length) return;
-
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const file = event.target.files[0];
+      const file = event.target.files?.length ? event.target.files[0] : null;
+      if (!file) return;
+
       const format = file.name.endsWith('.csv') ? 'csv' : 'json';
       const content = await file.text();
 
@@ -67,7 +62,6 @@ export const DataPortability: React.FC = () => {
       setSuccess('Data imported successfully');
     } catch (err) {
       setError('Failed to import data. Please check the file format and try again.');
-      console.error('Import error:', err);
     } finally {
       setLoading(false);
     }

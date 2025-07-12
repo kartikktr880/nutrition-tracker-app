@@ -73,26 +73,35 @@ export class StateUtils {
             this.startSyncInterval();
 
             // Initialize observers
-            this.initializeObservers();
+            // this.initializeObservers();
 
             LoggingUtils.log('info', 'State management initialized');
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'State initialization' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'State initialization' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'State initialization' }
+                );
+            }
         }
     }
 
     private async loadStateFromStorage(): Promise<Record<string, any> | null> {
         try {
-            const stateData = await StorageUtils.get(this.stateKey);
-            const stateHash = await StorageUtils.get(this.stateHashKey);
-            const stateTimestamp = await StorageUtils.get(this.stateTimestampKey);
+            const stateData = await StorageUtils.getData(this.stateKey);
+            const stateHash = await StorageUtils.getData(this.stateHashKey);
+            const stateTimestamp = await StorageUtils.getData(this.stateTimestampKey);
 
-            if (!stateData || !stateHash || !stateTimestamp) {
+            if (!stateData || !stateHash || !stateTimestamp || typeof stateData !== 'string') {
                 return null;
             }
 
@@ -105,12 +114,21 @@ export class StateUtils {
 
             return JSON.parse(stateData);
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.MEDIUM,
-                { context: 'State loading' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'State loading' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'State loading' }
+                );
+            }
             return null;
         }
     }
@@ -132,12 +150,21 @@ export class StateUtils {
             try {
                 await this.syncState();
             } catch (error) {
-                await errorUtils.handleError(
-                    error,
-                    ErrorCategory.STORAGE,
-                    ErrorSeverity.MEDIUM,
-                    { context: 'State synchronization' }
-                );
+                if (error instanceof Error) {
+                    await errorUtils.handleError(
+                        error,
+                        ErrorCategory.STORAGE,
+                        ErrorSeverity.MEDIUM,
+                        { context: 'State synchronization' }
+                    );
+                } else {
+                    await errorUtils.handleError(
+                        new Error(String(error)),
+                        ErrorCategory.STORAGE,
+                        ErrorSeverity.MEDIUM,
+                        { context: 'State synchronization' }
+                    );
+                }
             }
         }, this.syncIntervalMs);
     }
@@ -156,12 +183,21 @@ export class StateUtils {
 
             await this.saveState();
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.MEDIUM,
-                { context: 'State synchronization' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'State synchronization' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'State synchronization' }
+                );
+            }
         }
     }
 
@@ -171,12 +207,21 @@ export class StateUtils {
             // This could be from a server, IndexedDB, or other storage
             return null;
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.NETWORK,
-                ErrorSeverity.MEDIUM,
-                { context: 'Remote state fetching' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.NETWORK,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'Remote state fetching' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.NETWORK,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'Remote state fetching' }
+                );
+            }
             return null;
         }
     }
@@ -224,12 +269,21 @@ export class StateUtils {
                 // Notify observers
                 this.notifyObservers(conflict.key, resolvedValue, conflict.localValue);
             } catch (error) {
-                await errorUtils.handleError(
-                    error,
-                    ErrorCategory.STORAGE,
-                    ErrorSeverity.MEDIUM,
-                    { context: 'Conflict resolution', conflict }
-                );
+                if (error instanceof Error) {
+                    await errorUtils.handleError(
+                        error,
+                        ErrorCategory.STORAGE,
+                        ErrorSeverity.MEDIUM,
+                        { context: 'Conflict resolution', conflict }
+                    );
+                } else {
+                    await errorUtils.handleError(
+                        new Error(String(error)),
+                        ErrorCategory.STORAGE,
+                        ErrorSeverity.MEDIUM,
+                        { context: 'Conflict resolution', conflict }
+                    );
+                }
             }
         }
     }
@@ -277,12 +331,21 @@ export class StateUtils {
             // Save state
             await this.saveState();
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.MEDIUM,
-                { context: 'State update', key, value }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'State update', key, value }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.MEDIUM,
+                    { context: 'State update', key, value }
+                );
+            }
         }
     }
 
@@ -300,18 +363,27 @@ export class StateUtils {
             const stateHash = await this.calculateStateHash(stateData);
             const timestamp = Date.now();
 
-            await StorageUtils.set(this.stateKey, stateData);
-            await StorageUtils.set(this.stateHashKey, stateHash);
-            await StorageUtils.set(this.stateTimestampKey, timestamp.toString());
+            await StorageUtils.saveData(this.stateKey, stateData);
+            await StorageUtils.saveData(this.stateHashKey, stateHash);
+            await StorageUtils.saveData(this.stateTimestampKey, timestamp);
 
             LoggingUtils.log('info', 'State saved successfully');
         } catch (error) {
-            await errorUtils.handleError(
-                error,
-                ErrorCategory.STORAGE,
-                ErrorSeverity.HIGH,
-                { context: 'State saving' }
-            );
+            if (error instanceof Error) {
+                await errorUtils.handleError(
+                    error,
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'State saving' }
+                );
+            } else {
+                await errorUtils.handleError(
+                    new Error(String(error)),
+                    ErrorCategory.STORAGE,
+                    ErrorSeverity.HIGH,
+                    { context: 'State saving' }
+                );
+            }
         }
     }
 
@@ -359,10 +431,12 @@ export class StateUtils {
         return [...this.conflictHistory];
     }
 
-    getStateStats(): { totalKeys: number; lastSync: number; conflicts: number } {
+    async getStateStats(): Promise<{ totalKeys: number; lastSync: number; conflicts: number }> {
+        const lastSyncRaw = await StorageUtils.getData(this.stateTimestampKey);
+        const lastSyncStr = typeof lastSyncRaw === 'string' ? lastSyncRaw : '0';
         return {
             totalKeys: this.state.size,
-            lastSync: parseInt(StorageUtils.get(this.stateTimestampKey) || '0'),
+            lastSync: parseInt(lastSyncStr),
             conflicts: this.conflictHistory.length
         };
     }

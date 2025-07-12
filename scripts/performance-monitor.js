@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Enhanced Performance Monitor
  * Tracks and analyzes application performance metrics with advanced capabilities
@@ -394,7 +395,7 @@ class PerformanceMonitor {
         // Disconnect all observers
         for (const [name, observer] of this.observers) {
             observer.disconnect();
-            console.log(`Disconnected ${name} observer`);
+            logInfo(`Disconnected ${name} observer`);
         }
         this.observers.clear();
         
@@ -458,7 +459,7 @@ class PerformanceMonitor {
 
         // Validate data
         if (!data || typeof data.value !== 'number' || isNaN(data.value)) {
-            console.warn(`Invalid metric data for ${metricName}:`, data);
+            logWarn(`Invalid metric data for ${metricName}:`, data);
             return;
         }
 
@@ -581,14 +582,14 @@ class PerformanceMonitor {
                 this.reconnectWebSocket();
             }
         } catch (error) {
-            console.error('Error emitting metric update:', error);
+            logError('Error emitting metric update:', error);
             this.handleWebSocketError(error);
         }
     }
 
     reconnectWebSocket() {
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.error('Max reconnection attempts reached');
+            logError('Max reconnection attempts reached');
             return;
         }
 
@@ -601,7 +602,7 @@ class PerformanceMonitor {
     }
 
     handleWebSocketError(error) {
-        console.error('WebSocket error:', error);
+        logError('WebSocket error:', error);
         this.triggerAlert({
             type: 'websocket_error',
             error: error.message,
@@ -614,12 +615,12 @@ class PerformanceMonitor {
             this.ws = new WebSocket(this.wsUrl);
             
             this.ws.onopen = () => {
-                console.log('WebSocket connected');
+                logInfo('WebSocket connected');
                 this.reconnectAttempts = 0;
             };
 
             this.ws.onclose = () => {
-                console.log('WebSocket disconnected');
+                logInfo('WebSocket disconnected');
                 this.reconnectWebSocket();
             };
 
@@ -633,7 +634,7 @@ class PerformanceMonitor {
 
     triggerAlert(alert) {
         // Implement alert handling (e.g., notifications, logging)
-        console.warn('Performance Alert:', alert);
+        logWarn('Performance Alert:', alert);
         if (this.onAlert) {
             this.onAlert(alert);
         }

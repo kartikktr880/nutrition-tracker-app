@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Unified Performance Management System
  * Combines functionality from:
@@ -170,7 +171,7 @@ class PerformanceManager {
 
     // Warning handling
     handleWarnings(warnings) {
-        console.warn('Performance Warnings:', warnings);
+        logWarn('Performance Warnings:', warnings);
         this.notifyObservers('warnings', warnings);
     }
 

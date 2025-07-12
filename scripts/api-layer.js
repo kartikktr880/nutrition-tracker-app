@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Unified API Layer
 // Combines Firebase and offline support functionality into a single, robust API layer
 
@@ -39,7 +40,7 @@ class ApiLayer {
     
     this.activityListeners = new Map();
     
-    console.log('API Layer initialized');
+    logInfo('API Layer initialized');
   }
 
   // Get Firebase configuration from secure source
@@ -101,7 +102,7 @@ class ApiLayer {
       try {
         await this.auth.signOut();
       } catch (error) {
-        console.error('Error signing out:', error);
+        logError('Error signing out:', error);
       }
 
       // Redirect to login page
@@ -135,7 +136,7 @@ class ApiLayer {
     const wasOnline = this.isOnline;
     this.isOnline = isOnline;
     
-    console.log(`Network status changed: ${isOnline ? 'online' : 'offline'}`);
+    logInfo(`Network status changed: ${isOnline ? 'online' : 'offline'}`);
     
     // Update UI
     this.offlineSupport.updateOnlineStatus();
@@ -148,7 +149,7 @@ class ApiLayer {
 
   handleAuthStateChange(user) {
     if (user) {
-      console.log("User is signed in:", user.displayName);
+      logInfo("User is signed in:", user.displayName);
       // Store minimal user info in localStorage for backward compatibility
       localStorage.setItem('currentUser', JSON.stringify({
         uid: user.uid,
@@ -156,7 +157,7 @@ class ApiLayer {
         email: user.email
       }));
     } else {
-      console.log("User is signed out");
+      logInfo("User is signed out");
       localStorage.removeItem('currentUser');
     }
   }
@@ -251,7 +252,7 @@ class ApiLayer {
       await this.auth.signOut();
       return { success: true };
     } catch (error) {
-      console.error("Error logging out:", error);
+      logError("Error logging out:", error);
       return { success: false, error: error.message };
     }
   }
@@ -295,7 +296,7 @@ class ApiLayer {
         return { success: false, error: "User profile not found" };
       }
     } catch (error) {
-      console.error("Error getting user profile:", error);
+      logError("Error getting user profile:", error);
       return { success: false, error: error.message };
     }
   }
@@ -422,7 +423,7 @@ class ApiLayer {
         return { success: true, data: { breakfast: [], lunch: [], dinner: [], snacks: [] } };
       }
     } catch (error) {
-      console.error("Error getting food log:", error);
+      logError("Error getting food log:", error);
       return { success: false, error: error.message };
     }
   }
@@ -430,7 +431,7 @@ class ApiLayer {
   // Offline Support Methods
   queueOperation(operation) {
     if (!operation || !operation.type) {
-      console.error('Invalid operation:', operation);
+      logError('Invalid operation:', operation);
       return { success: false, error: 'Invalid operation' };
     }
 
@@ -457,11 +458,11 @@ class ApiLayer {
 
   async syncPendingOperations() {
     if (!this.isOnline) {
-      console.log('Cannot sync while offline');
+      logInfo('Cannot sync while offline');
       return;
     }
 
-    console.log('Syncing pending operations...');
+    logInfo('Syncing pending operations...');
     
     const operations = [...this.pendingOperations];
     this.pendingOperations = [];
@@ -470,7 +471,7 @@ class ApiLayer {
       try {
         await this.processOperation(operation);
       } catch (error) {
-        console.error('Error processing operation:', error);
+        logError('Error processing operation:', error);
         // Add failed operation back to queue
         this.pendingOperations.push(operation);
       }

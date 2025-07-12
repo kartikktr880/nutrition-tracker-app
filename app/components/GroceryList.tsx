@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
+
 import { barcodeService } from '../../lib/barcode-service';
+import { logError } from '../../utils/logger';
+
+interface GroceryItem {
+  barcode: string;
+  name: string;
+  category: string;
+  priority: string;
+  estimatedPrice?: number;
+}
 
 interface GroceryListProps {
   onClose?: () => void;
 }
 
 const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
-  const [groceryList, setGroceryList] = useState<any>(null);
+  const [groceryList, setGroceryList] = useState<{ items: GroceryItem[]; categories: Record<string, GroceryItem[]> } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,10 +31,16 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
       setIsLoading(true);
       setError(null);
       const list = barcodeService.generateSmartGroceryList();
-      setGroceryList(list);
+      // FIX: Convert SmartGroceryList to correct type for setGroceryList
+      setGroceryList({
+        items: list.items,
+        categories: Object.fromEntries(
+          Object.entries(list.categories).map(([k, v]) => [k, v.items])
+        )
+      });
     } catch (err) {
       setError('Failed to load grocery list. Please try again.');
-      console.error('Error loading grocery list:', err);
+      logError('Error loading grocery list:', err);
     } finally {
       setIsLoading(false);
     }
@@ -36,7 +52,7 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
       await loadGroceryList();
     } catch (err) {
       setError('Failed to update item. Please try again.');
-      console.error('Error marking item as purchased:', err);
+      logError('Error marking item as purchased:', err);
     }
   };
 
@@ -46,7 +62,7 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
       await loadGroceryList();
     } catch (err) {
       setError('Failed to remove item. Please try again.');
-      console.error('Error removing item:', err);
+      logError('Error removing item:', err);
     }
   };
 
@@ -107,7 +123,7 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
       <span className="text-sm text-gray-600">Sort by:</span>
       <select
         value={sortBy}
-        onChange={(e) => setSortBy(e.target.value as any)}
+        onChange={(e) => setSortBy(e.target.value as 'priority' | 'name' | 'category')}
         className="border rounded px-2 py-1 text-sm"
       >
         <option value="priority">Priority</option>
@@ -197,7 +213,7 @@ const GroceryList: React.FC<GroceryListProps> = ({ onClose }) => {
           <div>
             <span className="text-gray-600">Estimated Cost:</span>
             <span className="ml-2 font-medium">
-              ${groceryList.totalEstimatedCost.toFixed(2)}
+              ${groceryList.items.reduce((sum, item) => sum + (item.estimatedPrice || 0), 0).toFixed(2)}
             </span>
           </div>
         </div>

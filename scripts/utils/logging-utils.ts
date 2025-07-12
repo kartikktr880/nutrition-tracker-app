@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 export class LoggingUtils {
     private static readonly LOG_LEVELS = {
         debug: 0,
@@ -18,16 +19,16 @@ export class LoggingUtils {
         
         switch (level) {
             case 'debug':
-                console.debug(formattedMessage);
+                logDebug(formattedMessage);
                 break;
             case 'info':
                 console.info(formattedMessage);
                 break;
             case 'warn':
-                console.warn(formattedMessage);
+                logWarn(formattedMessage);
                 break;
             case 'error':
-                console.error(formattedMessage);
+                logError(formattedMessage);
                 break;
         }
 
@@ -56,9 +57,7 @@ export class LoggingUtils {
             context,
             timestamp: new Date().toISOString()
         };
-
         this.log(level, `${message} ${JSON.stringify(context)}`);
-        return logEntry;
     }
 
     static startLogGroup(groupName: string): void {

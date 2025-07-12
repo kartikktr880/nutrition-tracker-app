@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // API Service
 // Provides a unified interface for all data operations with offline support
 
@@ -404,7 +405,7 @@ class ApiService {
             
             return { success: true, user: userCredential.user };
         } catch (error) {
-            console.error("Error registering user:", error);
+            logError("Error registering user:", error);
             return { success: false, error: error.message };
         }
     }
@@ -414,7 +415,7 @@ class ApiService {
             const userCredential = await this.auth.signInWithEmailAndPassword(email, password);
             return { success: true, user: userCredential.user };
         } catch (error) {
-            console.error("Error logging in:", error);
+            logError("Error logging in:", error);
             return { success: false, error: error.message };
         }
     }
@@ -424,7 +425,7 @@ class ApiService {
             await this.auth.signOut();
             return { success: true };
         } catch (error) {
-            console.error("Error logging out:", error);
+            logError("Error logging out:", error);
             return { success: false, error: error.message };
         }
     }
@@ -450,7 +451,7 @@ class ApiService {
                 return { success: false, error: "User profile not found" };
             }
         } catch (error) {
-            console.error("Error getting user profile:", error);
+            logError("Error getting user profile:", error);
             return { success: false, error: error.message };
         }
     }
@@ -476,7 +477,7 @@ class ApiService {
             
             return { success: true };
         } catch (error) {
-            console.error("Error updating user profile:", error);
+            logError("Error updating user profile:", error);
             return { success: false, error: error.message };
         }
     }
@@ -492,7 +493,7 @@ class ApiService {
             
             // Log warnings if any
             if (validation.warnings.length > 0) {
-                console.warn('Food log warnings:', validation.warnings);
+                logWarn('Food log warnings:', validation.warnings);
             }
             
             // Use sanitized data
@@ -786,7 +787,7 @@ class ApiService {
                 return { success: true, data: { breakfast: [], lunch: [], dinner: [], snacks: [] } };
             }
         } catch (error) {
-            console.error("Error getting food log:", error);
+            logError("Error getting food log:", error);
             return { success: false, error: error.message };
         }
     }
@@ -838,7 +839,7 @@ class ApiService {
             
             return { success: true };
         } catch (error) {
-            console.error("Error saving food history:", error);
+            logError("Error saving food history:", error);
             return { success: false, error: error.message };
         }
     }
@@ -868,7 +869,7 @@ class ApiService {
                 return { success: true, data: [] };
             }
         } catch (error) {
-            console.error("Error getting food history:", error);
+            logError("Error getting food history:", error);
             return { success: false, error: error.message };
         }
     }
@@ -930,7 +931,7 @@ class ApiService {
             }
             
         } catch (error) {
-            console.error('Sync error:', error);
+            logError('Sync error:', error);
             this.handleSyncError(error);
         } finally {
             this.syncState.isSyncing = false;
@@ -1034,7 +1035,7 @@ class ApiService {
             const docSnap = await docRef.get();
             return docSnap.exists ? docSnap.data() : null;
         } catch (error) {
-            console.error('Error fetching server data:', error);
+            logError('Error fetching server data:', error);
             return null;
         }
     }
@@ -1056,7 +1057,7 @@ class ApiService {
                 }
             }
         } catch (error) {
-            console.error('Error resolving conflict:', error);
+            logError('Error resolving conflict:', error);
             throw error;
         }
     }
@@ -1094,7 +1095,7 @@ class ApiService {
     }
     
     handleSyncError(error) {
-        console.error('Sync error:', error);
+        logError('Sync error:', error);
         // Implement error reporting or notification system here
     }
     
@@ -1113,7 +1114,7 @@ class ApiService {
             
             return cachedData.data;
         } catch (error) {
-            console.error(`Error getting cached data for ${type}:`, error);
+            logError(`Error getting cached data for ${type}:`, error);
             return null;
         }
     }
@@ -1128,7 +1129,7 @@ class ApiService {
             
             return true;
         } catch (error) {
-            console.error(`Error setting cached data for ${type}:`, error);
+            logError(`Error setting cached data for ${type}:`, error);
             return false;
         }
     }
@@ -1196,7 +1197,7 @@ class ApiService {
                     return { attempted: false, success: false };
             }
         } catch (recoveryError) {
-            console.error('Recovery attempt failed:', recoveryError);
+            logError('Recovery attempt failed:', recoveryError);
             return { attempted: true, success: false, error: recoveryError.message };
         }
     }
@@ -1210,7 +1211,7 @@ class ApiService {
         this.updateErrorMetrics(errorType, category, severity);
         
         // Log error with context
-        console.error(`[${category.toUpperCase()}] ${errorType}:`, {
+        logError(`[${category.toUpperCase()}] ${errorType}:`, {
             error,
             context,
             severity,
@@ -1232,7 +1233,7 @@ class ApiService {
                     return recoveryResult.data;
                 }
             } catch (recoveryError) {
-                console.error('Recovery failed:', recoveryError);
+                logError('Recovery failed:', recoveryError);
             }
         }
         
@@ -1387,7 +1388,7 @@ class ApiService {
             // Check if we have stored checksums
             const storedChecksums = await this.getStoredChecksums(type);
             if (!storedChecksums) {
-                console.log('No stored checksums found, storing initial checksums');
+                logInfo('No stored checksums found, storing initial checksums');
                 await this.storeChecksums(data);
                 return { valid: true, message: 'Initial checksums stored' };
             }
@@ -1398,7 +1399,7 @@ class ApiService {
             
             // Compare checksums with enhanced error handling
             if (currentChecksum !== storedChecksums.current) {
-                console.error('Checksum mismatch detected');
+                logError('Checksum mismatch detected');
                 
                 // Increment error count with rate limiting
                 this.integrityState.errorCount++;
@@ -1442,7 +1443,7 @@ class ApiService {
             
             return { valid: true, message: 'Data integrity verified' };
         } catch (error) {
-            console.error('Data integrity verification failed:', error);
+            logError('Data integrity verification failed:', error);
             return {
                 valid: false,
                 message: 'Data integrity verification failed',
@@ -1483,7 +1484,7 @@ class ApiService {
             
             throw new Error('Data recovery failed: Unable to restore or repair data');
         } catch (error) {
-            console.error('Data recovery failed:', error);
+            logError('Data recovery failed:', error);
             return { 
                 success: false, 
                 error: error.message,
@@ -1596,7 +1597,7 @@ class ApiService {
                 offline: true
             };
         } catch (error) {
-            console.error('Offline fallback failed:', error);
+            logError('Offline fallback failed:', error);
             throw error;
         }
     }
@@ -1621,7 +1622,7 @@ class ApiService {
             // If no valid cached data, return default values
             return this.handleDefaultFallback(context);
         } catch (error) {
-            console.error('Cache fallback failed:', error);
+            logError('Cache fallback failed:', error);
             return this.handleDefaultFallback(context);
         }
     }

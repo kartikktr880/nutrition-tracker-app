@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Script to update HTML files with header-fixes.css and fix-scroll.js
  * This script looks for key HTML pages and adds the header-fixes.css and fix-scroll.js
@@ -36,7 +37,7 @@ filesToUpdate.forEach(file => {
     
     // Check if file exists
     if (!fs.existsSync(filePath)) {
-      console.log(`File not found: ${file}`);
+      logInfo(`File not found: ${file}`);
       return;
     }
     
@@ -52,10 +53,10 @@ filesToUpdate.forEach(file => {
       updatedContent = updatedContent.replace('</head>', cssLinkToAdd);
       if (updatedContent !== content) {
         updated = true;
-        console.log(`${file}: Added header-fixes.css`);
+        logInfo(`${file}: Added header-fixes.css`);
       }
     } else {
-      console.log(`${file}: header-fixes.css already included`);
+      logInfo(`${file}: header-fixes.css already included`);
     }
     
     // Add fix-scroll.js script if not already present
@@ -64,11 +65,11 @@ filesToUpdate.forEach(file => {
       if (updatedContent.includes('main.css')) {
         updatedContent = updatedContent.replace(/main\.css[^>]*>/, match => match + '\n' + scriptToAdd);
         updated = true;
-        console.log(`${file}: Added fix-scroll.js after main.css`);
+        logInfo(`${file}: Added fix-scroll.js after main.css`);
       } else if (updatedContent.includes('reset.css')) {
         updatedContent = updatedContent.replace(/reset\.css[^>]*>/, match => match + '\n' + scriptToAdd);
         updated = true;
-        console.log(`${file}: Added fix-scroll.js after reset.css`);
+        logInfo(`${file}: Added fix-scroll.js after reset.css`);
       } else {
         // Just add it after the first style or script tag
         const styleRegex = /<link[^>]*rel=["']stylesheet["'][^>]*>/;
@@ -77,35 +78,35 @@ filesToUpdate.forEach(file => {
         if (styleRegex.test(updatedContent)) {
           updatedContent = updatedContent.replace(styleRegex, match => match + '\n' + scriptToAdd);
           updated = true;
-          console.log(`${file}: Added fix-scroll.js after first stylesheet`);
+          logInfo(`${file}: Added fix-scroll.js after first stylesheet`);
         } else if (scriptRegex.test(updatedContent)) {
           updatedContent = updatedContent.replace(scriptRegex, match => scriptToAdd + match);
           updated = true;
-          console.log(`${file}: Added fix-scroll.js before first script`);
+          logInfo(`${file}: Added fix-scroll.js before first script`);
         }
       }
     } else {
-      console.log(`${file}: fix-scroll.js already included`);
+      logInfo(`${file}: fix-scroll.js already included`);
     }
     
     // Remove any large spacer divs that might cause scrollbar issues
     if (updatedContent.includes('<div style="height: 2000px;"></div>')) {
       updatedContent = updatedContent.replace('<div style="height: 2000px;"></div>', '');
       updated = true;
-      console.log(`${file}: Removed large spacer div`);
+      logInfo(`${file}: Removed large spacer div`);
     }
     
     // Write back to file if changes were made
     if (updated) {
       fs.writeFileSync(filePath, updatedContent, 'utf8');
-      console.log(`${file}: Successfully updated`);
+      logInfo(`${file}: Successfully updated`);
     } else {
-      console.log(`${file}: No changes needed`);
+      logInfo(`${file}: No changes needed`);
     }
     
   } catch (error) {
-    console.error(`Error processing ${file}:`, error.message);
+    logError(`Error processing ${file}:`, error.message);
   }
 });
 
-console.log('Update process completed.'); 
+logInfo('Update process completed.'); 

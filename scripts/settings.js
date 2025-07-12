@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Settings Page JavaScript
  */
@@ -119,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const savedSettings = localStorage.getItem('settings');
             currentSettings = savedSettings ? JSON.parse(savedSettings) : defaultSettings;
         } catch (error) {
-            console.error('Error loading settings:', error);
+            logError('Error loading settings:', error);
             currentSettings = defaultSettings;
         }
     }
@@ -383,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 processImportedActivityData(data);
             })
             .catch(error => {
-                console.error('Import error:', error);
+                logError('Import error:', error);
                 importStatus.textContent = `Error: ${error.message}`;
                 importProgressBar.style.width = '0%';
                 importDoneBtn.disabled = false;
@@ -535,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Apply settings (e.g., theme changes)
             applyAppearanceSettings();
         } catch (error) {
-            console.error('Error saving settings:', error);
+            logError('Error saving settings:', error);
             showToast('Error saving settings', 'error');
         }
     }

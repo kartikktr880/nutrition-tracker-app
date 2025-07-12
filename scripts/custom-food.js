@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Custom Food Manager Module
 import foodDatabase from './food-db.js';
 
@@ -240,7 +241,7 @@ class CustomFoodManager {
                 this.renderServingOptions();
             }
         } catch (error) {
-            console.error('Error loading food data:', error);
+            logError('Error loading food data:', error);
             this.showNotification('Error loading food data', 'error');
         }
     }
@@ -309,7 +310,7 @@ class CustomFoodManager {
             // Trigger refresh by dispatching a custom event
             document.dispatchEvent(new CustomEvent('customFoodUpdated'));
         } catch (error) {
-            console.error('Error saving custom food:', error);
+            logError('Error saving custom food:', error);
             this.showNotification('Error saving food', 'error');
         }
     }

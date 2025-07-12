@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Script to update HTML files with fix-scroll.js
  * This script looks for key HTML pages and adds the fix-scroll.js script
@@ -33,7 +34,7 @@ filesToUpdate.forEach(file => {
     
     // Check if file exists
     if (!fs.existsSync(filePath)) {
-      console.log(`File not found: ${file}`);
+      logInfo(`File not found: ${file}`);
       return;
     }
     
@@ -42,7 +43,7 @@ filesToUpdate.forEach(file => {
     
     // Check if script is already included
     if (content.includes('fix-scroll.js')) {
-      console.log(`${file}: fix-scroll.js already included`);
+      logInfo(`${file}: fix-scroll.js already included`);
       return;
     }
     
@@ -76,17 +77,17 @@ filesToUpdate.forEach(file => {
     
     // Check if changes were made
     if (content === updatedContent) {
-      console.log(`${file}: No changes made (couldn't find insertion point)`);
+      logInfo(`${file}: No changes made (couldn't find insertion point)`);
       return;
     }
     
     // Write back to file
     fs.writeFileSync(filePath, updatedContent, 'utf8');
-    console.log(`${file}: Successfully added fix-scroll.js`);
+    logInfo(`${file}: Successfully added fix-scroll.js`);
     
   } catch (error) {
-    console.error(`Error processing ${file}:`, error.message);
+    logError(`Error processing ${file}:`, error.message);
   }
 });
 
-console.log('Scroll fix update process completed.'); 
+logInfo('Scroll fix update process completed.'); 

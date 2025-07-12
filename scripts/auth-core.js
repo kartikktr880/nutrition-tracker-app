@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // auth-core.js - Unified authentication module for the Nutrition Tracker app
 
 // Import Firebase modules
@@ -101,7 +102,7 @@ async function handleSignedInUser(user, currentPage) {
             lastLogin: serverTimestamp()
         });
     } catch (error) {
-        console.error('Error updating last login time:', error);
+        logError('Error updating last login time:', error);
     }
     
     // Update UI elements
@@ -166,7 +167,7 @@ export async function checkIfEmailExists(email) {
         const methods = await fetchSignInMethodsForEmail(auth, email);
         return { exists: methods.length > 0, methods };
     } catch (error) {
-        console.error('Email check error:', error);
+        logError('Email check error:', error);
         return { exists: false, error: error.message };
     }
 }
@@ -197,7 +198,7 @@ export async function registerWithEmail(name, email, password) {
         
         return { success: true, user: userCredential.user };
     } catch (error) {
-        console.error('Registration error:', error);
+        logError('Registration error:', error);
         return { success: false, error: error.message };
     }
 }
@@ -218,7 +219,7 @@ export async function loginWithEmail(email, password) {
         
         return { success: true, user: userCredential.user };
     } catch (error) {
-        console.error('Login error:', error);
+        logError('Login error:', error);
         return { success: false, error: error.message };
     }
 }
@@ -251,7 +252,7 @@ export async function signInWithGoogle() {
         
         return { success: true, user: result.user };
     } catch (error) {
-        console.error('Google sign-in error:', error);
+        logError('Google sign-in error:', error);
         return { success: false, error: error.message };
     }
 }
@@ -284,7 +285,7 @@ export async function signInWithFacebook() {
         
         return { success: true, user: result.user };
     } catch (error) {
-        console.error('Facebook sign-in error:', error);
+        logError('Facebook sign-in error:', error);
         return { success: false, error: error.message };
     }
 }
@@ -295,7 +296,7 @@ export async function resetPassword(email) {
         await sendPasswordResetEmail(auth, email);
         return { success: true, message: 'Password reset email sent!' };
     } catch (error) {
-        console.error('Password reset error:', error);
+        logError('Password reset error:', error);
         return { success: false, error: error.message };
     }
 }
@@ -308,7 +309,7 @@ export async function logout() {
         window.location.href = 'index.html';
         return { success: true };
     } catch (error) {
-        console.error('Logout error:', error);
+        logError('Logout error:', error);
         return { success: false, error: error.message };
     }
 }

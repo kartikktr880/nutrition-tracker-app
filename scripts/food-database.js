@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Comprehensive Food Database
  * 
@@ -53,9 +54,9 @@ class FoodDatabaseService {
             }
             
             this.initialized = true;
-            console.log('Food database service initialized');
+            logInfo('Food database service initialized');
         } catch (error) {
-            console.error('Failed to initialize food database service:', error);
+            logError('Failed to initialize food database service:', error);
         }
     }
     
@@ -105,7 +106,7 @@ class FoodDatabaseService {
             
             return result;
         } catch (error) {
-            console.error('Error searching foods:', error);
+            logError('Error searching foods:', error);
             // On error, return custom foods only to ensure some results
             if (searchOptions.includeCustom) {
                 return { 
@@ -145,7 +146,7 @@ class FoodDatabaseService {
             
             throw new Error('Invalid food ID format');
         } catch (error) {
-            console.error(`Error getting food details for ${foodId}:`, error);
+            logError(`Error getting food details for ${foodId}:`, error);
             throw error;
         }
     }
@@ -171,7 +172,7 @@ class FoodDatabaseService {
             
             return newFood;
         } catch (error) {
-            console.error('Error adding custom food:', error);
+            logError('Error adding custom food:', error);
             throw error;
         }
     }
@@ -206,7 +207,7 @@ class FoodDatabaseService {
             
             return updatedFood;
         } catch (error) {
-            console.error(`Error updating custom food ${foodId}:`, error);
+            logError(`Error updating custom food ${foodId}:`, error);
             throw error;
         }
     }
@@ -230,7 +231,7 @@ class FoodDatabaseService {
             
             return true;
         } catch (error) {
-            console.error(`Error deleting custom food ${foodId}:`, error);
+            logError(`Error deleting custom food ${foodId}:`, error);
             throw error;
         }
     }
@@ -246,7 +247,7 @@ class FoodDatabaseService {
             await dataManager.saveFavorites(this.favoritesList);
             return true;
         } catch (error) {
-            console.error(`Error adding food ${foodId} to favorites:`, error);
+            logError(`Error adding food ${foodId} to favorites:`, error);
             throw error;
         }
     }
@@ -258,7 +259,7 @@ class FoodDatabaseService {
             await dataManager.saveFavorites(this.favoritesList);
             return true;
         } catch (error) {
-            console.error(`Error removing food ${foodId} from favorites:`, error);
+            logError(`Error removing food ${foodId} from favorites:`, error);
             throw error;
         }
     }
@@ -285,7 +286,7 @@ class FoodDatabaseService {
             
             return true;
         } catch (error) {
-            console.error(`Error tracking food usage for ${foodId}:`, error);
+            logError(`Error tracking food usage for ${foodId}:`, error);
             return false;
         }
     }
@@ -300,13 +301,13 @@ class FoodDatabaseService {
                     const food = await this.getFoodDetails(foodId);
                     foodDetails.push(food);
                 } catch (err) {
-                    console.warn(`Could not retrieve recently used food ${foodId}:`, err);
+                    logWarn(`Could not retrieve recently used food ${foodId}:`, err);
                 }
             }
             
             return foodDetails;
         } catch (error) {
-            console.error('Error getting recently used foods:', error);
+            logError('Error getting recently used foods:', error);
             return [];
         }
     }
@@ -321,13 +322,13 @@ class FoodDatabaseService {
                     const food = await this.getFoodDetails(foodId);
                     foodDetails.push(food);
                 } catch (err) {
-                    console.warn(`Could not retrieve favorite food ${foodId}:`, err);
+                    logWarn(`Could not retrieve favorite food ${foodId}:`, err);
                 }
             }
             
             return foodDetails;
         } catch (error) {
-            console.error('Error getting favorite foods:', error);
+            logError('Error getting favorite foods:', error);
             return [];
         }
     }
@@ -400,7 +401,7 @@ class FoodDatabaseService {
             
             return suggestions;
         } catch (error) {
-            console.error('Error getting suggested foods:', error);
+            logError('Error getting suggested foods:', error);
             return [];
         }
     }
@@ -498,7 +499,7 @@ class FoodDatabaseService {
             const docRef = await addDoc(collection(this.db, 'foods'), foodWithType);
             return docRef.id;
         } catch (error) {
-            console.error('Error adding food:', error);
+            logError('Error adding food:', error);
             throw error;
         }
     }
@@ -516,7 +517,7 @@ class FoodDatabaseService {
                 ...doc.data()
             }));
         } catch (error) {
-            console.error('Error getting foods by type:', error);
+            logError('Error getting foods by type:', error);
             return [];
         }
     }

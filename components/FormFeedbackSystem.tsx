@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ValidationAnalytics } from '../services/ValidationAnalytics';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/FormFeedbackSystem.css';
 
 interface FormFeedbackSystemProps {
-  exerciseKey: string;
+  _exerciseKey: string;
   currentMetrics: {
     accuracy: number;
     stability: number;
@@ -12,7 +11,7 @@ interface FormFeedbackSystemProps {
     timing: number;
     consistency: number;
   };
-  validationResult: any;
+  _validationResult: Record<string, unknown>;
   audioEnabled: boolean;
   hapticEnabled: boolean;
   onPreferenceChange: (preference: 'audio' | 'haptic', enabled: boolean) => void;
@@ -29,9 +28,9 @@ interface FeedbackItem {
 }
 
 export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
-  exerciseKey,
+  _exerciseKey,
   currentMetrics,
-  validationResult,
+  _validationResult,
   audioEnabled,
   hapticEnabled,
   onPreferenceChange,
@@ -40,7 +39,7 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Generate feedback based on metrics
-  const generateFeedback = (metrics: typeof currentMetrics): FeedbackItem[] => {
+  const generateFeedback = useCallback((metrics: typeof currentMetrics): FeedbackItem[] => {
     const feedback: FeedbackItem[] = [];
 
     // Accuracy feedback
@@ -141,13 +140,20 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
     }
 
     return feedback;
-  };
+  }, []);
 
   // Provide audio feedback
-  const provideAudioFeedback = (feedback: FeedbackItem) => {
+  const provideAudioFeedback = useCallback((feedback: FeedbackItem) => {
     if (!audioEnabled) return;
 
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    let audioContext: AudioContext;
+    if ('AudioContext' in window) {
+      audioContext = new window.AudioContext();
+    } else if ('webkitAudioContext' in window) {
+      audioContext = new (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext();
+    } else {
+      return; // AudioContext not supported
+    }
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -172,10 +178,10 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
     gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
     oscillator.start();
     oscillator.stop(audioContext.currentTime + 0.2);
-  };
+  }, [audioEnabled]);
 
   // Provide haptic feedback
-  const provideHapticFeedback = (feedback: FeedbackItem) => {
+  const provideHapticFeedback = useCallback((feedback: FeedbackItem) => {
     if (!hapticEnabled || !navigator.vibrate) return;
 
     // Different vibration patterns for different feedback types
@@ -192,7 +198,7 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
       default:
         navigator.vibrate(50); // Single vibration
     }
-  };
+  }, [hapticEnabled]);
 
   // Handle feedback acknowledgment
   const handleAcknowledge = (feedbackId: string) => {
@@ -203,11 +209,13 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
     );
 
     // Record feedback acknowledgment in analytics
-    ValidationAnalytics.getInstance().recordFeedbackAcknowledgment({
-      exerciseKey,
-      feedbackId,
-      timestamp: Date.now(),
-    });
+    // validationAnalytics.recordFeedbackAcknowledgment({
+    //   exerciseKey,
+    //   metric,
+    //   feedbackType,
+    //   timestamp: Date.now(),
+    //   userLevel: userProgression?.level
+    // });
   };
 
   // Effect to generate feedback when metrics change
@@ -225,7 +233,7 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
     });
 
     setIsAnalyzing(false);
-  }, [currentMetrics]);
+  }, [currentMetrics, generateFeedback]);
 
   // Effect to provide feedback when new items are added
   useEffect(() => {
@@ -235,7 +243,7 @@ export const FormFeedbackSystem: React.FC<FormFeedbackSystemProps> = ({
         provideHapticFeedback(item);
       }
     });
-  }, [feedbackItems]);
+  }, [feedbackItems, provideAudioFeedback, provideHapticFeedback]);
 
   if (isAnalyzing) {
     return (

@@ -1,19 +1,20 @@
+import { logError, logWarn, logInfo, logDebug } from './logger';
 import { AuditLogEntry } from './performance-types';
 
 export async function logAudit(entry: AuditLogEntry): Promise<void> {
   try {
     // In a real application, this would send the audit log to a logging service
-    // For now, we'll just console.log it
-    console.log('[Audit Log]', {
+    // For now, we'll just logInfo it
+    logInfo('[Audit Log]', {
       ...entry,
-      timestamp: new Date(entry.timestamp).toISOString()
+      timestamp: new Date(entry.timestamp || Date.now()).toISOString()
     });
 
     // You could also store the logs in a database or send them to a logging service
     // await db.collection('audit_logs').insertOne(entry);
     // await loggingService.send(entry);
   } catch (error) {
-    console.error('Failed to log audit entry:', error);
+    logError('Failed to log audit entry:', error as Error | undefined);
     // In a production environment, you might want to:
     // 1. Retry the logging operation
     // 2. Store failed logs locally for later retry
@@ -35,7 +36,7 @@ export async function getAuditLogs(filters: Partial<AuditLogEntry> = {}): Promis
     //   .limit(100)
     //   .toArray();
   } catch (error) {
-    console.error('Failed to retrieve audit logs:', error);
+    logError('Failed to retrieve audit logs:', error as Error | undefined);
     throw error;
   }
 }
@@ -49,7 +50,7 @@ export async function clearAuditLogs(beforeDate: Date): Promise<void> {
     // await db.collection('audit_logs')
     //   .deleteMany({ timestamp: { $lt: beforeDate } });
   } catch (error) {
-    console.error('Failed to clear audit logs:', error);
+    logError('Failed to clear audit logs:', error as Error | undefined);
     throw error;
   }
 } 

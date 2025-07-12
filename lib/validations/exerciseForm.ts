@@ -37,6 +37,7 @@ export const exerciseFormCheckSchema = z.object({
   exerciseId: z.string()
     .min(1, 'Exercise ID is required')
     .regex(/^[a-zA-Z0-9-_]+$/, 'Invalid exercise ID format'),
+  date: z.date(),
   checklist: z.array(z.object({
     item: z.string()
       .min(1, 'Item is required')
@@ -51,6 +52,9 @@ export const exerciseFormCheckSchema = z.object({
   }))
     .min(1, 'At least one checklist item is required')
     .max(20, 'Maximum 20 checklist items allowed'),
+  score: z.number()
+    .min(0, 'Score must be at least 0')
+    .max(100, 'Score must be at most 100'),
   feedback: z.string()
     .max(1000, 'Feedback must be less than 1000 characters')
     .optional(),

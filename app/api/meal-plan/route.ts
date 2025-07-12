@@ -1,111 +1,83 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { MealPlanningService } from '@/services/meal-planning';
-import { z } from 'zod';
 
-// Input validation schemas
-const mealPlanRequestSchema = z.object({
-  userId: z.string().min(1, 'User ID is required'),
-  startDate: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid start date'),
-  endDate: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid end date'),
-  dietaryRestrictions: z.array(z.string()).optional()
-});
-
-const saveMealPlanSchema = z.object({
-  userId: z.string().min(1, 'User ID is required'),
-  mealPlan: z.array(z.object({
-    date: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid date'),
-    meals: z.array(z.object({
-      type: z.string(),
-      meal: z.object({
-        name: z.string(),
-        calories: z.number(),
-        protein: z.number(),
-        carbs: z.number(),
-        fat: z.number()
-      }),
-      score: z.number(),
-      reason: z.string()
-    }))
-  }))
-});
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    
-    // Validate input
-    const validationResult = mealPlanRequestSchema.safeParse(body);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: 'Invalid input', details: validationResult.error.errors },
-        { status: 500 }
-      );
-    }
-
-    const { userId, startDate, endDate, dietaryRestrictions } = validationResult.data;
-
-    // Validate date range
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    if (end < start) {
-      return NextResponse.json(
-        { error: 'End date must be after start date' },
-        { status: 500 }
-      );
-    }
-
-    // Check if date range is too long (e.g., max 30 days)
-    const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    if (daysDiff > 30) {
-      return NextResponse.json(
-        { error: 'Date range cannot exceed 30 days' },
-        { status: 500 }
-      );
-    }
-
-    const mealPlanningService = new MealPlanningService();
-    const mealPlan = await mealPlanningService.generateMealPlan({
-      userId,
-      startDate: start,
-      endDate: end,
-      dietaryRestrictions
-    });
-
-    return NextResponse.json({ mealPlan });
-  } catch (error: unknown) {
-    console.error('Error generating meal plan:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate meal plan', details: error instanceof Error ? (error as Error).message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
+interface Meal {
+  id: string;
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  type: string;
+  tags: string[];
 }
 
-export async function PUT(request: Request) {
+interface PlannedMeal {
+  type: string;
+  meal: Meal;
+  score: number;
+  reason: string;
+}
+
+const defaultMeal: Meal = {
+  id: '',
+  name: '',
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+  fat: 0,
+  type: '',
+  tags: [],
+};
+
+const mealPlanningService = new MealPlanningService();
+
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const session = await getServerSession(authOptions);
     
-    // Validate input
-    const validationResult = saveMealPlanSchema.safeParse(body);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: 'Invalid input', details: validationResult.error.errors },
-        { status: 500 }
-      );
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { userId, mealPlan } = validationResult.data;
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    });
 
-    const mealPlanningService = new MealPlanningService();
-    await mealPlanningService.saveMealPlan(userId, mealPlan as any);
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
-    return NextResponse.json({ success: true });
-  } catch (error: unknown) {
-    console.error('Error saving meal plan:', error);
-    return NextResponse.json(
-      { error: 'Failed to save meal plan', details: error instanceof Error ? (error as Error).message : 'Unknown error' },
-      { status: 500 }
-    );
+    const body = await request.json();
+    const { startDate, endDate } = body;
+
+    // Generate meal plan using the service
+    const mealPlan = await mealPlanningService.generateMealPlan({
+      userId: user.id,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate)
+    });
+
+    // Save the meal plan
+    await mealPlanningService.saveMealPlan(user.id, mealPlan.map(plan => ({
+      date: plan.date || new Date(),
+      meals: plan.meals ? plan.meals.map((meal: PlannedMeal) => {
+        return {
+          type: meal.type || '',
+          meal: meal.meal || defaultMeal,
+          score: meal.score || 0,
+          reason: meal.reason || '',
+        };
+      }) : [],
+    })));
+
+    return NextResponse.json({ mealPlan });
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 } 
 

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
     const searchInput = document.getElementById('blog-search-input');
@@ -133,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // In a real implementation, this would load different articles
         // For now, we'll just simulate page changes
-        console.log(`Navigated to page ${page}`);
+        logInfo(`Navigated to page ${page}`);
     }
     
     // Add click event listeners to "Read More" links

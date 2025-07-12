@@ -155,51 +155,21 @@ export function useStateManager<T>({
 
       const success = await stateManager.setState(key, newValue, {
         ...config,
-        validation: config.validation ? {
-          ...config.validation,
-          onValidationComplete: (result) => {
-            if (isMounted.current) {
-              setValidationStatus({
-                isValid: result.isValid,
-                errors: result.errors,
-                warnings: result.warnings,
-                lastValidated: new Date()
-              });
-            }
-          }
-        } : undefined,
-        sync: config.sync?.enabled ? {
-          ...config.sync,
-          onSyncStart: () => {
-            if (isMounted.current) {
-              setSyncStatus(prev => ({ ...prev, isSyncing: true }));
-            }
-          },
-          onSyncComplete: () => {
-            if (isMounted.current) {
-              setSyncStatus(prev => ({
-                ...prev,
-                isSyncing: false,
-                lastSync: new Date(),
-                syncError: null
-              }));
-            }
-          },
-          onSyncError: (error: Error) => {
-            if (isMounted.current) {
-              setSyncStatus(prev => ({
-                ...prev,
-                isSyncing: false,
-                syncError: error
-              }));
-            }
-          },
-          onPendingOperationsChange: (count: number) => {
-            if (isMounted.current) {
-              setSyncStatus(prev => ({ ...prev, pendingOperations: count }));
-            }
-          }
-        } : undefined
+        validation: {
+          schema: config.validation?.schema,
+          rules: config.validation?.rules,
+          typeGuard: config.validation?.typeGuard,
+          customValidators: config.validation?.customValidators
+        },
+        sync: {
+          enabled: config.sync?.enabled,
+          conflictResolution: config.sync?.conflictResolution,
+          syncInterval: config.sync?.syncInterval,
+          batchSize: config.sync?.batchSize,
+          retryAttempts: config.sync?.retryAttempts,
+          retryDelay: config.sync?.retryDelay,
+          compressionEnabled: config.sync?.compressionEnabled
+        }
       });
       
       if (!success) {
@@ -296,15 +266,15 @@ export function useStateManager<T>({
   }, [key, config.recovery?.enabled]);
 
   // Cleanup on unmount
-  useComponentLifecycle({
-    onUnmount: async () => {
+  useEffect(() => {
+    return () => {
       isMounted.current = false;
       // Only cleanup if not persisting
       if (!config.persist) {
-        await stateManager.deleteState(key);
+        stateManager.deleteState(key);
       }
-    }
-  });
+    };
+  }, [key, config.persist]);
 
   return {
     value,

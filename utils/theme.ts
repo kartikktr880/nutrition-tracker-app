@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from './logger';
 import { type Theme } from 'next-themes';
 
 export const THEME_STORAGE_KEY = 'theme';
@@ -7,7 +8,7 @@ export const getStoredTheme = (): Theme | null => {
   try {
     return localStorage.getItem(THEME_STORAGE_KEY) as Theme;
   } catch (error) {
-    console.error('Error reading theme from localStorage:', error);
+    logError('Error reading theme from localStorage:', error as Error | undefined);
     return null;
   }
 };
@@ -17,7 +18,7 @@ export const setStoredTheme = (theme: Theme): void => {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch (error) {
-    console.error('Error saving theme to localStorage:', error);
+    logError('Error saving theme to localStorage:', error as Error | undefined);
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -14,8 +14,17 @@ import {
   Pie,
   Cell
 } from 'recharts';
-import { enhancedPerformanceMonitor } from '../utils/enhanced-performance';
+
+import { getPerformanceMetrics, getPerformanceTrends, type EnhancedPerformanceMetric, type PerformanceInsight } from '../utils/enhanced-performance';
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from '../utils/logger';
 import { recoveryManager } from '../utils/recovery';
+
+interface RecoveryHistoryItem {
+  timestamp: string;
+  type: string;
+  success: boolean;
+  error?: string;
+}
 
 interface DashboardProps {
   refreshInterval?: number;
@@ -26,23 +35,23 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 const PerformanceDashboard: React.FC<DashboardProps> = ({
   refreshInterval = 5000
 }) => {
-  const [metrics, setMetrics] = useState<any[]>([]);
-  const [insights, setInsights] = useState<any[]>([]);
-  const [recoveryHistory, setRecoveryHistory] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<EnhancedPerformanceMetric[]>([]);
+  const [insights, setInsights] = useState<PerformanceInsight[]>([]);
+  const [recoveryHistory, setRecoveryHistory] = useState<RecoveryHistoryItem[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState<'1h' | '6h' | '24h'>('1h');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const enhancedMetrics = await enhancedPerformanceMonitor.getEnhancedMetrics();
-        const performanceInsights = await enhancedPerformanceMonitor.getInsights();
+        const enhancedMetrics = await getPerformanceMetrics();
+        const performanceInsights = await getPerformanceTrends();
         const recoveryHistoryData = recoveryManager.getRecoveryHistory();
 
         setMetrics(enhancedMetrics);
         setInsights(performanceInsights);
         setRecoveryHistory(recoveryHistoryData);
       } catch (error) {
-        console.error('Failed to fetch performance data:', error);
+        logError();
       }
     };
 
@@ -52,7 +61,7 @@ const PerformanceDashboard: React.FC<DashboardProps> = ({
     return () => clearInterval(interval);
   }, [refreshInterval]);
 
-  const filterDataByTimeRange = (data: any[]) => {
+  const filterDataByTimeRange = <T extends { timestamp: string }>(data: T[]): T[] => {
     const now = Date.now();
     const ranges = {
       '1h': 60 * 60 * 1000,
@@ -66,12 +75,15 @@ const PerformanceDashboard: React.FC<DashboardProps> = ({
     });
   };
 
-  const renderMetricChart = (metricName: string, data: any[]) => {
-    const filteredData = filterDataByTimeRange(data);
+  const renderMetricChart = (metricName: string, data: EnhancedPerformanceMetric[]) => {
+    const filteredData = filterDataByTimeRange(data.map(item => ({
+      ...item,
+      timestamp: typeof item.timestamp === 'string' ? item.timestamp : new Date(item.timestamp ?? Date.now()).toISOString()
+    })));
     const chartData = filteredData.map(item => ({
-      timestamp: new Date(item.timestamp).toLocaleTimeString(),
-      value: item[metricName],
-      prediction: item.prediction?.[metricName]
+      timestamp: item.timestamp,
+      value: item[metricName as keyof EnhancedPerformanceMetric] ?? 0,
+      prediction: typeof item.prediction === 'number' ? item.prediction : undefined
     }));
 
     return (
@@ -100,12 +112,12 @@ const PerformanceDashboard: React.FC<DashboardProps> = ({
     );
   };
 
-  const renderInsightsChart = (insights: any[]) => {
+  const renderInsightsChart = (insights: PerformanceInsight[]) => {
     const filteredInsights = filterDataByTimeRange(insights);
-    const insightTypes = filteredInsights.reduce((acc: any, insight) => {
+    const insightTypes = filteredInsights.reduce((acc: Record<string, number>, insight) => {
       acc[insight.type] = (acc[insight.type] || 0) + 1;
       return acc;
-    }, {});
+    }, {} as Record<string, number>);
 
     const pieData = Object.entries(insightTypes).map(([type, count]) => ({
       name: type,
@@ -120,7 +132,7 @@ const PerformanceDashboard: React.FC<DashboardProps> = ({
             cx="50%"
             cy="50%"
             labelLine={false}
-            label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+            label={({ name, percent }) => `${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
             outerRadius={80}
             fill="#8884d8"
             dataKey="value"
@@ -136,8 +148,12 @@ const PerformanceDashboard: React.FC<DashboardProps> = ({
     );
   };
 
-  const renderRecoveryHistory = (history: any[]) => {
-    const filteredHistory = filterDataByTimeRange(history);
+  const renderRecoveryHistory = (history: RecoveryHistoryItem[]) => {
+    const filteredHistory = filterDataByTimeRange(history.map(item => ({
+      ...item,
+      timestamp: typeof item.timestamp === 'string' ? item.timestamp : new Date(item.timestamp ?? Date.now()).toISOString()
+    })));
+    // If 'success' property does not exist, default to 0
     const successCount = filteredHistory.filter(item => item.success).length;
     const failureCount = filteredHistory.filter(item => !item.success).length;
 
@@ -249,14 +265,6 @@ const PerformanceDashboard: React.FC<DashboardProps> = ({
                     Recommendation: {insight.recommendation}
                   </div>
                 )}
-                <div className="mt-2 flex gap-2">
-                  <span className="px-2 py-1 bg-gray-100 rounded text-sm">
-                    Confidence: {(insight.confidence * 100).toFixed(1)}%
-                  </span>
-                  <span className="px-2 py-1 bg-gray-100 rounded text-sm">
-                    Trend: {insight.trend}
-                  </span>
-                </div>
               </div>
             ))}
         </div>

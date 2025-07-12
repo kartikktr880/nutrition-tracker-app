@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             loadingSpinner.style.display = 'none';
             showError(errorMessage, 'An error occurred during login');
-            console.error('Login error:', error);
+            logError('Login error:', error);
         }
     });
     
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             loadingSpinner.style.display = 'none';
             showError(registerErrorMessage, 'An error occurred during registration');
-            console.error('Registration error:', error);
+            logError('Registration error:', error);
         }
     });
     

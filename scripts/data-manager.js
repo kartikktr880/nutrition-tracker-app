@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Data Manager for Nutrition Tracker
 class DataManager {
     constructor() {
@@ -25,7 +26,7 @@ class DataManager {
             const request = indexedDB.open(this.dbName, this.dbVersion);
 
             request.onerror = (event) => {
-                console.error('Database error:', event.target.error);
+                logError('Database error:', event.target.error);
             };
 
             request.onupgradeneeded = (event) => {
@@ -86,10 +87,10 @@ class DataManager {
 
             request.onsuccess = (event) => {
                 this.db = event.target.result;
-                console.log('Database initialized successfully');
+                logInfo('Database initialized successfully');
             };
         } catch (error) {
-            console.error('Failed to initialize database:', error);
+            logError('Failed to initialize database:', error);
         }
     }
 
@@ -110,7 +111,7 @@ class DataManager {
             
             return { success: true, id };
         } catch (error) {
-            console.error('Error adding meal:', error);
+            logError('Error adding meal:', error);
             return { success: false, error: error.message };
         }
     }
@@ -140,7 +141,7 @@ class DataManager {
                 
                 // Return from cache if not expired
                 if (cacheAge < this.cacheTTL) {
-                    console.log('Getting meals from cache');
+                    logInfo('Getting meals from cache');
                     
                     // Apply pagination if requested
                     if (options.pagination) {
@@ -215,7 +216,7 @@ class DataManager {
             
             return { success: true, data: meals };
         } catch (error) {
-            console.error('Error getting meals:', error);
+            logError('Error getting meals:', error);
             return { success: false, error: error.message };
         }
     }
@@ -254,7 +255,7 @@ class DataManager {
             
             return { success: true };
         } catch (error) {
-            console.error('Error setting goal:', error);
+            logError('Error setting goal:', error);
             return { success: false, error: error.message };
         }
     }
@@ -280,7 +281,7 @@ class DataManager {
             
             return { success: true, data: goals };
         } catch (error) {
-            console.error('Error getting goals:', error);
+            logError('Error getting goals:', error);
             return { success: false, error: error.message };
         }
     }
@@ -316,7 +317,7 @@ class DataManager {
             
             return { success: true };
         } catch (error) {
-            console.error('Error saving preferences:', error);
+            logError('Error saving preferences:', error);
             return { success: false, error: error.message };
         }
     }
@@ -342,7 +343,7 @@ class DataManager {
             
             return { success: true, data: prefs || {} };
         } catch (error) {
-            console.error('Error getting preferences:', error);
+            logError('Error getting preferences:', error);
             return { success: false, error: error.message, data: {} };
         }
     }
@@ -377,7 +378,7 @@ class DataManager {
             await store.add(foodData);
             return { success: true };
         } catch (error) {
-            console.error('Error adding custom food:', error);
+            logError('Error adding custom food:', error);
             return { success: false, error: error.message };
         }
     }
@@ -479,7 +480,7 @@ class DataManager {
                 data: exportData
             };
         } catch (error) {
-            console.error('Error exporting data:', error);
+            logError('Error exporting data:', error);
             return { success: false, error: error.message };
         }
     }
@@ -527,7 +528,7 @@ class DataManager {
 
             return { success: true };
         } catch (error) {
-            console.error('Error importing data:', error);
+            logError('Error importing data:', error);
             return { success: false, error: error.message };
         }
     }
@@ -600,7 +601,7 @@ class DataManager {
             
             return true;
         } catch (error) {
-            console.error('Error saving activities:', error);
+            logError('Error saving activities:', error);
             return false;
         }
     }
@@ -622,7 +623,7 @@ class DataManager {
             const activities = await this.getAll(store);
             return activities;
         } catch (error) {
-            console.error('Error getting activities:', error);
+            logError('Error getting activities:', error);
             return [];
         }
     }
@@ -650,7 +651,7 @@ class DataManager {
             const activities = await this.getAllFromIndex(index, range);
             return activities;
         } catch (error) {
-            console.error('Error getting activities for date range:', error);
+            logError('Error getting activities for date range:', error);
             return [];
         }
     }
@@ -673,7 +674,7 @@ class DataManager {
             const recipes = await this.getAll(store);
             return recipes;
         } catch (error) {
-            console.error('Error getting recipes:', error);
+            logError('Error getting recipes:', error);
             return [];
         }
     }
@@ -700,7 +701,7 @@ class DataManager {
             
             return true;
         } catch (error) {
-            console.error('Error saving recipes:', error);
+            logError('Error saving recipes:', error);
             return false;
         }
     }
@@ -722,7 +723,7 @@ class DataManager {
             const recipe = await this.get(store, id);
             return recipe;
         } catch (error) {
-            console.error('Error getting recipe:', error);
+            logError('Error getting recipe:', error);
             return null;
         }
     }
@@ -750,7 +751,7 @@ class DataManager {
             await store.put(recipe);
             return true;
         } catch (error) {
-            console.error('Error saving recipe:', error);
+            logError('Error saving recipe:', error);
             return false;
         }
     }
@@ -779,7 +780,7 @@ class DataManager {
             await store.delete(id);
             return true;
         } catch (error) {
-            console.error('Error deleting recipe:', error);
+            logError('Error deleting recipe:', error);
             return false;
         }
     }
@@ -796,7 +797,7 @@ class DataManager {
             
             return { success: true };
         } catch (error) {
-            console.error('Error saving favorites:', error);
+            logError('Error saving favorites:', error);
             return { success: false, error: error.message };
         }
     }
@@ -811,7 +812,7 @@ class DataManager {
                 data: favorites ? favorites.foodIds : [] 
             };
         } catch (error) {
-            console.error('Error getting favorites:', error);
+            logError('Error getting favorites:', error);
             return { success: false, error: error.message, data: [] };
         }
     }
@@ -848,7 +849,7 @@ window.dataManager = dataManager;
 // No longer need to export for modules
 // export default dataManager;
 
-console.log('✅ Data Manager initialized successfully. Dashboard data loading can proceed.');
+logInfo('✅ Data Manager initialized successfully. Dashboard data loading can proceed.');
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, checking Data Manager availability:', window.dataManager ? 'Available' : 'Not Available');
+    logInfo('DOM loaded, checking Data Manager availability:', window.dataManager ? 'Available' : 'Not Available');
 }); 

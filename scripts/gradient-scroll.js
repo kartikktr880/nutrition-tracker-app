@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Unified Scroll Effect Handler
  * Handles both gradient and header scroll behavior
@@ -264,7 +265,7 @@
         `;
         document.head.appendChild(fixGrayAreas);
         
-        console.log('Gradient and scroll effects initialized successfully');
+        logInfo('Gradient and scroll effects initialized successfully');
     };
     
     // Run when DOM is loaded

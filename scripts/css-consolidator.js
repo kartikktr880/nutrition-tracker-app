@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * CSS Consolidator
  * Optimizes CSS loading and management
@@ -85,7 +86,7 @@ class CSSConsolidator {
                 originalLink.remove();
             }
         } catch (error) {
-            console.error(`Failed to consolidate stylesheet ${href}:`, error);
+            logError(`Failed to consolidate stylesheet ${href}:`, error);
         }
     }
 

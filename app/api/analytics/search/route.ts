@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { analyticsService } from '@/services/analyticsService';
+import { logError } from '@/utils/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,7 +19,7 @@ export async function GET(request: NextRequest) {
       status: 500,
     });
   } catch (error: unknown) {
-    console.error('Analytics API error:', error);
+    logError('Analytics API error:', error);
     return NextResponse.json({
       error: 'Internal server error',
       status: 500,

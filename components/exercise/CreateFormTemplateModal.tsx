@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { ExerciseFormTemplate } from '@/lib/validations/exerciseForm';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, X } from 'lucide-react';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { ExerciseFormTemplate } from '@/lib/validations/exerciseForm';
 
 interface CreateFormTemplateModalProps {
   isOpen: boolean;
@@ -35,7 +36,7 @@ export function CreateFormTemplateModal({
   const [newChecklistItem, setNewChecklistItem] = useState({
     item: '',
     description: '',
-    importance: 'important' as const,
+    importance: 'important' as 'critical' | 'important' | 'optional',
   });
 
   const handleAddChecklistItem = () => {
@@ -76,7 +77,7 @@ export function CreateFormTemplateModal({
   };
 
   const handleSubmit = () => {
-    const template: ExerciseFormTemplate = {
+    const template = {
       name,
       description,
       exerciseId,
@@ -156,9 +157,9 @@ export function CreateFormTemplateModal({
                     />
                     <Select
                       value={item.importance}
-                      onValueChange={(value: 'critical' | 'important' | 'optional') => {
+                      onValueChange={(value) => {
                         const newChecklist = [...checklist];
-                        newChecklist[index].importance = value;
+                        newChecklist[index].importance = value as 'critical' | 'important' | 'optional';
                         setChecklist(newChecklist);
                       }}
                     >
@@ -206,10 +207,10 @@ export function CreateFormTemplateModal({
                   />
                   <Select
                     value={newChecklistItem.importance}
-                    onValueChange={(value: 'critical' | 'important' | 'optional') =>
+                    onValueChange={(value) =>
                       setNewChecklistItem({
                         ...newChecklistItem,
-                        importance: value,
+                        importance: value as 'critical' | 'important' | 'optional',
                       })
                     }
                   >

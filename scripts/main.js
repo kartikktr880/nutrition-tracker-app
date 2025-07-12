@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Main JavaScript for NutriTrack
  * Handles theme toggling, animations, and other interactive elements
@@ -29,10 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize security systems
     Promise.all([
         securityAudit.initialize().catch(error => {
-            console.warn('Security audit initialization failed:', error);
+            logWarn('Security audit initialization failed:', error);
         }),
         securityDashboard.initialize().catch(error => {
-            console.warn('Security dashboard initialization failed:', error);
+            logWarn('Security dashboard initialization failed:', error);
         })
     ]).finally(() => {
         // Continue with other initializations regardless of security system status
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize memory leak detection in development mode
     if (process.env.NODE_ENV === 'development') {
         memoryLeakDetector.init().catch(error => {
-            console.warn('Memory leak detector initialization failed:', error);
+            logWarn('Memory leak detector initialization failed:', error);
         });
     }
     
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add direct click handler for 'See How It Works' button
     initSeeHowItWorksButton();
     
-    console.log('✨ NutriTrack premium experience initialized');
+    logInfo('✨ NutriTrack premium experience initialized');
 });
 
 /**
@@ -253,11 +254,11 @@ function initSmoothScrolling() {
     const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
     
     if (anchorLinks.length === 0) {
-        console.warn('No anchor links found for smooth scrolling');
+        logWarn('No anchor links found for smooth scrolling');
         return;
     }
     
-    console.log(`Found ${anchorLinks.length} anchor links for smooth scrolling`);
+    logInfo(`Found ${anchorLinks.length} anchor links for smooth scrolling`);
     
     anchorLinks.forEach(link => {
         // Remove any existing event listeners to prevent duplicates
@@ -271,7 +272,7 @@ function initSmoothScrolling() {
                 
                 // Get the target element
                 const targetId = this.getAttribute('href');
-                console.log(`Smooth scrolling to target: ${targetId}`);
+                logInfo(`Smooth scrolling to target: ${targetId}`);
                 
                 const targetElement = document.querySelector(targetId);
                 
@@ -289,15 +290,15 @@ function initSmoothScrolling() {
                     
                     // Update URL hash without causing a jump
                     history.pushState(null, null, targetId);
-                    console.log(`Scrolled to ${targetId}`);
+                    logInfo(`Scrolled to ${targetId}`);
             } else {
-                    console.error(`Target element not found: ${targetId}`);
+                    logError(`Target element not found: ${targetId}`);
                 }
             });
         }
     });
     
-    console.log('Smooth scrolling initialized successfully');
+    logInfo('Smooth scrolling initialized successfully');
 }
 
 /**
@@ -358,13 +359,13 @@ function initSeeHowItWorksButton() {
     const howItWorksSection = document.getElementById('how-it-works');
     
     if (!seeHowItWorksBtn || !howItWorksSection) {
-        console.error('See How It Works button or target section not found');
+        logError('See How It Works button or target section not found');
         return;
     }
     
     seeHowItWorksBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('See How It Works button clicked');
+        logInfo('See How It Works button clicked');
         
         // Smooth scroll to the How It Works section
         howItWorksSection.scrollIntoView({
@@ -376,5 +377,5 @@ function initSeeHowItWorksButton() {
         history.pushState(null, null, '#how-it-works');
     });
     
-    console.log('See How It Works button handler initialized');
+    logInfo('See How It Works button handler initialized');
 }

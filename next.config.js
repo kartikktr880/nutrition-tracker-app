@@ -35,8 +35,7 @@ const nextConfig = {
   },
   experimental: {
     optimizeCss: true,
-    scrollRestoration: true,
-    legacyBrowsers: false,
+    scrollRestoration: true
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

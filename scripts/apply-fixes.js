@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Apply Fixes Script
  * This script applies critical fixes to all HTML files in the project
@@ -36,7 +37,7 @@ const darkModeClasses = {
 // Process a single HTML file
 async function processHtmlFile(filePath) {
     try {
-        console.log(`Processing ${filePath}...`);
+        logInfo(`Processing ${filePath}...`);
         
         // Read the file content
         const content = await readFile(filePath, 'utf-8');
@@ -120,15 +121,15 @@ async function processHtmlFile(filePath) {
         // Only write the file if changes were made
         if (modifiedContent !== content) {
             await writeFile(filePath, modifiedContent, 'utf-8');
-            console.log(`✅ Updated ${filePath}`);
+            logInfo(`✅ Updated ${filePath}`);
             return 1; // Return 1 to count updates
         } else {
-            console.log(`⏭️ No changes needed for ${filePath}`);
+            logInfo(`⏭️ No changes needed for ${filePath}`);
             return 0; // Return 0 if no updates needed
         }
         
     } catch (error) {
-        console.error(`❌ Error processing ${filePath}:`, error.message);
+        logError(`❌ Error processing ${filePath}:`, error.message);
         return 0;
     }
 }
@@ -164,9 +165,9 @@ async function getHtmlFiles(dir) {
 // Main function to process all HTML files
 async function main() {
     try {
-        console.log('🔍 Finding HTML files...');
+        logInfo('🔍 Finding HTML files...');
         const htmlFiles = await getHtmlFiles('.');
-        console.log(`📋 Found ${htmlFiles.length} HTML files to process`);
+        logInfo(`📋 Found ${htmlFiles.length} HTML files to process`);
         
         let updatedCount = 0;
         
@@ -175,10 +176,10 @@ async function main() {
             updatedCount += await processHtmlFile(file);
         }
         
-        console.log(`\n✅ Process complete! Updated ${updatedCount} out of ${htmlFiles.length} files.`);
+        logInfo(`\n✅ Process complete! Updated ${updatedCount} out of ${htmlFiles.length} files.`);
         
     } catch (error) {
-        console.error('❌ Error:', error.message);
+        logError('❌ Error:', error.message);
     }
 }
 

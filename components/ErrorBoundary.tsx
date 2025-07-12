@@ -1,6 +1,8 @@
 import React, { Component, ErrorInfo } from 'react';
+
 import { analytics } from '../services/analytics';
 import styles from '../styles/ErrorBoundary.module.css';
+import { logError } from '../utils/logger';
 
 interface Props {
   children: React.ReactNode;
@@ -51,7 +53,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
     });
 
-    console.error('Error caught by boundary:', error, errorInfo);
+    logError('Error caught by boundary:', error);
   }
 
   render() {

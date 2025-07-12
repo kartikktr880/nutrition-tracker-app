@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
+import React, { useEffect, useState, useCallback } from 'react';
+import { LineChart, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Line } from 'recharts';
+
 import { useExerciseForm } from '@/lib/hooks/useExerciseForm';
 import { ExerciseFormCheck } from '@/types/exercise';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface ExerciseFormHistoryProps {
   exerciseId: string;
@@ -18,15 +21,15 @@ export function ExerciseFormHistory({ exerciseId }: ExerciseFormHistoryProps) {
     getFormChecks,
   } = useExerciseForm();
 
-  useEffect(() => {
-    loadFormChecks();
-  }, [exerciseId, timeRange]);
-
-  const loadFormChecks = async () => {
+  const loadFormChecks = useCallback(async () => {
     const startDate = getStartDate(timeRange);
     const checks = await getFormChecks(exerciseId, startDate, new Date());
     setFormChecks(checks);
-  };
+  }, [exerciseId, timeRange, getFormChecks]);
+
+  useEffect(() => {
+    loadFormChecks();
+  }, [loadFormChecks]);
 
   const getStartDate = (range: 'week' | 'month' | 'year'): Date => {
     const date = new Date();

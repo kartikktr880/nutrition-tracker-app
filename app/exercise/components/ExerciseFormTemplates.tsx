@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import { useExerciseForm } from '@/lib/hooks/useExerciseForm';
 import { ExerciseFormTemplate } from '@/types/exercise';
 
 export function ExerciseFormTemplates() {
   const [templates, setTemplates] = useState<ExerciseFormTemplate[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<ExerciseFormTemplate | null>(null);
+  const [_selectedTemplate, _setSelectedTemplate] = useState<ExerciseFormTemplate | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newTemplate, setNewTemplate] = useState<Partial<ExerciseFormTemplate>>({
     name: '',
@@ -22,14 +25,14 @@ export function ExerciseFormTemplates() {
     createFormTemplate,
   } = useExerciseForm();
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
-  const loadTemplates = async () => {
+  const _loadTemplates = useCallback(async () => {
     const fetchedTemplates = await getFormTemplates();
     setTemplates(fetchedTemplates);
-  };
+  }, [getFormTemplates]);
+
+  useEffect(() => {
+    _loadTemplates();
+  }, [_loadTemplates]);
 
   const handleCreateTemplate = async () => {
     const template = await createFormTemplate(newTemplate);
@@ -49,7 +52,7 @@ export function ExerciseFormTemplates() {
   const addChecklistItem = () => {
     setNewTemplate(prev => ({
       ...prev,
-      checklist: [...(prev.checklist || []), { description: '', importance: 'medium' }],
+      checklist: [...(prev.checklist || []), { item: '', description: '', importance: 'optional' }],
     }));
   };
 
@@ -141,14 +144,14 @@ export function ExerciseFormTemplates() {
                     value={item.importance}
                     onChange={(e) => {
                       const newChecklist = [...(newTemplate.checklist || [])];
-                      newChecklist[index] = { ...item, importance: e.target.value };
+                      newChecklist[index] = { ...item, importance: e.target.value as 'critical' | 'important' | 'optional' };
                       setNewTemplate(prev => ({ ...prev, checklist: newChecklist }));
                     }}
                     className="rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="optional">Optional</option>
+                    <option value="important">Important</option>
+                    <option value="critical">Critical</option>
                   </select>
                 </div>
               ))}
@@ -241,8 +244,8 @@ export function ExerciseFormTemplates() {
                 {template.checklist.map((item, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <span className={`px-2 py-1 rounded text-xs ${
-                      item.importance === 'high' ? 'bg-red-100 text-red-800' :
-                      item.importance === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                      item.importance === 'critical' ? 'bg-red-100 text-red-800' :
+                      item.importance === 'important' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-green-100 text-green-800'
                     }`}>
                       {item.importance}

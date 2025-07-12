@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import { ExerciseSession } from '@/types/exercise';
+import { logError, logWarn as _logWarn, logInfo as _logInfo, logDebug as _logDebug } from 'src/utils/logger';
 
 interface ExerciseSessionProps {
   exerciseId: string;
 }
 
-export const ExerciseSession: React.FC<ExerciseSessionProps> = ({ exerciseId }) => {
+export const ExerciseSessionComponent: React.FC<ExerciseSessionProps> = ({ exerciseId }) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<ExerciseSession[]>([]);
@@ -23,11 +25,7 @@ export const ExerciseSession: React.FC<ExerciseSessionProps> = ({ exerciseId }) 
     notes: '',
   });
 
-  useEffect(() => {
-    fetchSessions();
-  }, [exerciseId]);
-
-  const fetchSessions = async () => {
+  const _fetchSessions = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/exercise/sessions?exerciseId=${exerciseId}`);
@@ -37,11 +35,15 @@ export const ExerciseSession: React.FC<ExerciseSessionProps> = ({ exerciseId }) 
       const data = await response.json();
       setSessions(data);
     } catch (error) {
-      console.error('Error fetching sessions:', error);
+      logError();
     } finally {
       setLoading(false);
     }
-  };
+  }, [exerciseId]);
+
+  useEffect(() => {
+    _fetchSessions();
+  }, [_fetchSessions]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +78,7 @@ export const ExerciseSession: React.FC<ExerciseSessionProps> = ({ exerciseId }) 
         notes: '',
       });
     } catch (error) {
-      console.error('Error creating session:', error);
+      logError();
     }
   };
 
@@ -117,128 +119,129 @@ export const ExerciseSession: React.FC<ExerciseSessionProps> = ({ exerciseId }) 
       </div>
 
       {showForm && (
-        <motion.form
+        <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          onSubmit={handleSubmit}
           className="mb-6 p-4 bg-gray-50 rounded-lg"
         >
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Time
+                </label>
+                <input
+                  type="datetime-local"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Time
+                </label>
+                <input
+                  type="datetime-local"
+                  name="endTime"
+                  value={formData.endTime}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Sets
+                </label>
+                <input
+                  type="number"
+                  name="sets"
+                  value={formData.sets}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Reps
+                </label>
+                <input
+                  type="number"
+                  name="reps"
+                  value={formData.reps}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  name="weight"
+                  value={formData.weight}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Duration (min)
+                </label>
+                <input
+                  type="number"
+                  name="duration"
+                  value={formData.duration}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Intensity
+                </label>
+                <select
+                  name="intensity"
+                  value={formData.intensity}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                  required
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+            <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Start Time
+                Notes
               </label>
-              <input
-                type="datetime-local"
-                name="startTime"
-                value={formData.startTime}
+              <textarea
+                name="notes"
+                value={formData.notes}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded-lg"
-                required
+                rows={3}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                End Time
-              </label>
-              <input
-                type="datetime-local"
-                name="endTime"
-                value={formData.endTime}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Sets
-              </label>
-              <input
-                type="number"
-                name="sets"
-                value={formData.sets}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reps
-              </label>
-              <input
-                type="number"
-                name="reps"
-                value={formData.reps}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Weight (kg)
-              </label>
-              <input
-                type="number"
-                name="weight"
-                value={formData.weight}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Duration (min)
-              </label>
-              <input
-                type="number"
-                name="duration"
-                value={formData.duration}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Intensity
-              </label>
-              <select
-                name="intensity"
-                value={formData.intensity}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Notes
-            </label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg"
-              rows={3}
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Log Session
-          </button>
-        </motion.form>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Log Session
+            </button>
+          </form>
+        </motion.div>
       )}
 
       <div className="space-y-4">

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Activity Log - Manages the activity log interface and data
  */
@@ -245,9 +246,9 @@ class ActivityLog {
                 ...manualActivities
             ];
             
-            console.log(`Loaded ${this.activities.length} activities`);
+            logInfo(`Loaded ${this.activities.length} activities`);
         } catch (error) {
-            console.error('Error loading activities:', error);
+            logError('Error loading activities:', error);
             this.showToast('Failed to load activities.', 'error');
             this.activities = [];
         }
@@ -262,7 +263,7 @@ class ActivityLog {
             try {
                 return JSON.parse(stored);
             } catch (e) {
-                console.error('Error parsing manual activities:', e);
+                logError('Error parsing manual activities:', e);
                 return [];
             }
         }

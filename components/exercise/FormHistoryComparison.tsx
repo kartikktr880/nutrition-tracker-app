@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
+  ArrowRight,
   Calendar,
   Clock,
-  ArrowRight,
+  Minus,
+  TrendingDown,
+  TrendingUp,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormHistoryComparisonProps {
   checks: ExerciseFormCheck[];
@@ -72,10 +72,10 @@ export function FormHistoryComparison({ checks }: FormHistoryComparisonProps) {
       const midPoint = new Date((start.getTime() + end.getTime()) / 2);
       
       const previousChecks = checks.filter(
-        (check) => new Date(check.date) >= start && new Date(check.date) < midPoint
+        (check) => new Date(check.date || Date.now()) >= start && new Date(check.date || Date.now()) < midPoint
       );
       const currentChecks = checks.filter(
-        (check) => new Date(check.date) >= midPoint && new Date(check.date) <= end
+        (check) => new Date(check.date || Date.now()) >= midPoint && new Date(check.date || Date.now()) <= end
       );
 
       const previousRate = calculateCompletionRate(previousChecks, item);
@@ -136,7 +136,7 @@ export function FormHistoryComparison({ checks }: FormHistoryComparisonProps) {
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Form Progress Comparison</h3>
-        <Select value={timeRange} onValueChange={(value: 'week' | 'month' | 'all') => setTimeRange(value)}>
+        <Select value={timeRange} onValueChange={(value: string) => setTimeRange(value as 'week' | 'month' | 'all')}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select time range" />
           </SelectTrigger>

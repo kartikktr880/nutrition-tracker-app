@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+
+import { logError } from '../../utils/logger';
 // import { BarcodeDetector } from 'barcode-detector';
 // import { useToast } from '@/hooks/useToast';
 
@@ -8,43 +10,37 @@ interface BarcodeScannerProps {
 }
 
 export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose }) => {
-  const [isScanning, setIsScanning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_isScanning, _setIsScanning] = useState(false);
+  const [_error, _setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // const { showToast } = useToast();
 
   useEffect(() => {
-    if (!('BarcodeDetector' in window)) {
-      setError('Barcode scanning is not supported in your browser');
-      return;
+    const video = videoRef.current;
+    if (video) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+          video.play();
+        })
+        .catch(err => {
+          logError('Error accessing camera:', err);
+        });
     }
 
-    const startScanning = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          setIsScanning(true);
-        }
-      } catch (err) {
-        setError('Failed to access camera');
-        // showToast('Camera access denied', 'error');
-      }
-    };
-
-    startScanning();
-
     return () => {
-      if (videoRef.current?.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
+      if (video) {
+        const stream = video.srcObject as MediaStream;
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
       }
     };
   }, []);
 
   useEffect(() => {
-    if (!isScanning || !videoRef.current || !canvasRef.current) return;
+    if (!_isScanning || !videoRef.current || !canvasRef.current) return;
 
     // const detector = new BarcodeDetector();
     const canvas = canvasRef.current;
@@ -66,7 +62,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
         //   setIsScanning(false);
         // }
       } catch (err) {
-        console.error('Barcode detection error:', err);
+        logError('Barcode detection error:', err);
       }
 
       animationFrameId = requestAnimationFrame(scanBarcode);
@@ -79,12 +75,12 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onClose 
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [isScanning, onScan]);
+  }, [_isScanning, onScan]);
 
-  if (error) {
+  if (_error) {
     return (
       <div className="p-4 bg-red-50 text-red-700 rounded-lg">
-        {error}
+        {_error}
         <button
           onClick={onClose}
           className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"

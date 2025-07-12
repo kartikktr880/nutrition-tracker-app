@@ -1,0 +1,83 @@
+{
+    "parser":  "@typescript-eslint/parser",
+    "overrides":  [
+                      {
+                          "rules":  {
+                                        "@typescript-eslint/no-var-requires":  "off"
+                                    },
+                          "files":  [
+                                        "*.js",
+                                        "*.jsx"
+                                    ]
+                      }
+                  ],
+    "ignorePatterns":  [
+                           "node_modules/",
+                           ".next/",
+                           "out/",
+                           "build/",
+                           "dist/",
+                           "coverage/",
+                           "*.config.js",
+                           "*.setup.js"
+                       ],
+    "settings":  {
+                     "import/parsers":  {
+                                            "@typescript-eslint/parser":  [
+                                                                              ".ts",
+                                                                              ".tsx"
+                                                                          ]
+                                        },
+                     "import/resolver":  {
+                                             "typescript":  {
+                                                                "alwaysTryTypes":  true,
+                                                                "project":  "./tsconfig.json"
+                                                            }
+                                         }
+                 },
+    "extends":  [
+                    "next/core-web-vitals",
+                    "plugin:@typescript-eslint/recommended",
+                    "plugin:import/recommended",
+                    "plugin:import/typescript"
+                ],
+    "plugins":  [
+                    "@typescript-eslint",
+                    "import"
+                ],
+    "rules":  {
+                  "@typescript-eslint/no-unused-vars":  [
+                                                            "error",
+                                                            {
+                                                                "argsIgnorePattern":  "^_",
+                                                                "varsIgnorePattern":  "^_"
+                                                            }
+                                                        ],
+                  "import/default":  "error",
+                  "@typescript-eslint/no-non-null-assertion":  "error",
+                  "import/export":  "error",
+                  "import/order":  [
+                                       "warn",
+                                       {
+                                           "alphabetize":  {
+                                                               "caseInsensitive":  true,
+                                                               "order":  "asc"
+                                                           },
+                                           "groups":  [
+                                                          "builtin",
+                                                          "external",
+                                                          "internal",
+                                                          "parent",
+                                                          "sibling",
+                                                          "index"
+                                                      ],
+                                           "newlines-between":  "always"
+                                       }
+                                   ],
+                  "import/no-unresolved":  "error",
+                  "import/named":  "error",
+                  "no-console":  "error",
+                  "@typescript-eslint/no-explicit-any":  "error",
+                  "import/namespace":  "error"
+              }
+}

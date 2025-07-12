@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/utils/logger';
 
 export async function GET(request: Request) {
   try {
@@ -22,8 +22,7 @@ export async function GET(request: Request) {
 
     const workouts = await prisma.exerciseWorkout.findMany({
       where: {
-        userId: (session.user as any).id,
-        exerciseId,
+        userId: session.user.id,
       },
       orderBy: {
         createdAt: 'desc',
@@ -32,7 +31,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(workouts);
   } catch (error: unknown) {
-    console.error('Error fetching exercise workouts:', error);
+    logError('Error fetching exercise workouts:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -53,9 +52,7 @@ export async function POST(request: Request) {
       name,
       description,
       exercises,
-      duration,
       difficulty,
-      category,
     } = data;
 
     if (!exerciseId || !name || !description || !exercises?.length) {
@@ -67,20 +64,21 @@ export async function POST(request: Request) {
 
     const newWorkout = await prisma.exerciseWorkout.create({
       data: {
-        userId: (session.user as any).id,
-        exerciseId,
+        userId: session.user.id,
         name,
         description,
         exercises,
-        duration,
         difficulty,
-        category,
+        totalDuration: 0,
+        targetMuscleGroups: [],
+        equipment: [],
+        caloriesBurned: 0,
       },
     });
 
     return NextResponse.json(newWorkout);
   } catch (error: unknown) {
-    console.error('Error creating exercise workout:', error);
+    logError('Error creating exercise workout:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -101,9 +99,7 @@ export async function PUT(request: Request) {
       name,
       description,
       exercises,
-      duration,
       difficulty,
-      category,
     } = data;
 
     if (!id) {
@@ -116,21 +112,19 @@ export async function PUT(request: Request) {
     const updatedWorkout = await prisma.exerciseWorkout.update({
       where: {
         id,
-        userId: (session.user as any).id,
+        userId: session.user.id,
       },
       data: {
         name,
         description,
         exercises,
-        duration,
         difficulty,
-        category,
       },
     });
 
     return NextResponse.json(updatedWorkout);
   } catch (error: unknown) {
-    console.error('Error updating exercise workout:', error);
+    logError('Error updating exercise workout:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -158,13 +152,13 @@ export async function DELETE(request: Request) {
     await prisma.exerciseWorkout.delete({
       where: {
         id,
-        userId: (session.user as any).id,
+        userId: session.user.id,
       },
     });
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    console.error('Error deleting exercise workout:', error);
+    logError('Error deleting exercise workout:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

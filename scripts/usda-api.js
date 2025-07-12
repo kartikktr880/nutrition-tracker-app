@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // USDA Food Data Central API Service
 import { config } from './config.js';
 
@@ -61,7 +62,7 @@ async function searchFoods(query, pageSize = 50) {
             totalPages: data.totalPages
         };
     } catch (error) {
-        console.error('Error searching USDA foods:', error);
+        logError('Error searching USDA foods:', error);
         throw error;
     }
 }
@@ -83,7 +84,7 @@ async function getFoodDetails(fdcId) {
         const data = await response.json();
         return formatUsdaFood(data);
     } catch (error) {
-        console.error('Error getting food details:', error);
+        logError('Error getting food details:', error);
         throw error;
     }
 }
@@ -108,7 +109,7 @@ async function getFoodsByIds(fdcIds) {
         const data = await response.json();
         return data.map(formatUsdaFood);
     } catch (error) {
-        console.error('Error getting foods by IDs:', error);
+        logError('Error getting foods by IDs:', error);
         throw error;
     }
 }

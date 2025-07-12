@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Apply Enhanced Fixes Script
  * This script applies all visual fixes across the entire website
@@ -45,10 +46,10 @@
             
             // Log success
             if (config.debug) {
-                console.log('✅ Enhanced fixes applied to current page');
+                logInfo('✅ Enhanced fixes applied to current page');
             }
         } catch (error) {
-            console.error('❌ Error applying fixes:', error);
+            logError('❌ Error applying fixes:', error);
         }
     }
     
@@ -99,7 +100,7 @@
                 document.head.appendChild(link);
                 
                 if (config.debug) {
-                    console.log(`Added stylesheet: ${stylesheet}`);
+                    logInfo(`Added stylesheet: ${stylesheet}`);
                 }
             }
         });
@@ -117,7 +118,7 @@
                 document.body.appendChild(scriptEl);
                 
                 if (config.debug) {
-                    console.log(`Added script: ${script}`);
+                    logInfo(`Added script: ${script}`);
                 }
             }
         });
@@ -139,7 +140,7 @@
                 spacer.style.marginRight = '0';
                 
                 if (config.debug) {
-                    console.log('Fixed problematic spacer div:', spacer);
+                    logInfo('Fixed problematic spacer div:', spacer);
                 }
             }
         });
@@ -152,7 +153,7 @@
             //             footer.style.overflowX = 'hidden';
             
             if (config.debug) {
-                console.log('Fixed footer positioning');
+                logInfo('Fixed footer positioning');
             }
         }
         
@@ -176,8 +177,8 @@
         fixedFiles.push(currentPage);
         
         if (config.debug) {
-            console.log(`Fixed page: ${currentPage}`);
-            console.log('All fixed pages:', fixedFiles);
+            logInfo(`Fixed page: ${currentPage}`);
+            logInfo('All fixed pages:', fixedFiles);
         }
     }
     

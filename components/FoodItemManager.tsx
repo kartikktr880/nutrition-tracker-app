@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { analytics } from '../services/analytics';
-import { storage } from '../services/storage';
-import { monitoring } from '../services/monitoring';
-import type { FoodItem } from '../types/nutrition';
+import React, { useEffect, useState } from 'react';
+
 import { useComponentLifecycle } from '../lib/hooks/useComponentLifecycle';
+import { analytics } from '../services/analytics';
+import { monitoring } from '../services/monitoring';
+import { storage } from '../services/storage';
+import type { FoodItem } from '../types/nutrition';
+import { logWarn } from '../utils/logger';
 
 interface FoodItemManagerProps {
   userId: string;
@@ -31,7 +33,7 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
   // Use component lifecycle hook
   useComponentLifecycle({
     onMemoryWarning: (usage, limit) => {
-      console.warn(`Memory usage warning in FoodItemManager: ${usage}MB/${limit}MB`);
+      logWarn(`Memory usage warning in FoodItemManager: ${usage}MB/${limit}MB`);
       analytics.trackEvent({
         category: 'Performance',
         action: 'memory_warning',
@@ -39,7 +41,7 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
       });
     },
     onPerformanceWarning: (metrics) => {
-      console.warn('Performance warning in FoodItemManager:', metrics);
+      logWarn('Performance warning in FoodItemManager:', metrics);
       analytics.trackEvent({
         category: 'Performance',
         action: 'performance_warning',
@@ -60,10 +62,30 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
   });
 
   useEffect(() => {
+    const loadFoodItems = async () => {
+      try {
+        const savedItems = await storage.getItem<FoodItem[]>(`food_items_${userId}`);
+        if (savedItems) {
+          setFoodItems(savedItems);
+          analytics.trackEvent({
+            category: 'FoodItem',
+            action: 'load_items'
+          });
+        }
+      } catch (err) {
+        const error = err instanceof Error ? err.message : 'Failed to load food items';
+        setError(error);
+        analytics.trackError({
+          errorType: 'food_items_load_error',
+          errorMessage: error,
+          context: { userId }
+        });
+      }
+    };
+
     const initializeComponent = async () => {
       try {
         await loadFoodItems();
-
         // Register monitoring metrics
         monitoring.registerMetric({
           name: 'food_item_creation_rate',
@@ -74,7 +96,6 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
             critical: 500
           }
         });
-
         analytics.trackEvent({
           category: 'FoodItemManager',
           action: 'component_initialized',
@@ -90,30 +111,8 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
         });
       }
     };
-
     initializeComponent();
   }, [userId]);
-
-  const loadFoodItems = async () => {
-    try {
-      const savedItems = await storage.getItem<FoodItem[]>(`food_items_${userId}`);
-      if (savedItems) {
-        setFoodItems(savedItems);
-        analytics.trackEvent({
-          category: 'FoodItem',
-          action: 'load_items'
-        });
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load food items';
-      setError(error);
-      analytics.trackError({
-        errorType: 'food_items_load_error',
-        errorMessage: error,
-        context: { userId }
-      });
-    }
-  };
 
   const handleCreateFoodItem = async () => {
     try {
@@ -339,7 +338,12 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
                     value={newItem.macros?.protein || ''}
                     onChange={(e) => setNewItem({
                       ...newItem,
-                      macros: { ...newItem.macros, protein: +e.target.value }
+                      macros: { 
+                        ...newItem.macros, 
+                        protein: +e.target.value,
+                        carbs: newItem.macros?.carbs || 0,
+                        fat: newItem.macros?.fat || 0
+                      }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
                     min="0"
@@ -356,7 +360,12 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
                     value={newItem.macros?.carbs || ''}
                     onChange={(e) => setNewItem({
                       ...newItem,
-                      macros: { ...newItem.macros, carbs: +e.target.value }
+                      macros: { 
+                        ...newItem.macros, 
+                        carbs: +e.target.value,
+                        protein: newItem.macros?.protein || 0,
+                        fat: newItem.macros?.fat || 0
+                      }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
                     min="0"
@@ -373,7 +382,12 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
                     value={newItem.macros?.fat || ''}
                     onChange={(e) => setNewItem({
                       ...newItem,
-                      macros: { ...newItem.macros, fat: +e.target.value }
+                      macros: { 
+                        ...newItem.macros, 
+                        fat: +e.target.value,
+                        protein: newItem.macros?.protein || 0,
+                        carbs: newItem.macros?.carbs || 0
+                      }
                     })}
                     className="mt-1 block w-full rounded-md border-gray-300"
                     min="0"

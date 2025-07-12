@@ -1,44 +1,58 @@
 {
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out"
+  ],
   "compilerOptions": {
-    "target": "es2015",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "es2020",
+    "baseUrl": ".",
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": ".",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "strictFunctionTypes": true,
+    "allowJs": true,
+    "noImplicitThis": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "strictPropertyInitialization": true,
+    "skipLibCheck": true,
     "paths": {
-      "@/*": ["*"],
-      "@components/*": ["components/*"],
-      "@utils/*": ["utils/*"],
-      "@hooks/*": ["hooks/*"],
-      "@types/*": ["types/*"],
-      "@services/*": ["services/*"],
-      "@lib/*": ["lib/*"],
-      "@pages/*": ["pages/*"],
-      "@providers/*": ["providers/*"]
-    }
-  },
-  "include": [
-    "src/**/*",
-    "components/**/*",
-    "services/**/*",
-    "hooks/**/*",
-    "types/**/*",
-    "utils/**/*",
-    "lib/**/*",
-    "pages/**/*",
-    "providers/**/*",
-    "app/**/*"
-  ],
-  "exclude": ["node_modules", "build", "dist", "coverage", "scripts"]
-} 
+      "@/*": [
+        "./*"
+      ]
+    },
+    "types": [
+      "node",
+      "jest"
+    ],
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "incremental": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  }
+}

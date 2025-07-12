@@ -1,34 +1,16 @@
+import { CheckCircle2, AlertCircle, Info, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ExerciseFormTemplate, ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  CheckCircle2,
-  AlertCircle,
-  Info,
-  Video,
-  MessageSquare,
-  ChevronDown,
-  ChevronUp,
-  Star,
-  StarOff,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
+import { ExerciseFormTemplate, ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormChecklistProps {
   template: ExerciseFormTemplate;
@@ -46,7 +28,6 @@ export function FormChecklist({
   );
   const [feedback, setFeedback] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
-  const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
   const [completionRate, setCompletionRate] = useState(0);
 
   useEffect(() => {
@@ -61,23 +42,27 @@ export function FormChecklist({
   };
 
   const handleSubmit = () => {
-    const check: ExerciseFormCheck = {
-      templateId: template.id,
-      date: new Date().toISOString(),
-      checklist,
-      feedback,
-      videoUrl,
+    const completedItems = checklist.filter((item) => item.completed).length;
+    const newCheck: ExerciseFormCheck = {
+      exerciseId: template.exerciseId,
+      date: new Date(),
+      score: Math.round((completedItems / checklist.length) * 100),
+      checklist: template.checklist.map(item => ({
+        ...item,
+        completed: false
+      })),
+      feedback: feedback || undefined,
+      videoUrl: undefined
     };
-    onComplete(check);
+    onComplete(newCheck);
   };
 
   const getItemStatus = (index: number) => {
-    const item = checklist[index];
     const previousItemChecks = previousChecks.map(
       (check) => check.checklist[index]
     );
     const completionRate =
-      previousItemChecks.filter((item) => item.completed).length /
+      previousItemChecks.filter((_item) => _item.completed).length /
       previousItemChecks.length;
 
     if (completionRate > 0.8) {
@@ -91,7 +76,6 @@ export function FormChecklist({
 
   const getItemRecommendation = (index: number) => {
     const status = getItemStatus(index);
-    const item = checklist[index];
 
     switch (status) {
       case 'excellent':
@@ -124,23 +108,11 @@ export function FormChecklist({
 
       <ScrollArea className="h-[400px] pr-4">
         <div className="space-y-4">
-          {checklist.map((item, index) => (
-            <Collapsible
-              key={index}
-              open={expandedItems.has(index)}
-              onOpenChange={(open) => {
-                const newExpanded = new Set(expandedItems);
-                if (open) {
-                  newExpanded.add(index);
-                } else {
-                  newExpanded.delete(index);
-                }
-                setExpandedItems(newExpanded);
-              }}
-            >
+          {checklist.map((_item, index) => (
+            <Collapsible key={index} className="">
               <Card
                 className={`p-4 transition-colors ${
-                  item.completed ? 'bg-green-50' : 'bg-white'
+                  checklist[index].completed ? 'bg-green-50' : 'bg-white'
                 }`}
               >
                 <div className="flex items-start space-x-4">
@@ -149,7 +121,7 @@ export function FormChecklist({
                     size="icon"
                     onClick={() => handleItemToggle(index)}
                     className={`${
-                      item.completed ? 'text-green-500' : 'text-gray-400'
+                      checklist[index].completed ? 'text-green-500' : 'text-gray-400'
                     }`}
                   >
                     <CheckCircle2 className="w-5 h-5" />
@@ -158,30 +130,26 @@ export function FormChecklist({
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-medium">{item.item}</h4>
+                        <h4 className="font-medium">{checklist[index].item}</h4>
                         <p className="text-sm text-gray-500">
-                          {item.description}
+                          {checklist[index].description}
                         </p>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Badge
                           variant={
-                            item.importance === 'critical'
+                            checklist[index].importance === 'critical'
                               ? 'destructive'
-                              : item.importance === 'important'
+                              : checklist[index].importance === 'important'
                               ? 'default'
                               : 'secondary'
                           }
                         >
-                          {item.importance}
+                          {checklist[index].importance}
                         </Badge>
-                        <CollapsibleTrigger asChild>
+                        <CollapsibleTrigger>
                           <Button variant="ghost" size="icon">
-                            {expandedItems.has(index) ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
+                            <span className="sr-only">Toggle</span>
                           </Button>
                         </CollapsibleTrigger>
                       </div>
@@ -269,18 +237,13 @@ export function FormChecklist({
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="Add a video URL for form review"
             />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <Video className="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Add a video for form review</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip content="Add video URL for form analysis">
+              <TooltipTrigger>
+                <Button variant="outline" size="sm">
+                  Add Video
+                </Button>
+              </TooltipTrigger>
+            </Tooltip>
           </div>
         </div>
 

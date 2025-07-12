@@ -1,5 +1,6 @@
 import { PerformanceHistory } from './performance-history';
 import { PerformanceAnalytics } from './performance-analytics';
+import { PerformanceUtils } from './performance-utils';
 
 interface ImpactMetrics {
     fps: number;
@@ -24,7 +25,7 @@ interface ImpactAnalysis {
 }
 
 export class PerformanceImpact {
-    private static instance: PerformanceImpact;
+    private static instance: PerformanceImpact | undefined;
     private impactHistory: Map<string, ImpactAnalysis> = new Map();
     private baselineMetrics: Map<string, ImpactMetrics> = new Map();
 
@@ -45,7 +46,7 @@ export class PerformanceImpact {
     }
 
     setBaseline(optimizationId: string): void {
-        const currentMetrics = PerformanceHistory.getLatestMetrics();
+        const currentMetrics = PerformanceUtils.getMetrics();
         if (!currentMetrics) {
             throw new Error('No current metrics available for baseline');
         }
@@ -64,7 +65,7 @@ export class PerformanceImpact {
             throw new Error(`No baseline metrics found for optimization ${optimizationId}`);
         }
 
-        const currentMetrics = PerformanceHistory.getLatestMetrics();
+        const currentMetrics = PerformanceUtils.getMetrics();
         if (!currentMetrics) {
             throw new Error('No current metrics available for impact calculation');
         }
@@ -173,9 +174,7 @@ export class PerformanceImpact {
         };
     }
 
-    destroy(): void {
-        this.impactHistory.clear();
-        this.baselineMetrics.clear();
-        PerformanceImpact.instance = null;
+    static destroy(): void {
+        PerformanceImpact.instance = undefined;
     }
 } 

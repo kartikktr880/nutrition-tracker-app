@@ -1,15 +1,63 @@
 import React, { useState, useEffect } from 'react';
+
+import type { AnalyticsData, ReportResult, ReportConfig, ExportOptions } from '../../lib/data-management-service';
 import { dataManagementService } from '../../lib/data-management-service';
-// // import { Line, Bar, div } from 'react-chartjs-2';
-// // import { Chart, registerables } from 'chart.js';
-// // Chart.register(...registerables);
+import { logError } from '../../utils/logger';
+
+// Type guard for chart data
+function hasChartType(data: unknown): data is { type: 'line' | 'bar' | 'pie'; title: string; data: unknown; options?: unknown } {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'type' in data &&
+    typeof (data as { type: unknown }).type === 'string' &&
+    ['line', 'bar', 'pie'].includes((data as { type: string }).type)
+  );
+}
+
+function renderSummary(customReport: ReportResult): React.ReactNode {
+  return (
+    <div className="mb-4">
+      <h4 className="font-medium mb-2">Summary</h4>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div>
+          <p className="text-sm">Total Items</p>
+          <p className="font-medium">{String(customReport.summary.totalItems)}</p>
+        </div>
+        {(Object.entries(typeof customReport.summary.metrics === 'object' && customReport.summary.metrics !== null ? customReport.summary.metrics : {}) as [string, number][]).map(([key, value]: [string, number]) => (
+          <div key={key}>
+            <p className="text-sm">{key}</p>
+            <p className="font-medium">{value.toFixed(2)}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function renderChart(customReport: ReportResult): React.ReactNode {
+  const chartData = customReport.chartData;
+  if (hasChartType(chartData)) {
+    return (
+      <div className="mb-4">
+        <h4 className="font-medium mb-2">Chart</h4>
+        <div className="h-64">
+          {chartData.type === 'line' && <div>Chart Placeholder</div>}
+          {chartData.type === 'bar' && <div>Chart Placeholder</div>}
+          {chartData.type === 'pie' && <div>Chart Placeholder</div>}
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
 
 const DataAnalytics: React.FC = () => {
-  const [analyticsData, setAnalyticsData] = useState<any>(null);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [customReport, setCustomReport] = useState<any>(null);
-  const [reportConfig, setReportConfig] = useState({
+  const [customReport, setCustomReport] = useState<ReportResult | null>(null);
+  const [reportConfig, setReportConfig] = useState<ReportConfig>({
     name: '',
     description: '',
     filters: {
@@ -29,12 +77,12 @@ const DataAnalytics: React.FC = () => {
     metrics: ['totalScans', 'uniqueItems', 'averageCalories'],
     groupBy: '',
     sortBy: 'timestamp',
-    sortOrder: 'desc' as const,
-    chartType: 'line' as const,
-    timeInterval: 'daily' as const
+    sortOrder: 'desc',
+    chartType: 'line',
+    timeInterval: 'daily'
   });
-  const [exportOptions, setExportOptions] = useState({
-    format: 'json' as const,
+  const [exportOptions, setExportOptions] = useState<ExportOptions>({
+    format: 'json',
     includeMetadata: true,
     sections: {
       barcodeHistory: true,
@@ -54,7 +102,7 @@ const DataAnalytics: React.FC = () => {
       setAnalyticsData(data);
     } catch (err) {
       setError('Failed to load analytics data');
-      console.error('Analytics error:', err);
+      logError('Analytics error:', err);
     } finally {
       setLoading(false);
     }
@@ -73,12 +121,12 @@ const DataAnalytics: React.FC = () => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Export error:', err);
+      logError('Export error:', err);
       setError('Failed to export data');
     }
   };
 
-  const handleExportOptionChange = (option: string, value: any) => {
+  const handleExportOptionChange = (option: string, value: unknown) => {
     setExportOptions(prev => ({
       ...prev,
       [option]: value
@@ -90,7 +138,7 @@ const DataAnalytics: React.FC = () => {
       ...prev,
       sections: {
         ...prev.sections,
-        [section as any]: !prev.sections[section as any]
+        [section]: !prev.sections[section as keyof typeof prev.sections]
       }
     }));
   };
@@ -100,19 +148,19 @@ const DataAnalytics: React.FC = () => {
       const report = dataManagementService.generateCustomReport(reportConfig);
       setCustomReport(report);
     } catch (err) {
-      console.error('Report generation error:', err);
+      logError('Report generation error:', err);
       setError('Failed to generate report');
     }
   };
 
-  const handleReportConfigChange = (field: string, value: any) => {
+  const handleReportConfigChange = (field: string, value: unknown) => {
     setReportConfig(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleFilterChange = (field: string, value: any) => {
+  const handleFilterChange = (field: string, value: unknown) => {
     setReportConfig(prev => ({
       ...prev,
       filters: {
@@ -194,7 +242,7 @@ const DataAnalytics: React.FC = () => {
               <input
                 type="checkbox"
                 checked={enabled}
-                onChange={() => handleSectionToggle(section)}
+                onChange={() => handleSectionToggle(section as string)}
                 className="rounded"
               />
               <span className="text-sm">{section}</span>
@@ -235,7 +283,7 @@ const DataAnalytics: React.FC = () => {
               <div className="flex space-x-2">
                 <input
                   type="date"
-                  value={new Date(reportConfig.filters.dateRange.start).toISOString().split('T')[0]}
+                  value={reportConfig.filters.dateRange?.start ? new Date(reportConfig.filters.dateRange.start).toISOString().split('T')[0] : ''}
                   onChange={(e) => handleFilterChange('dateRange', {
                     ...reportConfig.filters.dateRange,
                     start: new Date(e.target.value).getTime()
@@ -244,7 +292,7 @@ const DataAnalytics: React.FC = () => {
                 />
                 <input
                   type="date"
-                  value={new Date(reportConfig.filters.dateRange.end).toISOString().split('T')[0]}
+                  value={reportConfig.filters.dateRange?.end ? new Date(reportConfig.filters.dateRange.end).toISOString().split('T')[0] : ''}
                   onChange={(e) => handleFilterChange('dateRange', {
                     ...reportConfig.filters.dateRange,
                     end: new Date(e.target.value).getTime()
@@ -305,40 +353,10 @@ const DataAnalytics: React.FC = () => {
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <h3 className="font-medium mb-3">Report Results</h3>
           
-          {/* Summary */}
-          <div className="mb-4">
-            <h4 className="font-medium mb-2">Summary</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <p className="text-sm">Total Items</p>
-                <p className="font-medium">{customReport.summary.totalItems}</p>
-              </div>
-              {Object.entries(customReport.summary.metrics).map(([key, value]) => (
-                <div key={key}>
-                  <p className="text-sm">{key}</p>
-                  <p className="font-medium">{typeof value === 'number' ? value.toFixed(2) : value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          {renderSummary(customReport)}
 
           {/* Chart */}
-          {customReport.chartData && (
-            <div className="mb-4">
-              <h4 className="font-medium mb-2">Chart</h4>
-              <div className="h-64">
-                {customReport.chartData.type === 'line' && (
-                  <div>Chart Placeholder</div>
-                )}
-                {customReport.chartData.type === 'bar' && (
-                  <div>Chart Placeholder</div>
-                )}
-                {customReport.chartData.type === 'pie' && (
-                  <div>Chart Placeholder</div>
-                )}
-              </div>
-            </div>
-          )}
+          {renderChart(customReport)}
 
           {/* Data Table */}
           <div>
@@ -355,13 +373,14 @@ const DataAnalytics: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {customReport.data.map((item: any, index: number) => (
+                  {customReport.data.map((item: ReportResult['data'][number], index: number) => (
                     <tr key={index}>
-                      {Object.values(item).map((value: any, i: number) => (
-                        <td key={i} className="px-4 py-2 text-sm">
-                          {typeof value === 'object' ? JSON.stringify(value) : value}
-                        </td>
-                      ))}
+                      {typeof item === 'object' && item !== null ?
+                        Object.values(item).map((value: unknown, i: number) => (
+                          <td key={i} className="px-4 py-2 text-sm">
+                            {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                          </td>
+                        )) : null}
                     </tr>
                   ))}
                 </tbody>
@@ -441,7 +460,7 @@ const DataAnalytics: React.FC = () => {
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <h3 className="font-medium mb-3">Most Scanned Items</h3>
           <div className="space-y-2">
-            {analyticsData.mostScannedItems.map((item: any, index: number) => (
+            {analyticsData.mostScannedItems.map((item: AnalyticsData['mostScannedItems'][number], index: number) => (
               <p key={index} className="text-sm">
                 {item.name}: <span className="font-medium">{item.count} scans</span>
               </p>
@@ -477,7 +496,7 @@ const DataAnalytics: React.FC = () => {
             </p>
             <div className="text-sm">
               <p className="font-medium mb-1">Breakdown:</p>
-              {Object.entries(analyticsData.dataSize.breakdown).map(([key, value]: [string, any]) => (
+              {Object.entries(analyticsData.dataSize.breakdown).map(([key, value]: [string, number]) => (
                 <p key={key} className="text-sm">
                   {key}: <span className="font-medium">{formatBytes(value)}</span>
                 </p>

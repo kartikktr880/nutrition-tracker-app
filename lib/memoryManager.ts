@@ -1,5 +1,5 @@
-import { recordError, recordOperationLatency } from './monitoring';
 import { auditLogger } from './audit-logger';
+import { recordError, recordOperationLatency } from './monitoring';
 
 interface Resource {
   id: string;
@@ -173,7 +173,7 @@ class MemoryManager {
       .sort(([, a], [, b]) => a.lastAccessed.getTime() - b.lastAccessed.getTime());
 
     // Clean up oldest resources until we're under the limit
-    for (const [id, resource] of sortedResources) {
+    for (const [id, _resource] of sortedResources) {
       if (this.stats.totalSize <= this.MAX_CACHE_SIZE) break;
       cleanupPromises.push(this.cleanupResource(id));
     }

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 import { useSearchHistory, SearchHistoryItem } from '../hooks/useSearchHistory';
 import { analytics } from '../services/analytics';
 import styles from '../styles/SearchHistory.module.css';
@@ -86,9 +87,13 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
 
   // Handle item selection
   const handleSelect = (item: SearchHistoryItem) => {
-    analytics.trackClick({
-      itemId: item.id,
-      itemType: 'search-result'
+    analytics.trackEvent({
+      category: 'search',
+      action: 'search_clicked',
+      metadata: {
+        query: item.query,
+        timestamp: item.timestamp
+      }
     });
     onSelect(item.query);
     announce(`Selected search: ${item.query}`);

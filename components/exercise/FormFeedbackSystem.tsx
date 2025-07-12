@@ -1,27 +1,11 @@
+import { AlertCircle, CheckCircle2, Info, Lightbulb } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+
 import { Badge } from '@/components/ui/badge';
-import {
-  AlertCircle,
-  CheckCircle2,
-  Info,
-  Lightbulb,
-  Video,
-  ArrowRight,
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ExerciseFormCheck } from '@/lib/validations/exerciseForm';
 
 interface FormFeedbackSystemProps {
   checks: ExerciseFormCheck[];
@@ -37,22 +21,29 @@ interface FormFeedback {
   commonMistakes: string[];
 }
 
+type ChecklistItem = {
+  item: string;
+  description: string;
+  importance: 'critical' | 'important' | 'optional';
+  completed: boolean;
+  videoUrl?: string;
+};
+
 export function FormFeedbackSystem({
   checks,
   currentCheck,
 }: FormFeedbackSystemProps) {
   const [feedback, setFeedback] = useState<FormFeedback[]>([]);
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!currentCheck) return;
 
     // Generate feedback based on current check and historical data
-    const newFeedback: FormFeedback[] = currentCheck.checklist.map((item) => {
+    const newFeedback: FormFeedback[] = currentCheck.checklist.map((item: ChecklistItem) => {
       const historicalData = checks
-        .filter((check) => check.id !== currentCheck.id)
+        .filter((check) => check.exerciseId !== currentCheck.exerciseId)
         .map((check) => {
-          const historicalItem = check.checklist.find((i) => i.item === item.item);
+          const historicalItem = check.checklist.find((i: typeof item) => i.item === item.item);
           return historicalItem?.completed || false;
         });
 
@@ -71,9 +62,9 @@ export function FormFeedbackSystem({
       }
 
       // Generate feedback and suggestions
-      const feedback = generateFeedback(item, status, completionRate);
-      const suggestion = generateSuggestion(item, status, completionRate);
-      const commonMistakes = generateCommonMistakes(item);
+      const feedback = generateFeedback(status);
+      const suggestion = generateSuggestion(status);
+      const commonMistakes = generateCommonMistakes();
 
       return {
         item: item.item,
@@ -88,11 +79,7 @@ export function FormFeedbackSystem({
     setFeedback(newFeedback);
   }, [checks, currentCheck]);
 
-  const generateFeedback = (
-    item: any,
-    status: string,
-    completionRate: number
-  ) => {
+  const generateFeedback = (status: string) => {
     if (status === 'correct') {
       return 'Good form! Keep maintaining this technique.';
     } else if (status === 'needs_improvement') {
@@ -102,11 +89,7 @@ export function FormFeedbackSystem({
     }
   };
 
-  const generateSuggestion = (
-    item: any,
-    status: string,
-    completionRate: number
-  ) => {
+  const generateSuggestion = (status: string) => {
     if (status === 'correct') {
       return 'Continue focusing on maintaining this form point.';
     } else if (status === 'needs_improvement') {
@@ -116,23 +99,13 @@ export function FormFeedbackSystem({
     }
   };
 
-  const generateCommonMistakes = (item: any) => {
+  const generateCommonMistakes = () => {
     // This would typically come from a database of common mistakes
     return [
       'Rushing through the movement',
       'Not maintaining proper alignment',
       'Using momentum instead of controlled movement',
     ];
-  };
-
-  const toggleItem = (item: string) => {
-    const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(item)) {
-      newExpanded.delete(item);
-    } else {
-      newExpanded.add(item);
-    }
-    setExpandedItems(newExpanded);
   };
 
   const getStatusColor = (status: string) => {
@@ -152,25 +125,12 @@ export function FormFeedbackSystem({
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Form Feedback</h3>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Info className="w-5 h-5 text-gray-400" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Real-time feedback on your exercise form</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Info className="w-5 h-5 text-gray-400" />
       </div>
 
       <div className="space-y-4">
         {feedback.map((item, index) => (
-          <Collapsible
-            key={index}
-            open={expandedItems.has(item.item)}
-            onOpenChange={() => toggleItem(item.item)}
-          >
+          <Collapsible key={index} className="">
             <Card
               className={`p-4 ${
                 item.status === 'critical'
@@ -229,7 +189,6 @@ export function FormFeedbackSystem({
                     className="w-full"
                     onClick={() => window.open(item.videoUrl, '_blank')}
                   >
-                    <Video className="w-4 h-4 mr-2" />
                     Watch Form Demonstration
                   </Button>
                 )}

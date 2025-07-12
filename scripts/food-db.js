@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Food Database Service
 import { UsdaAPI } from './usda-api.js';
 import dataManager from './data-manager.js';
@@ -43,9 +44,9 @@ class FoodDatabaseService {
             }
             
             this.initialized = true;
-            console.log('Food database service initialized');
+            logInfo('Food database service initialized');
         } catch (error) {
-            console.error('Failed to initialize food database service:', error);
+            logError('Failed to initialize food database service:', error);
         }
     }
     
@@ -95,7 +96,7 @@ class FoodDatabaseService {
             
             return result;
         } catch (error) {
-            console.error('Error searching foods:', error);
+            logError('Error searching foods:', error);
             // On error, return custom foods only to ensure some results
             if (searchOptions.includeCustom) {
                 return { 
@@ -135,7 +136,7 @@ class FoodDatabaseService {
             
             throw new Error('Invalid food ID format');
         } catch (error) {
-            console.error(`Error getting food details for ${foodId}:`, error);
+            logError(`Error getting food details for ${foodId}:`, error);
             throw error;
         }
     }
@@ -161,7 +162,7 @@ class FoodDatabaseService {
             
             return newFood;
         } catch (error) {
-            console.error('Error adding custom food:', error);
+            logError('Error adding custom food:', error);
             throw error;
         }
     }
@@ -196,7 +197,7 @@ class FoodDatabaseService {
             
             return updatedFood;
         } catch (error) {
-            console.error(`Error updating custom food ${foodId}:`, error);
+            logError(`Error updating custom food ${foodId}:`, error);
             throw error;
         }
     }
@@ -220,7 +221,7 @@ class FoodDatabaseService {
             
             return true;
         } catch (error) {
-            console.error(`Error deleting custom food ${foodId}:`, error);
+            logError(`Error deleting custom food ${foodId}:`, error);
             throw error;
         }
     }
@@ -236,7 +237,7 @@ class FoodDatabaseService {
             await dataManager.saveFavorites(this.favoritesList);
             return true;
         } catch (error) {
-            console.error(`Error adding food ${foodId} to favorites:`, error);
+            logError(`Error adding food ${foodId} to favorites:`, error);
             throw error;
         }
     }
@@ -248,7 +249,7 @@ class FoodDatabaseService {
             await dataManager.saveFavorites(this.favoritesList);
             return true;
         } catch (error) {
-            console.error(`Error removing food ${foodId} from favorites:`, error);
+            logError(`Error removing food ${foodId} from favorites:`, error);
             throw error;
         }
     }
@@ -275,7 +276,7 @@ class FoodDatabaseService {
             
             return true;
         } catch (error) {
-            console.error(`Error tracking food usage for ${foodId}:`, error);
+            logError(`Error tracking food usage for ${foodId}:`, error);
             return false;
         }
     }
@@ -290,13 +291,13 @@ class FoodDatabaseService {
                     const food = await this.getFoodDetails(foodId);
                     foodDetails.push(food);
                 } catch (err) {
-                    console.warn(`Could not retrieve recently used food ${foodId}:`, err);
+                    logWarn(`Could not retrieve recently used food ${foodId}:`, err);
                 }
             }
             
             return foodDetails;
         } catch (error) {
-            console.error('Error getting recently used foods:', error);
+            logError('Error getting recently used foods:', error);
             return [];
         }
     }
@@ -311,13 +312,13 @@ class FoodDatabaseService {
                     const food = await this.getFoodDetails(foodId);
                     foodDetails.push(food);
                 } catch (err) {
-                    console.warn(`Could not retrieve favorite food ${foodId}:`, err);
+                    logWarn(`Could not retrieve favorite food ${foodId}:`, err);
                 }
             }
             
             return foodDetails;
         } catch (error) {
-            console.error('Error getting favorite foods:', error);
+            logError('Error getting favorite foods:', error);
             return [];
         }
     }
@@ -390,7 +391,7 @@ class FoodDatabaseService {
             
             return suggestions;
         } catch (error) {
-            console.error('Error getting suggested foods:', error);
+            logError('Error getting suggested foods:', error);
             return [];
         }
     }
@@ -505,12 +506,12 @@ class FoodDatabaseService {
      */
     async lookupBarcode(barcode) {
         try {
-            console.log(`Looking up barcode: ${barcode}`);
+            logInfo(`Looking up barcode: ${barcode}`);
             
             // First check if the barcode is in our local cache
             const cachedItem = await this.getBarcodeFromCache(barcode);
             if (cachedItem) {
-                console.log('Found barcode in cache:', cachedItem);
+                logInfo('Found barcode in cache:', cachedItem);
                 return cachedItem;
             }
             
@@ -719,13 +720,13 @@ class FoodDatabaseService {
                     return foodItem;
                 }
             } catch (err) {
-                console.error('Error fetching from Open Food Facts API:', err);
+                logError('Error fetching from Open Food Facts API:', err);
             }
             
             // If we get here, the barcode wasn't found
             return null;
         } catch (error) {
-            console.error('Error looking up barcode:', error);
+            logError('Error looking up barcode:', error);
             return null;
         }
     }
@@ -747,7 +748,7 @@ class FoodDatabaseService {
             
             return null;
         } catch (error) {
-            console.error('Error getting barcode from cache:', error);
+            logError('Error getting barcode from cache:', error);
             return null;
         }
     }
@@ -762,7 +763,7 @@ class FoodDatabaseService {
             const cacheKey = `barcode_cache_${barcode}`;
             localStorage.setItem(cacheKey, JSON.stringify(food));
         } catch (error) {
-            console.error('Error caching barcode result:', error);
+            logError('Error caching barcode result:', error);
         }
     }
     

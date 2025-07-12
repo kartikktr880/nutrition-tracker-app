@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Header } from './Header';
 
-const meta: Meta<typeof Header> = {
+const meta = {
   title: 'Components/Header',
   component: Header,
   parameters: {
@@ -22,15 +21,14 @@ const meta: Meta<typeof Header> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Header>;
 
-export const Default: Story = {
+export const Default = {
   args: {
     variant: 'default',
   },
 };
 
-export const Transparent: Story = {
+export const Transparent = {
   args: {
     variant: 'transparent',
   },
@@ -41,19 +39,19 @@ export const Transparent: Story = {
   },
 };
 
-export const Compact: Story = {
+export const Compact = {
   args: {
     variant: 'compact',
   },
 };
 
-export const Elevated: Story = {
+export const Elevated = {
   args: {
     variant: 'elevated',
   },
 };
 
-export const Mobile: Story = {
+export const Mobile = {
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',
@@ -61,7 +59,7 @@ export const Mobile: Story = {
   },
 };
 
-export const Tablet: Story = {
+export const Tablet = {
   parameters: {
     viewport: {
       defaultViewport: 'tablet',
@@ -69,7 +67,7 @@ export const Tablet: Story = {
   },
 };
 
-export const Desktop: Story = {
+export const Desktop = {
   parameters: {
     viewport: {
       defaultViewport: 'desktop',

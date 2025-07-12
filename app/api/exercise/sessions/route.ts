@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from 'next-auth';
+
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/utils/logger';
 
 export async function GET(request: Request) {
   try {
@@ -20,10 +20,10 @@ export async function GET(request: Request) {
       );
     }
 
-    const sessions = await prisma.any.findMany({
+    const sessions = await prisma.exerciseSession.findMany({
       where: {
-        userId: (session.user as any).id,
-        exerciseId,
+        userId: session.user.id,
+        // exerciseId removed because it does not exist in the model
       },
       orderBy: {
         startTime: 'desc',
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(sessions);
   } catch (error: unknown) {
-    console.error('Error fetching exercise sessions:', error);
+    logError('Error fetching exercise sessions:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -67,17 +67,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const newSession = await prisma.any.create({
+    const newSession = await prisma.exerciseSession.create({
       data: {
-        userId: (session.user as any).id,
-        exerciseId,
+        userId: session.user.id,
         startTime: new Date(startTime),
         endTime: new Date(endTime),
-        sets,
-        reps,
-        weight,
-        duration,
-        intensity,
         notes,
         caloriesBurned: calculateCaloriesBurned(
           duration,
@@ -86,12 +80,14 @@ export async function POST(request: Request) {
           sets,
           reps
         ),
+        exercises: [],
+        totalDuration: duration,
       },
     });
 
     return NextResponse.json(newSession);
   } catch (error: unknown) {
-    console.error('Error creating exercise session:', error);
+    logError('Error creating exercise session:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

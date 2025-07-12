@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * NutriTrack Ultra-Premium Footer
  * A sophisticated, high-end footer implementation with luxury animations and effects
@@ -22,7 +23,7 @@ class UltraPremiumFooter {
         if (this.isInitialized) return;
         this.isInitialized = true;
         
-        console.log('✧ Initializing Ultra-Premium Footer Experience (Dark Theme)');
+        logInfo('✧ Initializing Ultra-Premium Footer Experience (Dark Theme)');
         
         // Create footer container if it doesn't exist
         this.footerContainer = document.getElementById('footer-container');
@@ -41,7 +42,7 @@ class UltraPremiumFooter {
                 this.revealFooter();
             })
             .catch(error => {
-                console.error('Failed to initialize premium footer:', error);
+                logError('Failed to initialize premium footer:', error);
                 this.renderFallbackFooter();
             });
     }
@@ -81,7 +82,7 @@ class UltraPremiumFooter {
             
             styles.onload = () => resolve();
             styles.onerror = () => {
-                console.error('Failed to load footer styles');
+                logError('Failed to load footer styles');
                 resolve(); // Resolve anyway to continue with fallback
             };
             
@@ -106,7 +107,7 @@ class UltraPremiumFooter {
             
             fontLink.onload = () => resolve();
             fontLink.onerror = () => {
-                console.warn('Premium fonts failed to load, using system fonts');
+                logWarn('Premium fonts failed to load, using system fonts');
                 resolve();
             };
             

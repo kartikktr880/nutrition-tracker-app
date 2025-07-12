@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from './logger';
 import { ExerciseSession } from '@/types/exercise';
 import { validateSessionData } from './validation';
 import { encryptData, decryptData } from './encryption';
@@ -45,7 +46,7 @@ class SyncManager {
         this.queue = JSON.parse(savedQueue);
       }
     } catch (error) {
-      console.error('Error loading sync queue:', error);
+      logError('Error loading sync queue:', error as Error | undefined);
       this.queue = [];
     }
   }
@@ -54,7 +55,7 @@ class SyncManager {
     try {
       localStorage.setItem('syncQueue', JSON.stringify(this.queue));
     } catch (error) {
-      console.error('Error saving sync queue:', error);
+      logError('Error saving sync queue:', error as Error | undefined);
     }
   }
 
@@ -90,7 +91,7 @@ class SyncManager {
         await this.processQueue();
       }
     } catch (error) {
-      console.error('Error adding to sync queue:', error);
+      logError('Error adding to sync queue:', error as Error | undefined);
       throw error;
     }
   }
@@ -107,7 +108,7 @@ class SyncManager {
         await Promise.all(batch.map(item => this.processItem(item)));
       }
     } catch (error) {
-      console.error('Error processing sync queue:', error);
+      logError('Error processing sync queue:', error as Error | undefined);
     } finally {
       this.isProcessing = false;
       this.saveQueue();

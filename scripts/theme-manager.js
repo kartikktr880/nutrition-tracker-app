@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Theme Manager for Nutrition Tracker
  * Handles theme switching, system preference detection, and theme persistence
@@ -57,7 +58,7 @@ class ThemeManager {
         try {
             return localStorage.getItem(this.STORAGE_KEY);
         } catch (error) {
-            console.warn('Failed to read theme from localStorage:', error);
+            logWarn('Failed to read theme from localStorage:', error);
             return null;
         }
     }
@@ -70,7 +71,7 @@ class ThemeManager {
         try {
             localStorage.setItem(this.STORAGE_KEY, theme);
         } catch (error) {
-            console.warn('Failed to save theme to localStorage:', error);
+            logWarn('Failed to save theme to localStorage:', error);
         }
     }
 
@@ -121,7 +122,7 @@ class ThemeManager {
                 );
             }
         } catch (error) {
-            console.warn('Failed to update meta theme color:', error);
+            logWarn('Failed to update meta theme color:', error);
         }
     }
 
@@ -148,7 +149,7 @@ class ThemeManager {
                 `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`
             );
         } catch (error) {
-            console.error('Failed to initialize theme toggle:', error);
+            logError('Failed to initialize theme toggle:', error);
         }
     }
 
@@ -159,7 +160,7 @@ class ThemeManager {
         try {
             this.systemThemeQuery.addEventListener('change', this._boundHandleSystemThemeChange);
         } catch (error) {
-            console.error('Failed to initialize system theme listener:', error);
+            logError('Failed to initialize system theme listener:', error);
         }
     }
 
@@ -184,7 +185,7 @@ class ThemeManager {
             });
             document.dispatchEvent(event);
         } catch (error) {
-            console.warn('Failed to dispatch theme event:', error);
+            logWarn('Failed to dispatch theme event:', error);
         }
     }
 
@@ -198,7 +199,7 @@ class ThemeManager {
             }
             this.systemThemeQuery.removeEventListener('change', this._boundHandleSystemThemeChange);
         } catch (error) {
-            console.error('Failed to cleanup theme manager:', error);
+            logError('Failed to cleanup theme manager:', error);
         }
     }
 

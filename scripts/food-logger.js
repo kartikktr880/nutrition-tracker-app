@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Firebase configuration and initialization
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js';
 import { getDatabase, ref, push, set, get, remove } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-database.js';
@@ -155,7 +156,7 @@ async function saveFoodEntry(food, amount, meal) {
         updateMealTotals();
         showStatusMessage('Food added successfully', 'success');
     } catch (error) {
-        console.error('Error saving food entry:', error);
+        logError('Error saving food entry:', error);
         showStatusMessage('Failed to save food entry', 'error');
     }
 }
@@ -185,7 +186,7 @@ async function editFoodEntry(entryElement, food) {
             loadMealData(); // Reload the entire meal to ensure consistency
             showStatusMessage('Food entry updated', 'success');
         } catch (error) {
-            console.error('Error updating food entry:', error);
+            logError('Error updating food entry:', error);
             showStatusMessage('Failed to update food entry', 'error');
         }
     }
@@ -207,7 +208,7 @@ async function deleteFoodEntry(entryElement) {
             updateMealTotals();
             showStatusMessage('Food entry deleted', 'success');
         } catch (error) {
-            console.error('Error deleting food entry:', error);
+            logError('Error deleting food entry:', error);
             showStatusMessage('Failed to delete food entry', 'error');
         }
     }
@@ -304,7 +305,7 @@ async function loadMealData() {
         
         updateMealTotals();
         } catch (error) {
-        console.error('Error loading meal data:', error);
+        logError('Error loading meal data:', error);
         showStatusMessage('Failed to load meal data', 'error');
     }
 }

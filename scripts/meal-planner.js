@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import StringFormatter from './string-formatter.js';
 
 // Performance monitoring system
@@ -114,7 +115,7 @@ class ErrorHandler {
     this.lastErrorTime = now;
     
     // Log error
-    console.error('Application Error:', error);
+    logError('Application Error:', error);
     
     // Return error status
     return {
@@ -464,7 +465,7 @@ class SmartMealSuggestions {
         this.nutritionGoals = goals.data;
       }
     } catch (error) {
-      console.error('Error initializing SmartMealSuggestions:', error);
+      logError('Error initializing SmartMealSuggestions:', error);
     }
   }
 
@@ -673,7 +674,7 @@ class SmartMealSuggestions {
         'success'
       );
     } catch (error) {
-      console.error('Error recording feedback:', error);
+      logError('Error recording feedback:', error);
     }
   }
 
@@ -1109,7 +1110,7 @@ class MealPlanner {
     }
 
     if (entriesRemoved > 0) {
-      console.debug(`Cache cleanup: removed ${entriesRemoved} entries`);
+      logDebug(`Cache cleanup: removed ${entriesRemoved} entries`);
     }
   }
 
@@ -1733,7 +1734,7 @@ class MealPlanner {
     this.lastErrorTime = now;
 
     // Log error
-    console.error('Meal Planner Error:', error);
+    logError('Meal Planner Error:', error);
 
     // Show user-friendly error message
     this.showToast('An error occurred. Please try again.', 'error');

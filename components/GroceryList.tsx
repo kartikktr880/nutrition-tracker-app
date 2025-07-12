@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { GroceryList as GroceryListType, GroceryItem } from '../types/nutrition';
+
+import { GroceryList as GroceryListType } from '../types/nutrition';
 
 interface GroceryListProps {
   userId: string;
+}
+
+interface GroceryItem {
+  id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  category: string;
+  estimatedCost: number;
+  storeSection: string;
+  priority: 'high' | 'medium' | 'low';
+  notes?: string;
+  checked?: boolean;
 }
 
 export const GroceryList: React.FC<GroceryListProps> = ({ userId }) => {

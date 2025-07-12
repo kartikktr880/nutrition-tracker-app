@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 import { PrismaClient } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { withRetry, RetryError } from '@/lib/retry';
@@ -225,14 +226,14 @@ export class AIRecommendationService {
       });
 
       return userPreferences;
-    }, RETRY_CONFIG);
+    });
   }
 
   private async getUserNutritionHistory(userId: string): Promise<UserNutritionHistory> {
     return withRetry(async () => {
       const recentMeals = await prisma.meal.findMany({
         where: { userId },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { id: 'desc' },
         take: 10
       });
 
@@ -260,13 +261,13 @@ export class AIRecommendationService {
         averageCarbs,
         averageFat
       };
-    }, RETRY_CONFIG);
+    });
   }
 
   private async getAvailableMeals(): Promise<Meal[]> {
     return withRetry(async () => {
       const meals = await prisma.meal.findMany();
-      return meals.map(meal => ({
+      return meals.map((meal: any) => ({
         id: meal.id,
         name: meal.name,
         calories: meal.calories,
@@ -276,7 +277,7 @@ export class AIRecommendationService {
         type: meal.type,
         tags: meal.tags.split(',')
       }));
-    }, RETRY_CONFIG);
+    });
   }
 
   private async getUserLocation(userId: string): Promise<RegionalSeasonalInfo> {
@@ -603,7 +604,7 @@ export class AIRecommendationService {
             allergies: preferences.allergies?.join(',') || ''
           }
         });
-      }, RETRY_CONFIG);
+      });
 
       // Invalidate caches after successful update
       this.invalidateUserCache(userId);
@@ -644,7 +645,7 @@ export class AIRecommendationService {
       const data = await response.json();
       return data.recommendations;
     } catch (error) {
-      console.error('Error generating meal recommendations:', error);
+      logError('Error generating meal recommendations:', error);
       throw error;
     }
   }
@@ -666,7 +667,7 @@ export class AIRecommendationService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error analyzing nutritional patterns:', error);
+      logError('Error analyzing nutritional patterns:', error);
       throw error;
     }
   }
@@ -694,7 +695,7 @@ export class AIRecommendationService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error generating grocery list:', error);
+      logError('Error generating grocery list:', error);
       throw error;
     }
   }
@@ -716,7 +717,7 @@ export class AIRecommendationService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error getting meal prep instructions:', error);
+      logError('Error getting meal prep instructions:', error);
       throw error;
     }
   }
@@ -750,7 +751,7 @@ export class AIRecommendationService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error generating meal plan:', error);
+      logError('Error generating meal plan:', error);
       throw error;
     }
   }
@@ -772,7 +773,7 @@ export class AIRecommendationService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error optimizing meal plan:', error);
+      logError('Error optimizing meal plan:', error);
       throw error;
     }
   }

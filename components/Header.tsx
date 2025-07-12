@@ -1,7 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { SkipLink } from './SkipLink';
-import { FocusTrap } from './FocusTrap';
+import Link from 'next/link';
+import React, { useRef, useState } from 'react';
+
 import styles from '../styles/Header.module.css';
+
+import { FocusTrap } from './FocusTrap';
+import { SkipLink } from './SkipLink';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,17 +48,17 @@ export const Header: React.FC = () => {
           <span className={styles.menuIcon} aria-hidden="true" />
         </button>
 
-        <FocusTrap active={isMenuOpen} onEscape={() => setIsMenuOpen(false)}>
+        <FocusTrap isActive={isMenuOpen} onEscape={() => setIsMenuOpen(false)}>
           <div
             id="main-menu"
             className={`${styles.menu} ${isMenuOpen ? styles.menuOpen : ''}`}
             onKeyDown={handleKeyDown}
           >
             {/* Menu items */}
-            <a href="/" className={styles.menuItem}>Home</a>
-            <a href="/dashboard" className={styles.menuItem}>Dashboard</a>
-            <a href="/profile" className={styles.menuItem}>Profile</a>
-            <a href="/settings" className={styles.menuItem}>Settings</a>
+            <Link href="/" className={styles.menuItem}>Home</Link>
+            <Link href="/dashboard" className={styles.menuItem}>Dashboard</Link>
+            <Link href="/profile" className={styles.menuItem}>Profile</Link>
+            <Link href="/settings" className={styles.menuItem}>Settings</Link>
           </div>
         </FocusTrap>
       </nav>
@@ -71,11 +74,7 @@ export const Header: React.FC = () => {
           <span className={styles.searchIcon} aria-hidden="true" />
         </button>
 
-        <FocusTrap
-          active={isSearchOpen}
-          onEscape={() => setIsSearchOpen(false)}
-          initialFocus={searchInputRef}
-        >
+        <FocusTrap isActive={isSearchOpen} onEscape={() => setIsSearchOpen(false)}>
           <div
             id="search-panel"
             className={`${styles.searchPanel} ${isSearchOpen ? styles.searchOpen : ''}`}

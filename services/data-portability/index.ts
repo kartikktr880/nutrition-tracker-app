@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../../utils/logger';
 import { NextApiRequest, NextApiResponse } from 'next';
 // import { v8 } from 'v8';
 import OfflineService from '@/services/offline';
@@ -53,7 +54,7 @@ class DataPortabilityService {
 
       return JSON.stringify(validatedData, null, 2);
     } catch (error) {
-      console.error('Export error:', error);
+      logError('Export error:', error as Error | undefined);
       throw new Error('Failed to export data');
     }
   }
@@ -71,7 +72,7 @@ class DataPortabilityService {
       const validatedData = this.validateExportData(parsedData);
       await this.saveUserData(userId, validatedData);
     } catch (error) {
-      console.error('Import error:', error);
+      logError('Import error:', error as Error | undefined);
       throw new Error('Failed to import data');
     }
   }
@@ -207,7 +208,7 @@ class DataPortabilityService {
         }
       }
     } catch (error) {
-      console.error('Data portability error:', error);
+      logError('Data portability error:', error as Error | undefined);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }

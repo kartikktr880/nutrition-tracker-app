@@ -1,3 +1,18 @@
+// Minimal WebGLInfo interface for getWebGLInfo
+interface WebGLInfo {
+    vendor: string;
+    renderer: string;
+}
+// Fallback for BatteryManager if not available in the global scope
+// (If your TS config includes dom lib, you can remove this)
+type BatteryManager = any;
+// Add getBattery to Navigator if not present
+declare global {
+    interface Navigator {
+        getBattery?: () => Promise<BatteryManager>;
+    }
+}
+
 export class WebUtils {
     static getBrowserInfo(): { name: string; version: string } {
         const userAgent = navigator.userAgent;
@@ -106,7 +121,7 @@ export class WebUtils {
     static getLanguageInfo(): { language: string; languages: string[] } {
         return {
             language: navigator.language,
-            languages: navigator.languages
+            languages: Array.from(navigator.languages)
         };
     }
 
@@ -123,26 +138,35 @@ export class WebUtils {
     }
 
     static getDoNotTrack(): boolean {
-        return navigator.doNotTrack === '1' || window.doNotTrack === '1';
+        return navigator.doNotTrack === '1';
     }
 
-    static getWebGLInfo(): { vendor: string; renderer: string } {
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        
-        if (!gl) {
-            return { vendor: 'Not supported', renderer: 'Not supported' };
-        }
+    static getWebGLInfo(): WebGLInfo | null {
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            
+            if (!gl) {
+                return null;
+            }
 
-        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-        if (!debugInfo) {
-            return { vendor: 'Not available', renderer: 'Not available' };
-        }
+            const debugInfo = (gl as WebGLRenderingContext).getExtension('WEBGL_debug_renderer_info');
+            
+            if (!debugInfo) {
+                return {
+                    vendor: 'Unknown',
+                    renderer: 'Unknown'
+                };
+            }
 
-        return {
-            vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
-            renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-        };
+            return {
+                vendor: (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+                renderer: (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+            };
+        } catch (error) {
+            console.warn('Failed to get WebGL info:', error);
+            return null;
+        }
     }
 
     static getWebRTCInfo(): Promise<{ hasWebRTC: boolean; hasGetUserMedia: boolean; hasRTCPeerConnection: boolean }> {
@@ -199,4 +223,4 @@ export class WebUtils {
             return false;
         }
     }
-} 
+}

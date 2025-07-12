@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 /**
  * Script to add premium-header to HTML files
  * This script looks for HTML files that don't have the premium-header
@@ -47,7 +48,7 @@ filesToUpdate.forEach(file => {
     
     // Check if file exists
     if (!fs.existsSync(filePath)) {
-      console.log(`File not found: ${file}`);
+      logInfo(`File not found: ${file}`);
       return;
     }
     
@@ -56,14 +57,14 @@ filesToUpdate.forEach(file => {
     
     // Check if premium-header is already included
     if (content.includes('premium-header')) {
-      console.log(`${file}: premium-header already included`);
+      logInfo(`${file}: premium-header already included`);
       return;
     }
     
     // Replace the opening body tag with our premium header
     const bodyRegex = /<body[^>]*>/;
     if (!bodyRegex.test(content)) {
-      console.log(`${file}: No body tag found`);
+      logInfo(`${file}: No body tag found`);
       return;
     }
     
@@ -71,17 +72,17 @@ filesToUpdate.forEach(file => {
     
     // Check if changes were made
     if (content === updatedContent) {
-      console.log(`${file}: Couldn't update body tag`);
+      logInfo(`${file}: Couldn't update body tag`);
       return;
     }
     
     // Write back to file
     fs.writeFileSync(filePath, updatedContent, 'utf8');
-    console.log(`${file}: Successfully updated with premium-header`);
+    logInfo(`${file}: Successfully updated with premium-header`);
     
   } catch (error) {
-    console.error(`Error processing ${file}:`, error.message);
+    logError(`Error processing ${file}:`, error.message);
   }
 });
 
-console.log('Premium header update process completed.'); 
+logInfo('Premium header update process completed.'); 

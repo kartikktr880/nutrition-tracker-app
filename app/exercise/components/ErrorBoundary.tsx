@@ -1,4 +1,6 @@
-import React from 'react';
+// TODO: Fix logger import path if needed. If logger is in 'utils/logger.ts', use logError, logWarn, logInfo, logDebug as needed.
+import { Component } from 'react';
+
 import { syncManager } from '@/utils/sync';
 
 interface Props {
@@ -12,7 +14,7 @@ interface State {
   errorInfo: React.ErrorInfo | null;
 }
 
-export class ExerciseErrorBoundary extends React.Component<Props, State> {
+export class ExerciseErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -37,12 +39,14 @@ export class ExerciseErrorBoundary extends React.Component<Props, State> {
     });
 
     // Log error to monitoring service
-    console.error('Exercise component error:', error, errorInfo);
+    // TODO: Fix logger import path if needed. If logger is in 'utils/logger.ts', use:
+    // logError('Exercise component error:', error, errorInfo);
 
     // Check sync queue status
     const queueStatus = syncManager.getQueueStatus();
     if (queueStatus.failed > 0) {
-      console.warn('Failed sync operations detected:', queueStatus);
+      // TODO: Fix logger import path if needed. If logger is in 'utils/logger.ts', use:
+      // logWarn('Failed sync operations detected:', queueStatus);
     }
   }
 

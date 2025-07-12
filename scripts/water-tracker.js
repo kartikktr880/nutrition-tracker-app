@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 class WaterTracker {
   constructor() {
     this.currentDate = new Date();
@@ -617,7 +618,7 @@ class WaterTracker {
   showNotification(title, body) {
     // Check if notifications are supported and permission granted
     if (!('Notification' in window)) {
-      // console.log('This browser does not support notifications');
+      // logInfo('This browser does not support notifications');
       return;
     }
     
@@ -667,9 +668,9 @@ class WaterTracker {
     
     try {
       const audio = new Audio(soundFile);
-      audio.play().catch(e => {/* console.log('Could not play notification sound:', e); */});
+      audio.play().catch(e => {/* logInfo('Could not play notification sound:', e); */});
     } catch (error) {
-      console.error('Error playing notification sound:', error);
+      logError('Error playing notification sound:', error);
     }
   }
 
@@ -1011,7 +1012,7 @@ class WaterTracker {
           this.showAchievementShareModal(content);
         }
       } catch (e) {
-        console.error('Error loading achievement share component:', e);
+        logError('Error loading achievement share component:', e);
         this.showToast('Could not load sharing component', 'error');
       } finally {
         // Clean up

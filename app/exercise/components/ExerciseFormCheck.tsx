@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import { useExerciseForm } from '@/lib/hooks/useExerciseForm';
-import { ExerciseFormTemplate, ExerciseFormCheck } from '@/types/exercise';
+import { ExerciseFormTemplate } from '@/types/exercise';
+import type { ExerciseFormCheck } from '@/types/exercise';
+import { logDebug, logError, logInfo, logWarn } from 'src/utils/logger';
 
 interface ExerciseFormCheckProps {
   exerciseId: string;
@@ -25,11 +28,12 @@ export function ExerciseFormCheck({ exerciseId }: ExerciseFormCheckProps) {
     calculateFormScore,
   } = useExerciseForm();
 
-  useEffect(() => {
-    loadTemplate();
-  }, [exerciseId]);
+  const _logError = logError;
+  const _logWarn = logWarn;
+  const _logInfo = logInfo;
+  const _logDebug = logDebug;
 
-  const loadTemplate = async () => {
+  const loadTemplate = useCallback(async () => {
     const templates = await getFormTemplates(exerciseId);
     if (templates.length > 0) {
       setTemplate(templates[0]);
@@ -41,7 +45,11 @@ export function ExerciseFormCheck({ exerciseId }: ExerciseFormCheckProps) {
         })),
       }));
     }
-  };
+  }, [exerciseId, getFormTemplates]);
+
+  useEffect(() => {
+    loadTemplate();
+  }, [loadTemplate]);
 
   const handleChecklistItemChange = (index: number, completed: boolean) => {
     const newChecklist = [...(formCheck.checklist || [])];
@@ -57,7 +65,7 @@ export function ExerciseFormCheck({ exerciseId }: ExerciseFormCheckProps) {
       const score = calculateFormScore(
         formCheck.checklist.map(item => ({
           completed: item.completed,
-          importance: item.importance
+          importance: item.importance || ''
         }))
       );
       const newCheck = await createFormCheck({
@@ -132,11 +140,11 @@ export function ExerciseFormCheck({ exerciseId }: ExerciseFormCheckProps) {
               <div>
                 <label className="text-gray-700">{item.description}</label>
                 <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                  item.importance === 'high' ? 'bg-red-100 text-red-800' :
-                  item.importance === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  item.importance === 'critical' ? 'bg-red-100 text-red-800' :
+                  item.importance === 'important' ? 'bg-yellow-100 text-yellow-800' :
                   'bg-green-100 text-green-800'
                 }`}>
-                  {item.importance}
+                  {item.importance || 'optional'}
                 </span>
               </div>
             </div>

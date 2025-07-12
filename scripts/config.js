@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Configuration Module
 // Stores and manages application configuration
 
@@ -74,7 +75,7 @@ class Config {
     const missingKeys = requiredKeys.filter(key => !this.config[key]);
     
     if (missingKeys.length > 0) {
-      console.error('Missing required configuration:', missingKeys);
+      logError('Missing required configuration:', missingKeys);
       return false;
     }
     

@@ -1,3 +1,4 @@
+import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
 // Import security dashboard
 import { securityDashboard } from './security-dashboard.js';
 import { SecurityAlerts } from './security-alerts.js';
@@ -30,6 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 5000);
         
     } catch (error) {
-        console.error('Failed to initialize security systems:', error);
+        logError('Failed to initialize security systems:', error);
     }
 }); 
