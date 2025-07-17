@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import { FocusTrap } from '@/components/FocusTrap/FocusTrap';
@@ -15,16 +16,7 @@ import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { logError } from '../../utils/logger';
 
 import { HeaderVariant, getMobileMenuVariantClasses } from './HeaderVariants';
-
-/**
- * Navigation items for the header
- */
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Meals', href: '/meals' },
-  { name: 'Progress', href: '/progress' },
-];
+import { navigation } from '../navigation';
 
 /**
  * Error fallback component for the header
@@ -117,27 +109,27 @@ interface HeaderProps {
 }
 
 /**
- * Mock user authentication hook
+ * Real user authentication hook
  * 
- * Provides mock user data for development and testing purposes.
- * In production, this should be replaced with actual authentication logic.
+ * Uses NextAuth.js session for real user authentication.
  * 
- * @returns Mock user object with name and optional avatar URL
+ * @returns User object with name and optional avatar URL
  */
-const useMockUser = () => {
-  const [user, setUser] = useState<{ name: string; avatarUrl?: string } | null>({
-    name: 'Jane Doe',
-    avatarUrl: undefined,
-  });
-
-  useEffect(() => {
-    return () => {
-      // Cleanup on unmount
-      setUser(null);
-    };
-  }, []);
-
-  return user;
+const useUser = () => {
+  const { data: session, status } = useSession();
+  
+  if (status === 'loading') {
+    return { user: null, isLoading: true };
+  }
+  
+  return {
+    user: session?.user ? {
+      name: session.user.name || session.user.email?.split('@')[0] || 'User',
+      avatarUrl: session.user.image,
+      email: session.user.email
+    } : null,
+    isLoading: false
+  };
 };
 
 /**
@@ -194,7 +186,7 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className: 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const user = useMockUser();
+  const { user, isLoading } = useUser();
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -320,7 +312,7 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className: 
                             Settings
                           </button>
                           <div className="border-t my-1" />
-                          <button className="block w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:outline-none" role="menuitem" tabIndex={0} onClick={() => { setIsProfileMenuOpen(false); }}>
+                          <button className="block w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:outline-none" role="menuitem" tabIndex={0} onClick={() => { setIsProfileMenuOpen(false); signOut(); }}>
                             Logout
                           </button>
                         </motion.div>
@@ -332,9 +324,10 @@ export const Header: React.FC<HeaderProps> = ({ variant = 'default', className: 
                 <button
                   className="rounded-md px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none transition-colors"
                   aria-label="Sign in"
-                  onClick={() => { /* TODO: Implement sign-in logic */ }}
+                  onClick={() => signIn()}
+                  disabled={isLoading}
                 >
-                  Sign In
+                  {isLoading ? 'Loading...' : 'Sign In'}
                 </button>
               )}
             </div>

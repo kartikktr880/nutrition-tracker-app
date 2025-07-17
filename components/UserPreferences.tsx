@@ -43,12 +43,12 @@ export const UserPreferences: React.FC<UserPreferencesProps> = ({ userId }) => {
     
     if (type === 'checkbox') {
       const checkbox = e.target as HTMLInputElement;
-      setFormData(prev => ({
+      setFormData((prev: Partial<UserPreferencesType>) => ({
         ...prev,
         [name]: checkbox.checked,
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev: Partial<UserPreferencesType>) => ({
         ...prev,
         [name]: value,
       }));
@@ -111,7 +111,7 @@ export const UserPreferences: React.FC<UserPreferencesProps> = ({ userId }) => {
                 Dietary Restrictions
               </label>
               <div className="mt-2 space-y-2">
-                {['vegetarian', 'vegan', 'glutenFree', 'dairyFree', 'nutFree'].map((restriction) => (
+                {['vegetarian', 'vegan', 'glutenFree', 'dairyFree', 'nutFree'].map((restriction: string) => (
                   <div key={restriction} className="flex items-center">
                     <input
                       type="checkbox"
@@ -140,7 +140,7 @@ export const UserPreferences: React.FC<UserPreferencesProps> = ({ userId }) => {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
                 {['Italian', 'Mexican', 'Chinese', 'Indian', 'Japanese', 'Thai', 'Mediterranean'].map(
-                  (cuisine) => (
+                  (cuisine: string) => (
                     <option key={cuisine} value={cuisine}>
                       {cuisine}
                     </option>
@@ -221,8 +221,8 @@ export const UserPreferences: React.FC<UserPreferencesProps> = ({ userId }) => {
                 .filter(([key]) =>
                   ['vegetarian', 'vegan', 'glutenFree', 'dairyFree', 'nutFree'].includes(key)
                 )
-                .filter(([, value]) => value)
-                .map(([key]) => (
+                .filter(([, _value]) => _value)
+                .map(([key, _value]: [string, unknown]) => (
                   <span
                     key={key}
                     className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm capitalize"
@@ -236,7 +236,7 @@ export const UserPreferences: React.FC<UserPreferencesProps> = ({ userId }) => {
           <div>
             <h3 className="text-lg font-medium">Preferred Cuisines</h3>
             <div className="mt-2 flex flex-wrap gap-2">
-              {preferences.preferredCuisines?.map((cuisine) => (
+              {preferences.preferredCuisines?.map((cuisine: string) => (
                 <span
                   key={cuisine}
                   className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm"

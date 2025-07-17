@@ -7,6 +7,8 @@ import ActivityTracker from './components/ActivityTracker';
 import { MealPlanner } from './components/MealPlanner';
 import { RecipeManager } from './components/RecipeManager';
 import { FoodItemManager } from './components/FoodItemManager';
+import { LoginForm } from './components/LoginForm';
+import { useAuth } from './hooks/useAuth';
 import { analytics } from './services/analytics';
 import { monitoring } from './services/monitoring';
 import { storage } from './services/storage';
@@ -18,7 +20,7 @@ import { useComponentLifecycle } from './lib/hooks/useComponentLifecycle';
 const performanceDashboard = PerformanceDashboard.initialize({ containerId: 'performance-dashboard-root' });
 
 const App: React.FC = () => {
-  const [userId, setUserId] = useState<string>('default-user');
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('nutrition');
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [initError, setInitError] = useState<string | null>(null);
@@ -112,6 +114,17 @@ const App: React.FC = () => {
     });
   }, [activeTab, isInitialized]);
 
+  useEffect(() => {
+    // Track authentication state
+    if (isAuthenticated && user) {
+      analytics.trackEvent({
+        category: 'Auth',
+        action: 'user_authenticated',
+        label: user.email
+      });
+    }
+  }, [isAuthenticated, user]);
+
   const handleTabChange = (tab: string) => {
     if (!isInitialized) return;
 
@@ -121,6 +134,18 @@ const App: React.FC = () => {
       action: 'change_tab',
       label: tab
     });
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      analytics.trackEvent({
+        category: 'Auth',
+        action: 'user_logout'
+      });
+    } catch (err) {
+      logError('Logout error:', err);
+    }
   };
 
   const renderActiveTab = () => {
@@ -150,22 +175,26 @@ const App: React.FC = () => {
       );
     }
 
+    if (!isAuthenticated && !authLoading) {
+      return <LoginForm />;
+    }
+
     const TabComponent = (() => {
       switch (activeTab) {
         case 'nutrition':
-          return <NutritionTracker userId={userId} />;
+          return <NutritionTracker userId={user?.id || 'guest'} />;
         case 'activity':
-          return <ActivityTracker userId={userId} />;
+          return <ActivityTracker userId={user?.id || 'guest'} />;
         case 'goals':
-          return <NutritionalGoals userId={userId} />;
+          return <NutritionalGoals userId={user?.id || 'guest'} />;
         case 'meal-planner':
-          return <MealPlanner userId={userId} />;
+          return <MealPlanner />;
         case 'recipes':
-          return <RecipeManager userId={userId} />;
+          return <RecipeManager userId={user?.id || 'guest'} onSave={() => {}} />;
         case 'food-items':
-          return <FoodItemManager userId={userId} />;
+          return <FoodItemManager userId={user?.id || 'guest'} />;
         default:
-          return <NutritionTracker userId={userId} />;
+          return <NutritionTracker userId={user?.id || 'guest'} />;
       }
     })();
 
@@ -180,36 +209,61 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-3xl font-bold text-gray-900">Nutrition Tracker</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-gray-900">Nutrition Tracker</h1>
+            {isAuthenticated && user && (
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-600">
+                  Hello, {user.name}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-4">
-            {[
-              { id: 'nutrition', label: 'Daily Log' },
-              { id: 'activity', label: 'Activity' },
-              { id: 'goals', label: 'Goals' },
-              { id: 'meal-planner', label: 'Meal Planner' },
-              { id: 'recipes', label: 'Recipes' },
-              { id: 'food-items', label: 'Food Items' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                className={`px-4 py-2 rounded ${activeTab === tab.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                onClick={() => handleTabChange(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
+      {isAuthenticated && (
+        <nav className="bg-white border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex space-x-4 overflow-x-auto py-2">
+              {[
+                { id: 'nutrition', label: 'Daily Log' },
+                { id: 'activity', label: 'Activity' },
+                { id: 'goals', label: 'Goals' },
+                { id: 'meal-planner', label: 'Meal Planner' },
+                { id: 'recipes', label: 'Recipes' },
+                { id: 'food-items', label: 'Food Items' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === tab.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                  onClick={() => handleTabChange(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
-      <main className="py-8">
+      <main className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {renderActiveTab()}
       </main>
+
+      <footer className="bg-white border-t py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} Nutrition Tracker. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

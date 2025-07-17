@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "tasks": [
+    {
+      "id": "task-1",
+      "title": "Initialize Project",
+      "description": "Set up the basic project structure and dependencies",
+      "status": "completed",
+      "created": "2024-05-15T14:00:00Z",
+      "updated": "2024-05-15T14:00:00Z"
+    },
+    {
+      "id": "task-2",
+      "title": "Configure Task Master",
+      "description": "Set up Task Master with proper MCP configuration",
+      "status": "in-progress",
+      "created": "2024-05-15T14:00:00Z",
+      "updated": "2024-05-15T14:00:00Z"
+    }
+  ]
+} 

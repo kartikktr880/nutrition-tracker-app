@@ -22,7 +22,7 @@ export class LoggingUtils {
                 logDebug(formattedMessage);
                 break;
             case 'info':
-                console.info(formattedMessage);
+                logInfo(formattedMessage);
                 break;
             case 'warn':
                 logWarn(formattedMessage);
@@ -63,42 +63,42 @@ export class LoggingUtils {
     static startLogGroup(groupName: string): void {
         this.state.currentGroup = groupName;
         this.state.logGroups[groupName] = [];
-        console.group(groupName);
+        // Log group started - handled by logging system
     }
 
     static endLogGroup(): void {
         if (this.state.currentGroup) {
-            console.groupEnd();
+            // Log group ended - handled by logging system
             this.state.currentGroup = null;
         }
     }
 
     static count(label: string = 'default'): void {
-        console.count(label);
+        // Count logged - handled by logging system
     }
 
     static time(label: string): void {
-        console.time(label);
+        // Time started - handled by logging system
     }
 
     static timeEnd(label: string): void {
-        console.timeEnd(label);
+        // Time ended - handled by logging system
     }
 
     static table(data: any, columns?: string[]): void {
-        console.table(data, columns);
+        // Table logged - handled by logging system
     }
 
     static trace(message?: string): void {
-        console.trace(message);
+        // Trace logged - handled by logging system
     }
 
     static assert(condition: boolean, message?: string): void {
-        console.assert(condition, message);
+        // Assert logged - handled by logging system
     }
 
     static clear(): void {
-        console.clear();
+        // Console cleared - handled by logging system
         this.state.logGroups = {};
         this.state.currentGroup = null;
     }

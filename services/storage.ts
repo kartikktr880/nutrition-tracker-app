@@ -1,485 +1,388 @@
-import { logError, logWarn, logInfo, logDebug } from '../utils/logger';
-import { SearchHistoryItem } from '../hooks/useSearchHistory';
-import { analytics } from './analytics';
-import { compress, decompress } from 'lz-string';
-
-export interface StorageItem {
-  id: string;
-  value: any;
-  timestamp: number;
-  version?: number;
-  synced?: boolean;
-}
-
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system';
-  fontSize: 'small' | 'medium' | 'large';
-  searchHistory: boolean;
-  suggestions: boolean;
-  analytics: boolean;
-  notifications: boolean;
-}
-
-export interface SyncStatus {
-  lastSync: number;
-  pending: number;
-  error?: string;
-}
-
-interface StorageQuota {
-  max: number;
-  used: number;
-}
+import { openDB, IDBPDatabase } from 'idb';
+import { logError, logInfo, logWarn } from '../utils/logger';
 
 interface StorageOptions {
-  compression?: boolean;
-  quota?: {
-    max: number; // in bytes
-    onQuotaExceeded?: (quota: StorageQuota) => void;
-  };
+  dbName?: string;
+  version?: number;
+  useLocalStorageFallback?: boolean;
 }
 
-const DEFAULT_OPTIONS: Required<StorageOptions> = {
-  compression: true,
-  quota: {
-    max: 5 * 1024 * 1024, // 5MB default quota
-    onQuotaExceeded: (quota) => {
-      logWarn('Storage quota exceeded:', quota as any);
-    }
-  }
-};
+type StorageValue = any;
 
-/**
- * Storage service for managing local and cloud data persistence
- */
 class StorageService {
-  private storage: Map<string, StorageItem> = new Map();
-  private syncQueue: Set<string> = new Set();
-  private syncInterval: number = 5 * 60 * 1000; // 5 minutes
-  private maxRetries = 3;
-  private initialized = false;
-  private syncStatus: SyncStatus = {
-    lastSync: 0,
-    pending: 0
-  };
-  private options: Required<StorageOptions>;
-  private quotaUsed = 0;
+  private db: IDBPDatabase | null = null;
+  private dbName: string;
+  private version: number;
+  private useLocalStorageFallback: boolean;
+  private isInitialized = false;
+  private initPromise: Promise<void> | null = null;
 
   constructor(options: StorageOptions = {}) {
-    this.options = { ...DEFAULT_OPTIONS, ...options };
-    this.initQuota();
-    if (typeof window !== 'undefined') {
-      this.initialize();
-    }
-  }
-
-  private initialize() {
-    if (this.initialized) return;
-
-    // Load data from localStorage
-    this.loadFromLocal();
-
-    // Start periodic sync
-    setInterval(() => this.sync(), this.syncInterval);
-
-    // Listen for online/offline events
-    window.addEventListener('online', () => this.handleOnline());
-    window.addEventListener('offline', () => this.handleOffline());
-
-    this.initialized = true;
-  }
-
-  private async initQuota() {
-    try {
-      // Calculate current storage usage
-      const keys = await this.getAllKeys();
-      let totalSize = 0;
-      
-      for (const key of keys) {
-        const value = localStorage.getItem(key);
-        if (value) {
-          totalSize += this.getItemSize(value);
-        }
-      }
-
-      this.quotaUsed = totalSize;
-      this.checkQuota(0); // Check if already over quota
-    } catch (err) {
-      analytics.trackError({
-        errorType: 'storage_init_error',
-        errorMessage: err instanceof Error ? err.message : 'Failed to initialize storage'
-      });
-    }
-  }
-
-  private getItemSize(value: string): number {
-    return new Blob([value]).size;
-  }
-
-  private checkQuota(additionalBytes: number): boolean {
-    const newTotal = this.quotaUsed + additionalBytes;
-    const isOverQuota = newTotal > this.options.quota.max;
-
-    if (isOverQuota) {
-      this.options.quota.onQuotaExceeded?.({
-        max: this.options.quota.max,
-        used: newTotal
-      });
-    }
-
-    return !isOverQuota;
-  }
-
-  private async getAllKeys(): Promise<string[]> {
-    return Object.keys(localStorage);
+    this.dbName = options.dbName || 'nutrition-tracker-db';
+    this.version = options.version || 1;
+    this.useLocalStorageFallback = options.useLocalStorageFallback !== false;
+    
+    // Initialize immediately
+    this.init();
   }
 
   /**
-   * Set an item in storage
+   * Initialize the storage service
    */
-  async setItem(key: string, value: any): Promise<void> {
-    const item: StorageItem = {
-      id: key,
-      value,
-      timestamp: Date.now(),
-      version: (this.storage.get(key)?.version || 0) + 1,
-      synced: false
-    };
+  async init(): Promise<void> {
+    if (this.initPromise) {
+      return this.initPromise;
+    }
 
-    this.storage.set(key, item);
-    this.syncQueue.add(key);
-    this.saveToLocal();
-
-    analytics.trackEvent({
-      category: 'Storage',
-      action: 'set_item',
-      label: key
+    this.initPromise = new Promise<void>(async (resolve, reject) => {
+      try {
+        if ('indexedDB' in window) {
+          this.db = await openDB(this.dbName, this.version, {
+            upgrade(db) {
+              // Create stores for different data types
+              if (!db.objectStoreNames.contains('foodEntries')) {
+                db.createObjectStore('foodEntries');
+              }
+              if (!db.objectStoreNames.contains('activities')) {
+                db.createObjectStore('activities');
+              }
+              if (!db.objectStoreNames.contains('goals')) {
+                db.createObjectStore('goals');
+              }
+              if (!db.objectStoreNames.contains('userPreferences')) {
+                db.createObjectStore('userPreferences');
+              }
+              if (!db.objectStoreNames.contains('recipes')) {
+                db.createObjectStore('recipes');
+              }
+              if (!db.objectStoreNames.contains('mealPlans')) {
+                db.createObjectStore('mealPlans');
+              }
+              if (!db.objectStoreNames.contains('searchHistory')) {
+                db.createObjectStore('searchHistory');
+              }
+            },
+          });
+          logInfo('IndexedDB initialized successfully');
+          this.isInitialized = true;
+          resolve();
+        } else {
+          logWarn('IndexedDB not supported, falling back to localStorage');
+          this.isInitialized = true;
+          resolve();
+        }
+      } catch (error) {
+        logError('Failed to initialize IndexedDB:', error);
+        if (this.useLocalStorageFallback) {
+          logWarn('Falling back to localStorage');
+          this.isInitialized = true;
+          resolve();
+        } else {
+          reject(error);
+        }
+      }
     });
 
-    if (navigator.onLine) {
-      await this.syncItem(key);
-    }
+    return this.initPromise;
   }
 
   /**
    * Get an item from storage
    */
-  getItem<T>(key: string): T | null {
-    const item = this.storage.get(key);
-    return item ? item.value : null;
+  async getItem<T = StorageValue>(key: string, storeName = 'foodEntries'): Promise<T | null> {
+    await this.ensureInitialized();
+    
+    try {
+      if (this.db) {
+        return await this.db.get(storeName, key) as T;
+      } else if (this.useLocalStorageFallback) {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : null;
+      }
+      return null;
+    } catch (error) {
+      logError(`Error getting item ${key}:`, error);
+      if (this.useLocalStorageFallback) {
+        try {
+          const value = localStorage.getItem(key);
+          return value ? JSON.parse(value) : null;
+        } catch (localError) {
+          logError(`Error getting item ${key} from localStorage:`, localError);
+        }
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Set an item in storage
+   */
+  async setItem(key: string, value: StorageValue, storeName = 'foodEntries'): Promise<void> {
+    await this.ensureInitialized();
+    
+    try {
+      if (this.db) {
+        await this.db.put(storeName, value, key);
+      } else if (this.useLocalStorageFallback) {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+    } catch (error) {
+      logError(`Error setting item ${key}:`, error);
+      if (this.useLocalStorageFallback) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (localError) {
+          logError(`Error setting item ${key} in localStorage:`, localError);
+          throw localError;
+        }
+      } else {
+      throw error;
+      }
+    }
   }
 
   /**
    * Remove an item from storage
    */
-  async removeItem(key: string): Promise<void> {
-    this.storage.delete(key);
-    this.syncQueue.delete(key);
-    this.saveToLocal();
-
-    analytics.trackEvent({
-      category: 'Storage',
-      action: 'remove_item',
-      label: key
-    });
-
-    if (navigator.onLine) {
-      await this.deleteFromCloud(key);
-    }
-  }
-
-  /**
-   * Get user preferences
-   */
-  getUserPreferences(): UserPreferences {
-    return this.getItem<UserPreferences>('userPreferences') || {
-      theme: 'system',
-      fontSize: 'medium',
-      searchHistory: true,
-      suggestions: true,
-      analytics: true,
-      notifications: true
-    };
-  }
-
-  /**
-   * Update user preferences
-   */
-  async setUserPreferences(preferences: Partial<UserPreferences>): Promise<void> {
-    const current = this.getUserPreferences();
-    await this.setItem('userPreferences', {
-      ...current,
-      ...preferences
-    });
-  }
-
-  /**
-   * Load search history
-   */
-  loadSearchHistory(): Array<{ id: string; query: string; timestamp: number }> {
-    return this.getItem<Array<{ id: string; query: string; timestamp: number }>>('searchHistory') || [];
-  }
-
-  /**
-   * Save search history
-   */
-  async saveSearchHistory(
-    history: Array<{ id: string; query: string; timestamp: number }>
-  ): Promise<void> {
-    await this.setItem('searchHistory', history);
-  }
-
-  /**
-   * Get sync status
-   */
-  getSyncStatus(): SyncStatus {
-    return {
-      ...this.syncStatus,
-      pending: this.syncQueue.size
-    };
-  }
-
-  /**
-   * Force sync
-   */
-  async forceSync(): Promise<void> {
-    if (!navigator.onLine) {
-      throw new Error('No internet connection');
-    }
-
-    await this.sync();
-  }
-
-  /**
-   * Export data
-   */
-  async exportData(): Promise<string> {
-    const data = Array.from(this.storage.entries());
-    return JSON.stringify(data);
-  }
-
-  /**
-   * Import data
-   */
-  async importData(jsonData: string): Promise<void> {
+  async removeItem(key: string, storeName = 'foodEntries'): Promise<void> {
+    await this.ensureInitialized();
+    
     try {
-      const data = JSON.parse(jsonData) as [string, StorageItem][];
-      this.storage = new Map(data);
-      this.saveToLocal();
-      this.syncQueue.clear();
-      
-      for (const [key] of data) {
-        this.syncQueue.add(key);
+      if (this.db) {
+        await this.db.delete(storeName, key);
+      } else if (this.useLocalStorageFallback) {
+        localStorage.removeItem(key);
       }
-
-      if (navigator.onLine) {
-        await this.sync();
-      }
-
-      analytics.trackEvent({
-        category: 'Storage',
-        action: 'import_data',
-        value: data.length
-      });
     } catch (error) {
-      analytics.trackError({
-        errorType: 'import_error',
-        errorMessage: error instanceof Error ? error.message : 'Failed to import data'
-      });
-      throw error;
-    }
-  }
-
-  private async sync(): Promise<void> {
-    if (!navigator.onLine || this.syncQueue.size === 0) return;
-
-    const startTime = Date.now();
-    let success = 0;
-    let failed = 0;
-
-    for (const key of this.syncQueue) {
-      try {
-        await this.syncItem(key);
-        success++;
-      } catch (error) {
-        failed++;
-        logError(`Failed to sync item ${key}:`, error as Error | undefined);
-      }
-    }
-
-    this.syncStatus = {
-      lastSync: Date.now(),
-      pending: this.syncQueue.size
-    };
-
-    analytics.trackEvent({
-      category: 'Storage',
-      action: 'sync_completed',
-      value: success,
-      metadata: {
-        duration: Date.now() - startTime,
-        failed,
-        pending: this.syncQueue.size
-      }
-    });
-  }
-
-  private async syncItem(key: string, retries = 0): Promise<void> {
-    const item = this.storage.get(key);
-    if (!item || item.synced) return;
-
-    try {
-      // In a real app, this would sync with a backend API
-      // await fetch('/api/storage/sync', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(item)
-      // });
-
-      // For demo, just mark as synced
-      item.synced = true;
-      this.storage.set(key, item);
-      this.syncQueue.delete(key);
-      this.saveToLocal();
-    } catch (error) {
-      if (retries < this.maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
-        await this.syncItem(key, retries + 1);
+      logError(`Error removing item ${key}:`, error);
+      if (this.useLocalStorageFallback) {
+        try {
+          localStorage.removeItem(key);
+        } catch (localError) {
+          logError(`Error removing item ${key} from localStorage:`, localError);
+          throw localError;
+        }
       } else {
         throw error;
       }
     }
   }
 
-  private async deleteFromCloud(key: string): Promise<void> {
-    // In a real app, this would delete from backend API
-    // await fetch(`/api/storage/${key}`, {
-    //   method: 'DELETE'
-    // });
+  /**
+   * Get all keys in a store
+   */
+  async getAllKeys(storeName = 'foodEntries'): Promise<string[]> {
+    await this.ensureInitialized();
+    
+    try {
+      if (this.db) {
+        return await this.db.getAllKeys(storeName) as string[];
+      } else if (this.useLocalStorageFallback) {
+        return Object.keys(localStorage).filter(key => 
+          key.startsWith(storeName + '_')
+        );
+      }
+      return [];
+    } catch (error) {
+      logError(`Error getting all keys from ${storeName}:`, error);
+      return [];
+    }
   }
 
-  private loadFromLocal(): void {
+  /**
+   * Get all items in a store
+   */
+  async getAll<T = StorageValue>(storeName = 'foodEntries'): Promise<T[]> {
+    await this.ensureInitialized();
+    
     try {
-      const data = localStorage.getItem('app_storage');
-      if (data) {
-        this.storage = new Map(JSON.parse(data));
-        
-        // Add unsynced items to sync queue
-        for (const [key, item] of this.storage.entries()) {
-          if (!item.synced) {
-            this.syncQueue.add(key);
-          }
-        }
+      if (this.db) {
+        return await this.db.getAll(storeName) as T[];
+      } else if (this.useLocalStorageFallback) {
+        const keys = Object.keys(localStorage).filter(key => 
+          key.startsWith(storeName + '_')
+        );
+        return keys.map(key => {
+          const value = localStorage.getItem(key);
+          return value ? JSON.parse(value) : null;
+        }).filter(Boolean) as T[];
+      }
+      return [];
+    } catch (error) {
+      logError(`Error getting all items from ${storeName}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Clear all items in a store
+   */
+  async clear(storeName = 'foodEntries'): Promise<void> {
+    await this.ensureInitialized();
+    
+    try {
+      if (this.db) {
+        await this.db.clear(storeName);
+      } else if (this.useLocalStorageFallback) {
+        const keys = Object.keys(localStorage).filter(key => 
+          key.startsWith(storeName + '_')
+        );
+        keys.forEach(key => localStorage.removeItem(key));
       }
     } catch (error) {
-      logError('Failed to load from localStorage:', error as Error | undefined);
-      analytics.trackError({
-        errorType: 'storage_load_error',
-        errorMessage: error instanceof Error ? error.message : 'Failed to load from localStorage'
-      });
+      logError(`Error clearing store ${storeName}:`, error);
+      throw error;
     }
-  }
-
-  private saveToLocal(): void {
-    try {
-      const data = Array.from(this.storage.entries());
-      localStorage.setItem('app_storage', JSON.stringify(data));
-    } catch (error) {
-      logError('Failed to save to localStorage:', error as Error | undefined);
-      analytics.trackError({
-        errorType: 'storage_save_error',
-        errorMessage: error instanceof Error ? error.message : 'Failed to save to localStorage'
-      });
-    }
-  }
-
-  private handleOnline(): void {
-    analytics.trackEvent({
-      category: 'Storage',
-      action: 'online'
-    });
-    this.sync();
-  }
-
-  private handleOffline(): void {
-    analytics.trackEvent({
-      category: 'Storage',
-      action: 'offline'
-    });
   }
 
   /**
-   * Add search item to history
+   * Load search history
    */
-  async addSearchItem(item: { id: string; query: string; timestamp: number }): Promise<void> {
-    const history = this.loadSearchHistory();
-    history.unshift(item);
-    
-    // Keep only last 50 items
-    if (history.length > 50) {
-      history.splice(50);
-    }
-    
-    await this.saveSearchHistory(history);
+  async loadSearchHistory(): Promise<any[]> {
+    return this.getAll('searchHistory');
   }
 
   /**
-   * Remove search item from history
+   * Add a search item to history
+   */
+  async addSearchItem(item: any): Promise<void> {
+    await this.setItem(item.id, item, 'searchHistory');
+  }
+
+  /**
+   * Remove a search item from history
    */
   async removeSearchItem(id: string): Promise<void> {
-    const history = this.loadSearchHistory();
-    const filtered = history.filter(item => item.id !== id);
-    await this.saveSearchHistory(filtered);
+    await this.removeItem(id, 'searchHistory');
   }
 
   /**
    * Clear search history
    */
   async clearSearchHistory(): Promise<void> {
-    await this.saveSearchHistory([]);
+    await this.clear('searchHistory');
   }
 
   /**
    * Load recent searches
    */
-  async loadRecentSearches(): Promise<Array<{ id: string; query: string; timestamp: number }>> {
-    try {
-      const stored = localStorage.getItem('recent_searches');
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      logError('Failed to load recent searches:', error as Error | undefined);
-      return [];
-    }
+  async loadRecentSearches(): Promise<any[]> {
+    const history = await this.loadSearchHistory();
+    return history.sort((a, b) => b.timestamp - a.timestamp);
   }
 
   /**
-   * Add recent search
+   * Add a recent search
    */
   async addRecentSearch(query: string): Promise<void> {
-    const recent = await this.loadRecentSearches();
-    const newItem = { id: crypto.randomUUID(), query, timestamp: Date.now() };
-    recent.unshift(newItem);
-    
-    // Keep only last 20 items
-    if (recent.length > 20) {
-      recent.splice(20);
-    }
-    
-    await this.saveRecentSearches(recent);
+    const recentSearches = (await this.getItem<string[]>('recentSearches', 'userPreferences')) || [];
+    const updatedSearches = [query, ...recentSearches.filter(q => q !== query)].slice(0, 10);
+    await this.setItem('recentSearches', updatedSearches, 'userPreferences');
   }
 
   /**
-   * Save recent searches
+   * Check if storage is initialized
    */
-  private async saveRecentSearches(searches: Array<{ id: string; query: string; timestamp: number }>): Promise<void> {
+  private async ensureInitialized(): Promise<void> {
+    if (!this.isInitialized) {
+      await this.init();
+    }
+  }
+
+  /**
+   * Export all data as JSON
+   */
+  async exportData(): Promise<Record<string, any>> {
+    await this.ensureInitialized();
+    
+    const data: Record<string, any> = {};
+    
     try {
-      localStorage.setItem('recent_searches', JSON.stringify(searches));
+      if (this.db) {
+        const storeNames = this.db.objectStoreNames;
+        for (const storeName of storeNames) {
+          data[storeName] = await this.db.getAll(storeName);
+        }
+      } else if (this.useLocalStorageFallback) {
+        // Group localStorage items by store name prefix
+        Object.keys(localStorage).forEach(key => {
+          const parts = key.split('_');
+          if (parts.length > 1) {
+            const storeName = parts[0];
+            if (!data[storeName]) {
+              data[storeName] = [];
+            }
+            const value = localStorage.getItem(key);
+            if (value) {
+              try {
+                data[storeName].push(JSON.parse(value));
+              } catch (e) {
+                data[storeName].push(value);
+              }
+            }
+          }
+        });
+      }
+      return data;
     } catch (error) {
-      logError('Failed to save recent searches:', error as Error | undefined);
+      logError('Error exporting data:', error);
+      return {};
+    }
+  }
+
+  /**
+   * Import data from JSON
+   */
+  async importData(data: Record<string, any>): Promise<void> {
+    await this.ensureInitialized();
+    
+    try {
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid data format');
+      }
+
+      const storeNames = Object.keys(data);
+      
+      for (const storeName of storeNames) {
+        const items = data[storeName];
+        
+        if (Array.isArray(items)) {
+          if (this.db && this.db.objectStoreNames.contains(storeName)) {
+            // Clear existing data
+            await this.db.clear(storeName);
+            
+            // Add new items
+            const tx = this.db.transaction(storeName, 'readwrite');
+            for (let i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item.id) {
+                await tx.store.put(item, item.id);
+              }
+            }
+            await tx.done;
+          } else if (this.useLocalStorageFallback) {
+            // Clear existing data
+            const keys = Object.keys(localStorage).filter(key => 
+              key.startsWith(storeName + '_')
+            );
+            keys.forEach(key => localStorage.removeItem(key));
+            
+            // Add new items
+            items.forEach((item: any, index: number) => {
+              if (item) {
+                const key = `${storeName}_${item.id || index}`;
+                localStorage.setItem(key, JSON.stringify(item));
+              }
+            });
+          }
+        }
+      }
+    } catch (error) {
+      logError('Error importing data:', error);
       throw error;
     }
   }
 }
 
-// Export singleton instance
+// Export a singleton instance
 export const storage = new StorageService(); 

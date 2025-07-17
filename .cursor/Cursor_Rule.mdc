@@ -1,0 +1,191 @@
+---
+alwaysApply: true
+globs: **/*
+---
+Comprehensive Rules for Cursor AI in Nutrition Tracker Development
+These rules guide the development and maintenance of the Nutrition Tracker web application using Cursor AI. The goal is to create a robust, user-friendly, and maintainable app that is compatible across devices and adheres to best practices in coding, security, and user experience, while being accessible to users with zero coding knowledge.
+
+1. Communication and Guidance
+
+Explain all actions in simple, non-technical language.
+Summarize plans before significant changes and seek confirmation.
+Provide step summaries and outline next actions.
+Present clear options with pros and cons for decisions.
+Ask specific questions when needing user input.
+Be patient, methodical, and avoid unnecessary changes.
+Guide beginners with clear, detailed instructions.
+Double-check for errors before finalizing code.
+Suggest improvements or optimizations when possible.
+Warn if a change could break existing functionality.
+Offer to generate diagrams or explanations for complex concepts.
+Assume no coding knowledge; avoid jargon unless explained.
+Provide step-by-step instructions for running, testing, or deploying.
+Be proactive in offering help or clarification.
+
+
+2. Task Management and Breakdown
+
+Break features into small, manageable tasks.
+For each task, provide:
+Plain-English description
+Files and code changes
+Expected outcome
+
+
+Use Taskmaster AI to track tasks and subtasks.
+Verify tasks before marking complete.
+
+
+3. Feature Implementation
+
+Follow these steps:
+Understand requirements
+Assess feasibility
+Check compatibility
+Design and prototype
+Plan implementation
+Implement code
+Test thoroughly
+Deploy with monitoring
+Gather feedback and iterate
+
+
+Perform pre-implementation checks:
+Data integrity
+Compliance (e.g., HIPAA, GDPR)
+Performance
+User experience
+Backup and recovery
+Security
+
+
+Consider:
+User safety
+Data privacy
+Performance
+Security
+Compatibility
+Scalability
+User trust
+Maintainability
+
+
+Ensure cross-device and cross-browser compatibility.
+Implement feature flags for controlled rollouts.
+Consider internationalization for units and formats (e.g., calories vs. kilojoules).
+Verify data sources and calculation formulas for accuracy, especially for health-related features.
+
+
+4. Issue Resolution
+
+Clarify the issue with detailed information.
+Reproduce the issue in a controlled environment.
+Analyze front-end, back-end, and database.
+Check recent changes for regressions.
+Test for compatibility issues across devices and browsers.
+Debug systematically.
+Propose and implement fixes.
+Validate fixes across devices.
+Deploy and monitor.
+Document issues and resolutions.
+Check third-party services if involved.
+
+
+5. Coding Standards and Best Practices
+
+Use clear, descriptive names for files, variables, and functions.
+Write readable, maintainable code with comments for complex parts.
+Follow the project’s directory structure.
+Use TypeScript unless specified otherwise.
+Keep user-facing text simple and jargon-free.
+Use the required rule structure:---
+description: Clear, one-line description
+globs: path/to/files/*.ext
+alwaysApply: boolean
+---
+- **Main Points**
+  - Sub-points
+
+
+Reference files with [name](mdc:path).
+Include DO and DON’T code examples:// ✅ DO: Clear variable naming
+const userAge = 25;
+
+// ❌ DON’T: Vague naming
+const x = 25;
+
+
+Write small, focused functions following the single responsibility principle.
+Manage state effectively, starting with local state.
+Use environment variables for sensitive data (e.g., API keys).
+Set up hot reloading for development.
+Use linting (ESLint) and formatting (Prettier).
+
+
+6. User Experience and Accessibility
+
+Design intuitive interfaces for beginners.
+Follow accessibility guidelines (e.g., ARIA, semantic HTML, keyboard navigation).
+Test UI for usability and accessibility.
+Provide clear feedback for user actions (e.g., success messages, error alerts).
+Design responsive layouts for all screen sizes.
+Optimize for touch interfaces on mobile devices.
+Handle offline scenarios gracefully with user notifications.
+
+
+7. Security and Data Privacy
+
+Never expose sensitive data in code or logs.
+Validate and sanitize all user inputs.
+Use best practices for authentication (e.g., NextAuth.js).
+Encrypt sensitive data in transit and at rest.
+Review security settings regularly.
+Use HTTPS for all network requests.
+Configure CORS to allow only trusted origins.
+Validate and sanitize file uploads (e.g., check file types, sizes).
+Protect authentication tokens and user sessions.
+
+
+8. Testing and Quality Assurance
+
+Write tests for new features and fixes.
+Use Jest and React Testing Library for frontend and API tests.
+Mock external services in tests.
+Run tests before task completion.
+Fix failing tests promptly.
+Test across devices and browsers regularly.
+Validate nutritional data accuracy and calculations.
+
+
+9. Documentation and Onboarding
+
+Document features, components, and APIs in Markdown.
+Update PROJECT_BLUEPRINT.md as the project evolves.
+Write onboarding guides for users and contributors.
+Maintain a changelog of major updates.
+Use JSDoc for code comments.
+
+
+10. Continuous Improvement and Maintenance
+
+Update rules when new patterns or best practices emerge.
+Add examples from the actual codebase.
+Remove outdated patterns.
+Cross-reference related rules.
+Monitor code reviews and development questions for improvement ideas.
+Mark deprecated rules and document migration paths.
+
+
+11. Additional Expert Rules
+
+Version Control: Use Git with meaningful commit messages and feature branches. Push code to GitHub for major changes.
+Code Reviews: Implement a review process (self or team) to ensure quality.
+Performance Optimization: Profile the app regularly to address bottlenecks (e.g., optimize load times, reduce resource usage).
+User Feedback Loop: Enable easy feedback submission and issue reporting.
+CI/CD Pipelines: Automate testing and deployment to reduce errors.
+Dependency Management: Keep dependencies updated and monitor for vulnerabilities.
+Internationalization: Plan for multi-language support and unit conversions.
+Backups and Recovery: Implement regular database backups and a recovery plan.
+Monitoring and Logging: Track app health and log events (excluding sensitive data).
+Scalability: Design architecture to handle increased load.
+Asynchronous Handling: Ensure proper error handling for promises and async/await.

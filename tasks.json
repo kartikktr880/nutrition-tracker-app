@@ -1,0 +1,107 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Fix PWA Configuration",
+      "type": "shell",
+      "command": "npm install next-pwa@5.6.0 --save",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create PWA Icons",
+      "type": "shell",
+      "command": "mkdir -p public/icons",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup Testing Environment",
+      "type": "shell",
+      "command": "npm install --save-dev @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup TypeScript Types",
+      "type": "shell",
+      "command": "npm install --save-dev @types/react @types/react-dom @types/node",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup ESLint",
+      "type": "shell",
+      "command": "npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup Prettier",
+      "type": "shell",
+      "command": "npm install --save-dev prettier eslint-config-prettier eslint-plugin-prettier",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup Husky",
+      "type": "shell",
+      "command": "npm install --save-dev husky lint-staged",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup Storybook",
+      "type": "shell",
+      "command": "npx storybook@latest init",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup CI/CD",
+      "type": "shell",
+      "command": "mkdir -p .github/workflows",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

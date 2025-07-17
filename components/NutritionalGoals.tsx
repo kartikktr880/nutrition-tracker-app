@@ -98,7 +98,10 @@ export const NutritionalGoals: React.FC<NutritionalGoalsProps> = ({ userId, onUp
 
     try {
       // Validate meal distribution totals to 100%
-      const totalDistribution = Object.values(goals.mealDistribution).reduce((a, b) => a + b, 0);
+      const totalDistribution = Object.values(goals.mealDistribution).reduce(
+        (a: number, b: number) => a + b,
+        0,
+      );
       if (Math.abs(totalDistribution - 100) > 0.1) {
         throw new Error('Meal distribution must total 100%');
       }
@@ -128,20 +131,26 @@ export const NutritionalGoals: React.FC<NutritionalGoalsProps> = ({ userId, onUp
     }
   };
 
-  const handleChange = (field: keyof NutritionalGoalsType, value: number) => {
-    setGoals(prev => ({
+  const handleChange = (
+    field: keyof NutritionalGoalsType,
+    value: number,
+  ) => {
+    setGoals((prev: NutritionalGoalsType) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
-  const handleMealDistributionChange = (meal: keyof NutritionalGoalsType['mealDistribution'], value: number) => {
-    setGoals(prev => ({
+  const handleMealDistributionChange = (
+    meal: keyof NutritionalGoalsType['mealDistribution'],
+    value: number,
+  ) => {
+    setGoals((prev: NutritionalGoalsType) => ({
       ...prev,
       mealDistribution: {
         ...prev.mealDistribution,
-        [meal]: value
-      }
+        [meal]: value,
+      },
     }));
   };
 

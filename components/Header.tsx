@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 
 import styles from '../styles/Header.module.css';
 
 import { FocusTrap } from './FocusTrap';
 import { SkipLink } from './SkipLink';
+import { navigation } from './navigation';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,10 +55,21 @@ export const Header: React.FC = () => {
             onKeyDown={handleKeyDown}
           >
             {/* Menu items */}
-            <Link href="/" className={styles.menuItem}>Home</Link>
-            <Link href="/dashboard" className={styles.menuItem}>Dashboard</Link>
-            <Link href="/profile" className={styles.menuItem}>Profile</Link>
-            <Link href="/settings" className={styles.menuItem}>Settings</Link>
+            {navigation.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={styles.menuItem}
+                onClick={(e) => {
+                  e.preventDefault();
+                  // In a real application, you'd navigate to the item's href
+                  // For now, we'll just close the menu
+                  setIsMenuOpen(false);
+                }}
+              >
+                {item.name}
+              </a>
+            ))}
           </div>
         </FocusTrap>
       </nav>

@@ -1,13 +1,4 @@
-export {};
-
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Nutrition Tracker', href: '/tracker' },
-  { name: 'Meal Planner', href: '/meal-planner' },
-  { name: 'Analytics', href: '/analytics' },
-  { name: 'Goals', href: '/goals' },
-  { name: 'Settings', href: '/settings' }
-];
+import { navigation } from '../../../components/navigation';
 
 export default function Header() {
   return (

@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
-import { useTheme } from '../hooks/useTheme';
 import { ValidationResult } from '../services/stateValidation';
 import { logError } from '../utils/logger';
 
@@ -37,7 +36,16 @@ export const FormAnalysisVisualizer: React.FC<FormAnalysisVisualizerProps> = ({
   showDetailedMetrics = false,
   className = ''
 }) => {
-  const theme = useTheme();
+  const theme = {
+    colors: {
+      background: '#fff',
+      primary: '#28a745',
+      secondary: '#ff9800',
+      accent: '#007bff',
+      success: '#4caf50',
+      text: '#222',
+    },
+  };
   const [metrics, setMetrics] = useState<FormMetrics>({
     accuracy: 0,
     alignment: 0,

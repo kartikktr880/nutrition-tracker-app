@@ -1,0 +1,176 @@
+---
+alwaysApply: true
+globs: **/*
+---
+## 1. Project Taskmaster Overview
+
+This file merges all previous task, completed-task, current-task, and rules/config content for the Nutri Track app. It is the single source of truth for:
+- All project tasks (active, completed, in-progress, lost/found)
+- Taskmaster usage and command reference
+- Expert rules and best practices for non-coders
+- Future-proofing and extensibility guidance
+
+---
+
+## 2. Unified Task List (JSON)
+
+```json
+{
+  "project": {
+    "name": "Nutrition Tracker Completion",
+    "description": "Complete all features, address technical debt, and ensure robust, accessible, and maintainable delivery of the Nutri Track app.",
+    "version": "1.1.0"
+  },
+  "tasks": [
+    // All deduplicated, organized tasks from previous files (active, completed, current, lost)
+    // Example structure:
+    // {
+    //   "id": "T1",
+    //   "title": "Project Setup",
+    //   "status": "completed",
+    //   "description": "Initial project setup with Next.js, TypeScript, and Tailwind CSS",
+    //   "subtasks": [ ... ]
+    // },
+    // ...
+    // (Insert all tasks, subtasks, and completed tasks here, deduplicated and organized by status and priority)
+  ]
+}
+```
+
+---
+
+## 3. Taskmaster Usage & Command Reference (Quick Reference)
+
+- **Initialize Project:**
+  - `task-master init --rules cursor,windsurf`
+- **Parse PRD:**
+  - `task-master parse-prd --input='docs/Nutrition_Tracker_PRD.txt'`
+- **List Tasks:**
+  - `task-master list`
+- **Next Task:**
+  - `task-master next`
+- **Analyze Complexity:**
+  - `task-master analyze-complexity --research`
+- **Expand Tasks:**
+  - `task-master expand --id=<id> --force --research`
+- **Update Tasks:**
+  - `task-master update --from=<id> --prompt="..."`
+- **Set Task Status:**
+  - `task-master set-status --id=<id> --status=done`
+- **Add Dependency:**
+  - `task-master add-dependency --id=<id> --depends-on=<id>`
+- **Generate Task Files:**
+  - `task-master generate`
+- **Use Tags for Features:**
+  - `task-master add_tag feature-<name> --description="..."`
+
+---
+
+## 4. Expert Taskmaster Rules & Best Practices
+
+### Communication & Guidance
+- Always explain actions in plain English for non-coders.
+- Summarize plans before major changes; confirm with user if unsure.
+- After each step, provide a summary and next steps.
+- Present clear options at decision points.
+- Ask clear, specific questions if user input is needed.
+
+### Task Breakdown & Management
+- Break large features into small, manageable tasks and subtasks.
+- For each task, provide a plain-English goal, affected files, and expected outcome.
+- Use Taskmaster AI to track all tasks and subtasks.
+- Mark tasks complete only after verifying they work as intended.
+
+### Coding Standards & Best Practices
+- Use clear, descriptive names for all files, variables, and functions.
+- Write code that is easy to read and maintain, even for non-coders.
+- Add comments to explain complex code blocks.
+- Follow the project’s directory structure and keep related files together.
+- Use TypeScript for all new code unless otherwise specified.
+- Ensure all user-facing text is easy to understand and free of jargon.
+
+### User Experience & Accessibility
+- Design all interfaces to be intuitive and easy for beginners.
+- Ensure accessibility (ARIA, semantic HTML, keyboard navigation).
+- Test all UI changes for usability and accessibility.
+- Provide clear feedback to users for all actions.
+
+### Documentation & Onboarding
+- Document every new feature, component, or API endpoint in Markdown.
+- Update the PROJECT_BLUEPRINT.md and other docs as the project evolves.
+- Write onboarding guides for new users and contributors.
+- Keep a changelog of major updates and decisions.
+
+### Testing & Quality Assurance
+- Write tests for all new features and bug fixes.
+- Use Jest and React Testing Library for frontend and API tests.
+- Mock external services in tests to ensure reliability.
+- Run all tests before marking a task as complete.
+- Fix any failing tests before proceeding.
+
+### Security & Data Privacy
+- Never expose sensitive data (e.g., passwords, API keys) in code or logs.
+- Validate all user input on both frontend and backend.
+- Follow best practices for authentication and authorization (use NextAuth.js).
+- Encrypt sensitive data at rest and in transit.
+- Regularly review and update security settings in config/.
+
+### Internationalization (i18n)
+- Store all user-facing text in translation files (translations/).
+- Support multiple languages and make it easy to add new ones.
+- Test the app in at least two languages before release.
+
+### Error Handling & Logging
+- Handle all errors gracefully and provide helpful messages to users.
+- Log errors for debugging, but never log sensitive information.
+- Use Error Boundaries in React to catch UI errors.
+- Document common errors and their solutions in the docs.
+
+### Collaboration & Feedback
+- Encourage regular feedback from the user at every major step.
+- If the user is unsure or confused, pause and provide a simple explanation or visual diagram.
+- Document all major decisions and their reasoning.
+- Use pull requests and code reviews for all significant changes (if working with others).
+
+### Extensibility & Future-Proofing
+- Design all modules and components to be easily extendable.
+- Avoid hard-coding values; use configuration files where possible.
+- Document extension points and customization options.
+- Regularly review and refactor code to keep it clean and modular.
+
+### AI-Specific Guidance
+- Cursor AI should always:
+  - Double-check for errors before finalizing code
+  - Suggest improvements or optimizations when possible
+  - Warn if a requested change could break existing functionality
+  - Offer to generate diagrams or visual explanations for complex flows
+
+### Zero-Coding Experience Support
+- Assume the user has no coding knowledge:
+  - Avoid technical jargon unless explained
+  - Offer to show or explain any code or concept visually
+  - Provide step-by-step instructions for running, testing, or deploying the app
+  - Be patient and proactive in offering help or clarification
+
+---
+
+## 5. Additional Expert Rules & Suggestions
+
+- **Weekly Progress Summaries:** Automate plain-English summaries of completed tasks, saved to docs/weekly_progress.md.
+- **Module-Specific Tags:** Use tags for each module (e.g., food-logger, analytics) to align with the app/ directory structure.
+- **CI/CD Integration:** Automate testing (Jest) and deployment (GitHub Actions) for code quality.
+- **Documentation as Tasks:** Track documentation updates as tasks in Taskmaster.
+- **Accessibility Audits:** Schedule regular accessibility audits and track as tasks.
+- **Performance Audits:** Schedule regular performance audits and track as tasks.
+- **Security Reviews:** Schedule regular security reviews and track as tasks.
+- **User Feedback Loops:** Regularly solicit user feedback and create tasks for improvements.
+- **Onboarding for Non-Coders:** Maintain and update onboarding guides for non-coders in docs/.
+
+---
+
+## Appendix: Full Taskmaster Tool & Command Reference (from taskmaster.mdc)
+
+---
+
+(description, command, and usage reference from taskmaster.mdc follows here, full content appended for completeness)
+

@@ -169,8 +169,10 @@ export function useSearchSuggestions(options: UseSearchSuggestionsOptions = {}) 
 async function getHistorySuggestions(query: string): Promise<Suggestion[]> {
   const history = await storage.loadSearchHistory();
   return history
-    .filter(item => item.query.toLowerCase().includes(query.toLowerCase()))
-    .map(item => ({
+    .filter((item: { query: string }) =>
+      item.query.toLowerCase().includes(query.toLowerCase()),
+    )
+    .map((item: { id: string; query: string }) => ({
       id: item.id,
       text: item.query,
       type: 'history' as const,
@@ -201,14 +203,14 @@ async function getPopularSuggestions(query: string): Promise<Suggestion[]> {
 async function getFuzzySuggestions(query: string): Promise<Suggestion[]> {
   const history = await storage.loadSearchHistory();
   return history
-    .map(item => ({
+    .map((item: { id: string; query: string }) => ({
       id: `fuzzy-${item.id}`,
       text: item.query,
       type: 'fuzzy' as const,
       score: calculateFuzzyScore(query, item.query)
     }))
-    .filter(item => item.score > 0.3)
-    .sort((a, b) => b.score - a.score);
+    .filter((item: { score: number }) => item.score > 0.3)
+    .sort((a: { score: number }, b: { score: number }) => b.score - a.score);
 }
 
 function calculateFuzzyScore(query: string, text: string): number {

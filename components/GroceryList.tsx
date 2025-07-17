@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-import { GroceryList as GroceryListType } from '../types/nutrition';
+interface GroceryListType {
+  id: string;
+  items: GroceryItem[];
+  totalEstimatedCost: number;
+  storeCategories: Record<string, GroceryItem[]>;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 interface GroceryListProps {
   userId: string;

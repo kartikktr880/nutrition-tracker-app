@@ -7,31 +7,35 @@ import { monitoring } from '../services/monitoring';
 import { storage } from '../services/storage';
 import type { Recipe, FoodItem } from '../types/nutrition';
 import { logWarn } from '../utils/logger';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 interface RecipeManagerProps {
   userId: string;
   onRecipeCreated?: (recipe: Recipe) => void;
+  initialRecipe?: Recipe;
+  onSave: (recipe: Recipe) => void;
 }
 
-export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCreated }) => {
+export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCreated: _onRecipeCreated, initialRecipe, onSave }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isCreatingRecipe, setIsCreatingRecipe] = useState(false);
-  const [newRecipe, setNewRecipe] = useState<Partial<Recipe>>({
-    ingredients: [],
-    instructions: [],
-    tags: [],
-    totalNutrition: {
-      calories: 0,
-      macros: {
-        protein: 0,
-        carbs: 0,
-        fat: 0
-      },
-      nutrients: {}
+  const [newRecipe, setNewRecipe] = useState<Recipe>(
+    initialRecipe || {
+      id: '',
+      name: '',
+      ingredients: [],
+      instructions: [],
+      prepTime: 0,
+      cookTime: 0,
+      servings: 1,
+      tags: [],
+      totalNutrition: { calories: 0, macros: { protein: 0, carbs: 0, fat: 0 } },
+      createdAt: new Date().toISOString(),
     }
-  });
+  );
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -145,86 +149,26 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
   }, [userId, loadRecipes, loadFoodItems]);
 
   const calculateTotalNutrition = (ingredients: Recipe['ingredients']): Recipe['totalNutrition'] => {
-    const total = {
+    const total: Recipe['totalNutrition'] = {
       calories: 0,
       macros: {
         protein: 0,
         carbs: 0,
-        fat: 0
+        fat: 0,
       },
-      nutrients: {} as { [key: string]: number }
     };
 
     ingredients.forEach(({ foodItem, quantity }) => {
-      total.calories += foodItem.calories * quantity;
-      total.macros.protein += foodItem.macros.protein * quantity;
-      total.macros.carbs += foodItem.macros.carbs * quantity;
-      total.macros.fat += foodItem.macros.fat * quantity;
-
-      Object.entries(foodItem.nutrients).forEach(([nutrient, value]) => {
-        total.nutrients[nutrient] = (total.nutrients[nutrient] || 0) + value * quantity;
-      });
+      const nutrition = foodItem.nutrition;
+      // Assuming quantity is in grams, and nutrition is per 100g.
+      const scale = quantity / 100;
+      total.calories += nutrition.calories * scale;
+      total.macros.protein += nutrition.macros.protein * scale;
+      total.macros.carbs += nutrition.macros.carbs * scale;
+      total.macros.fat += nutrition.macros.fat * scale;
     });
 
     return total;
-  };
-
-  const handleCreateRecipe = async () => {
-    try {
-      if (!newRecipe.name || !newRecipe.ingredients?.length || !newRecipe.instructions?.length) {
-        throw new Error('Recipe name, ingredients, and instructions are required');
-      }
-
-      const recipe: Recipe = {
-        id: Date.now().toString(),
-        name: newRecipe.name,
-        ingredients: newRecipe.ingredients,
-        instructions: newRecipe.instructions,
-        prepTime: newRecipe.prepTime || 0,
-        cookTime: newRecipe.cookTime || 0,
-        servings: newRecipe.servings || 1,
-        totalNutrition: calculateTotalNutrition(newRecipe.ingredients),
-        tags: newRecipe.tags || [],
-        image: newRecipe.image
-      };
-
-      const updatedRecipes = [...recipes, recipe];
-      await storage.setItem(`recipes_${userId}`, updatedRecipes);
-      setRecipes(updatedRecipes);
-      setIsCreatingRecipe(false);
-      setNewRecipe({
-        ingredients: [],
-        instructions: [],
-        tags: [],
-        totalNutrition: {
-          calories: 0,
-          macros: {
-            protein: 0,
-            carbs: 0,
-            fat: 0
-          },
-          nutrients: {}
-        }
-      });
-
-      analytics.trackEvent({
-        category: 'Recipe',
-        action: 'create_recipe',
-        label: recipe.name,
-        metadata: recipe
-      });
-
-      monitoring.track('recipe_creation_rate', 1);
-      onRecipeCreated?.(recipe);
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to create recipe';
-      setError(error);
-      analytics.trackError({
-        errorType: 'create_recipe_error',
-        errorMessage: error,
-        context: { userId, recipe: newRecipe }
-      });
-    }
   };
 
   const handleDeleteRecipe = async (id: string) => {
@@ -298,33 +242,37 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
     });
   };
 
-  const handleAddInstruction = () => {
-    if (!newRecipe.instructions) return;
+  const handleInstructionChange = (index: number, value: string) => {
+    const updatedInstructions = [...newRecipe.instructions];
+    updatedInstructions[index] = value;
+    setNewRecipe({ ...newRecipe, instructions: updatedInstructions });
+  };
 
+  const addInstruction = () => {
     setNewRecipe({
       ...newRecipe,
       instructions: [...newRecipe.instructions, '']
     });
   };
 
-  const handleUpdateInstruction = (index: number, instruction: string) => {
-    if (!newRecipe.instructions) return;
-
-    const updatedInstructions = [...newRecipe.instructions];
-    updatedInstructions[index] = instruction;
-
-    setNewRecipe({
-      ...newRecipe,
-      instructions: updatedInstructions
-    });
+  const removeInstruction = (index: number) => {
+    const updatedInstructions = newRecipe.instructions.filter((_: string, i: number) => i !== index);
+    setNewRecipe({ ...newRecipe, instructions: updatedInstructions });
   };
 
-  const handleRemoveInstruction = (index: number) => {
-    if (!newRecipe.instructions) return;
-
-    setNewRecipe({
-      ...newRecipe,
-      instructions: newRecipe.instructions.filter((_, i) => i !== index)
+  const handleSave = () => {
+    onSave({
+      id: newRecipe.id,
+      name: newRecipe.name,
+      ingredients: newRecipe.ingredients,
+      instructions: newRecipe.instructions,
+      prepTime: newRecipe.prepTime,
+      cookTime: newRecipe.cookTime,
+      servings: newRecipe.servings,
+      tags: newRecipe.tags,
+      totalNutrition: newRecipe.totalNutrition,
+      image: newRecipe.image,
+      createdAt: newRecipe.createdAt,
     });
   };
 
@@ -444,7 +392,7 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
                   <option value="">Add an ingredient...</option>
                   {foodItems.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.name} ({item.calories} kcal/{item.servingUnit})
+                      {item.name} ({item.nutrition.calories} kcal/{item.servingUnit})
                     </option>
                   ))}
                 </select>
@@ -454,30 +402,24 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
             <div>
               <h4 className="font-medium mb-2">Instructions</h4>
               <div className="space-y-2">
-                {newRecipe.instructions?.map((instruction, index) => (
-                  <div key={index} className="flex items-start space-x-2">
-                    <span className="mt-2">{index + 1}.</span>
-                    <textarea
+                {newRecipe.instructions?.map((instruction: string, index: number) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
                       value={instruction}
-                      onChange={(e) => handleUpdateInstruction(index, e.target.value)}
-                      className="flex-1 rounded-md border-gray-300"
-                      rows={2}
+                      onChange={(e) => handleInstructionChange(index, e.target.value)}
+                      placeholder={`Step ${index + 1}`}
                     />
-                    <button
-                      onClick={() => handleRemoveInstruction(index)}
-                      className="text-red-600 hover:text-red-800"
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeInstruction(index)}
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
                 ))}
+                <Button onClick={addInstruction}>Add Instruction</Button>
               </div>
-              <button
-                onClick={handleAddInstruction}
-                className="mt-2 text-blue-600 hover:text-blue-800"
-              >
-                Add Step
-              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -554,7 +496,7 @@ export const RecipeManager: React.FC<RecipeManagerProps> = ({ userId, onRecipeCr
                 Cancel
               </button>
               <button
-                onClick={handleCreateRecipe}
+                onClick={handleSave}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
               >
                 Create Recipe

@@ -1,0 +1,138 @@
+---
+description: Guide for using Task Master to manage task-driven development workflows
+globs: **/*
+alwaysApply: true
+---
+
+Task Master Development Workflow for Nutrition Tracker
+This guide outlines the process for using Task Master to manage the development of the Nutrition Tracker project. It is designed to support the project's modular architecture, ensure efficient task management, and provide a seamless experience for users with zero coding knowledge.
+
+1. Primary Interaction: MCP Server vs. CLI
+
+MCP Server (Recommended): Use the MCP server for integrated tools like Cursor AI. It offers better performance, structured data, and error handling. Refer to mcp.mdc for details.
+CLI (Fallback): Use the task-master CLI for direct interaction or when the MCP server is unavailable. Install globally with npm install -g task-master-ai or use locally via npx task-master-ai .... See taskmaster.mdc for commands.
+
+Note: Restart the MCP server if core logic in scripts/modules or MCP tool definitions change.
+
+2. Standard Development Workflow
+For the Nutrition Tracker project, follow this workflow to manage tasks effectively:
+
+Initialize the Project:
+
+Run initialize_project / task-master init --rules cursor,windsurf to set up Task Master with rule sets aligned with the project's tech stack (React, Next.js, Prisma).
+Use parse_prd / task-master parse-prd --input='docs/Nutrition_Tracker_PRD.txt' to generate initial tasks based on the project's PRD.
+
+
+List Tasks:
+
+Use get_tasks / task-master list to view current tasks, statuses, and IDs.
+
+
+Determine Next Task:
+
+Run next_task / task-master next to identify the next task with satisfied dependencies.
+
+
+Analyze Complexity:
+
+Use analyze_project_complexity / task-master analyze-complexity --research to assess task difficulty.
+
+
+Break Down Tasks:
+
+For complex tasks, use expand_task / task-master expand --id=<id> --force --research to create detailed subtasks.
+
+
+Implement Code:
+
+Follow the iterative subtask implementation process (see Section 7).
+
+
+Update Tasks:
+
+Use update / task-master update --from=<id> --prompt="..." to adjust future tasks if implementation drifts.
+
+
+Mark Tasks Complete:
+
+Set task status with set_task_status / task-master set-status --id=<id> --status=done.
+
+
+Manage Dependencies:
+
+Use add_dependency / task-master add-dependency --id=<id> --depends-on=<id> to manage task relationships.
+
+
+Generate Task Files:
+
+Run generate / task-master generate to update task markdown files in tasks/.
+
+
+
+
+3. Advanced Workflows for Nutrition Tracker
+Given the project's complexity—multiple modules like food-logger, exercise-tracker, and analytics—use Tagged Task Lists to organize tasks by feature. This reduces conflicts and improves focus.
+3.1 When to Use Tags
+
+Feature Development: Create tags for major features (e.g., feature-food-logger).
+Team Collaboration: Use separate tags for different contributors' work.
+Experiments: Isolate experimental tasks in tags like experiment-dark-mode.
+
+3.2 PRD-Driven Workflow
+For large features (e.g., adding a new module):
+
+Create a Tag: add_tag feature-new-module --description="Tasks for new module".
+Draft a PRD: Collaborate to create a PRD in docs/feature-new-module-prd.txt.
+Parse PRD: parse_prd docs/feature-new-module-prd.txt --tag=feature-new-module.
+Analyze and Expand: Run analyze_project_complexity --tag=feature-new-module and expand_all --tag=feature-new-module.
+
+
+4. Task Complexity Analysis
+
+Run analyze_project_complexity / task-master analyze-complexity --research to identify complex tasks.
+Focus on tasks with scores 8-10 for detailed breakdown.
+Use complexity_report / task-master complexity-report for a readable summary.
+
+
+5. Task Breakdown Process
+
+Use expand_task / task-master expand --id=<id> --force --research to break down tasks.
+Add --num=<number> to specify subtask count.
+Use --prompt="<context>" for additional context (e.g., "Align with Next.js API routes").
+Clear subtasks with clear_subtasks / task-master clear-subtasks --id=<id> if needed.
+
+
+6. Implementation Drift Handling
+
+Use update / task-master update --from=<id> --prompt="..." to adjust multiple tasks.
+Use update_task / task-master update-task --id=<id> --prompt="..." for single tasks.
+
+
+7. Iterative Subtask Implementation
+For each subtask:
+
+Understand the Goal: Use get_task / task-master show <subtaskId>.
+Plan Implementation: Explore the codebase (e.g., app/food-logger/) and log the plan with update_subtask.
+Implement Code: Set status to in-progress and code based on the plan, adhering to the tech stack (React, TypeScript, Prisma).
+Log Progress: Use update_subtask to record findings and decisions.
+Review and Update Rules: Identify new patterns (e.g., Prisma queries) and update rules in .cursor/rules/.
+Mark Complete: Set status to done after verification (e.g., via Jest tests).
+Commit Changes: Use Git to commit with a detailed message (e.g., git commit -m "feat(food-logger): Add meal logging endpoint").
+
+
+8. Configuration Management
+
+Use .taskmaster/config.json for settings like AI models and logging.
+Store API keys (e.g., for NextAuth.js) in .env for CLI or .cursor/mcp.json for MCP.
+Manage rule sets with task-master rules add/remove <profiles>.
+
+
+9. Additional Expert Suggestions
+
+Automate Weekly Summaries: Generate a plain-English summary of completed tasks weekly, saved to docs/weekly_progress.md, to keep you informed without technical involvement.
+Module-Specific Tags: Create tags for each module (e.g., food-logger, analytics) to align with the directory structure in app/.
+Integrate with CI/CD: Automate testing (Jest) and deployment (GitHub Actions) to ensure code quality, as per PROJECT_BLUEPRINT.md.
+Use Task Master for Documentation: Track documentation tasks (e.g., updating API.md) within Task Master, stored in tasks/.
+
+
+This workflow ensures the Nutrition Tracker project is managed efficiently, with a focus on modularity, scalability, and ease of use for beginners. Adapt it as the project evolves, and refer to taskmaster.mdc for detailed commands.

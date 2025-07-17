@@ -1,2 +1,0 @@
-# Task Management Rule
-Parse feature documents (e.g., scripts/homepage_feature.txt) into JSON tasks for tasks.json with ID, Description, Status (Pending), Priority (High/Medium/Low), Dependencies. Suggest code for index.html, styles/*.css, firebase.json.

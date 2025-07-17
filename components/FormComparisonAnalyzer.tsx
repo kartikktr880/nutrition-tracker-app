@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { useTheme } from '@/hooks/useTheme';
 import { ValidationResult } from '@/services/stateValidation';
 import { logError } from '@/utils/logger';
 
@@ -62,7 +61,6 @@ export const FormComparisonAnalyzer: React.FC<FormComparisonAnalyzerProps> = ({
   onComparisonComplete,
   className = ''
 }) => {
-  const theme = useTheme();
   const [comparison, setComparison] = useState<FormComparison | null>(null);
   const [_isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'all'>('week');
@@ -174,7 +172,7 @@ export const FormComparisonAnalyzer: React.FC<FormComparisonAnalyzerProps> = ({
             animate={{ scale: 1, opacity: 1 }}
             className="score"
             style={{
-              color: getSimilarityColor(comparison.similarity, theme)
+              color: getSimilarityColor(comparison.similarity)
             }}
           >
             {Math.round(comparison.similarity * 100)}%
@@ -323,11 +321,10 @@ const calculateTrendAnalysis = (_history: FormHistoryEntry[]): TrendAnalysis => 
   };
 };
 
-const getSimilarityColor = (similarity: number, _theme: Record<string, unknown>): string => {
-  const colors = { success: '#28a745', warning: '#ffc107', error: '#dc3545' };
-  if (similarity >= 0.8) return colors.success;
-  if (similarity >= 0.6) return colors.warning;
-  return colors.error;
+const getSimilarityColor = (similarity: number): string => {
+  if (similarity > 0.8) return '#28a745'; // green
+  if (similarity > 0.6) return '#ff9800'; // orange
+  return '#dc3545'; // red
 };
 
 const capitalizeFirst = (str: string): string => {
