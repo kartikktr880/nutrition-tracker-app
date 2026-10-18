@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { useAnalytics } from '../hooks/useAnalytics';
-import { useComponentLifecycle } from '../hooks/useComponentLifecycle';
-import { storage } from '../services/storage';
-import { logError, logInfo } from '../utils/logger';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useComponentLifecycle } from '../../hooks/useComponentLifecycle';
+import { storage } from '../../services/storage';
+import { logError, logInfo } from '../../utils/logger';
 
 interface FoodEntry {
   id: string;

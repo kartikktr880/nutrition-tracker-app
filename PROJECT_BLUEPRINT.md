@@ -1,5 +1,7 @@
 # Nutri Track App – Project Blueprint (Expert Restructured Edition)
 
+> For a complete project overview, see [README.md](README.md).
+
 ---
 
 ## 1. Project Overview
@@ -175,7 +177,6 @@ Nutri Track app/
 - [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - [ADVANCED_ANALYTICS.md](ADVANCED_ANALYTICS.md)
 - [DARK_MODE.md](DARK_MODE.md)
-- [Nutrition_Tracker_Complete_Guide.md](Nutrition_Tracker_Complete_Guide.md)
 
 ---
 

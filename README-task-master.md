@@ -1,3 +1,7 @@
+# README: Task Master Integration
+
+> Note: The unified tasks.json now contains both shell-based project tasks and Task Master AI tasks. See the file header in tasks.json for structure and usage details.
+
 # Task Master
 
 ### by [@eyaltoledano](https://x.com/eyaltoledano)

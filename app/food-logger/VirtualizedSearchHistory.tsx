@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState, useRef } from 'react';
 import { FixedSizeList } from 'react-window';
 
-import { useSearchHistory } from '../hooks/useSearchHistory';
-import { analytics } from '../services/analytics';
+import { useSearchHistory } from '../../hooks/useSearchHistory';
+import { analytics } from '../../services/analytics';
 import styles from '../styles/VirtualizedSearchHistory.module.css';
 
-import { ErrorBoundary } from './ErrorBoundary';
-import { LoadingSpinner } from './LoadingSpinner';
+import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
+import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
 
 interface VirtualizedSearchHistoryProps {
   onSelect: (query: string) => void;
@@ -164,7 +164,7 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
   };
 
   if (loading && !isLoadingMore) {
-    return <LoadingSpinner size="medium" label="Loading search history..." />;
+    return <LoadingSpinner size="md" label="Loading search history..." />;
   }
 
   if (error && !isLoadingMore) {
@@ -212,7 +212,7 @@ export const VirtualizedSearchHistory: React.FC<VirtualizedSearchHistoryProps> =
         {List}
         {isLoadingMore && (
           <div className={styles.loadingMore}>
-            <LoadingSpinner size="small" label="Loading more..." />
+            <LoadingSpinner size="sm" label="Loading more..." />
           </div>
         )}
       </div>

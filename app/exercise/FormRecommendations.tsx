@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ExerciseFormCheck, ExerciseFormTemplate } from '@/lib/validations/exerciseForm';
 
-import { Target, CheckCircle, AlertCircle } from '../icons/lucide-react';
+import { Target, CheckCircle, AlertCircle } from '../../components/icons/lucide-react';
 
 interface FormRecommendationsProps {
   checks: ExerciseFormCheck[];

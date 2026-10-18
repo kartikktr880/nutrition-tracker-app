@@ -1,16 +1,14 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState, useCallback } from 'react';
 
-import { ValidationResult } from '../services/stateValidation';
-import { validationAnalytics } from '../services/validationAnalytics';
-import { logError } from '../utils/logger';
+import { ValidationResult } from '../../services/stateValidation';
+import { validationAnalytics } from '../../services/validationAnalytics';
+import { logError } from '../../utils/logger';
 
-import { FormAnalysisFeedbackManager } from './FormAnalysisFeedbackManager';
 import { FormAnalysisFeedbackVisualizer } from './FormAnalysisFeedbackVisualizer';
 import { FormAnalysisVisualizer } from './FormAnalysisVisualizer';
-import { FormComparisonAnalyzer } from './FormComparisonAnalyzer';
-import { FormFeedbackSystem } from './FormFeedbackSystem';
-import PerformanceMetricsVisualizer from './PerformanceMetricsVisualizer';
+import PerformanceMetricsVisualizer from '../analytics/PerformanceMetricsVisualizer';
+import { FormFeedbackSystem } from '../../components/FormFeedbackSystem';
 
 import '../styles/FormAnalysisDashboard.css';
 import '../styles/FormAnalysisFeedbackManager.css';
@@ -373,36 +371,6 @@ export const FormAnalysisDashboard: React.FC<{
             feedbackPatterns={feedbackPatterns}
           />
 
-          <FormAnalysisFeedbackManager
-            exerciseKey={exerciseKey}
-            currentMetrics={{
-              accuracy: analysis?.accuracy ?? 0,
-              stability: analysis?.stability ?? 0,
-              alignment: analysis?.alignment ?? 0,
-              timing: analysis?.timing ?? 0,
-              consistency: analysis?.consistency ?? 0
-            }}
-            validationResult={validationResult as unknown as Record<string, unknown>}
-            preferences={{
-              adaptationThreshold: 0.7,
-              feedbackFrequency: 'medium' as const,
-              channelPreferences: {
-                visual: feedbackManagerPreferences.visualEnabled,
-                audio: feedbackManagerPreferences.audioEnabled,
-                haptic: feedbackManagerPreferences.hapticEnabled,
-                analyticsEnabled: feedbackManagerPreferences.analyticsEnabled
-              }
-            }}
-            onPreferenceChange={(preferences) => {
-              setFeedbackManagerPreferences({
-                audioEnabled: preferences.channelPreferences.audio,
-                visualEnabled: preferences.channelPreferences.visual,
-                hapticEnabled: preferences.channelPreferences.haptic,
-                analyticsEnabled: true
-              });
-            }}
-          />
-
           <FormAnalysisVisualizer
             exerciseKey={exerciseKey}
             currentForm={currentForm}
@@ -425,20 +393,25 @@ export const FormAnalysisDashboard: React.FC<{
           />
 
           {selectedView === 'details' && (
-            <FormComparisonAnalyzer
-              exerciseKey={exerciseKey}
-              currentForm={currentForm}
-              idealFormPattern={idealFormPattern}
-              validationResult={validationResult as unknown as ValidationResult}
-              historicalData={historicalData.map(entry => ({
-                ...entry,
-                formData: entry.formData || {},
-                validationResult: (entry.validationResult ? (entry.validationResult as unknown as ValidationResult) : defaultValidationResult),
-                metrics: {
-                  ...entry.metrics,
-                  overall: (entry.metrics.accuracy + entry.metrics.stability + entry.metrics.alignment + entry.metrics.timing + entry.metrics.consistency) / 5
-                }
-              }))}
+            <PerformanceMetricsVisualizer
+              metrics={{
+                accuracy: analysis?.accuracy ?? 0,
+                stability: analysis?.stability ?? 0,
+                alignment: analysis?.alignment ?? 0,
+                timing: analysis?.timing ?? 0,
+                consistency: analysis?.consistency ?? 0
+              }}
+              historicalData={{
+                trends: historicalData.map(entry => ({
+                  metric: 'accuracy' as keyof { accuracy: number; stability: number; alignment: number; timing: number; consistency: number },
+                  trend: entry.metrics?.accuracy ?? 0,
+                  confidence: 85
+                }))
+              }}
+              onMetricSelect={(metric: keyof { accuracy: number; stability: number; alignment: number; timing: number; consistency: number }) => {
+                // Handle metric selection
+                logError('Selected metric:', metric);
+              }}
             />
           )}
 

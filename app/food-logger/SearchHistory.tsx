@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useSearchHistory, SearchHistoryItem } from '../hooks/useSearchHistory';
-import { analytics } from '../services/analytics';
+import { useSearchHistory, SearchHistoryItem } from '../../hooks/useSearchHistory';
+import { analytics } from '../../services/analytics';
 import styles from '../styles/SearchHistory.module.css';
 
 interface SearchHistoryProps {

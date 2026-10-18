@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { storage } from '../services/storage';
-import { analytics } from '../services/analytics';
-import { logError, logInfo } from '../utils/logger';
-import { MealPlanCreator } from './meal-planning/MealPlanCreator';
-import { MealPlanViewer } from './meal-planning/MealPlanViewer';
-import { MealAdder } from './meal-planning/MealAdder';
-import type { MealPlanV2 as MealPlan } from '../types/nutrition';
+import { useAuth } from '../../hooks/useAuth';
+import { storage } from '../../services/storage';
+import { analytics } from '../../services/analytics';
+import { logError, logInfo } from '../../utils/logger';
+import { MealPlanCreator } from './MealPlanCreator';
+import { MealPlanViewer } from './MealPlanViewer';
+import { MealAdder } from './MealAdder';
+import type { MealPlanV2 as MealPlan } from '../../types/nutrition';
 
 export const MealPlanner: React.FC = () => {
   // Get the current user

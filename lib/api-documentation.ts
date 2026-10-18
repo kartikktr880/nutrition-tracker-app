@@ -267,7 +267,7 @@ export class APIDocumentation {
       const required: string[] = [];
 
       Object.entries(schema.shape).forEach(([key, value]) => {
-        properties[key] = this.zodToOpenAPI(value);
+        properties[key] = this.zodToOpenAPI(value as z.ZodType<unknown, z.ZodTypeDef, unknown>);
         if (value instanceof z.ZodType && !value.isOptional()) {
           required.push(key);
         }
@@ -294,8 +294,9 @@ export class APIDocumentation {
       return this.zodToOpenAPI(schema.unwrap());
     }
     if (schema instanceof z.ZodNullable) {
+      const openAPISchema = this.zodToOpenAPI(schema.unwrap()) as { type: string | string[] };
       return {
-        type: ['null', ...this.zodToOpenAPI(schema.unwrap()).type ? [this.zodToOpenAPI(schema.unwrap()).type] : []],
+        type: ['null', ...(Array.isArray(openAPISchema.type) ? openAPISchema.type : [openAPISchema.type])],
       };
     }
 
@@ -437,7 +438,7 @@ export class APIDocumentation {
     if (schema instanceof z.ZodBoolean) return 'boolean';
     if (schema instanceof z.ZodArray) return `${this.getTypeScriptType(schema.element)}[]`;
     if (schema instanceof z.ZodObject) return 'object';
-    if (schema instanceof z.ZodEnum) return schema._def.values.map(v => `'${v}'`).join(' | ');
+    if (schema instanceof z.ZodEnum) return schema._def.values.map((v: string) => `'${v}'`).join(' | ');
     if (schema instanceof z.ZodUnion) return schema._def.options.map((option: z.ZodType<unknown>) => this.getTypeScriptType(option)).join(' | ');
     if (schema instanceof z.ZodOptional) return `${this.getTypeScriptType(schema.unwrap())} | undefined`;
     if (schema instanceof z.ZodNullable) return `${this.getTypeScriptType(schema.unwrap())} | null`;

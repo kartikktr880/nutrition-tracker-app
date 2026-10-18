@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
-import { ValidationResult } from '../services/stateValidation';
-import { logError } from '../utils/logger';
+import { ValidationResult } from '../../services/stateValidation';
+import { logError } from '../../utils/logger';
 
 interface FormAnalysisVisualizerProps {
   exerciseKey: string;

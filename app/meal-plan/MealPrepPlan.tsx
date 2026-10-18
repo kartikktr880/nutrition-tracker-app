@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { MealPrepPlan as MealPrepPlanType, MealPrepDay } from '../types/nutrition';
+import { MealPrepPlan as MealPrepPlanType, MealPrepDay } from '../../types/nutrition';
 
 interface MealPrepPlanProps {
   plan: MealPrepPlanType;

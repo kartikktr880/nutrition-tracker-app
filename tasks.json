@@ -1,5 +1,8 @@
 {
-  "version": "2.0.0",
+  // This file contains both shell-based project tasks and Task Master AI tasks.
+  // - 'tasks': Shell-based project setup/build/test tasks
+  // - 'taskMasterTasks': Task Master AI project management tasks
+  "version": "2.1.0",
   "tasks": [
     {
       "label": "Fix PWA Configuration",
@@ -102,6 +105,24 @@
         "panel": "new"
       },
       "problemMatcher": []
+    }
+  ],
+  "taskMasterTasks": [
+    {
+      "id": "task-1",
+      "title": "Initialize Project",
+      "description": "Set up the basic project structure and dependencies",
+      "status": "completed",
+      "created": "2024-05-15T14:00:00Z",
+      "updated": "2024-05-15T14:00:00Z"
+    },
+    {
+      "id": "task-2",
+      "title": "Configure Task Master",
+      "description": "Set up Task Master with proper MCP configuration",
+      "status": "in-progress",
+      "created": "2024-05-15T14:00:00Z",
+      "updated": "2024-05-15T14:00:00Z"
     }
   ]
 }

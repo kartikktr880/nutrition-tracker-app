@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { logError } from '../utils/logger';
+import { useAuth } from '../../hooks/useAuth';
+import { logError } from '../../utils/logger';
 
 interface LoginFormProps {
   onSuccess?: () => void;

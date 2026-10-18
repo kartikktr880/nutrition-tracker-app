@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { storage } from '../services/storage';
-import { logError } from '../utils/logger';
+import { storage } from '../../services/storage';
+import { logError } from '../../utils/logger';
 
 interface Activity {
   id: string;

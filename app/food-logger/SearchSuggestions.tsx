@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-import { useSearchHistory } from '../hooks/useSearchHistory';
-import { analytics } from '../services/analytics';
+import { useSearchHistory } from '../../hooks/useSearchHistory';
+import { analytics } from '../../services/analytics';
 import styles from '../styles/SearchSuggestions.module.css';
 
-import { ErrorBoundary } from './ErrorBoundary';
-import { LoadingSpinner } from './LoadingSpinner';
+import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
+import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
 
 /**
  * Search suggestions component with autocomplete functionality
@@ -175,7 +175,7 @@ export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
     <ErrorBoundary>
       <div className={`${styles.container} ${className}`}>
         {loading ? (
-          <LoadingSpinner size="small" label="Loading suggestions..." />
+          <LoadingSpinner size="sm" label="Loading suggestions..." />
         ) : (
           <ul
             ref={suggestionsRef}

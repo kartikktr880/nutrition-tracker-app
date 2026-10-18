@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { ErrorBoundary } from '@/lib/errorBoundary';
-import { ErrorDisplay } from '@/components/ErrorDisplay';
+import { ErrorDisplay } from '../app/auth/ErrorDisplay';
 import { recordError } from '@/lib/monitoring';
 import { auditLogger } from '@/lib/audit-logger';
 

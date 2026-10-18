@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { UserPreferences as UserPreferencesType } from '../types/nutrition';
+import { UserPreferences as UserPreferencesType } from '../../types/nutrition';
 
 interface UserPreferencesProps {
   userId: string;

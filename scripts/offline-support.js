@@ -172,7 +172,7 @@ class OfflineSupport {
   checkConnection() {
     return new Promise((resolve) => {
       // Try to fetch a small file to check real connectivity
-      fetch('/ping.json', { 
+      fetch('/data/ping.json', { 
         method: 'GET',
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }

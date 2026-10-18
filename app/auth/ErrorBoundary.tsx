@@ -1,8 +1,8 @@
 import React, { Component, ErrorInfo } from 'react';
 
-import { analytics } from '../services/analytics';
+import { analytics } from '../../services/analytics';
 import styles from '../styles/ErrorBoundary.module.css';
-import { logError } from '../utils/logger';
+import { logError } from '../../utils/logger';
 
 interface Props {
   children: React.ReactNode;

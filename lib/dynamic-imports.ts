@@ -53,7 +53,7 @@ export const DynamicBarcodeScanner = createDynamicComponent(
 );
 
 export const DynamicAnalytics = createDynamicComponent(
-  () => import('@/components/AnalyticsDashboard').then((mod) => ({ default: mod.AnalyticsDashboard })),
+  () => import('../app/analytics/AnalyticsDashboard').then((mod) => ({ default: mod.AnalyticsDashboard })),
   { ssr: false }
 );
 

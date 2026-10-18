@@ -1,3 +1,9 @@
+
+globs: **/*
+alwaysApply: true
+
+-----
+
 # Nutrition Tracker Developer Guide (Expert Edition)
 
 Welcome to the Nutrition Tracker project! This guide is your comprehensive, step-by-step manual for working on this codebase. Whether you are fixing bugs, adding features, or maintaining the project, following this guide will help you avoid errors and ensure high-quality, maintainable code.
@@ -5,6 +11,7 @@ Welcome to the Nutrition Tracker project! This guide is your comprehensive, step
 ---
 
 ## Table of Contents
+- [Key Documentation & Resources](#key-documentation--resources)
 - [Project Structure](#project-structure)
 - [Setup & Installation](#setup--installation)
 - [Development Workflow](#development-workflow)
@@ -16,31 +23,179 @@ Welcome to the Nutrition Tracker project! This guide is your comprehensive, step
 - [Common Pitfalls & How to Avoid Them](#common-pitfalls--how-to-avoid-them)
 - [Expert Error Prevention Guide](#expert-error-prevention-guide)
 - [Resources](#resources)
+- [Rule & Workflow References](#rule--workflow-references)
+- [Expert Coding & Workflow Standards](#expert-coding--workflow-standards)
 
 ---
 
-## Project Structure
+## Key Documentation & Resources
+
+> **For efficient onboarding and expert-level development, always consult the following resources as needed:**
+
+- **[README.md](../README.md):** Project overview, features, setup, and quick links to all major docs. Start here for onboarding.
+- **[PROJECT_BLUEPRINT.md](../PROJECT_BLUEPRINT.md):** Architecture, folder structure, modularity principles, and onboarding workflow. Reference for architectural decisions and best practices.
+- **[API.md](../API.md):** API endpoints, usage, and integration details. Use for backend/frontend API work.
+- **[docs/README.md](../docs/README.md):** Index of advanced, feature-specific, and audit documentation (e.g., animation-utils, security-audit, performance-utils, etc.).
+- **[tasks/daily-logs.md](../tasks/daily-logs.md):** Chronological log of daily development activities, decisions, and progress. Review for project history and context.
+- **[tasks/improvements.md](../tasks/improvements.md):** Unified list of improvement ideas, technical debt, and checklist enhancements. Use for planning and prioritizing refactors or new features.
+- **[data/](../data/):** All app data JSON files (UIFix.json, ping.json, error_tracking.json, errorfree.json) are now organized here for clarity and maintainability.
+- **[tasks.json](../tasks.json):** Unified project tasks file containing both shell-based and Task Master AI tasks. See the file header for structure and usage.
+- **[.cursor/DEVELOPER_GUIDE.mdC](.cursor/DEVELOPER_GUIDE.mdC):** This expert developer guide—your main reference for workflow, standards, and error prevention.
+
+**Pro Tip:**
+- When in doubt about architecture, consult `PROJECT_BLUEPRINT.md`.
+- For API or integration work, always check `API.md` and relevant docs in `docs/`.
+- For troubleshooting, see the troubleshooting sections in `README.md` and this guide.
+- For advanced topics (animation, security, performance), see `docs/README.md`.
+- For project history or improvement context, see `tasks/daily-logs.md` and `tasks/improvements.md`.
+
+---
+
+## Expert Documentation Policy
+
+> **To ensure clarity, maintainability, and onboarding quality, the following documentation rules apply to all contributors:**
+>
+> - **API Changes:** Any change to API endpoints, request/response formats, or backend logic must be documented in [API.md](../API.md) immediately. This includes new endpoints, parameter changes, or deprecations.
+> - **Error Tracking:** Any new, recurring, or critical error encountered during development or production must be logged in [data/error.json](../data/error.json) (or the appropriate error log file). Include context, stack trace, and resolution steps if available.
+> - **Feature/Data/Architecture Updates:** Any new feature, data file (e.g., in `data/`), or architectural change must be reflected in the relevant documentation: [README.md](../README.md), [PROJECT_BLUEPRINT.md](../PROJECT_BLUEPRINT.md), [docs/](../docs/), or other appropriate files.
+> - **Documentation References:** All documentation references must be kept up to date in this guide ([.cursor/DEVELOPER_GUIDE.mdC](.cursor/DEVELOPER_GUIDE.mdC)), so developers always know where to find authoritative, current information.
+>
+> **Summary:** If you change, add, or remove any code, data, or architecture, you must update the corresponding documentation and ensure this guide references it. This is mandatory for all contributors.
+
+---
+
+## Rule & Workflow References
+
+> **For all contributors: The following rule and workflow documents are authoritative. Always consult them for detailed standards, workflow, and best practices.**
+>
+> - **[Cursor_Rule.mdc](../.cursor/Cursor_Rule.mdc):** Comprehensive coding, naming, security, and UX rules. _Use case:_ Before writing or reviewing code, check naming, TypeScript, and security rules here.
+> - **[dev_workflow.mdc](../.cursor/dev_workflow.mdc):** Taskmaster-driven development workflow. _Use case:_ When starting a new feature or task, follow the workflow steps here for task breakdown, tagging, and completion.
+> - **[taskmaster-merged.mdc](../.cursor/taskmaster-merged.mdc):** Unified task/project management, expert rules, and command reference. _Use case:_ For managing tasks, reviewing best practices, or using Taskmaster CLI, consult this doc for commands and standards.
+>
+> **Summary:** Always reference these docs before major changes, and update them if you introduce new patterns or workflows.
+
+---
+
+## Operationalizing Project Rules & Workflows
+
+> **To ensure these rules are not just written, but actively drive development, follow these operational steps for each core document:**
+
+### 1. Cursor_Rule.mdc — Coding, Security, and UX Rules
+- **Enforce in Code Reviews:** Every PR must be checked against these rules. Use the checklist in this guide and reference Cursor_Rule.mdc for naming, TypeScript, security, and UX.
+- **Automate Linting:** Integrate ESLint/Prettier configs that reflect these rules. Add custom lint rules if needed.
+- **Onboarding:** New developers must read Cursor_Rule.mdc and pass a “rules quiz” or checklist before merging code.
+- **Continuous Improvement:** Regularly review and update Cursor_Rule.mdc as new patterns emerge. Reference it in every code review and retro.
+
+_Example: Before merging, reviewer checks: “Are all variable names descriptive? Is all user-facing text in translations/? Is input validated as per Cursor_Rule.mdc?”_
+
+### 2. dev_workflow.mdc — Taskmaster-Driven Development Workflow
+- **Task-First Development:** All work must start as a Taskmaster task. No “drive-by” code changes.
+- **CLI/AI Integration:** Use Taskmaster CLI or MCP for all task management (init, list, expand, complete, etc.).
+- **Tagging:** Use tags for features/modules as described, and require PRs to reference the relevant task/tag.
+- **Weekly Review:** Review open/completed tasks in standup or retro, using the workflow as the agenda.
+
+_Example: Before starting a feature, run `task-master add_tag feature-xyz` and parse a PRD if needed. All code/PRs must reference a Taskmaster task ID._
+
+### 3. DEVELOPER_GUIDE.mdC — The Single Source of Truth for Dev Standards
+- **Mandatory Reading:** All contributors must read this guide before their first PR.
+- **PR Template:** Use the PR checklist from this guide in every pull request.
+- **Documentation-Driven:** Any new pattern, error, or workflow must be added to this guide and referenced in code reviews.
+- **Onboarding:** New hires must complete a walkthrough of this guide, with a mentor or as a self-guided checklist.
+
+_Example: Before merging, confirm: “Is the PR checklist in the description? Are all new APIs, errors, and data files documented as per the guide?”_
+
+### 4. taskmaster-merged.mdc — Unified Task/Project Management and Expert Rules
+- **Taskmaster as the Source of Truth:** All project work, including documentation, onboarding, and audits, must be tracked as tasks in Taskmaster.
+- **Command Reference:** Use the command reference for all task operations. No manual task tracking.
+- **Expert Rules:** Review the expert rules section regularly and update as the project evolves.
+- **Weekly Summaries:** Automate or manually generate weekly progress summaries as described.
+
+_Example: At the end of each week, run `task-master generate` and review the summary in `docs/weekly_progress.md`. Ensure all completed work is reflected in Taskmaster._
+
+---
+
+### Summary Table for Developers (add to onboarding):
+
+| Rule/Doc                | When to Use/Check                                    |
+|-------------------------|------------------------------------------------------|
+| Cursor_Rule.mdc         | Every code review, naming, security, UX, onboarding  |
+| dev_workflow.mdc        | Every new task/feature, task breakdown, PR reference |
+| DEVELOPER_GUIDE.mdC     | Every PR, onboarding, documentation, error handling  |
+| taskmaster-merged.mdc   | All task/project management, weekly summaries        |
+
+> **For every new contributor:**
+> 1. Read all four documents and complete a walkthrough with a mentor or checklist.
+> 2. Use the PR checklist and reference the relevant rule/workflow doc in every PR.
+> 3. Track all work in Taskmaster and update documentation as you go.
+
+---
+
+# Project Structure (Expert Modular Reference)
+
+> **This project uses a modular, feature-first architecture for maximum maintainability, scalability, and clarity.**  
+> _For the authoritative structure and rationale, see [PROJECT_BLUEPRINT.md](PROJECT_BLUEPRINT.md)._
+
+> **Expert Note:**
+> If you add or update any app data JSON files (in `data/`) or project task files (e.g., `tasks.json`) in the future, you must document them in this structure and update this guide and the project blueprint accordingly. This ensures ongoing clarity, maintainability, and onboarding quality for all contributors.
 
 ```
-Nutrition tracker/
-├── app/                # Next.js app directory (API routes, components)
-├── components/         # Shared React components
-├── lib/                # Utility libraries (prisma, auth, etc.)
-├── pages/              # Next.js legacy pages and API routes
-├── public/             # Static assets (images, icons)
-├── scripts/            # Utility scripts
-├── services/           # Business logic and integrations
-├── styles/             # CSS and style files
-├── tests/              # Integration and unit tests
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-├── prisma/             # Prisma schema and migrations
+Nutri Track app/
+├── app/                # Next.js app directory (feature modules, API routes, layout)
+│   ├── analytics/      # Analytics dashboard (feature module)
+│   ├── dashboard/      # Main dashboard (feature module)
+│   ├── exercise/       # Exercise tracking (feature module)
+│   ├── food-logger/    # Food logging (feature module)
+│   ├── meal-plan/      # Meal planning (feature module)
+│   ├── performance/    # Performance analytics (feature module)
+│   ├── water-tracker/  # Water intake tracking (feature module)
+│   ├── layout.tsx      # App-wide layout
+│   └── page.tsx        # App entry point
+├── components/         # Shared, cross-feature React components (Button, Card, Header, etc.)
+├── hooks/              # Custom React hooks (useAuth, useAnalytics, etc.)
+├── lib/                # Core utilities, Prisma, validation schemas, helpers
+├── services/           # Business logic, analytics, recommendations, monitoring
+├── styles/             # Tailwind config, CSS Modules, global styles
+│   ├── base/           # Reset, accessibility, critical CSS
+│   ├── components/     # Component-level styles
+│   ├── layout/         # Grid, layout utilities
+│   └── utils/          # Animations, utility classes
+├── types/              # TypeScript type definitions (deduplicated, domain-organized)
+├── utils/              # General-purpose helpers, logging, audit, backup
+├── prisma/             # Database schema and migrations
+├── public/             # Static assets (images, icons, manifest)
+├── providers/          # React context providers (global state, error boundaries, etc.)
+├── scripts/            # Automation, migration, and utility scripts
 ├── config/             # Environment and security configs
+├── docs/               # Documentation, audit reports, guides
+├── data/               # App data JSON files (UIFix.json, ping.json, error_tracking.json, errorfree.json)
+├── tasks/              # Taskmaster AI project management files
+├── tests/              # All integration and unit tests
+├── translations/       # i18n JSON files (user-facing text)
 ├── README.md           # Main documentation
 ├── API.md              # API documentation
-├── DEVELOPER_GUIDE.md  # This file
+├── PROJECT_BLUEPRINT.md# Architecture & onboarding reference
+├── tasks.json          # Unified project tasks (shell + Task Master AI)
 └── ...
 ```
+
+#### Key Principles (from PROJECT_BLUEPRINT.md)
+- **Strict modularity:** Each feature is self-contained in its own folder under `app/`.
+- **Shared code only in** `components/`, `hooks/`, `services/`, `utils/`, and `types/`.
+- **No feature-specific code in shared folders.**
+- **TypeScript everywhere.**
+- **All user-facing text in** `translations/`.
+- **No legacy HTML, fix, or temp files** in the root or feature folders.
+- **Accessibility and responsiveness** are first-class requirements.
+
+#### Import Path Conventions
+- **Feature code:** Use relative imports within the feature, absolute imports for shared code (e.g., `import { Button } from 'components/Button'`).
+- **Shared code:** Never import feature-specific code.
+- **Types:** Always import from `types/` or `lib/validations/`.
+- **Update all imports** when moving or renaming files.
+
+#### For More Details
+- See [PROJECT_BLUEPRINT.md](PROJECT_BLUEPRINT.md) for rationale, onboarding, and architectural decisions.
+- See the “Modular Architecture & Folder Structure” and “Key Files & Their Roles” sections for further guidance.
 
 ---
 
@@ -808,6 +963,104 @@ echo "✅ All checks passed! Safe to commit."
 
 ---
 
+## Modular Architecture & Folder Structure (Expert Guidance)
+
+**This project uses a modular, feature-first architecture for maximum maintainability, scalability, and clarity.**
+
+### 📁 Folder Structure Overview
+
+```
+app/                # Feature modules (each subfolder = a feature)
+  ├── analytics/
+  ├── auth/
+  ├── dashboard/
+  ├── exercise/
+  ├── food-logger/
+  ├── meal-plan/
+  ├── performance/
+  ├── water-tracker/
+  └── ...
+components/         # Shared, reusable UI components (not feature-specific)
+hooks/              # Shared React hooks
+services/           # Business logic, API, integrations (feature or shared)
+utils/              # Utility functions (feature or shared)
+types/              # TypeScript types and interfaces (feature or shared)
+lib/                # Libraries, validation schemas, and helpers
+styles/             # CSS (modular, utility, and global)
+public/             # Static assets (images, icons, etc.)
+providers/          # React context providers
+scripts/            # Automation and dev scripts
+prisma/             # Database schema and migrations
+config/             # Environment and security configs
+```
+
+**Key Principles:**
+- Each feature lives in its own folder under `app/` (e.g., `app/meal-plan/MealPlanner.tsx`).
+- Shared code (components, hooks, services, utils, types) lives in the respective top-level folder.
+- No feature-specific code in shared folders.
+- Keep imports clean and relative (see below).
+
+---
+
+### 📦 Import Path Conventions
+
+- **Feature code:**
+  - Import other files in the same feature using `./` or `../`.
+  - Import shared code using absolute paths (e.g., `import { Button } from 'components/Button'`).
+- **Shared code:**
+  - Never import feature-specific code.
+- **Types:**
+  - Always import types from `types/` or `lib/validations/`.
+- **Update all imports** when moving or renaming files.
+
+**Example:**
+```typescript
+// In app/meal-plan/MealPlanner.tsx
+import { Button } from 'components/Button';
+import { useMealPlan } from 'hooks/useMealPlan';
+import { MealPlanType } from 'types/mealPlan';
+```
+
+---
+
+### 🛠️ How to Move or Refactor Code (Zero-Error Checklist)
+
+1. **Move the file(s) to the new location.**
+2. **Update all import paths** in the codebase that reference the moved file.
+3. **Update types** if you add/remove properties or change interfaces.
+4. **Update or move tests** to match the new structure.
+5. **Run all checks:**
+   - `npm run type-check`
+   - `npm run lint`
+   - `npm test`
+   - `npm run build`
+6. **Fix all errors before committing.**
+
+---
+
+### 🎨 Premium Design Theme & Consistency
+
+- **All UI must follow the premium design theme** (see project rules or `@theme.mdc`).
+- When creating or updating components, reference the theme for colors, typography, spacing, and layout.
+- To request a themed component, specify: "Apply the premium Nutrition Tracker theme."
+- **Never hardcode colors or fonts**; use theme variables or classes.
+- Review the theme section in this guide and in the project rules for details.
+
+---
+
+### 🧑‍💻 Expert Tips for Working in a Modular Codebase
+
+- **Start with types:** Always define or update types before writing code.
+- **Keep features isolated:** No cross-feature imports unless via shared code.
+- **Document all new modules and components.**
+- **Update tests and docs with every change.**
+- **Use small, focused commits.**
+- **Run all checks after every significant change.**
+- **Never leave broken imports, types, or tests.**
+- **Review the DEVELOPER_GUIDE.md and project rules regularly.**
+
+---
+
 ## 📚 Additional Resources for Developers
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
@@ -821,3 +1074,85 @@ echo "✅ All checks passed! Safe to commit."
 ---
 
 **By following this guide, you will avoid common mistakes and ensure your work is error-free, maintainable, and production-ready. If you have questions, open an issue or ask in Discussions.** 
+
+## Expert Coding & Workflow Standards
+
+> **These standards are mandatory for all contributors. For details, see the Rule & Workflow References above.**
+
+### 1. Pull Request & Code Review Checklist
+- [ ] All code is type-safe (no `any` unless justified and documented)
+- [ ] No lint or TypeScript errors
+- [ ] All tests pass (unit, integration, E2E as relevant)
+- [ ] New/changed APIs are documented in API.md
+- [ ] New/changed data files are documented in data/ and this guide
+- [ ] No secrets or sensitive data in code or logs
+- [ ] All user-facing text is in translations/
+- [ ] Accessibility (a11y) is considered for all UI changes
+- [ ] Security best practices are followed (input validation, error handling, etc.)
+- [ ] Documentation references in this guide are up to date
+- [ ] Code is peer-reviewed and feedback addressed
+
+_Example: Before merging a PR, copy this checklist into your PR description and verify each item._
+
+### 2. Automated Quality Gates
+- Use Husky pre-commit hooks for lint, type-check, and tests
+- CI/CD (GitHub Actions) must block merges on errors
+
+_Example: Set up Husky with `npx husky-init && npm install` and add `npm run lint && npm run type-check && npm test` to pre-commit._
+
+### 3. Security & Privacy Best Practices
+- Never log or commit secrets
+- Use environment variables for sensitive config
+- Sanitize all user input
+- Regularly run `npm audit` and address vulnerabilities
+
+_Example: Add `.env` to `.gitignore` and use `process.env.SECRET_KEY` in code._
+
+### 4. Accessibility (a11y) Standards
+- Use semantic HTML and ARIA attributes
+- Test with screen readers and keyboard navigation
+- Meet WCAG 2.1 AA standards
+
+_Example: Add `aria-label` to buttons and test with VoiceOver._
+
+### 5. Performance Guidelines
+- Profile and optimize critical paths
+- Use lazy loading/code splitting for large modules
+- Monitor bundle size and performance regressions
+
+_Example: Use React.lazy for large components and check bundle size with `npm run build`._
+
+### 6. Testing Philosophy
+- Practice TDD or at least write tests for all new features/bugfixes
+- Mock external services in tests
+- Maintain high test coverage, but focus on meaningful tests
+
+_Example: Add a test in `components/__tests__/` for every new component._
+
+### 7. Error Handling & Logging
+- Use centralized error logging (e.g., Sentry)
+- Never swallow errors silently
+- Provide user-friendly error messages and fallback UI
+
+_Example: Use try/catch in async functions and log errors with context._
+
+### 8. Documentation-Driven Development
+- Write or update docs before or alongside code changes
+- Use diagrams (e.g., Mermaid) for complex flows
+- Keep onboarding docs up to date
+
+_Example: Add a section to API.md when adding a new endpoint._
+
+### 9. Onboarding & Knowledge Sharing
+- Encourage pair programming and code walkthroughs
+- Maintain a “How to get help” section (Slack, Issues, etc.)
+- Document tribal knowledge in docs/ or a dedicated FAQ
+
+_Example: Add common troubleshooting steps to docs/README.md._
+
+### 10. Continuous Improvement
+- Regularly review and refactor code for clarity and simplicity
+- Hold retrospectives to improve workflow and standards
+- Encourage feedback on the developer guide itself
+
+_Example: After each release, review this guide and update as needed._ 

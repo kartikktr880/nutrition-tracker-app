@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { FormAnalysisVisualizer } from '../../components/FormAnalysisVisualizer';
+import { FormAnalysisVisualizer } from '../../app/performance/FormAnalysisVisualizer';
 
 // Mock the missing exports
 const _screen = {

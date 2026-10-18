@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { useComponentLifecycle } from '../lib/hooks/useComponentLifecycle';
-import { analytics } from '../services/analytics';
-import { monitoring } from '../services/monitoring';
-import { storage } from '../services/storage';
-import type { FoodItem } from '../types/nutrition';
-import { logWarn } from '../utils/logger';
+import { useComponentLifecycle } from '../../hooks/useComponentLifecycle';
+import { analytics } from '../../services/analytics';
+import { monitoring } from '../../services/monitoring';
+import { storage } from '../../services/storage';
+import type { FoodItem } from '../../types/nutrition';
+import { logWarn } from '../../utils/logger';
 
 interface FoodItemManagerProps {
   userId: string;
@@ -37,33 +37,11 @@ export const FoodItemManager: React.FC<FoodItemManagerProps> = ({ userId, onFood
 
   // Use component lifecycle hook
   useComponentLifecycle({
-    onMemoryWarning: (usage, limit) => {
-      logWarn(`Memory usage warning in FoodItemManager: ${usage}MB/${limit}MB`);
-      analytics.trackEvent({
-        category: 'Performance',
-        action: 'memory_warning',
-        label: 'FoodItemManager'
-      });
+    componentId: 'FoodItemManager',
+    lifecycle: {
+      // Add onMount, onUnmount, onUpdate if needed
     },
-    onPerformanceWarning: (metrics) => {
-      logWarn('Performance warning in FoodItemManager:', metrics);
-      analytics.trackEvent({
-        category: 'Performance',
-        action: 'performance_warning',
-        label: 'FoodItemManager',
-        metadata: metrics
-      });
-    },
-    performanceWarningThreshold: {
-      fps: 30,
-      memoryUsage: 0.8,
-      renderTime: 16.67
-    },
-    cacheKey: `food_item_manager_${userId}`,
-    cacheTTL: 20 * 60 * 1000, // 20 minutes since food items change less frequently
-    rateLimitKey: `food_item_operations_${userId}`,
-    rateLimit: 40,
-    rateLimitWindow: 60 * 1000 // 1 minute
+    dependencies: [userId]
   });
 
   useEffect(() => {
